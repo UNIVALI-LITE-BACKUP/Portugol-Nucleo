@@ -10,6 +10,8 @@ import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
 import br.univali.portugol.nucleo.excecoes.*;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -43,8 +45,15 @@ public class AnalizadorSemantico
 
             analizarListaDeclaracoesGlobais(arvoreSintaticaAbstrata.getListaDeclaracoesGlobais());
         }
+        catch (ExcecaoFuncaoPrincipalNaoDeclarada ex) 
+        {
+            listaMensagens.adicionar(new GenericError("", ex.getMessage(), arquivo, 0, 0));
+            //throw new ExcecaoArquivoContemErros();
+        }       
         catch(RecognitionException ex)
         {
+            
+            listaMensagens.adicionar(new GenericError(ex.getMessage(), ex.getLocalizedMessage(), arquivo, ex.line, ex.line));
             throw new ExcecaoArquivoContemErros();
         }
         catch(IOException ex)
@@ -55,10 +64,33 @@ public class AnalizadorSemantico
         return listaMensagens;
     }
 
-    private void analizarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
+    private class GenericError extends Erro{
+
+        public GenericError(String msg, String localizedMsg, File arquivo, int linha, int coluna) {
+            super(arquivo, linha, coluna);
+            this.msg = msg;
+            this.localizedMsg = localizedMsg;
+        }       
+        
+        String msg;
+        String localizedMsg;
+        
+        @Override
+        protected String construirMensagem() {
+            return msg + " ---- " + localizedMsg;
+        }
+    
+    }
+    
+    private void analizarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais) throws ExcecaoFuncaoPrincipalNaoDeclarada
     {
         if (listaDeclaracoesGlobais != null)
         {
+            if (listaDeclaracoesGlobais.size() == 1){
+                if (listaDeclaracoesGlobais.get(0) == null)
+                    throw new ExcecaoFuncaoPrincipalNaoDeclarada(Interpretador.nomeFuncaoPrincipal);
+            }
+            
             for (NoDeclaracao declaracao: listaDeclaracoesGlobais)
                 analizarDeclaracaoGlobal(declaracao, tabelaSimbolosGlobal);
 
@@ -85,6 +117,13 @@ public class AnalizadorSemantico
         String nome = declaracaoVariavel.getNome();
         TipoDado tipoDados = declaracaoVariavel.getTipoDado();
 
+        if (nome.equals("<missing ID>"))
+        {
+            listaMensagens.adicionar(new ErroNomeIncompativel(arquivo, declaracaoVariavel.getTokenNome().getLinha(), declaracaoVariavel.getTokenNome().getColuna()));
+            return;
+        }
+            
+        
         Variavel variavel = new Variavel(nome, tipoDados);
         variavel.setConstante(declaracaoVariavel.constante());
         variavel.setTokenNome(declaracaoVariavel.getTokenNome());
@@ -223,6 +262,11 @@ public class AnalizadorSemantico
 
         if (expressao instanceof NoIncremento)
             analizarIncremento((NoIncremento) expressao);
+        
+        if (expressao instanceof NoReferenciaVariavel)
+            if (!tabelaSimbolos.contem(((NoReferenciaVariavel)expressao).getNome()))
+                listaMensagens.adicionar(new ErroSimboloNaoDeclarado(arquivo, (NoReferencia)expressao));
+
     }
 
 

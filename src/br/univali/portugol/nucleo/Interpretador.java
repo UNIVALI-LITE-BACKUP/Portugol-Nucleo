@@ -16,7 +16,7 @@ import org.antlr.runtime.RecognitionException;
 
 public class Interpretador
 {
-    private static final String nomeFuncaoPrincipal = "inicio";
+    public static final String nomeFuncaoPrincipal = "inicio";
     private TabelaSimbolos tabelaSimbolosGlobal;
     private Saida saida;
     private Entrada entrada;
@@ -1153,7 +1153,11 @@ public class Interpretador
 
                         if (entrada != null)
                         {
-                            while ( (valor = decodificarValor(entrada.ler(), tipoDado) ) == null){};
+                            try {
+                                while ( (valor = decodificarValor(entrada.ler(), tipoDado) ) == null){};                            
+                            } catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
                         }
 
                             if (simbolo instanceof Variavel) atribuirValorVariavel((Variavel) simbolo, valor);
