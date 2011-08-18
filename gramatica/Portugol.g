@@ -1,4 +1,4 @@
- grammar Portugol;
+grammar Portugol;
 
 @lexer::header 
 { 
@@ -12,12 +12,18 @@
 
 	import org.antlr.runtime.Token;
 	import br.univali.portugol.nucleo.asa.*;
-
+  import br.univali.portugol.nucleo.excecoes.ColecaoExcecoes;
+  import java.util.List;
+  import java.util.ArrayList;
 }
-
 
 @parser::members
 {
+  @Override
+  public void reportError(RecognitionException e) {
+       excecoes.add(e);
+  }
+
 	private class InformacaoTipoDado
 	{
 		private TipoDado tipoDado;
@@ -100,6 +106,22 @@
 		
 		else return operandoEsquerdo;
 	}
+	
+	private List<Exception> excecoes;
+	
+	public ArvoreSintaticaAbstrata gerarArvore() throws ColecaoExcecoes{
+	 excecoes = new ArrayList<Exception>();
+	 ArvoreSintaticaAbstrata ast = null;
+	 try {
+	   ast = parse();
+	 } catch (RecognitionException re){
+	   excecoes.add(re);  
+	 }
+	 if (excecoes.isEmpty())
+	   return ast;
+	 else
+	   throw new ColecaoExcecoes(excecoes);
+	}
 }
 
 
@@ -143,7 +165,7 @@ fragment VERDADEIRO	:	'verdadeiro'	;
 //============================================================================//
 
 
-//=============================== Tokens Básicos =============================//
+//=============================== Tokens Bsicos =============================//
 
 fragment LETRA		:	'a'..'z'| 'A'..'Z'	;
 fragment DIGITO		:	'0'..'9'		;
@@ -183,7 +205,7 @@ APELIDO		:	    (LETRA | UNDERLINE) (LETRA | UNDERLINE | DIGITO)* '.'	;
 
 
 
-//=========================== Comentários e Espaços ==========================//
+//=========================== Comentrios e Espaos ==========================//
 
 COMENTARIO_SIMPLES	:	'//' ~('\n'|'\r')* '\r'? '\n' { $channel = HIDDEN; }			;
 
@@ -817,7 +839,7 @@ tipoPrimitivo returns[NoExpressao expressao]:
 		caracter.setToken(criarToken($CONST_CARACTER));
 		expressao = caracter;
 	}	
-;
+; 
 
 referencia returns[NoReferencia referencia]:	
 

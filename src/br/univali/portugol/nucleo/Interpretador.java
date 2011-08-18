@@ -9,6 +9,8 @@ import br.univali.portugol.nucleo.iu.Saida;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -44,12 +46,12 @@ public class Interpretador
             PortugolLexer lexico = new PortugolLexer(fluxoArquivo);
             CommonTokenStream fluxoTokens = new CommonTokenStream(lexico);
             PortugolParser parser = new PortugolParser(fluxoTokens);
-            ArvoreSintaticaAbstrata asa = parser.parse();
+            ArvoreSintaticaAbstrata asa = parser.gerarArvore();
 
             interpretar((ArvoreSintaticaAbstrataPrograma) asa, parametros);
         }
-        catch(RecognitionException ex)
-        {
+        catch (ColecaoExcecoes ex) {
+            Logger.getLogger(Interpretador.class.getName()).log(Level.SEVERE, null, ex);
             throw new ExcecaoArquivoContemErros();
         }
         catch(IOException ex)

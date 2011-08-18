@@ -4,16 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
-import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
-import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
 import br.univali.portugol.nucleo.excecoes.*;
+import br.univali.portugol.nucleo.excecoes.sintatico.ErroCaracteredNaoReconhecidoException;
+import br.univali.portugol.nucleo.excecoes.sintatico.ErroFalhaEmReconhecerCaracter;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.MissingTokenException;
 import org.antlr.runtime.RecognitionException;
 
 public class AnalizadorSemantico
@@ -28,48 +27,66 @@ public class AnalizadorSemantico
     }
 
 
-
+    PortugolParser parser = null;
 
     public ListaMensagens analizar() throws ExcecaoArquivoContemErros
     {
+    	listaMensagens = new ListaMensagens();
         try
         {
             ANTLRFileStream fluxoArquivo = new ANTLRFileStream(arquivo.toString());
             PortugolLexer lexico = new PortugolLexer(fluxoArquivo);
             CommonTokenStream fluxoTokens = new CommonTokenStream(lexico);
-            PortugolParser parser = new PortugolParser(fluxoTokens);
-            ArvoreSintaticaAbstrata arvoreSintaticaAbstrata = parser.parse();
-
-            listaMensagens = new ListaMensagens();
+            parser = new PortugolParser(fluxoTokens);
+            ArvoreSintaticaAbstrata arvoreSintaticaAbstrata = parser.gerarArvore();
+            
             tabelaSimbolosGlobal = new TabelaSimbolos();
 
             analizarListaDeclaracoesGlobais(arvoreSintaticaAbstrata.getListaDeclaracoesGlobais());
         }
         catch (ExcecaoFuncaoPrincipalNaoDeclarada ex) 
         {
-            listaMensagens.adicionar(new GenericError("", ex.getMessage(), arquivo, 0, 0));
-            //throw new ExcecaoArquivoContemErros();
-        }       
-        catch(RecognitionException ex)
-        {
-            
-            listaMensagens.adicionar(new GenericError(ex.getMessage(), ex.getLocalizedMessage(), arquivo, ex.line, ex.line));
             throw new ExcecaoArquivoContemErros();
-        }
+        }              
         catch(IOException ex)
         {
 
         }
+        catch (ColecaoExcecoes excecoes){
+            criaMensagensErro(excecoes);
+        } catch (NullPointerException e) {
+        	listaMensagens.adicionar(new GenericError("Não foi possível terminar de ler o arquivo.", arquivo, 0, 0));
+		}
 
         return listaMensagens;
     }
 
+    private void criaMensagensErro(ColecaoExcecoes excecoes) {
+        for (Exception ex : excecoes){
+            if (ex instanceof MissingTokenException){
+            	MissingTokenException mte = (MissingTokenException) ex;
+            	String encontrado = mte.token.getText();
+            	String esperado = parser.getTokenNames()[mte.expecting];
+            	listaMensagens.adicionar(new ErroFalhaEmReconhecerCaracter(arquivo,mte.line,mte.charPositionInLine,esperado,encontrado));
+            } else if (ex instanceof MismatchedTokenException){
+            	MismatchedTokenException mte = (MismatchedTokenException) ex;
+            	listaMensagens.adicionar(new ErroCaracteredNaoReconhecidoException(arquivo,mte.line,mte.charPositionInLine, mte.token.getText()));
+            	
+            } else if (ex instanceof RecognitionException){
+            	RecognitionException re = (RecognitionException) ex;
+            
+            	listaMensagens.adicionar(new GenericError("erro ao reconhecer o valor " + re.token.getText(), arquivo, re.line, re.charPositionInLine));
+            } else {
+            	listaMensagens.adicionar(new GenericError("Não foi possível traduzir o arquivo em um programa de computador.", arquivo, 0, 0));	
+            }
+        }
+    }
+
     private class GenericError extends Erro{
 
-        public GenericError(String msg, String localizedMsg, File arquivo, int linha, int coluna) {
+        public GenericError(String msg, File arquivo, int linha, int coluna) {
             super(arquivo, linha, coluna);
-            this.msg = msg;
-            this.localizedMsg = localizedMsg;
+            this.msg = msg;           
         }       
         
         String msg;
@@ -77,7 +94,7 @@ public class AnalizadorSemantico
         
         @Override
         protected String construirMensagem() {
-            return msg + " ---- " + localizedMsg;
+            return msg;
         }
     
     }
