@@ -34,6 +34,8 @@ import javax.swing.border.LineBorder;
 import br.univali.portugol.nucleo.excecoes.ExcecaoArquivoContemErros;
 import br.univali.portugol.nucleo.excecoes.ListaMensagens;
 import br.univali.portugol.nucleo.excecoes.Mensagem;
+import br.univali.portugol.nucleo.iu.Entrada;
+import br.univali.portugol.nucleo.iu.Saida;
 
 /**
  *
@@ -41,7 +43,7 @@ import br.univali.portugol.nucleo.excecoes.Mensagem;
  */
 public class Teste
 {
-    public static void main(String[] args) throws ExcecaoArquivoContemErros
+    public static void main(String[] args) throws ExcecaoArquivoContemErros 
     {
     	try
     	{
@@ -108,16 +110,27 @@ public class Teste
 						ListaMensagens listaMensagens = as.analizar();
 						DefaultListModel model = (DefaultListModel) errorList.getModel();
 						model.clear();
-					       
-						for (Mensagem mensagem : listaMensagens) 
+						
+						if (listaMensagens.getNumeroMensagens() > 0)
+						{						       
+							for (Mensagem mensagem : listaMensagens) 
+							{
+								model.addElement(mensagem.getMensagem() + ". Linha: " + mensagem.getLinha() + ", Coluna: " + mensagem.getColuna());
+							}				
+						}
+						
+						else
 						{
-							model.addElement(mensagem.getMensagem() + ". Linha: " + mensagem.getLinha() + ", Coluna: " + mensagem.getColuna());
-						}				
+							IO io = new IO();
+							Interpretador interpretador = new Interpretador();
+							interpretador.setEntrada(io);
+							interpretador.setSaida(io);
+							interpretador.interpretar(new File("./examples/teste.por"));
+						}
 					}
 					catch (Exception e) 
 					{
 						JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-						System.exit(0);
 					}
 				}
 			});
@@ -125,7 +138,6 @@ public class Teste
     	catch (Exception e) 
 		{
     		JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-    		System.exit(0);
 		}
     }
     
@@ -151,4 +163,27 @@ public class Teste
     	bw.flush();
     	bw.close();
     }
+    
+    private static class IO implements Entrada, Saida
+    {
+
+		@Override
+		public void limpar() 
+		{
+			for (int i = 0; i < 20; i++)
+				System.out.println();
+		}
+
+		@Override
+		public void imprimir(String valor) 
+		{
+			System.out.print(valor);
+		}
+
+		@Override
+		public String ler() 
+		{
+			return JOptionPane.showInputDialog(null, "Digite um valor:");
+		}    	
+    }    
 }

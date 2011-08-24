@@ -8,6 +8,7 @@ import br.univali.portugol.nucleo.excecoes.*;
 import br.univali.portugol.nucleo.excecoes.sintatico.ErroCaracteredNaoReconhecidoException;
 import br.univali.portugol.nucleo.excecoes.sintatico.ErroFalhaEmReconhecerCaracter;
 import br.univali.portugol.nucleo.simbolos.*;
+
 import java.io.IOException;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -41,12 +42,7 @@ public class AnalizadorSemantico
             ArvoreSintaticaAbstrata arvoreSintaticaAbstrata = parser.gerarArvore();
             
             tabelaSimbolosGlobal = new TabelaSimbolos();
-
             analizarListaDeclaracoesGlobais(arvoreSintaticaAbstrata.getListaDeclaracoesGlobais());
-        }
-        catch (ExcecaoFuncaoPrincipalNaoDeclarada ex) 
-        {
-            throw new ExcecaoArquivoContemErros();
         }              
         catch(IOException ex)
         {
@@ -99,22 +95,21 @@ public class AnalizadorSemantico
     
     }
     
-    private void analizarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais) throws ExcecaoFuncaoPrincipalNaoDeclarada
+    private void analizarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
     {
         if (listaDeclaracoesGlobais != null)
         {
-            if (listaDeclaracoesGlobais.size() == 1){
-                if (listaDeclaracoesGlobais.get(0) == null)
-                    throw new ExcecaoFuncaoPrincipalNaoDeclarada(Interpretador.nomeFuncaoPrincipal);
-            }
-            
             for (NoDeclaracao declaracao: listaDeclaracoesGlobais)
                 analizarDeclaracaoGlobal(declaracao, tabelaSimbolosGlobal);
 
             for (Simbolo simbolo: tabelaSimbolosGlobal)
             {
                 if (simbolo instanceof Funcao)
-                    analizarBlocosFuncao((Funcao) simbolo);
+                {
+                	tabelaSimbolosGlobal.empilharEscopo();
+                    analizarBlocosFuncao((Funcao) simbolo, tabelaSimbolosGlobal);
+                    tabelaSimbolosGlobal.desempilharEscopo();
+                }
             }
         }
     }
@@ -181,7 +176,7 @@ public class AnalizadorSemantico
             funcao.setRedeclarado(true);
         }
 
-        tabelaSimbolos.adicionar(funcao);        
+        tabelaSimbolos.adicionar(funcao);
     }
 
     private void analizarListaBlocos(List<NoBloco> listaBlocos, TabelaSimbolos tabelaSimbolos)
@@ -196,9 +191,8 @@ public class AnalizadorSemantico
         }
     }
 
-    private void analizarBlocosFuncao(Funcao funcao)
+    private void analizarBlocosFuncao(Funcao funcao, TabelaSimbolos tabelaSimbolosFuncao)
     {
-        TabelaSimbolos tabelaSimbolosFuncao = new TabelaSimbolos();
         List<NoParametro> parametros = funcao.getParametros();
 
         for (NoParametro parametro : parametros)
@@ -259,7 +253,6 @@ public class AnalizadorSemantico
 
         if (bloco instanceof NoExpressao)
             analizarExpressao((NoExpressao) bloco, tabelaSimbolos);
-
     }
 
     private void analizarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis
@@ -280,10 +273,41 @@ public class AnalizadorSemantico
         if (expressao instanceof NoIncremento)
             analizarIncremento((NoIncremento) expressao);
         
-        if (expressao instanceof NoReferenciaVariavel)
-            if (!tabelaSimbolos.contem(((NoReferenciaVariavel)expressao).getNome()))
-                listaMensagens.adicionar(new ErroSimboloNaoDeclarado(arquivo, (NoReferencia)expressao));
-
+        else
+        	
+        if (expressao instanceof NoReferencia)
+        	analizarReferencia((NoReferencia) expressao, tabelaSimbolos);
+    }
+    
+    private void analizarReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos)
+    {    	
+    	String nome = referencia.getNome();
+    	
+    	if (referencia instanceof NoChamadaFuncao)
+        {	
+    		if (!nome.equals("escreva") && !nome.equals("limpar") && !nome.equals("leia"))
+    		{
+	    		if (tabelaSimbolos.contem((referencia.getNome())))
+		        {
+	    			Funcao funcao = (Funcao) tabelaSimbolos.obter(referencia.getNome()); 
+	    			analizarChamadaFuncao((NoChamadaFuncao) referencia, funcao, tabelaSimbolos);
+		        }
+	        
+	    		else listaMensagens.adicionar(new ErroSimboloNaoDeclarado(arquivo, (NoReferencia) referencia));
+    		}
+    		else
+    		{
+    			analizarChamadaFuncaoEspecial((NoChamadaFuncao) referencia, tabelaSimbolos);
+    		}
+        }
+    	
+    	else
+    		
+    	if (referencia instanceof NoReferenciaVariavel)
+    	{
+    		if (!tabelaSimbolos.contem(nome))
+    			listaMensagens.adicionar(new ErroSimboloNaoDeclarado(arquivo, referencia));
+    	}
     }
 
 
@@ -849,6 +873,23 @@ public class AnalizadorSemantico
         analizarListaBlocos(para.getBlocos(), tabelaSimbolos);
 
         tabelaSimbolos.desempilharEscopo();
+    }
+    
+    private void analizarChamadaFuncaoEspecial(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
+    {
+    	List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
+    	
+    	for (NoExpressao expressao: parametrosPassados)
+    	{
+    		try
+    		{
+    			analizarExpressao(expressao, tabelaSimbolos);
+    		}
+    		catch (ErroTiposIncompativeis erro) 
+    		{
+    			listaMensagens.adicionar(erro);
+			}
+    	}
     }
 
     private void analizarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao, TabelaSimbolos tabelaSimbolos)
