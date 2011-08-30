@@ -7,6 +7,5 @@ build-before-profiler.xml
 nbproject
 dist
 manifest.mf
-lib/CopyLibs
+lib/CopyLibs/
 lib/nblibraries.properties
-
