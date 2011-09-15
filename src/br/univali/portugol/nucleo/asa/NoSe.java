@@ -2,6 +2,12 @@ package br.univali.portugol.nucleo.asa;
 
 import java.util.List;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoSe extends NoBloco
 {	
 	private NoExpressao condicao;

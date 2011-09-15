@@ -1,9 +1,15 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoLogico extends NoExpressao
 {
 	private boolean valor;
-	private Token token;	
+	private TrechoCodigoFonte trechoCodigoFonte;	
 	
 	public NoLogico(boolean valor)
 	{
@@ -13,16 +19,16 @@ public final class NoLogico extends NoExpressao
 	public boolean getValor()
 	{
 		return valor;
-	}	
-	
-	public void setToken(Token token)
-	{
-		this.token = token;
 	}
 
+    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
+    {
+        this.trechoCodigoFonte = trechoCodigoFonte;
+    }
+	
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		return token;
+		return trechoCodigoFonte;
 	}
 }

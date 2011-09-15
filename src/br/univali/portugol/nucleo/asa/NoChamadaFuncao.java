@@ -2,13 +2,19 @@ package br.univali.portugol.nucleo.asa;
 
 import java.util.List;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoChamadaFuncao extends NoReferencia
 {
 	private List<NoExpressao> parametros;	
 	
-	public NoChamadaFuncao(String apelido, String nome)
+	public NoChamadaFuncao(String nome)
 	{
-		super(apelido, nome);
+		super(nome);
 	}
 	
 	public List<NoExpressao> getParametros()
@@ -22,33 +28,21 @@ public final class NoChamadaFuncao extends NoReferencia
 	}	
 	
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		int linha = 0;
-		int coluna = 0;
 		int tamanhoTexto = 0;
 		
-		if (getTokenApelido() != null)
-		{
-			linha = getTokenApelido().getLinha();
-			coluna = getTokenApelido().getColuna();
-		}
+		int linha = getTrechoCodigoFonteNome().getLinha();
+		int coluna = getTrechoCodigoFonteNome().getColuna();
 		
-		else 
-		{
-			linha = getTokenNome().getLinha();
-			coluna = getTokenNome().getColuna();
-		}
-		
-		tamanhoTexto = (getTokenApelido() != null)? getTokenApelido().getTamanhoTexto()+ 1 : 0;
-		tamanhoTexto = tamanhoTexto + getTokenNome().getTamanhoTexto() + 2;
+		tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto() + 2;
 		
 		if (parametros != null)
 		{
 			for (NoExpressao parametro: parametros)
-				tamanhoTexto = tamanhoTexto + parametro.getToken().getTamanhoTexto();
+				tamanhoTexto = tamanhoTexto + parametro.getReferenciaCodigo().getTamanhoTexto();
 		}
 		
-		return new Token(linha, coluna, tamanhoTexto);
+		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	}
 }

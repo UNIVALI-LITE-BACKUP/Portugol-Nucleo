@@ -1,6 +1,10 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.Operacao;
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public final class NoOperacao extends NoExpressao
 {
@@ -8,7 +12,7 @@ public final class NoOperacao extends NoExpressao
 	private NoExpressao operandoEsquerdo;
 	private NoExpressao operandoDireito;
 	
-	private Token tokenOperador;
+	private TrechoCodigoFonte trechoCodigoFonteOperador;
 	
 	public NoOperacao(Operacao operacao, NoExpressao operandoEsquerdo, NoExpressao operandoDireito)
 	{
@@ -32,25 +36,25 @@ public final class NoOperacao extends NoExpressao
 		return operandoDireito;
 	}
 	
-	public void setTokenOperador(Token token)
+	public void setTrechoCodigoFonteOperador(TrechoCodigoFonte trechoCodigoFonteOperador)
 	{
-		this.tokenOperador = token;
+		this.trechoCodigoFonteOperador = trechoCodigoFonteOperador;
 	}
 	
-	public Token getTokenOperador()
+	public TrechoCodigoFonte getTrechoCodigoFonteOperador()
 	{
-		return tokenOperador;
+		return trechoCodigoFonteOperador;
 	}	
 	
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		Token token = operandoEsquerdo.getToken();
+		TrechoCodigoFonte trechoCodigoFonte = operandoEsquerdo.getReferenciaCodigo();
 		
-		int linha = token.getLinha();
-		int coluna = token.getColuna();
-		int tamanhoTexto = token.getTamanhoTexto() + ((getTokenOperador() != null)? getTokenOperador().getTamanhoTexto():0) + operandoDireito.getToken().getTamanhoTexto();
+		int linha = trechoCodigoFonte.getLinha();
+		int coluna = trechoCodigoFonte.getColuna();
+		int tamanhoTexto = trechoCodigoFonte.getTamanhoTexto() + ((getTrechoCodigoFonteOperador() != null)? getTrechoCodigoFonteOperador().getTamanhoTexto():0) + operandoDireito.getReferenciaCodigo().getTamanhoTexto();
 		
-		return new Token(linha, coluna, tamanhoTexto);
+		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	}
 }

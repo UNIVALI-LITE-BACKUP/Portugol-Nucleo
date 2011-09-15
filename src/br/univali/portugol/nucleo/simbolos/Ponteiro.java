@@ -1,5 +1,11 @@
 package br.univali.portugol.nucleo.simbolos;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class Ponteiro extends Simbolo
 {	
 	protected Simbolo simbolo;

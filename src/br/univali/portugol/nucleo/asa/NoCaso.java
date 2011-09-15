@@ -2,6 +2,12 @@ package br.univali.portugol.nucleo.asa;
 
 import java.util.List;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoCaso extends NoBloco
 {
 	private List<NoBloco> blocos;

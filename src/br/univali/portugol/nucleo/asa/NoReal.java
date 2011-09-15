@@ -1,9 +1,15 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoReal extends NoExpressao
 {
 	private double valor;
-	private Token token;
+	private TrechoCodigoFonte trechoCodigoFonte;
 	
 	public NoReal(double valor)
 	{
@@ -14,15 +20,15 @@ public final class NoReal extends NoExpressao
 	{
 		return valor;
 	}
-	
-	public void setToken(Token token)
-	{
-		this.token = token;
-	}
+
+    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
+    {
+        this.trechoCodigoFonte = trechoCodigoFonte;
+    }
 
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		return token;
+		return trechoCodigoFonte;
 	}
 }

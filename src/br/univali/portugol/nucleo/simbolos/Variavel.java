@@ -1,6 +1,12 @@
 package br.univali.portugol.nucleo.simbolos;
 
-import br.univali.portugol.nucleo.TipoDado;
+import br.univali.portugol.nucleo.asa.TipoDado;
+
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public final class Variavel extends Simbolo
 {

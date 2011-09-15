@@ -1,6 +1,10 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.TipoDado;
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public final class NoDeclaracaoMatriz extends NoDeclaracao
 {

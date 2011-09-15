@@ -5,6 +5,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public final class TabelaSimbolos implements Iterable<Simbolo>
 {

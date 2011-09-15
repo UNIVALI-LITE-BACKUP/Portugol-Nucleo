@@ -2,9 +2,15 @@ package br.univali.portugol.nucleo.asa;
 
 import java.util.List;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoVetor extends NoExpressao
 {
-	private Token token;
+	private TrechoCodigoFonte token;
 	private List<Object> valores;
 	
 	public NoVetor(List<Object> valores)
@@ -17,13 +23,13 @@ public final class NoVetor extends NoExpressao
 		return valores;
 	}
 		
-	public void setToken(Token token)
+	public void setToken(TrechoCodigoFonte token)
 	{
 		this.token = token;
 	}
 
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
 		return token;
 	}

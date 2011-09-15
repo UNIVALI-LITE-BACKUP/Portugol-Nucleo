@@ -1,20 +1,27 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public abstract class NoExpressao extends NoBloco
 {
-    private Token token = null;
+    private TrechoCodigoFonte referenciaCodigo = null;
 
     public NoExpressao()
     {
 
     }
 
-    public final Token getToken()
+    public final TrechoCodigoFonte getReferenciaCodigo()
     {
-        if (token == null) token = montarToken();
+        if (referenciaCodigo == null) 
+            referenciaCodigo = montarTrechoCodigoFonte();
 
-        return token;
+        return referenciaCodigo;
     }
 	
-    protected abstract Token montarToken();
+    protected abstract TrechoCodigoFonte montarTrechoCodigoFonte();
 }

@@ -1,18 +1,20 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.TipoDado;
-
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public abstract class NoDeclaracao extends NoBloco
 {	
 	private String nome;
 	private boolean constante;
 	private TipoDado tipoDado;	
-	private NoExpressao inicializacao;
+	private NoExpressao inicializacao;	
 	
-	
-	private Token tokenNome;
-	private Token tokenTipoDado;
+	private TrechoCodigoFonte trechoCodigoFonteNome;
+	private TrechoCodigoFonte trechoCodigoFonteTipoDado;
 	
 	
 	public NoDeclaracao(String nome, TipoDado tipoDado, boolean constante)
@@ -47,23 +49,23 @@ public abstract class NoDeclaracao extends NoBloco
 		this.inicializacao = inicializacao;
 	}
 	
-	public Token getTokenNome()
+	public TrechoCodigoFonte getTrechoCodigoFonteNome()
 	{
-		return tokenNome;
+		return trechoCodigoFonteNome;
 	}
 	
-	public void setTokenNome(Token token)
+	public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
 	{
-		this.tokenNome = token;
+		this.trechoCodigoFonteNome = trechoCodigoFonteNome;
 	}
 	
-	public void setTokenTipoDado(Token token)
+	public void setTrechoCodigoFonteTipoDado(TrechoCodigoFonte trechoCodigoFonteTipoDado)
 	{
-		this.tokenTipoDado = token;
+		this.trechoCodigoFonteTipoDado = trechoCodigoFonteTipoDado;
 	}
 	
-	public Token getTokenTipoDado()
+	public TrechoCodigoFonte getTrechoCodigoFonteTipoDado()
 	{
-		return tokenTipoDado;
+		return trechoCodigoFonteTipoDado;
 	}
 }

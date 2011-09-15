@@ -2,6 +2,12 @@ package br.univali.portugol.nucleo.asa;
 
 import java.util.List;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoMatriz extends NoExpressao
 {
 	private List<List<Object>> valores;
@@ -17,7 +23,7 @@ public final class NoMatriz extends NoExpressao
 	}
 	
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
 		return null;
 	}

@@ -1,9 +1,15 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoMenosUnario extends NoExpressao
 {
 	private NoExpressao expressao;
-	private Token tokenMenos;
+	private TrechoCodigoFonte tokenMenos;
 	
 	public NoMenosUnario(NoExpressao expressao)
 	{
@@ -15,19 +21,19 @@ public final class NoMenosUnario extends NoExpressao
 		return expressao;
 	}
 	
-	public Token getTokenMenos()
+	public TrechoCodigoFonte getTokenMenos()
 	{
 		return tokenMenos;
 	}
 	
-	public void setTokenMenos(Token tokenMenos)
+	public void setTokenMenos(TrechoCodigoFonte tokenMenos)
 	{
 		this.tokenMenos = tokenMenos;
 	}
 
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		return expressao.getToken();
+		return expressao.getReferenciaCodigo();
 	}
 }

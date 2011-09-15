@@ -1,5 +1,11 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoIncremento extends NoExpressao
 {
 	private NoExpressao expressao;
@@ -15,15 +21,15 @@ public final class NoIncremento extends NoExpressao
 	}
 
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		Token token = expressao.getToken();
+		TrechoCodigoFonte token = expressao.getReferenciaCodigo();
 		
 		int linha = token.getLinha();
 		int coluna = token.getColuna();
 		int tamanhoTexto = token.getTamanhoTexto() + 2;
 		
-		return new Token(linha, coluna, tamanhoTexto);
+		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	}	
 
 }

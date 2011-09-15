@@ -1,14 +1,19 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.asa.Quantificador;
 import java.util.List;
-import br.univali.portugol.nucleo.Quantificador;
-import br.univali.portugol.nucleo.TipoDado;
 import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoParametro;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class Funcao extends Simbolo
-{
-	
+{	
 	private List<NoBloco> blocos;
 	private Quantificador quantificador;
 	private List<NoParametro> parametros;

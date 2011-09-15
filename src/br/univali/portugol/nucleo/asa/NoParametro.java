@@ -1,7 +1,10 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.Quantificador;
-import br.univali.portugol.nucleo.TipoDado;
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public class NoParametro
 {	
@@ -13,8 +16,8 @@ public class NoParametro
     private ModoAcesso modoAcesso;
     private Quantificador quantificador;
 
-    private Token tokenNome;
-    private Token tokenTipoDado;
+    private TrechoCodigoFonte trechoCodigoFonteNome;
+    private TrechoCodigoFonte trechoCodigoFonteTipoDado;
 
     public NoParametro(String nome, TipoDado tipoDado, Quantificador quantificador, ModoAcesso modoAcesso)
     {
@@ -49,28 +52,28 @@ public class NoParametro
         return modoAcesso;
     }
 
-    public Token getTokenNome()
-    {
-        return tokenNome;
-    }
-
-    public Token getTokenTipoDado()
-    {
-        return tokenTipoDado;
-    }
-
     public void setIndice(int indice)
     {
         this.indice = indice;
     }
 
-    public void setTokenNome(Token token)
+    public TrechoCodigoFonte getTrechoCodigoFonteNome()
     {
-        this.tokenNome = token;
+        return trechoCodigoFonteNome;
     }
 
-    public void setTokenTipoDado(Token token)
+    public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
     {
-        this.tokenTipoDado = token;
+        this.trechoCodigoFonteNome = trechoCodigoFonteNome;
+    }
+
+    public TrechoCodigoFonte getTrechoCodigoFonteTipoDado()
+    {
+        return trechoCodigoFonteTipoDado;
+    }
+
+    public void setTrechoCodigoFonteTipoDado(TrechoCodigoFonte trechoCodigoFonteTipoDado)
+    {
+        this.trechoCodigoFonteTipoDado = trechoCodigoFonteTipoDado;
     }
 }

@@ -1,8 +1,14 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.TipoDado;
 import java.util.List;
 
-import br.univali.portugol.nucleo.TipoDado;
+
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public final class Matriz extends Simbolo
 {

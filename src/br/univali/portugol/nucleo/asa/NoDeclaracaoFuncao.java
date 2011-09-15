@@ -1,8 +1,12 @@
 package br.univali.portugol.nucleo.asa;
 
 import java.util.List;
-import br.univali.portugol.nucleo.Quantificador;
-import br.univali.portugol.nucleo.TipoDado;
+
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public final class NoDeclaracaoFuncao extends NoDeclaracao
 {	

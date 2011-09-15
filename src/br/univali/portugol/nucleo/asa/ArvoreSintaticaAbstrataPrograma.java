@@ -1,17 +1,15 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class ArvoreSintaticaAbstrataPrograma extends ArvoreSintaticaAbstrata
 {
-	private String nomeTokenPrograma;
-	
-	public ArvoreSintaticaAbstrataPrograma(String nomeTokenPrograma)
+	public ArvoreSintaticaAbstrataPrograma()
 	{
-		super();
-		this.nomeTokenPrograma = nomeTokenPrograma;
-	}
-	
-	public String getNomeTokenPrograma()
-	{
-		return nomeTokenPrograma;
+
 	}
 }

@@ -1,35 +1,28 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoReferenciaVariavel extends NoReferencia
 {
-	public NoReferenciaVariavel(String apelido, String nome)
+	public NoReferenciaVariavel(String nome)
 	{
-		super(apelido, nome);
-	}
-	
+		super(nome);
+	}	
 	
 	@Override
-	protected Token montarToken()
-	{
-		int linha = 0;
-		int coluna = 0;
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
+	{		
 		int tamanhoTexto = 0;
+
+        int linha = getTrechoCodigoFonteNome().getLinha();
+		int coluna = getTrechoCodigoFonteNome().getColuna();		
 		
-		if (getTokenApelido() != null)
-		{
-			linha = getTokenApelido().getLinha();
-			coluna = getTokenApelido().getColuna();			
-		}
+		tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto();
 		
-		else			
-		{
-			linha = getTokenNome().getLinha();
-			coluna = getTokenNome().getColuna();
-		}
-		
-		tamanhoTexto = (getTokenApelido() != null)? getTokenApelido().getTamanhoTexto() + 1 : 0;
-		tamanhoTexto = tamanhoTexto + getTokenNome().getTamanhoTexto();
-		
-		return new Token(linha, coluna, tamanhoTexto);
+		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	}
 }

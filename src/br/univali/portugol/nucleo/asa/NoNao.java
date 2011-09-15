@@ -1,5 +1,11 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoNao extends NoExpressao
 {
 	private NoExpressao expressao;
@@ -15,7 +21,7 @@ public final class NoNao extends NoExpressao
 	}
 	
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
 		return null;
 	}

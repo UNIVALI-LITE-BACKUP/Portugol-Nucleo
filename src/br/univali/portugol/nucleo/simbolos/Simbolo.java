@@ -1,15 +1,21 @@
 package br.univali.portugol.nucleo.simbolos;
 
-import br.univali.portugol.nucleo.TipoDado;
-import br.univali.portugol.nucleo.asa.Token;
+import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
+
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
 
 public abstract class Simbolo
 {
 	private String nome;
 	private TipoDado tipoDado;
 
-	private Token tokenNome;
-	private Token tokenTipoDado;
+	private TrechoCodigoFonte trechoCodigoFonteNome;
+	private TrechoCodigoFonte trechoCodigoFonteTipoDado;
 	
 	private boolean constante = false;
 	private boolean utilizado = false;
@@ -52,33 +58,33 @@ public abstract class Simbolo
 	{
 		return constante;
 	}
+
+    public TrechoCodigoFonte getTrechoCodigoFonteNome()
+    {
+        return trechoCodigoFonteNome;
+    }
+
+    public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
+    {
+        this.trechoCodigoFonteNome = trechoCodigoFonteNome;
+    }
+
+    public TrechoCodigoFonte getTrechoCodigoFonteTipoDado()
+    {
+        return trechoCodigoFonteTipoDado;
+    }
+
+    public void setTrechoCodigoFonteTipoDado(TrechoCodigoFonte trechoCodigoFonteTipoDado)
+    {
+        this.trechoCodigoFonteTipoDado = trechoCodigoFonteTipoDado;
+    }
 	
-	public final Token getTokenNome()
-	{
-		return tokenNome;
-	}
-	
-	public final Token getTokenTipoDado()
-	{
-		return tokenTipoDado;
-	}
-	
-	private final void setNome(String nome)
+    private void setNome(String nome)
 	{
 		this.nome = nome;
 	}
 	
-	public final void setTokenNome(Token token)
-	{
-		this.tokenNome = token;
-	}
-	
-	public final void setTokenTipoDado(Token tokenTipoDado)
-	{
-		this.tokenTipoDado = tokenTipoDado;
-	}
-	
-	private final void setTipoDado(TipoDado tipoDado)
+	private void setTipoDado(TipoDado tipoDado)
 	{
 		this.tipoDado = tipoDado;
 	}

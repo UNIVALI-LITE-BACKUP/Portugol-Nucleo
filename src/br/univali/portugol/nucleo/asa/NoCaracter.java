@@ -1,9 +1,15 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoCaracter extends NoExpressao
 {
 	private char valor;
-	private Token token;
+	private TrechoCodigoFonte trechoCodigoFonte;
 	
 	public NoCaracter(char valor)
 	{
@@ -19,15 +25,16 @@ public final class NoCaracter extends NoExpressao
 	{
 		this.valor = valor;
 	}
+
+    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
+    {
+        this.trechoCodigoFonte = trechoCodigoFonte;
+    }
 	
-	public void setToken(Token token)
-	{
-		this.token = token;
-	}
 
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		return token;
+		return trechoCodigoFonte;
 	}
 }

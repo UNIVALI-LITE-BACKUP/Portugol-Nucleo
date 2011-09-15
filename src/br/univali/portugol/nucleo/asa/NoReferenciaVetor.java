@@ -1,12 +1,18 @@
 package br.univali.portugol.nucleo.asa;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public final class NoReferenciaVetor extends NoReferencia
 {	
 	private NoExpressao noIndice;
 		
-	public NoReferenciaVetor(String apelido, String nome, NoExpressao indice)
+	public NoReferenciaVetor(String nome, NoExpressao indice)
 	{
-		super(apelido, nome);
+		super(nome);
 		this.noIndice = indice;
 	}	
 	
@@ -16,27 +22,15 @@ public final class NoReferenciaVetor extends NoReferencia
 	}
 	
 	@Override
-	protected Token montarToken()
+	protected TrechoCodigoFonte montarTrechoCodigoFonte()
 	{
-		int line = 0;
-		int column = 0;
-		int textLength = 0;
+		int tamanhoTexto = 0;
 		
-		if (getTokenApelido() != null)
-		{
-			line = getTokenApelido().getLinha();
-			column = getTokenApelido().getColuna();
-		}
+        int linha = getTrechoCodigoFonteNome().getLinha();
+		int coluna = getTrechoCodigoFonteNome().getColuna();
 		
-		else
-		{
-			line = getTokenNome().getLinha();
-			column = getTokenNome().getColuna();
-		}		
+		tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto() + 2 + noIndice.getReferenciaCodigo().getTamanhoTexto();		
 		
-		textLength = (getTokenApelido() != null)? getTokenApelido().getTamanhoTexto() + 1 : 0;
-		textLength = textLength + getTokenNome().getTamanhoTexto() + 2 + noIndice.getToken().getTamanhoTexto();		
-		
-		return new Token(line, column, textLength);
+		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	}
 }

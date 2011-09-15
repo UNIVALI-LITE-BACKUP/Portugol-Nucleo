@@ -2,10 +2,15 @@ package br.univali.portugol.nucleo.asa;
 
 import java.util.List;
 
+/**
+ * 
+ * @author Luiz Fernando Noschang
+ * 
+ */
+
 public abstract class ArvoreSintaticaAbstrata
 {	
 	private List<NoDeclaracao> listaDeclaracoesGlobais;
-	private List<NoInclusaoBiblioteca> listaInclusaoBibliotecas;
 		
 	public ArvoreSintaticaAbstrata()
 	{		
@@ -16,18 +21,8 @@ public abstract class ArvoreSintaticaAbstrata
 		return listaDeclaracoesGlobais;
 	}
 	
-	public List<NoInclusaoBiblioteca> getListaInclusaoBibliotecas()
-	{
-		return listaInclusaoBibliotecas;
-	}
-
 	public void setListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
 	{
 		this.listaDeclaracoesGlobais = listaDeclaracoesGlobais;
-	}
-	
-	public void setListaInclusaoBibliotecas(List<NoInclusaoBiblioteca> listaInclusaoBibliotecas)
-	{
-		this.listaInclusaoBibliotecas = listaInclusaoBibliotecas;
 	}
 }
