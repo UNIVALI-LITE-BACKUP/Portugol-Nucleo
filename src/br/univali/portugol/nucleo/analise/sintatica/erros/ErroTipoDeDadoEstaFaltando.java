@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
  * 
  */
 
-public final class ErroTipoDeDadoNaoInformado extends ErroSintatico
+public final class ErroTipoDeDadoEstaFaltando extends ErroSintatico
 {
     private String codigo;    
     
-    public ErroTipoDeDadoNaoInformado(int linha, int coluna, String codigo)
+    public ErroTipoDeDadoEstaFaltando(int linha, int coluna, String codigo)
     {
         super(linha, coluna);
         this.codigo = codigo;
@@ -23,7 +23,7 @@ public final class ErroTipoDeDadoNaoInformado extends ErroSintatico
     @Override
     protected String construirMensagem()
     {
-       return String.format("O tipo de dado da variável \"%s\" não foi informado", obterNomeDaVariavel());
+       return String.format("O tipo de dado da variável \"%s\" está faltando.", obterNomeDaVariavel());
     }    
     
     private String obterNomeDaVariavel()

@@ -1,6 +1,7 @@
 
 package br.univali.portugol.nucleo.analise.sintatica;
 
+import java.util.Stack;
 import org.antlr.runtime.RecognitionException;
 
 /**
@@ -11,5 +12,5 @@ import org.antlr.runtime.RecognitionException;
 
 public interface TradutorErrosSintaticos
 {
-    public void traduzirErroSintatico(String contexto, RecognitionException erro, String[] tokens);
+    public void traduzirErroSintatico(Stack<String> pilhaContexto, RecognitionException erro, String[] tokens);
 }

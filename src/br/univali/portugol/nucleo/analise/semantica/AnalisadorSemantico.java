@@ -33,8 +33,11 @@ public final class AnalisadorSemantico
 
     public void analisar(ArvoreSintaticaAbstrata asa)
     {
-        tabelaSimbolosGlobal = new TabelaSimbolos();
-        analizarListaDeclaracoesGlobais(asa.getListaDeclaracoesGlobais());
+        if (asa != null)
+        {
+            tabelaSimbolosGlobal = new TabelaSimbolos();
+            analizarListaDeclaracoesGlobais(asa.getListaDeclaracoesGlobais());
+        }
     }
 
     private void analizarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)

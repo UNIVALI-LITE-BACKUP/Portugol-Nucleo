@@ -10,6 +10,7 @@ grammar Portugol;
 
 	package br.univali.portugol.nucleo.analise.sintatica;
 
+	import java.util.Stack;
 	import org.antlr.runtime.Token;
 	import br.univali.portugol.nucleo.asa.*;
 }
@@ -17,7 +18,7 @@ grammar Portugol;
 @parser::members
 {
 	private int quantidadeErros = 0;
-	private String contexto = null;
+	private Stack<String> pilhaContexto = new Stack<String>();
 	private List<TradutorErrosSintaticos> tradutores  = new ArrayList<TradutorErrosSintaticos>();
 	
 	public void adicionarTradutorErros(TradutorErrosSintaticos tradutorErrosSintaticos)
@@ -25,6 +26,7 @@ grammar Portugol;
 		if (!tradutores.contains(tradutorErrosSintaticos))
 			tradutores.add(tradutorErrosSintaticos);
 	}
+	
 	
 	public void removerTradutorErros(TradutorErrosSintaticos tradutorErrosSintaticos)
 	{
@@ -37,7 +39,12 @@ grammar Portugol;
 		quantidadeErros = quantidadeErros + 1;
 		
 		for (TradutorErrosSintaticos tradutor: tradutores)
-			tradutor.traduzirErroSintatico(contexto, e, tokenNames);
+		{
+			Stack<String> copiaPilha = new Stack<String>();
+			copiaPilha.addAll(pilhaContexto);
+			
+			tradutor.traduzirErroSintatico(copiaPilha, e, tokenNames);
+		}
 	}
 	
 	private class InformacaoTipoDado
@@ -166,9 +173,10 @@ parse returns[ArvoreSintaticaAbstrata asa]:
 	}
 ;
 
+
 programa returns[ArvoreSintaticaAbstrata asa] @init
 {
-	contexto = "programa";
+	pilhaContexto.push("programa");
 }:
 
 	PR_PROGRAMA
@@ -181,41 +189,61 @@ programa returns[ArvoreSintaticaAbstrata asa] @init
 		(declaracoesGlobais[asa] | declaracaoFuncao[asa])*
 	'}'
 ;
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 declaracoesGlobais [ArvoreSintaticaAbstrata asa] @init
 {
-	contexto = "declaracoesGlobais";
+	pilhaContexto.push("declaracoesGlobais");
 }:
 
 	vListaDeclaracoes = listaDeclaracoes
 	{
-		List<NoDeclaracao> listaDeclaracoesGlobais = asa.getListaDeclaracoesGlobais();
-		
-		for (NoDeclaracao declaracao: vListaDeclaracoes)
-			listaDeclaracoesGlobais.add(declaracao);
+		if (asa != null)
+		{
+			List<NoDeclaracao> listaDeclaracoesGlobais = asa.getListaDeclaracoesGlobais();
+			
+			if (listaDeclaracoesGlobais != null)
+			{
+				for (NoDeclaracao declaracao: vListaDeclaracoes)
+					listaDeclaracoesGlobais.add(declaracao);
+			}
+		}
 
 	}
 ;
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 declaracoesLocais [List<NoBloco> listaBlocos]@init
 {
-	contexto = "declaracoesLocais";
+	pilhaContexto.push("declaracoesLocais");
 }:
 
 	vListaDeclaracoes = listaDeclaracoes
 	{
-		for (NoDeclaracao declaracao: vListaDeclaracoes)
-			listaBlocos.add(declaracao);
+		if ((listaBlocos != null) &&  (vListaDeclaracoes != null))
+		{
+			for (NoDeclaracao declaracao: vListaDeclaracoes)
+				listaBlocos.add(declaracao);
+		}
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 listaDeclaracoes returns[List<NoDeclaracao> listaDeclaracoes] @init
 {
-	contexto = "listaDeclaracoes";
+	pilhaContexto.push("listaDeclaracoes");
 	listaDeclaracoes = new ArrayList<NoDeclaracao>();
 }:
 (
@@ -223,44 +251,67 @@ listaDeclaracoes returns[List<NoDeclaracao> listaDeclaracoes] @init
 	
 	(tokenConst = PR_CONST)? informacaoTipoDado = declaracaoTipoDado
 	
-	(    vDeclaracao = declaracao[tokenConst, informacaoTipoDado] { listaDeclaracoes.add(vDeclaracao); })
-	(',' vDeclaracao = declaracao[tokenConst, informacaoTipoDado] { listaDeclaracoes.add(vDeclaracao); })*
+	( vDeclaracao = declaracao[tokenConst, informacaoTipoDado] 
+	     { 
+	     	if (vDeclaracao != null)	     	
+		     	listaDeclaracoes.add(vDeclaracao); 
+		     	
+		vDeclaracao = null;
+	     })
+	     
+	(',' vDeclaracao = declaracao[tokenConst, informacaoTipoDado] 
+	   { 
+	   	if (vDeclaracao != null)
+		   	listaDeclaracoes.add(vDeclaracao); 	   
+		   	
+		 vDeclaracao = null;
+	   })*
 )
 ;
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 declaracao [Token tokenConst, InformacaoTipoDado informacaoTipoDado] returns[NoDeclaracao declaracao] @init
 {
-	contexto = "declaracao";
+	pilhaContexto.push("declaracao");
 }:	
 
 	(ID (tk1 = '[' (ind1 = expressao)? ']' (tk2 = '[' (ind2 = expressao)? ']')?)? ('=' inicializacao = expressao)?) 
 	{
 		boolean constante = (tokenConst != null);
+		TipoDado tipoDado = (informacaoTipoDado != null)? informacaoTipoDado.getTipoDado() : null;
+		String nome = ($ID != null)? $ID.text : null;
 		
 		if ((tk1 == null) && (tk2 == null))
-			declaracao = new NoDeclaracaoVariavel($ID.text, informacaoTipoDado.getTipoDado(), constante);
+			declaracao = new NoDeclaracaoVariavel(nome, tipoDado, constante);
 		
 		else
 		
 		if ((tk1 != null) && (tk2 == null))
-			declaracao = new NoDeclaracaoVetor($ID.text, informacaoTipoDado.getTipoDado(), ind1, constante);
+			declaracao = new NoDeclaracaoVetor(nome, tipoDado, ind1, constante);
 		
 		else
 		
 		if ((tk1 != null) && (tk2 != null))
-			declaracao = new NoDeclaracaoMatriz($ID.text, informacaoTipoDado.getTipoDado(), ind1, ind2, constante);
+			declaracao = new NoDeclaracaoMatriz(nome, tipoDado, ind1, ind2, constante);
 	
 		declaracao.setInicializacao(inicializacao);
 		declaracao.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($ID));
-		declaracao.setTrechoCodigoFonteTipoDado(informacaoTipoDado.getTrechoCodigoFonte());
+		declaracao.setTrechoCodigoFonteTipoDado((informacaoTipoDado != null)? informacaoTipoDado.getTrechoCodigoFonte(): null);
 	}
 ;
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 declaracaoTipoDado returns[InformacaoTipoDado informacaoTipoDado] @init
 {
-	contexto = "declaracaoTipoDado";
+	pilhaContexto.push("declaracaoTipoDado");
 }:
 
 	(tokenTipoDado = PR_INTEIRO | tokenTipoDado = PR_REAL | tokenTipoDado = PR_CARACTER | tokenTipoDado = PR_CADEIA | tokenTipoDado = PR_LOGICO)
@@ -270,12 +321,15 @@ declaracaoTipoDado returns[InformacaoTipoDado informacaoTipoDado] @init
 		informacaoTipoDado.setTrechoCodigoFonte(criarTrechoCodigoFonte(tokenTipoDado));
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 declaracaoTipoDadoVazio returns[InformacaoTipoDado informacaoTipoDado] @init
 {
-	contexto = "declaracaoTipoDadoVazio";
+	pilhaContexto.push("declaracaoTipoDadoVazio");
 }:
 
 	PR_VAZIO
@@ -285,13 +339,16 @@ declaracaoTipoDadoVazio returns[InformacaoTipoDado informacaoTipoDado] @init
 		informacaoTipoDado.setTrechoCodigoFonte(criarTrechoCodigoFonte($PR_VAZIO));
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 quantificador returns[Quantificador quantificador] @init
 {
-	contexto = "quantificador";
+	pilhaContexto.push("quantificador");
 }:
 
 	(tk1 = '[' ']' (tk2 = '[' ']')? )?
@@ -303,12 +360,15 @@ quantificador returns[Quantificador quantificador] @init
 		if ((tk1 != null) && (tk2 != null)) quantificador = Quantificador.MATRIZ;
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 tipoRetornoFuncao returns[InformacaoTipoDado informacaoTipoDado] @init
 {
-	contexto = "tipoRetornoFuncao";
+	pilhaContexto.push("tipoRetornoFuncao");
 }:
 
 	(informacao = declaracaoTipoDado | informacao = declaracaoTipoDadoVazio)?
@@ -322,12 +382,15 @@ tipoRetornoFuncao returns[InformacaoTipoDado informacaoTipoDado] @init
 		}
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 declaracaoFuncao [ArvoreSintaticaAbstrata asa] @init
 {
-	contexto = "declaracaoFuncao";
+	pilhaContexto.push("declaracaoFuncao");
 }:
 
 	PR_FUNCAO
@@ -352,12 +415,15 @@ declaracaoFuncao [ArvoreSintaticaAbstrata asa] @init
         	asa.getListaDeclaracoesGlobais().add(declaracaoFuncao);
          }
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 listaParametrosFuncao returns[List<NoParametro> listaParametros] @init
 {
-	contexto = "listaParametrosFuncao";
+	pilhaContexto.push("listaParametrosFuncao");
 	listaParametros = new ArrayList<NoParametro>();
 }:
 	(
@@ -365,13 +431,15 @@ listaParametrosFuncao returns[List<NoParametro> listaParametros] @init
 		(',' vDeclaracaoParametro = declaracaoParametro { listaParametros.add(vDeclaracaoParametro); })*
 	)?
 ;
-
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 declaracaoParametro returns[NoParametro parametro] @init
 {
-	contexto = "declaracaoParametro";
+	pilhaContexto.push("declaracaoParametro");
 }:
 
 	informacaoTipoDado = declaracaoTipoDado (tkr = '&')? ID vQuantificador = quantificador
@@ -395,25 +463,31 @@ declaracaoParametro returns[NoParametro parametro] @init
 		parametro.setTrechoCodigoFonteTipoDado(trechoCodigoFonteTipoDado);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 blocos returns[List<NoBloco> blocos] @init
 {
-	contexto = "blocos";
+	pilhaContexto.push("blocos");
 	blocos = new ArrayList<NoBloco>();
 }:
 (
 	vBloco = bloco { blocos.add(vBloco); } | declaracoesLocais[blocos]
 )*
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 bloco returns[NoBloco bloco] @init
 {
-	contexto = "bloco";
+	pilhaContexto.push("bloco");
 }:	
 (
 	 vExpressao = expressao 		{ bloco = vExpressao; 	} | 
@@ -426,12 +500,15 @@ bloco returns[NoBloco bloco] @init
 	 vEscolha = escolha  			{ bloco = vEscolha;	 	}
  )
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 para returns[NoPara para] @init
 {
-	contexto = "para";
+	pilhaContexto.push("para");
 }:
 
 	PR_PARA '(' (inicializacao = inicializacaoPara)? ';' (condicao = expressao)? ';' (incremento = expressao)? ')' vBlocos = listaBlocos
@@ -443,13 +520,15 @@ para returns[NoPara para] @init
 		para.setBlocos(vBlocos);
 	}
 ;
-
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 inicializacaoPara returns[NoBloco bloco] @init
 {
-	contexto = "inicializacaoPara";
+	pilhaContexto.push("inicializacaoPara");
 }:
 
 	(vExpressao = expressao | vListaDeclaracoes = listaDeclaracoes)
@@ -459,12 +538,15 @@ inicializacaoPara returns[NoBloco bloco] @init
 		if (vExpressao == null) bloco = vListaDeclaracoes.get(0);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 listaBlocos returns[List<NoBloco> listaBlocos] @init
 {
-	contexto = "listaBlocos";
+	pilhaContexto.push("listaBlocos");
 }:
 (
 	('{')=> '{' vListaBlocos = blocos { listaBlocos = vListaBlocos; } '}'
@@ -478,12 +560,15 @@ listaBlocos returns[List<NoBloco> listaBlocos] @init
 	}
 )
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 pare returns[NoPare pare] @init
 {
-	contexto = "pare";
+	pilhaContexto.push("pare");
 }:
 
 	PR_PARE
@@ -492,12 +577,15 @@ pare returns[NoPare pare] @init
 	}
 
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 escolha returns[NoEscolha escolha] @init
 {
-	contexto = "escolha";
+	pilhaContexto.push("escolha");
 }:
 
 	PR_ESCOLHA '(' vExpressao = expressao ')'
@@ -510,12 +598,15 @@ escolha returns[NoEscolha escolha] @init
 	 }
 
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 listaCasos returns[List<NoCaso> casos] @init
 {
-	contexto = "listaCasos";
+	pilhaContexto.push("listaCasos");
 	casos = new ArrayList<NoCaso>();
 }:
 (
@@ -529,22 +620,27 @@ listaCasos returns[List<NoCaso> casos] @init
 	}
 )*
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 casoContrario @init
 {
-	contexto = "casoContrario";
+	pilhaContexto.push("casoContrario");
 }: 
 	PR_CASO_CONTRARIO
 ;
-
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 blocosCaso returns[List<NoBloco> listaBlocos] @init
 {
-	contexto = "blocosCaso";
+	pilhaContexto.push("blocosCaso");
 }:
 
 	( ('{')=> ('{' vBlocos = blocos '}') | (vBlocos = blocos))
@@ -552,12 +648,15 @@ blocosCaso returns[List<NoBloco> listaBlocos] @init
 		listaBlocos = vBlocos;
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 enquanto returns[NoEnquanto enquanto] @init
 {
-	contexto = "enquanto";
+	pilhaContexto.push("enquanto");
 }:
 	
 	PR_ENQUANTO '(' vExpressao = expressao ')' vListaBlocos = listaBlocos
@@ -566,12 +665,15 @@ enquanto returns[NoEnquanto enquanto] @init
 		enquanto.setBlocos(vListaBlocos);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 facaEnquanto returns[NoFacaEnquanto facaEnquanto] @init
 {
-	contexto = "facaEnquanto";
+	pilhaContexto.push("facaEnquanto");
 }:
 
 	PR_FACA vListaBlocos = listaBlocos PR_ENQUANTO '(' vExpressao = expressao ')'
@@ -580,13 +682,16 @@ facaEnquanto returns[NoFacaEnquanto facaEnquanto] @init
 		facaEnquanto.setBlocos(vListaBlocos);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 se returns[NoSe se] @init
 {
-	contexto = "se";
+	pilhaContexto.push("se");
 }:
  
 	PR_SE '(' vExpressao = expressao ')' vListaBlocos = listaBlocos (PR_SENAO listaBlocosSenao = listaBlocos)?
@@ -596,12 +701,15 @@ se returns[NoSe se] @init
 		se.setBlocosFalsos(listaBlocosSenao);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 retorne returns[NoRetorne retorne] @init
 {
-	contexto = "retorne";
+	pilhaContexto.push("retorne");
 }:
 	
 	PR_RETORNE vExpressao = expressao
@@ -609,8 +717,10 @@ retorne returns[NoRetorne retorne] @init
 		retorne = new NoRetorne(vExpressao);
 	}
 ;
-	
-
+finally
+{
+	pilhaContexto.pop();
+}	
 
 
 pilha returns[Stack<Object> pilha]:
@@ -619,9 +729,10 @@ pilha returns[Stack<Object> pilha]:
 }	
 ;
 
+
 expressao returns[NoExpressao expressao] @init
 {
-	contexto = "expressao";
+	pilhaContexto.push("expressao");
 }:
 
 	operandoEsquerdo = expressao2 vPilha = pilha { vPilha.push(operandoEsquerdo); }
@@ -653,11 +764,15 @@ expressao returns[NoExpressao expressao] @init
 		expressao = (NoExpressao) vPilha.pop();
 	}
 ;
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 expressao2 returns[NoExpressao expressao] @init
 {
-	contexto = "expressao2";
+	pilhaContexto.push("expressao2");
 }:
 
 	operandoEsquerdo = expressao3
@@ -680,12 +795,15 @@ expressao2 returns[NoExpressao expressao] @init
 		expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 expressao3 returns[NoExpressao expressao] @init
 {
-	contexto = "expressao3";
+	pilhaContexto.push("expressao3");
 }:
 
 	operandoEsquerdo = expressao4
@@ -708,12 +826,15 @@ expressao3 returns[NoExpressao expressao] @init
 		expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 expressao4 returns[NoExpressao expressao] @init
 {
-	contexto = "expressao4";
+	pilhaContexto.push("expressao4");
 }:
 
 	operandoEsquerdo = expressao5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao5)?
@@ -721,12 +842,15 @@ expressao4 returns[NoExpressao expressao] @init
 		expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 expressao5 returns[NoExpressao expressao] @init
 {
-	contexto = "expressao5";
+	pilhaContexto.push("expressao5");
 }:
 
 	operandoEsquerdo = expressao6	
@@ -750,12 +874,15 @@ expressao5 returns[NoExpressao expressao] @init
 		expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 expressao6 returns[NoExpressao expressao] @init
 {
-	contexto = "expressao6";
+	pilhaContexto.push("expressao6");
 }:
 
 	operandoEsquerdo = expressao7
@@ -779,12 +906,15 @@ expressao6 returns[NoExpressao expressao] @init
 		expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 expressao7 returns[NoExpressao expressao] @init
 {
-	contexto = "expressao7";
+	pilhaContexto.push("expressao7");
 }:
 
 	(('-') => (listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)*)  vExpressao = expressao8
@@ -802,12 +932,15 @@ expressao7 returns[NoExpressao expressao] @init
 		expressao = vExpressao;
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 expressao8 returns[NoExpressao expressao] @init
 {
-	contexto = "expressao8";
+	pilhaContexto.push("expressao8");
 }:	
 	
 	('(' vExpressao = expressao ')' | vExpressao = tipoPrimitivo | vExpressao = referencia | vExpressao = matrizVetor) 
@@ -824,13 +957,16 @@ expressao8 returns[NoExpressao expressao] @init
 		else expressao = vExpressao;
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 tipoPrimitivo returns[NoExpressao expressao] @init
 {
-	contexto = "tipoPrimitivo";
+	pilhaContexto.push("tipoPrimitivo");
 }:
 
 	REAL      
@@ -877,12 +1013,15 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 		expressao = caracter;
 	}	
 ; 
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 referencia returns[NoReferencia referencia] @init
 {
-	contexto = "referencia";
+	pilhaContexto.push("referencia");
 }:	
 
 	ID
@@ -896,13 +1035,16 @@ referencia returns[NoReferencia referencia] @init
 		referencia.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($ID));
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 referenciaId [String nome] returns[NoExpressao expressao] @init
 {
-	contexto = "referenciaId";
+	pilhaContexto.push("referenciaId");
 }:	
 
 	{
@@ -910,12 +1052,15 @@ referenciaId [String nome] returns[NoExpressao expressao] @init
 	}
 
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 referenciaVetorMatriz [ String nome] returns[NoExpressao expressao] @init
 {
-	contexto = "referenciaVetorMatriz";
+	pilhaContexto.push("referenciaVetorMatriz");
 }:
 	
 	'[' indice1 = expressao ']' ('[' indice2 = expressao ']')?
@@ -925,12 +1070,15 @@ referenciaVetorMatriz [ String nome] returns[NoExpressao expressao] @init
 		if ((indice1 != null) && (indice2 != null)) expressao = new NoReferenciaMatriz(nome, indice1, indice2);		
 	 }
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 chamadaFuncao [String nome] returns[NoExpressao expressao] @init
 {
-	contexto = "chamadaFuncao";
+	pilhaContexto.push("chamadaFuncao");
 }:
 	
 	'(' (vListaParametros = listaParametros)? ')'
@@ -940,24 +1088,30 @@ chamadaFuncao [String nome] returns[NoExpressao expressao] @init
 		expressao = chamadaFuncao;
 	 }
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 listaParametros returns[List<NoExpressao> listaParametros] @init
 {
-	contexto = "listaParametros";
+	pilhaContexto.push("listaParametros");
 	listaParametros = new ArrayList<NoExpressao>();
 }:
 	(   vExpressao = expressao { listaParametros.add(vExpressao); })
 	(','vExpressao = expressao { listaParametros.add(vExpressao); })*
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 matrizVetor returns[NoExpressao expressao] @init
 {
-	contexto = "matrizVetor";
+	pilhaContexto.push("matrizVetor");
 }:
 	
 	(('{' '{')=> vExpressao = matriz | vExpressao = vetor)
@@ -965,13 +1119,16 @@ matrizVetor returns[NoExpressao expressao] @init
 		expressao = vExpressao;
 	}
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 vetor returns[NoExpressao expressao] @init
 {
-	contexto = "vetor";
+	pilhaContexto.push("vetor");
 }:	
 
 	'{' vListaExpressoes = listaExpressoes '}'
@@ -979,12 +1136,15 @@ vetor returns[NoExpressao expressao] @init
 		expressao = new NoVetor(vListaExpressoes);
 	 }
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 matriz returns[NoExpressao expressao] @init
 {
-	contexto = "matriz";
+	pilhaContexto.push("matriz");
 }:	
 	
 	'{'
@@ -995,27 +1155,37 @@ matriz returns[NoExpressao expressao] @init
 		expressao = new NoMatriz(vListaListaExpressoes);
 	 }
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 
 listaListaExpressoes returns[List<List<Object>> listaListaExpressoes] @init
 {
-	contexto = "listaListaExpressoes";
+	pilhaContexto.push("listaListaExpressoes");
 	listaListaExpressoes = new ArrayList<List<Object>>();
 }:
 	(                   		   	      '{' vListaExpressoes = listaExpressoes '}' { listaListaExpressoes.add(vListaExpressoes); })
 	( { vListaExpressoes = null; } ','  '{' vListaExpressoes = listaExpressoes '}' { listaListaExpressoes.add(vListaExpressoes); })*
 
 ;
-
+finally
+{
+	pilhaContexto.pop();
+}
 
 
 listaExpressoes returns[List<Object> listaExpressoes] @init
 {
-	contexto = "listaExpressoes";
+	pilhaContexto.push("listaExpressoes");
 	listaExpressoes = new ArrayList<Object>();
 }:
 	({ vExpressao = null; }     (vExpressao = expressao)? { listaExpressoes.add(vExpressao); })
 	({ vExpressao = null; } ',' (vExpressao = expressao)? { listaExpressoes.add(vExpressao); })*
 ;
+finally
+{
+	pilhaContexto.pop();
+}
