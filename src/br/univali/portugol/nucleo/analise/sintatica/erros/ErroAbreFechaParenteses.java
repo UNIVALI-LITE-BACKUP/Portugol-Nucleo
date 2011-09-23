@@ -12,13 +12,11 @@ import br.univali.portugol.nucleo.mensagens.ErroSintatico;
  */
 public final class ErroAbreFechaParenteses extends ErroSintatico
 {
-    private String contexto;
     private String tokenParenteses;
             
-    public ErroAbreFechaParenteses(int linha, int coluna, String contexto, String tokenParenteses)
+    public ErroAbreFechaParenteses(int linha, int coluna, String tokenParenteses)
     {
         super(linha, coluna);
-        this.contexto = contexto;
         this.tokenParenteses = tokenParenteses;
     }
     

@@ -253,6 +253,11 @@ public final class AnalisadorSemantico
     {
         if (declaracao instanceof NoDeclaracaoVariavel)
             analizarDeclaracaoVariavel((NoDeclaracaoVariavel) declaracao, tabelaSimbolos);
+        
+        else
+            
+        if (declaracao instanceof NoDeclaracaoVetor)
+            analizarDeclaracaoVetor((NoDeclaracaoVetor) declaracao, tabelaSimbolos);
     }
 
     private TipoDado obterTipoDadoExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ExcecaoImpossivelDeterminarTipoDado
@@ -945,5 +950,48 @@ public final class AnalisadorSemantico
         {
             observadorAnaliseSemantica.tratarErroSemantico(erroSemantico);
         }
-    }    
+    }
+
+    private void analizarDeclaracaoVetor(NoDeclaracaoVetor declaracaoVetor, TabelaSimbolos tabelaSimbolos)
+    {
+        try
+        {
+            String nome = declaracaoVetor.getNome();
+            TipoDado tipoDado = declaracaoVetor.getTipoDado();
+
+            TipoDado tipoDadoTamanho = obterTipoDadoExpressao(declaracaoVetor.getTamanho(), tabelaSimbolos);
+
+            if (!(tipoDadoTamanho == TipoDado.INTEIRO))
+                notificarErroSemantico(new ErroTiposIncompativeis2(0, 0, TipoDado.INTEIRO, tipoDadoTamanho));
+        }
+        catch (ErroTiposIncompativeis e){ notificarErroSemantico(e); }
+        catch (ExcecaoImpossivelDeterminarTipoDado e2){ }
+        
+        //Vetor vetor = new Vetor(nome, tipoDados, );
+        /*
+        Variavel variavel = new Variavel(nome, tipoDados);
+        variavel.setConstante(declaracaoVariavel.constante());
+        variavel.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
+        variavel.setTrechoCodigoFonteTipoDado(declaracaoVariavel.getTrechoCodigoFonteTipoDado());
+
+        if (tabelaSimbolos.contem(nome))
+        {
+            variavel.setRedeclarado(true);
+            notificarErroSemantico(new ErroSimboloRedeclarado(variavel, tabelaSimbolos.obter(nome)));
+        }
+
+        tabelaSimbolos.adicionar(variavel);
+
+        if (declaracaoVariavel.getInicializacao() != null)
+        {
+            NoExpressao inicializacao = declaracaoVariavel.getInicializacao();
+            NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
+            referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
+            NoOperacao operacao = new NoOperacao(Operacao.ATRIBUICAO, referencia, inicializacao);
+
+            try { obterTipoDadoExpressao(operacao, tabelaSimbolos); }
+            catch (ErroSemantico erro) { notificarErroSemantico(erro); }
+            catch (Exception e) {}
+        }*/
+    }
 }

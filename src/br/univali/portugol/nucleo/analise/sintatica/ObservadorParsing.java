@@ -1,4 +1,3 @@
-
 package br.univali.portugol.nucleo.analise.sintatica;
 
 import java.util.Stack;
@@ -10,7 +9,7 @@ import org.antlr.runtime.RecognitionException;
  * 
  */
 
-public interface TradutorErrosSintaticos
+public interface ObservadorParsing
 {
-    public void traduzirErroSintatico(Stack<String> pilhaContexto, RecognitionException erro, String[] tokens);
+    public void tratarErroParsing(RecognitionException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao);
 }

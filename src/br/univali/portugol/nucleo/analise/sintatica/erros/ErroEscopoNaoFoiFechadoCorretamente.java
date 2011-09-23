@@ -33,7 +33,9 @@ public final class ErroEscopoNaoFoiFechadoCorretamente extends ErroSintatico
         if (contexto.equals("declaracaoFuncao"))
             construtorTexto.append(" da função ");
         
-        construtorTexto.append(" não foi fechado corretamente. Insira o caracter '}' para corrigir o problema.");
+        else construtorTexto.append(" do bloco ");
+        
+        construtorTexto.append("não foi fechado corretamente. Insira o caracter '}' para corrigir o problema.");
         
         return construtorTexto.toString();
     }

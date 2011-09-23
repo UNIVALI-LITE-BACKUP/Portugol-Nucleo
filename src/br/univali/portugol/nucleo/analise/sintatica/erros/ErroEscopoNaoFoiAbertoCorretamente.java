@@ -33,7 +33,9 @@ public final class ErroEscopoNaoFoiAbertoCorretamente extends ErroSintatico
         if (contexto.equals("declaracaoFuncao"))
             construtorTexto.append(" da função ");
         
-        construtorTexto.append(" não foi aberto corretamente. Inisira o caracter '{' para corrigir o problema.");
+        else construtorTexto.append(" do bloco ");
+        
+        construtorTexto.append("não foi aberto corretamente. Inisira o caracter '{' para corrigir o problema.");
         
         return construtorTexto.toString();
     }

@@ -12,17 +12,14 @@ import br.univali.portugol.nucleo.mensagens.ErroSintatico;
  */
 public final class ErroExpressaoEsperada extends ErroSintatico
 {
-    private String contexto;
-    
-    public ErroExpressaoEsperada(int linha, int coluna, String contexto)
+    public ErroExpressaoEsperada(int linha, int coluna)
     {
         super(linha, coluna);
-        this.contexto = contexto;
     }
 
     @Override
     protected String construirMensagem()
     {
-        return "Está faltando a expressão de controle do bloco.";
+        return "Esta construção espera uma condição ou uma expressão entre parenteses.";
     }
 }
