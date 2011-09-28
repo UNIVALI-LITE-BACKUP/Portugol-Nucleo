@@ -3,7 +3,6 @@ package br.univali.portugol.nucleo.analise;
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
-import br.univali.portugol.nucleo.asa.TipoDado;
 
 /**
  *
@@ -13,9 +12,16 @@ import br.univali.portugol.nucleo.asa.TipoDado;
 
 public final class AnalisadorAlgoritmo
 {
+    private ArvoreSintaticaAbstrata arvoreSintaticaAbstrata;
+    
     public AnalisadorAlgoritmo()
     {
         
+    }
+
+    public ArvoreSintaticaAbstrata getArvoreSintaticaAbstrata() 
+    {
+        return arvoreSintaticaAbstrata;
     }
     
     public ResultadoAnalise analisar(String codigo)
@@ -28,8 +34,9 @@ public final class AnalisadorAlgoritmo
         analisadorSemantico.adicionarObservador(observadorAnaliseAlgoritmo);
         
         ArvoreSintaticaAbstrata asa = analisadorSintatico.analisar(codigo);
+        arvoreSintaticaAbstrata = asa;
         analisadorSemantico.analisar(asa);
         
         return observadorAnaliseAlgoritmo.getResultadoAnalise();
-    }    
+    }
 }

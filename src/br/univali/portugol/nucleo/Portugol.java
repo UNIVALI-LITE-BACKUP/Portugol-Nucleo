@@ -1,15 +1,9 @@
 
 package br.univali.portugol.nucleo;
 
-import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
-import br.univali.portugol.nucleo.analise.sintatica.PortugolLexer;
-import br.univali.portugol.nucleo.analise.sintatica.PortugolParser;
-import br.univali.portugol.nucleo.analise.ErroAlgoritmoContemErros;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
+import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 
 /**
  *
@@ -24,8 +18,19 @@ public final class Portugol
         return new AnalisadorAlgoritmo().analisar(codigo);
     }
     
-    public static Programa compilar(String codigo) throws Exception
+    public static Programa compilar(String codigo) throws ErroCompilacao
     {
-        return null;
+        AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
+        ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
+        
+        if (resultadoAnalise.getNumeroTotalErros() == 0)
+        {
+            Programa programa = new Programa();
+            programa.setArvoreSintaticaAbstrataPrograma((ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata());
+
+            return programa;
+        }
+        
+        else throw new ErroCompilacao(resultadoAnalise);
     }
 }

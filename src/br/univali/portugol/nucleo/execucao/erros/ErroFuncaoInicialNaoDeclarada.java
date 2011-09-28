@@ -1,18 +1,19 @@
 package br.univali.portugol.nucleo.execucao.erros;
 
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+
 /**
  *
  * @author Luiz Fernando Noschang
  *
  */
 
-public final class ExcecaoFuncaoPrincipalNaoDeclarada extends Exception
+public final class ErroFuncaoInicialNaoDeclarada extends ErroExecucao
 {
     private String nomeFuncaoPrincipal;
 
-    public ExcecaoFuncaoPrincipalNaoDeclarada(String nome)
+    public ErroFuncaoInicialNaoDeclarada(String nome)
     {
-            super(construirMensagem(nome));
             this.nomeFuncaoPrincipal = nome;
     }
 
@@ -20,9 +21,9 @@ public final class ExcecaoFuncaoPrincipalNaoDeclarada extends Exception
     {
         return nomeFuncaoPrincipal;
     }
-	
 
-    private static String construirMensagem(String nomeFuncaoPrincipal)
+    @Override
+    protected String construirMensagem() 
     {
         StringBuilder construtorString = new StringBuilder();
 

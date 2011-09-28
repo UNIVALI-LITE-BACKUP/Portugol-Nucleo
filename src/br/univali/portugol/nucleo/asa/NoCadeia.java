@@ -13,8 +13,7 @@ public final class NoCadeia extends NoExpressao
 	
 	public NoCadeia(String valor)
 	{
-		this.valor = valor;
-		//tratarCadeia();
+		this.valor = tratarCadeia(valor);
 	}
 	
 	public String getValor()
@@ -33,23 +32,12 @@ public final class NoCadeia extends NoExpressao
 		return trechoCodigoFonte;
 	}
 	
-    public static void main(String[] args)
-    {
-        String cadeia = "Eu\n sou \"legal\\\" \nTeste\\\\n";
-                
-        System.out.println(cadeia);
-        System.out.println("");
-        System.out.println("");
-        //System.out.println(NoCadeia.tratarCadeia(cadeia));
-    }
-    
-	public static String tratarCadeia(String valor)
+	private String tratarCadeia(String valor)
 	{        
-        //valor = valor.replace("\\\\", "${SEQ_ESCAPE_BARRA}");
-		valor = valor.replace("\\n", "\n");
-        valor = valor.replace("\\\"", "\"");
-        valor = valor.replace("\\t", "\t");
+            valor = valor.replace("\\n", "\n");
+            valor = valor.replace("\\\"", "\"");
+            valor = valor.replace("\\t", "\t");
         
-        return valor;
+            return valor;
 	}
 }

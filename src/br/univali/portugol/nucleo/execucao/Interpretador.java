@@ -3,23 +3,18 @@ package br.univali.portugol.nucleo.execucao;
 import java.util.ArrayList;
 import java.util.List;
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
 import br.univali.portugol.nucleo.simbolos.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 
 
-class Interpretador
-{/*
-    public static final String nomeFuncaoPrincipal = "inicio";
-    private TabelaSimbolos tabelaSimbolosGlobal;
+public class Interpretador
+{
+    public static final String funcaoInicialPadrao = "inicio";
     private Saida saida;
     private Entrada entrada;
-
+    private String funcaoInicial = funcaoInicialPadrao;
+    private TabelaSimbolos tabelaSimbolosGlobal;
+ 
     public void setEntrada(Entrada entrada)
     {
         this.entrada = entrada;
@@ -30,53 +25,27 @@ class Interpretador
         this.saida = saida;
     }
 
-    public void interpretar(File arquivo) throws ExcecaoFuncaoPrincipalNaoDeclarada, ExcecaoArquivoDeProgramaInvalido, ExcecaoArquivoContemErros
+    public Entrada getEntrada() 
     {
-        interpretar(arquivo, null);
+        return entrada;
     }
 
-    public void interpretar(File arquivo, String[] parametros) throws ExcecaoFuncaoPrincipalNaoDeclarada, ExcecaoArquivoDeProgramaInvalido, ExcecaoArquivoContemErros
+    public Saida getSaida() 
     {
-        try
-        {
-            ANTLRFileStream fluxoArquivo = new ANTLRFileStream(arquivo.toString());
-            PortugolLexer lexico = new PortugolLexer(fluxoArquivo);
-            CommonTokenStream fluxoTokens = new CommonTokenStream(lexico);
-            PortugolParser parser = new PortugolParser(fluxoTokens);
-            ArvoreSintaticaAbstrata asa = parser.gerarArvore();
-
-            interpretar((ArvoreSintaticaAbstrataPrograma) asa, parametros);
-        }
-        catch (ColecaoExcecoes ex) {
-            Logger.getLogger(Interpretador.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ExcecaoArquivoContemErros();
-        }
-        catch(IOException ex)
-        {
-
-        }
-        catch(ClassCastException ex)
-        {
-            throw new ExcecaoArquivoDeProgramaInvalido();
-        }
+        return saida;
     }
 
-    private void interpretar(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrata, String[] parametros) throws ExcecaoFuncaoPrincipalNaoDeclarada
+    public void setFuncaoInicial(String funcaoInicial) 
+    {
+        this.funcaoInicial = funcaoInicial;
+    }
+    
+    public void interpretar(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrata, String[] parametros) throws ErroFuncaoInicialNaoDeclarada
     {
         this.tabelaSimbolosGlobal = new TabelaSimbolos();
 
-        interpretarListaInclusaoBibliotecas(arvoreSintaticaAbstrata.getListaInclusaoBibliotecas());
         interpretarListaDeclaracoesGlobais(arvoreSintaticaAbstrata.getListaDeclaracoesGlobais());
         interpretarFuncaoPrincipal(parametros);
-    }
-
-    private void interpretarListaInclusaoBibliotecas(List<NoInclusaoBiblioteca> listaInclusaoBibliotecas)
-    {
-        if (listaInclusaoBibliotecas != null)
-        {
-            for (NoInclusaoBiblioteca inclusaoBiblioteca: listaInclusaoBibliotecas)
-                incluirBiblioteca(inclusaoBiblioteca);
-        }
     }
 
     private void interpretarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
@@ -107,11 +76,6 @@ class Interpretador
 
         if (declaracao instanceof NoDeclaracaoFuncao)
             declararFuncao((NoDeclaracaoFuncao) declaracao, tabelaSimbolos);
-    }
-
-    private void incluirBiblioteca(NoInclusaoBiblioteca inclusaoBiblioteca)
-    {
-        // TODO: Implementar inclusao bibliotecas
     }
 
     private void declararVariavel(NoDeclaracaoVariavel declaracaoVariavel, TabelaSimbolos tabelaSimbolos)
@@ -154,6 +118,11 @@ class Interpretador
         vetor.setConstante(declaracaoVetor.constante());
 
         tabelaSimbolos.adicionar(vetor);
+    }
+
+    private void limpar() {
+        if (saida != null)
+            saida.limpar();
     }
 
     private int obterTamanhoVetor(NoDeclaracaoVetor declaracaoVetor, TabelaSimbolos tabelaSimbolos)
@@ -249,11 +218,11 @@ class Interpretador
         tabelaSimbolos.adicionar(new Funcao(nome, tipoDados, quantificador, parametros, blocos));
     }
 
-    private void interpretarFuncaoPrincipal(String[] parametros) throws ExcecaoFuncaoPrincipalNaoDeclarada
+    private void interpretarFuncaoPrincipal(String[] parametros) throws ErroFuncaoInicialNaoDeclarada
     {
-        if (tabelaSimbolosGlobal.contem(nomeFuncaoPrincipal))
+        if (tabelaSimbolosGlobal.contem(funcaoInicial))
         {
-            Funcao funcaoPrincipal = (Funcao) tabelaSimbolosGlobal.obter(nomeFuncaoPrincipal);
+            Funcao funcaoPrincipal = (Funcao) tabelaSimbolosGlobal.obter(funcaoInicial);
             TabelaSimbolos tabelaSimbolosFuncaoPrincipal = new TabelaSimbolos();
 
             if (funcaoPrincipal.getParametros().size() > 0)
@@ -265,7 +234,7 @@ class Interpretador
             interpretarListaBlocos(funcaoPrincipal.getBlocos(), tabelaSimbolosFuncaoPrincipal);
         }
 
-        else throw new ExcecaoFuncaoPrincipalNaoDeclarada(nomeFuncaoPrincipal);
+        else throw new ErroFuncaoInicialNaoDeclarada(funcaoInicial);
     }
 
     private List<Object> converterVetorEmLista(Object[] vetor)
@@ -322,9 +291,6 @@ class Interpretador
             if (bloco instanceof NoEscolha)
                 return interpretarBlocoEscolha((NoEscolha) bloco, tabelaSimbolos);
 
-            if (bloco instanceof NoPercorra)
-                return interpretarBlocoPercorra((NoPercorra) bloco, tabelaSimbolos);
-
             if (bloco instanceof NoDeclaracao)
                 interpretarDeclaracao((NoDeclaracao) bloco, tabelaSimbolos);
 
@@ -335,85 +301,6 @@ class Interpretador
         }
 
         return null;
-    }
-
-    private Object interpretarBlocoPercorra(NoPercorra blocoPercorra, TabelaSimbolos tabelaSimbolos)
-    {
-        Object valorRetorno = null;
-        NoReferencia referencia = (NoReferencia) blocoPercorra.getExpessao();
-
-        String nome = referencia.getNome();
-        String apelido = referencia.getApelido();
-
-        Simbolo simbolo = (Simbolo) extrairSimbolo(obterSimbolo(apelido, nome, tabelaSimbolos));
-
-        if (simbolo instanceof Vetor)
-            valorRetorno = percorrerVetor((Vetor) simbolo, blocoPercorra, tabelaSimbolos);
-
-        else
-
-        if (simbolo instanceof Matriz)
-            valorRetorno = percorrerMatriz((Matriz) simbolo, blocoPercorra, tabelaSimbolos);
-
-        return valorRetorno;
-    }
-
-    private Object percorrerMatriz(Matriz matriz, NoPercorra blocoPercorra, TabelaSimbolos tabelaSimbolos)
-    {
-        Object valorRetorno = null;
-
-        Variavel linha = new Variavel("linha", TipoDado.INTEIRO, 0);
-        Variavel coluna = new Variavel("coluna", TipoDado.INTEIRO, 0);
-        Variavel elemento = new Variavel("elemento", matriz.getTipoDado());
-
-        for (int i = 0; i < matriz.getNumeroLinhas(); i++)
-        {
-            for (int j = 0; j < matriz.getNumeroColunas(); j++)
-            {
-                linha.setValor(i);
-                coluna.setValor(j);
-                elemento.setValor(matriz.getValor(i, j));
-
-                tabelaSimbolos.empilharEscopo();
-                tabelaSimbolos.adicionar(linha);
-                tabelaSimbolos.adicionar(coluna);
-                tabelaSimbolos.adicionar(elemento);
-
-                if ((valorRetorno = interpretarListaBlocos(blocoPercorra.getBlocos(), tabelaSimbolos)) != null)
-                    break;
-
-                matriz.setValor(i, j, elemento.getValor());
-                tabelaSimbolos.desempilharEscopo();
-            }
-        }
-
-        return (valorRetorno instanceof NoPare)? null : valorRetorno;
-    }
-
-    private Object percorrerVetor(Vetor vetor, NoPercorra blocoPercorra, TabelaSimbolos tabelaSimbolos)
-    {
-        Object valorRetorno = null;
-
-        Variavel indice = new Variavel("indice", TipoDado.INTEIRO, 0);
-        Variavel elemento = new Variavel("elemento", vetor.getTipoDado());
-
-        for (int i = 0; i < vetor.getTamanho(); i++)
-        {
-            indice.setValor(i);
-            elemento.setValor(vetor.getValor(i));
-
-            tabelaSimbolos.empilharEscopo();
-            tabelaSimbolos.adicionar(indice);
-            tabelaSimbolos.adicionar(elemento);
-
-            if ((valorRetorno = interpretarListaBlocos(blocoPercorra.getBlocos(), tabelaSimbolos)) != null)
-                break;
-
-            vetor.setValor(i, elemento.getValor());
-            tabelaSimbolos.desempilharEscopo();
-        }
-
-        return (valorRetorno instanceof NoPare)? null : valorRetorno;
     }
 
     private Object interpretarBlocoPara(NoPara blocoPara, TabelaSimbolos tabelaSimbolos)
@@ -552,12 +439,12 @@ class Interpretador
 
     private Object obterValorDecremento(NoDecremento decremento, TabelaSimbolos tabelaSimbolos)
     {
-        return obterValorOperacao(new NoOperacao(Operacao.SUBTRACAO_ATRIBUITIVA, decremento.getExpressao(), new NoInteiro(1)), tabelaSimbolos);
+        return obterValorOperacao(new NoOperacao(Operacao.SUBTRACAO_ACUMULATIVA, decremento.getExpressao(), new NoInteiro(1)), tabelaSimbolos);
     }
 
     private Object obterValorIncremento(NoIncremento incremento, TabelaSimbolos tabelaSimbolos)
     {
-        return obterValorOperacao(new NoOperacao(Operacao.SOMA_ATRIBUITIVA, incremento.getExpressao(), new NoInteiro(1)), tabelaSimbolos);
+        return obterValorOperacao(new NoOperacao(Operacao.SOMA_ACUMULATIVA, incremento.getExpressao(), new NoInteiro(1)), tabelaSimbolos);
     }
 
     private List<List<Object>> obterValoresMatriz(NoMatriz matriz, TabelaSimbolos tabelaSimbolos)
@@ -615,12 +502,12 @@ class Interpretador
     {
         switch (operacao.getOperacao())
         {
-            case ATRIBUICAO: return obterValorOperacaoAtribuicao  (operacao, tabelaSimbolos);
-            case DIVISAO_ATRIBUITIVA: 	return obterValorOperacaoDivisaoAtribuitiva   (operacao, tabelaSimbolos);
-            case SUBTRACAO_ATRIBUITIVA: 	return obterValorOperacaoSubtracaoAtribuitiva       (operacao, tabelaSimbolos);
-            case SOMA_ATRIBUITIVA: 		return obterValorOperacaoSomaAtribuitiva            (operacao, tabelaSimbolos);
-            case MULTIPLICACAO_ATRIBUITIVA: 	return obterValorOperacaoMultiplicacaoAtribuitiva   (operacao, tabelaSimbolos);
-            case MODULO_ATRIBUITIVO: 		return obterValorOperacaoModuloAtribuitivo          (operacao, tabelaSimbolos);
+            case ATRIBUICAO: return obterValorOperacaoAtribuicao(operacao, tabelaSimbolos);
+            case DIVISAO_ACUMULATIVA: return obterValorOperacaoDivisaoAtribuitiva(operacao, tabelaSimbolos);
+            case SUBTRACAO_ACUMULATIVA: return obterValorOperacaoSubtracaoAtribuitiva(operacao, tabelaSimbolos);
+            case SOMA_ACUMULATIVA: return obterValorOperacaoSomaAtribuitiva(operacao, tabelaSimbolos);
+            case MULTIPLICACAO_ACUMULATIVA: return obterValorOperacaoMultiplicacaoAtribuitiva(operacao, tabelaSimbolos);
+            case MODULO_ATRIBUITIVO: return obterValorOperacaoModuloAtribuitivo(operacao, tabelaSimbolos);
         }
 
         Object valorOperandoEsquerdo = obterValorExpressao(operacao.getOperandoEsquerdo(), tabelaSimbolos);
@@ -628,21 +515,19 @@ class Interpretador
 
         switch (operacao.getOperacao())
         {
-            case DIFERENCA: 			return obterValorOperacaoDiferenca                  (valorOperandoEsquerdo, valorOperandoDireito);
-            case DIVISAO: 			return obterValorOperacaoDivisao                    (valorOperandoEsquerdo, valorOperandoDireito);
-
-            case E: 				return obterValorOperacaoE                          (valorOperandoEsquerdo, valorOperandoDireito);
-            case IGUALDADE: 			return obterValorOperacaoIgualdade                  (valorOperandoEsquerdo, valorOperandoDireito);
-            case MAIOR: 			return obterValorOperacaoMaior                      (valorOperandoEsquerdo, valorOperandoDireito);
-            case MAIOR_IGUAL: 			return obterValorOperacaoMaiorIgual                 (valorOperandoEsquerdo, valorOperandoDireito);
-            case MENOR: 			return obterValorOperacaoMenor                      (valorOperandoEsquerdo, valorOperandoDireito);
-            case MENOR_IGUAL: 			return obterValorOperacaoMenorIgual                 (valorOperandoEsquerdo, valorOperandoDireito);
-            case MODULO: 			return obterValorOperacaoModulo                     (valorOperandoEsquerdo, valorOperandoDireito);
-            case MULTIPLICACAO: 		return obterValorOperacaoMultiplicacao              (valorOperandoEsquerdo, valorOperandoDireito);
-            case OU: 				return obterValorOperacaoOu                         (valorOperandoEsquerdo, valorOperandoDireito);
-            case SOMA: 				return obterValorOperacaoSoma                       (valorOperandoEsquerdo, valorOperandoDireito);
-            case SUBTRACAO: 			return obterValorOperacaoSubtracao                  (valorOperandoEsquerdo, valorOperandoDireito);
-
+            case DIFERENCA: return obterValorOperacaoDiferenca(valorOperandoEsquerdo, valorOperandoDireito);
+            case DIVISAO: return obterValorOperacaoDivisao(valorOperandoEsquerdo, valorOperandoDireito);
+            case E: return obterValorOperacaoE(valorOperandoEsquerdo, valorOperandoDireito);
+            case IGUALDADE: return obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
+            case MAIOR: return obterValorOperacaoMaior(valorOperandoEsquerdo, valorOperandoDireito);
+            case MAIOR_IGUAL: return obterValorOperacaoMaiorIgual(valorOperandoEsquerdo, valorOperandoDireito);
+            case MENOR: return obterValorOperacaoMenor(valorOperandoEsquerdo, valorOperandoDireito);
+            case MENOR_IGUAL: return obterValorOperacaoMenorIgual(valorOperandoEsquerdo, valorOperandoDireito);
+            case MODULO: return obterValorOperacaoModulo(valorOperandoEsquerdo, valorOperandoDireito);
+            case MULTIPLICACAO: return obterValorOperacaoMultiplicacao(valorOperandoEsquerdo, valorOperandoDireito);
+            case OU: return obterValorOperacaoOu(valorOperandoEsquerdo, valorOperandoDireito);
+            case SOMA: return obterValorOperacaoSoma(valorOperandoEsquerdo, valorOperandoDireito);
+            case SUBTRACAO: return obterValorOperacaoSubtracao(valorOperandoEsquerdo, valorOperandoDireito);
         }
 
         return null;
@@ -653,8 +538,7 @@ class Interpretador
         NoReferencia referencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
 
         String nome = referencia.getNome();
-        String apelido = referencia.getApelido();
-        Simbolo simbolo = extrairSimbolo(obterSimbolo(apelido, nome, tabelaSimbolos));
+        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
         Object valor = obterValorExpressao(atribuicao.getOperandoDireito(), tabelaSimbolos);
 
         if ((valor instanceof Double) && (simbolo.getTipoDado() == TipoDado.INTEIRO))
@@ -1038,8 +922,7 @@ class Interpretador
     private Object obterValorReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos)
     {
             String nome = referencia.getNome();
-            String apelido = referencia.getApelido();
-            Simbolo simbolo = extrairSimbolo(obterSimbolo(apelido, nome, tabelaSimbolos));
+            Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
 
             if (referencia instanceof NoReferenciaVariavel)
                     return obterValorVariavel((Variavel) simbolo);
@@ -1064,8 +947,7 @@ class Interpretador
 
                     if (referencia.getNome().equals("limpar"))
                     {
-                        if (saida != null)
-                            saida.limpar();
+                        limpar();
                     }
 
                     else
@@ -1077,11 +959,12 @@ class Interpretador
 
                     if (simbolo instanceof FuncaoCompilada)
                             return obterValorFuncaoCompilada((FuncaoCompilada) simbolo, (NoChamadaFuncao) referencia, tabelaSimbolos);
-                    *//*
+                    */
             }
 
             return null;
-    }*/
+    }                     
+                     
     /*
     private Object obterValorFuncaoCompilada(FuncaoCompilada funcao, NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
     {
@@ -1113,7 +996,7 @@ class Interpretador
 
     }
     */
-/*
+
     private void escreva(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
     {
             List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
@@ -1144,64 +1027,29 @@ class Interpretador
                         NoReferencia referencia = (NoReferencia) expressao;
 
                         String nome = referencia.getNome();
-                        String apelido = referencia.getApelido();
 
-                        Simbolo simbolo = extrairSimbolo(obterSimbolo(apelido, nome, tabelaSimbolos));
+                        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
                         TipoDado tipoDado = simbolo.getTipoDado();
                         Object valor = null;
 
                         if (entrada != null)
                         {
-                            try {
-                                while ( (valor = decodificarValor(entrada.ler(), tipoDado) ) == null){};                            
-                            } catch (NullPointerException e){
-                                e.printStackTrace();
-                            }
+                            valor = entrada.ler(tipoDado);
+                            
+                            if (valor ==  null)
+                                valor = tipoDado.getValorPadrao();
                         }
 
-                            if (simbolo instanceof Variavel) atribuirValorVariavel((Variavel) simbolo, valor);
-                            else
-                            if (simbolo instanceof Vetor) atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia, tabelaSimbolos);
-                            else
-                            if (simbolo instanceof Matriz) atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia, tabelaSimbolos);
+                        if (simbolo instanceof Variavel) atribuirValorVariavel((Variavel) simbolo, valor);
+                        else
+                        if (simbolo instanceof Vetor) atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia, tabelaSimbolos);
+                        else
+                        if (simbolo instanceof Matriz) atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia, tabelaSimbolos);
                     }
             }
     }
 
-    private Object decodificarValor(String valor, TipoDado tipoDado)
-    {
-        if (valor != null)
-        {
-            if (tipoDado == TipoDado.CADEIA) return valor;
-
-            if (tipoDado == TipoDado.CARACTER)
-            {
-                    if (valor.length() == 1) return valor.charAt(0);
-                    else return null;
-            }
-            if (tipoDado == TipoDado.INTEIRO)
-            {
-                    try { return Integer.parseInt(valor); }
-                    catch (Exception e) { return null; }
-            }
-            if (tipoDado == TipoDado.LOGICO)
-            {
-                    if (valor.equals("verdadeiro")) return true;
-                    if (valor.equals("falso")) return false;
-
-                    return null;
-            }
-            if (tipoDado == TipoDado.REAL)
-            {
-                    try { return Double.parseDouble(valor); }
-                    catch (Exception e) { return null; }
-            }
-        }
-
-        return null;
-    }
-
-
+    
     private Object obterValorVariavel(Variavel variavel)
     {
             return variavel.getValor();
@@ -1243,17 +1091,17 @@ class Interpretador
 
             return interpretarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);
     }
-
-        @SuppressWarnings("unchecked")
+    
+    @SuppressWarnings("unchecked")
     private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
-        String nomw = parametroEsperado.getNome();
+        String nome = parametroEsperado.getNome();
 
         if (parametroPassado instanceof NoReferenciaVariavel)
         {
             NoReferenciaVariavel referencia = (NoReferenciaVariavel) parametroPassado;
-            Simbolo simbolo = extrairSimbolo(obterSimbolo(referencia.getApelido(), referencia.getNome(), tabelaSimbolos));
-            tabelaSimbolosFuncao.adicionar(simbolo.copiar(nomw));
+            Simbolo simbolo = extrairSimbolo(obterSimbolo(referencia.getNome(), tabelaSimbolos));
+            tabelaSimbolosFuncao.adicionar(simbolo.copiar(nome));
         }
 
         else
@@ -1263,19 +1111,19 @@ class Interpretador
             Object valor = obterValorExpressao(parametroPassado, tabelaSimbolos);
 
             if (quantificador == Quantificador.VALOR)
-                tabelaSimbolosFuncao.adicionar(new Variavel(nomw, tipoDado, valor));
+                tabelaSimbolosFuncao.adicionar(new Variavel(nome, tipoDado, valor));
 
             else
 
             if (quantificador == Quantificador.VETOR)
-                tabelaSimbolosFuncao.adicionar(new Vetor(nomw, tipoDado, (List<Object>) valor));
+                tabelaSimbolosFuncao.adicionar(new Vetor(nome, tipoDado, (List<Object>) valor));
 
             else
 
             if (quantificador == Quantificador.MATRIZ)
-                tabelaSimbolos.adicionar(new Matriz(nomw, tipoDado, (List<List<Object>>) valor));
+                tabelaSimbolos.adicionar(new Matriz(nome, tipoDado, (List<List<Object>>) valor));
         }
-    }*/
+    }
 
     /*
     @SuppressWarnings("unchecked")
@@ -1335,13 +1183,12 @@ class Interpretador
         tabelaSimbolosFuncao.adicionar(variavel);
     }
     */
-/*
+
     private void passarParametroFuncaoPorReferencia(NoExpressao parametroPassado, NoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
             NoReferencia referencia = (NoReferencia) parametroPassado;
             String nome = referencia.getNome();
-            String apelido = referencia.getApelido();
-            Simbolo simbolo = obterSimbolo(apelido, nome, tabelaSimbolos);
+            Simbolo simbolo = obterSimbolo(nome, tabelaSimbolos);
 
             tabelaSimbolosFuncao.adicionar(new Ponteiro(parametroEsperado.getNome(), simbolo));
     }
@@ -1355,11 +1202,11 @@ class Interpretador
             return simbolo;
     }
 
-    private Simbolo obterSimbolo(String apelido, String nome, TabelaSimbolos tabelaSimbolos)
+    private Simbolo obterSimbolo(String nome, TabelaSimbolos tabelaSimbolos)
     {
         if (tabelaSimbolos.contem(nome))
             return tabelaSimbolos.obter(nome);
 
         return tabelaSimbolosGlobal.obter(nome);
-    }*/
+    }
 }
