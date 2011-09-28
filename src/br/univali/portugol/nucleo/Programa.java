@@ -75,6 +75,10 @@ public final class Programa
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
                         notificarEncerramentoExecucao(resultadoExecucao);
                     }
+                    catch (InterruptedException excecaoThreadInterrompida)
+                    {
+                        
+                    }
                     catch (ErroExecucao erroExecucao)
                     {
                         resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);

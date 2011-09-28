@@ -14,7 +14,8 @@ public class Interpretador
     private Entrada entrada;
     private String funcaoInicial = funcaoInicialPadrao;
     private TabelaSimbolos tabelaSimbolosGlobal;
- 
+    private ThreadEntrada threadEntrada;
+    
     public void setEntrada(Entrada entrada)
     {
         this.entrada = entrada;
@@ -40,7 +41,7 @@ public class Interpretador
         this.funcaoInicial = funcaoInicial;
     }
     
-    public void interpretar(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrata, String[] parametros) throws ErroFuncaoInicialNaoDeclarada
+    public void interpretar(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrata, String[] parametros) throws ErroFuncaoInicialNaoDeclarada, InterruptedException
     {
         this.tabelaSimbolosGlobal = new TabelaSimbolos();
 
@@ -48,7 +49,7 @@ public class Interpretador
         interpretarFuncaoPrincipal(parametros);
     }
 
-    private void interpretarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
+    private void interpretarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais) throws InterruptedException
     {
         if (listaDeclaracoesGlobais != null)
         {
@@ -57,7 +58,7 @@ public class Interpretador
         }
     }
 
-    private void interpretarDeclaracao(NoDeclaracao declaracao, TabelaSimbolos tabelaSimbolos)
+    private void interpretarDeclaracao(NoDeclaracao declaracao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         if (declaracao instanceof NoDeclaracaoVariavel)
             declararVariavel((NoDeclaracaoVariavel) declaracao, tabelaSimbolos);
@@ -78,7 +79,7 @@ public class Interpretador
             declararFuncao((NoDeclaracaoFuncao) declaracao, tabelaSimbolos);
     }
 
-    private void declararVariavel(NoDeclaracaoVariavel declaracaoVariavel, TabelaSimbolos tabelaSimbolos)
+    private void declararVariavel(NoDeclaracaoVariavel declaracaoVariavel, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         String nome = declaracaoVariavel.getNome();
         TipoDado tipoDado = declaracaoVariavel.getTipoDado();
@@ -218,7 +219,7 @@ public class Interpretador
         tabelaSimbolos.adicionar(new Funcao(nome, tipoDados, quantificador, parametros, blocos));
     }
 
-    private void interpretarFuncaoPrincipal(String[] parametros) throws ErroFuncaoInicialNaoDeclarada
+    private void interpretarFuncaoPrincipal(String[] parametros) throws ErroFuncaoInicialNaoDeclarada, InterruptedException
     {
         if (tabelaSimbolosGlobal.contem(funcaoInicial))
         {
@@ -250,7 +251,7 @@ public class Interpretador
         return lista;
     }
 
-    private Object interpretarListaBlocos(List<NoBloco> blocos, TabelaSimbolos tabelaSimbolos)
+    private Object interpretarListaBlocos(List<NoBloco> blocos, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         if (blocos != null)
         {
@@ -266,7 +267,7 @@ public class Interpretador
         return null;
     }
 
-    private Object interpretarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos)
+    private Object interpretarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         if (bloco != null)
         {
@@ -303,7 +304,7 @@ public class Interpretador
         return null;
     }
 
-    private Object interpretarBlocoPara(NoPara blocoPara, TabelaSimbolos tabelaSimbolos)
+    private Object interpretarBlocoPara(NoPara blocoPara, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         Object valorRetorno = null;
         tabelaSimbolos.empilharEscopo();
@@ -324,7 +325,7 @@ public class Interpretador
         return (valorRetorno instanceof NoPare)? null : valorRetorno;
     }
 
-    private Object interpretarBlocoEscolha(NoEscolha blocoEscolha, TabelaSimbolos tabelaSimbolos)
+    private Object interpretarBlocoEscolha(NoEscolha blocoEscolha, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         List<NoCaso> casos = blocoEscolha.getCasos();
         Object valorEscolha = obterValorExpressao(blocoEscolha.getExpressao(), tabelaSimbolos);
@@ -346,7 +347,7 @@ public class Interpretador
         return null;
     }
 
-    private int procurarIndiceValorEscolhido(Object valorEscolha, List<NoCaso> casos, TabelaSimbolos tabelaSimbolos)
+    private int procurarIndiceValorEscolhido(Object valorEscolha, List<NoCaso> casos, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         Object[] valoresCasos = obterValoresCasos(casos, tabelaSimbolos);
 
@@ -365,7 +366,7 @@ public class Interpretador
         return -1;
     }
 
-    private Object[] obterValoresCasos(List<NoCaso> casos, TabelaSimbolos tabelaSimbolos)
+    private Object[] obterValoresCasos(List<NoCaso> casos, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         Object[] valores = new Object[casos.size()];
 
@@ -375,7 +376,7 @@ public class Interpretador
         return valores;
     }
 
-    private Object interpretarBlocoFacaEnquanto(NoFacaEnquanto blocoFacaEnquanto, TabelaSimbolos tabelaSimbolos)
+    private Object interpretarBlocoFacaEnquanto(NoFacaEnquanto blocoFacaEnquanto, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         do
         {
@@ -390,7 +391,7 @@ public class Interpretador
         return null;
     }
 
-    private Object interpretarBlocoEnquanto(NoEnquanto blocoEnquanto, TabelaSimbolos tabelaSimbolos)
+    private Object interpretarBlocoEnquanto(NoEnquanto blocoEnquanto, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         while ((Boolean) obterValorExpressao(blocoEnquanto.getCondicao(), tabelaSimbolos))
         {
@@ -404,7 +405,7 @@ public class Interpretador
         return null;
     }
 
-    private Object interpretarBlocoSe(NoSe blocoSe, TabelaSimbolos tabelaSimbolos)
+    private Object interpretarBlocoSe(NoSe blocoSe, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         boolean condicao = (Boolean) obterValorExpressao(blocoSe.getCondicao(), tabelaSimbolos);
 
@@ -417,7 +418,7 @@ public class Interpretador
         return valorRetorno;
     }
 
-    private Object obterValorExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         if (expressao instanceof NoInteiro)         return ((NoInteiro)     expressao).getValor();
         if (expressao instanceof NoReal)            return ((NoReal)        expressao).getValor();
@@ -437,17 +438,17 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorDecremento(NoDecremento decremento, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorDecremento(NoDecremento decremento, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         return obterValorOperacao(new NoOperacao(Operacao.SUBTRACAO_ACUMULATIVA, decremento.getExpressao(), new NoInteiro(1)), tabelaSimbolos);
     }
 
-    private Object obterValorIncremento(NoIncremento incremento, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorIncremento(NoIncremento incremento, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         return obterValorOperacao(new NoOperacao(Operacao.SOMA_ACUMULATIVA, incremento.getExpressao(), new NoInteiro(1)), tabelaSimbolos);
     }
 
-    private List<List<Object>> obterValoresMatriz(NoMatriz matriz, TabelaSimbolos tabelaSimbolos)
+    private List<List<Object>> obterValoresMatriz(NoMatriz matriz, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         List<List<Object>> valores = matriz.getValores();
 
@@ -469,7 +470,7 @@ public class Interpretador
         return valores;
     }
 
-    private List<Object> obterValoresVetor(NoVetor vetor, TabelaSimbolos tabelaSimbolos)
+    private List<Object> obterValoresVetor(NoVetor vetor, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         List<Object> valores = vetor.getValores();
 
@@ -482,12 +483,12 @@ public class Interpretador
         return valores;
     }
 
-    private Object obterValorNao(NoNao nao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorNao(NoNao nao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         return ! (Boolean) obterValorExpressao(nao.getExpressao(), tabelaSimbolos);
     }
 
-    private Object obterValorMenosUnario(NoMenosUnario menosUnario, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorMenosUnario(NoMenosUnario menosUnario, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         Object valor = obterValorExpressao(menosUnario.getExpressao(), tabelaSimbolos);
 
@@ -498,7 +499,7 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorOperacao(NoOperacao operacao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorOperacao(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         switch (operacao.getOperacao())
         {
@@ -533,7 +534,7 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorOperacaoAtribuicao(NoOperacao atribuicao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorOperacaoAtribuicao(NoOperacao atribuicao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         NoReferencia referencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
 
@@ -587,7 +588,7 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorOperacaoDivisaoAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorOperacaoDivisaoAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         NoOperacao divisao = new NoOperacao(Operacao.DIVISAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
         NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), divisao);
@@ -754,7 +755,7 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorOperacaoModuloAtribuitivo(NoOperacao operacao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorOperacaoModuloAtribuitivo(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         NoOperacao modulo = new NoOperacao(Operacao.MODULO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
         NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), modulo);
@@ -785,7 +786,7 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorOperacaoMultiplicacaoAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorOperacaoMultiplicacaoAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         NoOperacao multiplicacao = new NoOperacao(Operacao.MULTIPLICACAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
         NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), multiplicacao);
@@ -855,7 +856,7 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorOperacaoSomaAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorOperacaoSomaAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         NoOperacao soma = new NoOperacao(Operacao.SOMA, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
         NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), soma);
@@ -886,7 +887,7 @@ public class Interpretador
         return null;
     }
 
-    private Object obterValorOperacaoSubtracaoAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorOperacaoSubtracaoAtribuitiva(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
         NoOperacao subtracao = new NoOperacao(Operacao.SUBTRACAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
         NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), subtracao);
@@ -902,7 +903,7 @@ public class Interpretador
             return valor;
     }
 
-    private Object atribuirValorVetor(Vetor vetor, Object valor, NoReferenciaVetor referenciaVetor, TabelaSimbolos tabelaSimbolos)
+    private Object atribuirValorVetor(Vetor vetor, Object valor, NoReferenciaVetor referenciaVetor, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             int indice = (Integer) obterValorExpressao(referenciaVetor.getIndice(), tabelaSimbolos);
             vetor.setValor(indice, valor);
@@ -910,7 +911,7 @@ public class Interpretador
             return valor;
     }
 
-    private Object atribuirValorMatriz(Matriz matriz, Object valor, NoReferenciaMatriz referenciaMatriz, TabelaSimbolos tabelaSimbolos)
+    private Object atribuirValorMatriz(Matriz matriz, Object valor, NoReferenciaMatriz referenciaMatriz, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             int linha = (Integer) obterValorExpressao(referenciaMatriz.getLinha(), tabelaSimbolos);
             int coluna = (Integer) obterValorExpressao(referenciaMatriz.getColuna(), tabelaSimbolos);
@@ -919,7 +920,7 @@ public class Interpretador
             return valor;
     }
     
-    private Object obterValorReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             String nome = referencia.getNome();
             Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
@@ -997,7 +998,7 @@ public class Interpretador
     }
     */
 
-    private void escreva(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
+    private void escreva(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
 
@@ -1016,7 +1017,7 @@ public class Interpretador
             }
     }
 
-    private void leia(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
+    private void leia(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
 
@@ -1034,7 +1035,15 @@ public class Interpretador
 
                         if (entrada != null)
                         {
-                            valor = entrada.ler(tipoDado);
+                            threadEntrada = new ThreadEntrada(entrada, tipoDado);
+                            threadEntrada.start();
+
+                            synchronized (threadEntrada)
+                            {
+                                // Fica aguardando a entrada ser processada
+                                threadEntrada.wait();
+                            }
+                            valor = threadEntrada.getValor();
                             
                             if (valor ==  null)
                                 valor = tipoDado.getValorPadrao();
@@ -1055,14 +1064,14 @@ public class Interpretador
             return variavel.getValor();
     }
 
-    private Object obterValorVetor(Vetor vetor, NoReferenciaVetor referenciaVetor, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorVetor(Vetor vetor, NoReferenciaVetor referenciaVetor, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             int indice = (Integer) obterValorExpressao(referenciaVetor.getIndice(), tabelaSimbolos);
 
             return vetor.getValor(indice);
     }
 
-    private Object obterValorMatriz(Matriz matriz, NoReferenciaMatriz referenciaMatriz, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorMatriz(Matriz matriz, NoReferenciaMatriz referenciaMatriz, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             int linha = (Integer) obterValorExpressao(referenciaMatriz.getLinha(), tabelaSimbolos);
             int coluna = (Integer) obterValorExpressao(referenciaMatriz.getColuna(), tabelaSimbolos);
@@ -1070,7 +1079,7 @@ public class Interpretador
             return matriz.getValor(linha, coluna);
     }
 
-    private Object obterValorFuncao(Funcao funcao, NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
+    private Object obterValorFuncao(Funcao funcao, NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos) throws InterruptedException
     {
             TabelaSimbolos tabelaSimbolosFuncao = new TabelaSimbolos();
 
@@ -1093,7 +1102,7 @@ public class Interpretador
     }
     
     @SuppressWarnings("unchecked")
-    private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
+    private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao) throws InterruptedException
     {
         String nome = parametroEsperado.getNome();
 
