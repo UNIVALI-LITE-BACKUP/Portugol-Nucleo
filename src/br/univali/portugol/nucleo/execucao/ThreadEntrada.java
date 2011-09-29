@@ -14,6 +14,7 @@ public final class ThreadEntrada extends Thread implements ObservadorEntrada
         this.entrada = entrada;
     }
 
+    @Override
     public void run() 
     {
         entrada.ler(tipoDado, this);

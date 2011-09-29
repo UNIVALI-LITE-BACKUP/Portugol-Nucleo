@@ -223,7 +223,7 @@ public final class AnalisadorSemantico
     	
     	if (referencia instanceof NoChamadaFuncao)
         {	
-    		if (!nome.equals("escreva") && !nome.equals("limpar") && !nome.equals("leia"))
+    		if (!nome.equals("escreva") && !nome.equals("limpar") && !nome.equals("leia") && !nome.equals("aguarde"))
     		{
 	    		if (tabelaSimbolos.contem((referencia.getNome())))
 		        {
@@ -821,17 +821,20 @@ public final class AnalisadorSemantico
     {
     	List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
     	
-    	for (NoExpressao expressao: parametrosPassados)
-    	{
-    		try
-    		{
-    			analizarExpressao(expressao, tabelaSimbolos);
-    		}
-    		catch (ErroTiposIncompativeis erro) 
-    		{
-    			notificarErroSemantico(erro);
-			}
-    	}
+        if (parametrosPassados != null)
+        {        
+            for (NoExpressao expressao: parametrosPassados)
+            {
+                    try
+                    {
+                        analizarExpressao(expressao, tabelaSimbolos);
+                    }
+                    catch (ErroTiposIncompativeis erro) 
+                    {
+                            notificarErroSemantico(erro);
+                    }
+            }
+        }
     }
 
     private void analizarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao, TabelaSimbolos tabelaSimbolos)

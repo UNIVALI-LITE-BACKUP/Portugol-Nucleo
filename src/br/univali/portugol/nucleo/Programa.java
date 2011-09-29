@@ -29,7 +29,6 @@ public final class Programa
     private long horaInicialExecucao = 0L;
     private ResultadoExecucao resultadoExecucao = null;
     
-    
     private List<ObservadorExecucao> observadores;
     private ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma;
     
@@ -129,7 +128,7 @@ public final class Programa
                 @Override
                 public void run() 
                 {
-                    try { Thread.sleep(2000); }
+                    try { Thread.sleep(500); }
                     catch (Exception ex) {}
                     
                     notificarEncerramentoExecucao(resultadoExecucao);
@@ -193,6 +192,8 @@ public final class Programa
     
     private void notificarEncerramentoExecucao(ResultadoExecucao resultadoExecucao)
     {
+        threadExecucao = null;
+        
         for (ObservadorExecucao observador: observadores)
             observador.execucaoEncerrada(this, resultadoExecucao);
     }

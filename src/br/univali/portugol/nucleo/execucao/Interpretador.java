@@ -14,7 +14,6 @@ public class Interpretador
     private Entrada entrada;
     private String funcaoInicial = funcaoInicialPadrao;
     private TabelaSimbolos tabelaSimbolosGlobal;
-    private ThreadEntrada threadEntrada;
     
     public void setEntrada(Entrada entrada)
     {
@@ -121,9 +120,19 @@ public class Interpretador
         tabelaSimbolos.adicionar(vetor);
     }
 
-    private void limpar() {
+    private void limpar() throws InterruptedException 
+    {
         if (saida != null)
-            saida.limpar();
+        {
+            final ThreadSaida threadSaida = new ThreadSaida(saida);
+            threadSaida.setLimpar();
+            threadSaida.start();
+            
+            synchronized (threadSaida)
+            {
+                threadSaida.wait();
+            }
+        }            
     }
 
     private int obterTamanhoVetor(NoDeclaracaoVetor declaracaoVetor, TabelaSimbolos tabelaSimbolos)
@@ -950,7 +959,13 @@ public class Interpretador
                     {
                         limpar();
                     }
-
+                    
+                    else
+                        
+                    if (referencia.getNome().equals("aguarde"))
+                    {
+                        aguardar((NoChamadaFuncao) referencia, tabelaSimbolos);
+                    }
                     else
 
                     if (simbolo instanceof Funcao)
@@ -1007,12 +1022,15 @@ public class Interpretador
                 if (saida != null)
                 {
                     Object valor = obterValorExpressao(expressao, tabelaSimbolos);
+                
+                    final ThreadSaida threadSaida = new ThreadSaida(saida);
+                    threadSaida.setEscrever(valor);
+                    threadSaida.start();
                     
-                    if (valor instanceof Boolean)
-                        saida.escrever(((Boolean) valor)? "verdadeiro" : "falso");
-                    
-                    else 
-                        saida.escrever(valor.toString());
+                    synchronized (threadSaida)
+                    {
+                        threadSaida.wait();
+                    }
                 }
             }
     }
@@ -1035,7 +1053,7 @@ public class Interpretador
 
                         if (entrada != null)
                         {
-                            threadEntrada = new ThreadEntrada(entrada, tipoDado);
+                            final ThreadEntrada threadEntrada = new ThreadEntrada(entrada, tipoDado);
                             threadEntrada.start();
 
                             synchronized (threadEntrada)
@@ -1217,5 +1235,11 @@ public class Interpretador
             return tabelaSimbolos.obter(nome);
 
         return tabelaSimbolosGlobal.obter(nome);
+    }
+
+    private void aguardar(NoChamadaFuncao noChamadaFuncao, TabelaSimbolos tabelaSimbolos) throws InterruptedException 
+    {
+        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
+        Thread.sleep((Integer) obterValorExpressao(parametros.get(0), tabelaSimbolos));
     }
 }
