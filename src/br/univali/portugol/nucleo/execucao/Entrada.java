@@ -10,5 +10,5 @@ import br.univali.portugol.nucleo.asa.TipoDado;
 
 public interface Entrada
 {
-	public void ler(TipoDado tipoDado, ObservadorEntrada observadorEntrada);
+	public Object ler(TipoDado tipoDado);
 }

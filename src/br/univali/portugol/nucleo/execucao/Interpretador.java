@@ -124,14 +124,7 @@ public class Interpretador
     {
         if (saida != null)
         {
-            final ThreadSaida threadSaida = new ThreadSaida(saida);
-            threadSaida.setLimpar();
-            threadSaida.start();
-            
-            synchronized (threadSaida)
-            {
-                threadSaida.wait();
-            }
+            saida.limpar();
         }            
     }
 
@@ -1022,15 +1015,15 @@ public class Interpretador
                 if (saida != null)
                 {
                     Object valor = obterValorExpressao(expressao, tabelaSimbolos);
-                
-                    final ThreadSaida threadSaida = new ThreadSaida(saida);
-                    threadSaida.setEscrever(valor);
-                    threadSaida.start();
-                    
-                    synchronized (threadSaida)
-                    {
-                        threadSaida.wait();
-                    }
+                    if (valor instanceof String) saida.escrever((String) valor);
+                    else
+                    if (valor instanceof Boolean) saida.escrever((Boolean) valor);
+                    else
+                    if (valor instanceof Character) saida.escrever((Character) valor);
+                    else
+                    if (valor instanceof Double) saida.escrever((Double) valor);
+                    else
+                    if (valor instanceof Integer) saida.escrever((Integer) valor);
                 }
             }
     }
@@ -1053,15 +1046,7 @@ public class Interpretador
 
                         if (entrada != null)
                         {
-                            final ThreadEntrada threadEntrada = new ThreadEntrada(entrada, tipoDado);
-                            threadEntrada.start();
-
-                            synchronized (threadEntrada)
-                            {
-                                // Fica aguardando a entrada ser processada
-                                threadEntrada.wait();
-                            }
-                            valor = threadEntrada.getValor();
+                            valor = entrada.ler(tipoDado);
                             
                             if (valor ==  null)
                                 valor = tipoDado.getValorPadrao();

@@ -119,10 +119,10 @@ public final class Programa
             
             threadExecucao.interrupt();
             threadExecucao = null;
-            
+
             resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-            
+
             new Thread(new Runnable() 
             {
                 @Override
@@ -130,13 +130,13 @@ public final class Programa
                 {
                     try { Thread.sleep(500); }
                     catch (Exception ex) {}
-                    
+
                     notificarEncerramentoExecucao(resultadoExecucao);
-                    
+
                     resultadoExecucao = null;
                 }
             }).start();
-        }
+        } 
     }
     
     public ArvoreSintaticaAbstrataPrograma getArvoreSintaticaAbstrata()

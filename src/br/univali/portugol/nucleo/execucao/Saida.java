@@ -8,10 +8,10 @@ package br.univali.portugol.nucleo.execucao;
 
 public interface Saida
 {
-    public void limpar(ObservadorSaida observadorSaida);    
-    public void escrever(String valor, ObservadorSaida observadorSaida);
-    public void escrever(boolean valor, ObservadorSaida observadorSaida);
-    public void escrever(int valor, ObservadorSaida observadorSaida);
-    public void escrever(double valor, ObservadorSaida observadorSaida);
-    public void escrever(char valor, ObservadorSaida observadorSaida);
+    public void limpar();    
+    public void escrever(String valor);
+    public void escrever(boolean valor);
+    public void escrever(int valor);
+    public void escrever(double valor);
+    public void escrever(char valor);
 }
