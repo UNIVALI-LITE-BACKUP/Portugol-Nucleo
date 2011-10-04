@@ -8,10 +8,10 @@ package br.univali.portugol.nucleo.execucao;
 
 public interface Saida
 {
-    public void limpar();    
-    public void escrever(String valor);
-    public void escrever(boolean valor);
-    public void escrever(int valor);
-    public void escrever(double valor);
-    public void escrever(char valor);
+    public void limpar() throws Exception;    
+    public void escrever(String valor) throws Exception;
+    public void escrever(boolean valor) throws Exception;
+    public void escrever(int valor) throws Exception;
+    public void escrever(double valor) throws Exception;
+    public void escrever(char valor) throws Exception;
 }

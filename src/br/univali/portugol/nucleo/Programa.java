@@ -16,7 +16,7 @@ import java.util.List;
 /**
  *
  * @author Luiz Fernando Noschang
- * 
+ * @author Fillipi Domingos Pelz
  */
 
 public final class Programa

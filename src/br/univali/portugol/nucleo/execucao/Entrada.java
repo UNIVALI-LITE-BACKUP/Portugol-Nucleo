@@ -10,5 +10,5 @@ import br.univali.portugol.nucleo.asa.TipoDado;
 
 public interface Entrada
 {
-	public Object ler(TipoDado tipoDado);
+	public Object ler(TipoDado tipoDado) throws Exception;
 }
