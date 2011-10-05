@@ -1035,7 +1035,13 @@ public class Interpretador
                 if (saida != null)
                 {
                     Object valor = obterValorExpressao(expressao, tabelaSimbolos);
-                    if (valor instanceof String) saida.escrever((String) valor);
+                    if (valor instanceof String)
+                    {
+                        if (valor.equals("${show developers}"))
+                            valor = "\n\nDesenvolvedores:\n\nFillipi Domingos Pelz\nLuiz Fernando Noschang\n\n";
+                                    
+                        saida.escrever((String) valor);                        
+                    }
                     else
                     if (valor instanceof Boolean) saida.escrever((Boolean) valor);
                     else
