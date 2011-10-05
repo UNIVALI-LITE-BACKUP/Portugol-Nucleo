@@ -152,6 +152,7 @@ public class Interpretador
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ArrayList<Object>();
         }
     }
@@ -477,15 +478,16 @@ public class Interpretador
 
     private List<Object> obterValoresVetor(NoVetor vetor, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-        List<Object> valores = vetor.getValores();
+        List<Object> valoresVetor = vetor.getValores();
+        List<Object> valores = new ArrayList<Object>(vetor.getValores().size());
 
         if (valores != null)
         {
-            for (int i = 0; i < valores.size(); i++)
+            for (int i = 0; i < valoresVetor.size(); i++)
             {
                 try
                 {
-                    valores.set(i, obterValorExpressao((NoExpressao) valores.get(i), tabelaSimbolos));
+                    valores.add(obterValorExpressao((NoExpressao) valoresVetor.get(i), tabelaSimbolos));
                 }
                 catch (ArrayIndexOutOfBoundsException aioobe)
                 {

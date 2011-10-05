@@ -71,6 +71,7 @@ public final class Programa
                         
                         interpretador.interpretar(arvoreSintaticaAbstrataPrograma, parametros);
 
+                        threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
                         notificarEncerramentoExecucao(resultadoExecucao);
                     }
