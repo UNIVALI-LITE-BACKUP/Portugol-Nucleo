@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
+import br.univali.portugol.nucleo.execucao.erros.ErroIndiceVetorInvalido;
 import br.univali.portugol.nucleo.simbolos.*;
 
 
 public class Interpretador
 {
     public static final String funcaoInicialPadrao = "inicio";
+
     private Saida saida;
     private Entrada entrada;
     private String funcaoInicial = funcaoInicialPadrao;
     private TabelaSimbolos tabelaSimbolosGlobal;
+    private String ultimaReferenciaAcessada;
     
     public void setEntrada(Entrada entrada)
     {
@@ -479,7 +482,16 @@ public class Interpretador
         if (valores != null)
         {
             for (int i = 0; i < valores.size(); i++)
-                valores.set(i, obterValorExpressao((NoExpressao) valores.get(i), tabelaSimbolos));
+            {
+                try
+                {
+                    valores.set(i, obterValorExpressao((NoExpressao) valores.get(i), tabelaSimbolos));
+                }
+                catch (ArrayIndexOutOfBoundsException aioobe)
+                {
+                    throw new ErroIndiceVetorInvalido(valores.size(), i, ultimaReferenciaAcessada);
+                }
+            }
         }
 
         return valores;
@@ -925,6 +937,7 @@ public class Interpretador
     private Object obterValorReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos) throws Exception
     {
             String nome = referencia.getNome();
+            ultimaReferenciaAcessada = nome;
             Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
 
             if (referencia instanceof NoReferenciaVariavel)
@@ -948,7 +961,7 @@ public class Interpretador
 
                     else
 
-                    if (referencia.getNome().equals("limpar"))
+                    if (referencia.getNome().equals("limpa"))
                     {
                         limpar();
                     }
@@ -961,6 +974,11 @@ public class Interpretador
                     }
                     else
 
+                    if (referencia.getNome().equals("tamanho"))
+                        return tamanho((NoChamadaFuncao) referencia, tabelaSimbolos);
+                        
+                    else
+                        
                     if (simbolo instanceof Funcao)
                             return obterValorFuncao((Funcao) simbolo, (NoChamadaFuncao) referencia, tabelaSimbolos);
                     /*
@@ -1069,9 +1087,16 @@ public class Interpretador
 
     private Object obterValorVetor(Vetor vetor, NoReferenciaVetor referenciaVetor, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            int indice = (Integer) obterValorExpressao(referenciaVetor.getIndice(), tabelaSimbolos);
-
+        int indice = (Integer) obterValorExpressao(referenciaVetor.getIndice(), tabelaSimbolos);
+        
+        try
+        {            
             return vetor.getValor(indice);
+        }
+        catch (ArrayIndexOutOfBoundsException aioobe)
+        {
+            throw new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome());
+        }   
     }
 
     private Object obterValorMatriz(Matriz matriz, NoReferenciaMatriz referenciaMatriz, TabelaSimbolos tabelaSimbolos) throws Exception
@@ -1226,5 +1251,16 @@ public class Interpretador
     {
         List<NoExpressao> parametros = noChamadaFuncao.getParametros();
         Thread.sleep((Integer) obterValorExpressao(parametros.get(0), tabelaSimbolos));
+    }
+
+    private int tamanho(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos) throws Exception
+    {
+        NoReferencia referencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
+        String nome = referencia.getNome();
+        ultimaReferenciaAcessada = nome;        
+        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
+        Vetor vetor = (Vetor) simbolo;
+     
+        return vetor.getTamanho();
     }
 }
