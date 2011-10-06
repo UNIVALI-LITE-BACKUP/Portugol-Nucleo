@@ -47,8 +47,8 @@ public final class NoSe extends NoBloco
     }
     
     @Override
-    public void aceitar(VisitanteASA visitor)
+    public void aceitar(VisitanteASA visitante) throws Exception
     {
-        visitor.visitar(this);
+        visitante.visitar(this);
     }
 }

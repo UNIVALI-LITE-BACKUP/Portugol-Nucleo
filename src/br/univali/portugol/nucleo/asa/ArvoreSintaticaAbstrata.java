@@ -26,5 +26,5 @@ public abstract class ArvoreSintaticaAbstrata
             this.listaDeclaracoesGlobais = listaDeclaracoesGlobais;
     }
         
-    public abstract void aceitar(VisitanteASA visitor);
+    public abstract void aceitar(VisitanteASA visitante) throws Exception;
 }

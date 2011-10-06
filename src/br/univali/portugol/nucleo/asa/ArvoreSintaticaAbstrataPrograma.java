@@ -14,7 +14,7 @@ public final class ArvoreSintaticaAbstrataPrograma extends ArvoreSintaticaAbstra
 	}
 
     @Override
-    public void aceitar(VisitanteASA visitante) {
+    public void aceitar(VisitanteASA visitante) throws Exception {
         visitante.visitar(this);
     }
 }

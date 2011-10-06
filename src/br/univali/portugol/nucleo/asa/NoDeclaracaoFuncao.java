@@ -46,8 +46,8 @@ public final class NoDeclaracaoFuncao extends NoDeclaracao
 	}
 
     @Override
-    public void aceitar(VisitanteASA visitor) 
+    public void aceitar(VisitanteASA visitante) throws Exception 
     {
-        visitor.visitar(this);
+        visitante.visitar(this);
     }
 }

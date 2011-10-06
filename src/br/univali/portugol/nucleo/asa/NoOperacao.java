@@ -59,8 +59,8 @@ public final class NoOperacao extends NoExpressao
     }
     
     @Override
-    public void aceitar(VisitanteASA visitor)
+    public void aceitar(VisitanteASA visitante) throws Exception
     {
-        visitor.visitar(this);
+        visitante.visitar(this);
     }
 }

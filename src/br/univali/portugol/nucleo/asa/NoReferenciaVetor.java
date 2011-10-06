@@ -35,8 +35,8 @@ public final class NoReferenciaVetor extends NoReferencia
     }
     
     @Override
-    public void aceitar(VisitanteASA visitor)
+    public void aceitar(VisitanteASA visitante) throws Exception
     {
-        visitor.visitar(this);
+        visitante.visitar(this);
     }
 }
