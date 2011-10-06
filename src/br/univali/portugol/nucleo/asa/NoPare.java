@@ -8,5 +8,11 @@ package br.univali.portugol.nucleo.asa;
 
 public final class NoPare extends NoBloco
 {
+    
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 
 }

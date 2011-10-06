@@ -8,32 +8,38 @@ package br.univali.portugol.nucleo.asa;
 
 public final class NoMenosUnario extends NoExpressao
 {
-	private NoExpressao expressao;
-	private TrechoCodigoFonte tokenMenos;
-	
-	public NoMenosUnario(NoExpressao expressao)
-	{
-		this.expressao = expressao;
-	}
-	
-	public NoExpressao getExpressao()
-	{
-		return expressao;
-	}
-	
-	public TrechoCodigoFonte getTokenMenos()
-	{
-		return tokenMenos;
-	}
-	
-	public void setTokenMenos(TrechoCodigoFonte tokenMenos)
-	{
-		this.tokenMenos = tokenMenos;
-	}
+    private NoExpressao expressao;
+    private TrechoCodigoFonte tokenMenos;
 
-	@Override
-	protected TrechoCodigoFonte montarTrechoCodigoFonte()
-	{
-		return expressao.getReferenciaCodigo();
-	}
+    public NoMenosUnario(NoExpressao expressao)
+    {
+            this.expressao = expressao;
+    }
+
+    public NoExpressao getExpressao()
+    {
+            return expressao;
+    }
+
+    public TrechoCodigoFonte getTokenMenos()
+    {
+            return tokenMenos;
+    }
+
+    public void setTokenMenos(TrechoCodigoFonte tokenMenos)
+    {
+            this.tokenMenos = tokenMenos;
+    }
+
+    @Override
+    protected TrechoCodigoFonte montarTrechoCodigoFonte()
+    {
+            return expressao.getReferenciaCodigo();
+    }
+    
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 }

@@ -10,19 +10,21 @@ import java.util.List;
 
 public abstract class ArvoreSintaticaAbstrata
 {	
-	private List<NoDeclaracao> listaDeclaracoesGlobais;
-		
-	public ArvoreSintaticaAbstrata()
-	{		
-	}	
-	
-	public List<NoDeclaracao> getListaDeclaracoesGlobais()
-	{
-		return listaDeclaracoesGlobais;
-	}
-	
-	public void setListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
-	{
-		this.listaDeclaracoesGlobais = listaDeclaracoesGlobais;
-	}
+    private List<NoDeclaracao> listaDeclaracoesGlobais;
+
+    public ArvoreSintaticaAbstrata()
+    {		
+    }	
+
+    public List<NoDeclaracao> getListaDeclaracoesGlobais()
+    {
+            return listaDeclaracoesGlobais;
+    }
+
+    public void setListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
+    {
+            this.listaDeclaracoesGlobais = listaDeclaracoesGlobais;
+    }
+        
+    public abstract void aceitar(VisitanteASA visitor);
 }

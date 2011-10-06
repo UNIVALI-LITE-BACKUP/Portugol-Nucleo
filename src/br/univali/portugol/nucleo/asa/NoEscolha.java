@@ -32,4 +32,10 @@ public final class NoEscolha extends NoBloco
 	{
 		this.casos = casos;
 	}
+        
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

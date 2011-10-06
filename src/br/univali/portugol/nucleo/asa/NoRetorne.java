@@ -8,15 +8,21 @@ package br.univali.portugol.nucleo.asa;
 
 public final class NoRetorne extends NoBloco
 {
-	private NoExpressao expressao;
-	
-	public NoRetorne(NoExpressao expressao)
-	{
-		this.expressao = expressao;
-	}
+    private NoExpressao expressao;
 
-	public NoExpressao getExpressao()
-	{
-		return expressao;
-	}
+    public NoRetorne(NoExpressao expressao)
+    {
+            this.expressao = expressao;
+    }
+
+    public NoExpressao getExpressao()
+    {
+            return expressao;
+    }
+    
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 }

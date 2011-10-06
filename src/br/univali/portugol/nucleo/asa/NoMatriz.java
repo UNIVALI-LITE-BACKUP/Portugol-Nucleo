@@ -10,21 +10,27 @@ import java.util.List;
 
 public final class NoMatriz extends NoExpressao
 {
-	private List<List<Object>> valores;
+    private List<List<Object>> valores;
 
-	public NoMatriz(List<List<Object>> valores)
-	{
-		this.valores = valores;
-	}
-	
-	public List<List<Object>> getValores()
-	{
-		return valores;
-	}
-	
-	@Override
-	protected TrechoCodigoFonte montarTrechoCodigoFonte()
-	{
-		return null;
-	}
+    public NoMatriz(List<List<Object>> valores)
+    {
+            this.valores = valores;
+    }
+
+    public List<List<Object>> getValores()
+    {
+            return valores;
+    }
+
+    @Override
+    protected TrechoCodigoFonte montarTrechoCodigoFonte()
+    {
+            return null;
+    }
+    
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 }

@@ -32,4 +32,10 @@ public final class NoInteiro extends NoExpressao
     {
         return trechoCodigoFonte;
     }
+    
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 }

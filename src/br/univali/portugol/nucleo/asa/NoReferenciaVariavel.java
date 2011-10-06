@@ -8,21 +8,27 @@ package br.univali.portugol.nucleo.asa;
 
 public final class NoReferenciaVariavel extends NoReferencia
 {
-	public NoReferenciaVariavel(String nome)
-	{
-		super(nome);
-	}	
-	
-	@Override
-	protected TrechoCodigoFonte montarTrechoCodigoFonte()
-	{		
-		int tamanhoTexto = 0;
+    public NoReferenciaVariavel(String nome)
+    {
+            super(nome);
+    }	
 
+    @Override
+    protected TrechoCodigoFonte montarTrechoCodigoFonte()
+    {		
+        int tamanhoTexto = 0;
+            
         int linha = getTrechoCodigoFonteNome().getLinha();
-		int coluna = getTrechoCodigoFonteNome().getColuna();		
-		
-		tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto();
-		
-		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
-	}
+        int coluna = getTrechoCodigoFonteNome().getColuna();		
+
+        tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto();
+
+        return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
+    }
+    
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 }

@@ -45,4 +45,10 @@ public final class NoChamadaFuncao extends NoReferencia
 		
 		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

@@ -10,27 +10,33 @@ import java.util.List;
 
 public final class NoVetor extends NoExpressao
 {
-	private TrechoCodigoFonte token;
-	private List<Object> valores;
-	
-	public NoVetor(List<Object> valores)
-	{
-		this.valores = valores;
-	}
-	
-	public List<Object> getValores()
-	{
-		return valores;
-	}
-		
-	public void setToken(TrechoCodigoFonte token)
-	{
-		this.token = token;
-	}
+    private TrechoCodigoFonte token;
+    private List<Object> valores;
 
-	@Override
-	protected TrechoCodigoFonte montarTrechoCodigoFonte()
-	{
-		return token;
-	}
+    public NoVetor(List<Object> valores)
+    {
+        this.valores = valores;
+    }
+
+    public List<Object> getValores()
+    {
+        return valores;
+    }
+
+    public void setToken(TrechoCodigoFonte token)
+    {
+        this.token = token;
+    }
+
+    @Override
+    protected TrechoCodigoFonte montarTrechoCodigoFonte()
+    {
+        return token;
+    }
+    
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 }

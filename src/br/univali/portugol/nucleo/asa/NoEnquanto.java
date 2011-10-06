@@ -33,4 +33,10 @@ public final class NoEnquanto extends NoBloco
 	{
 		this.blocos = blocos;
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

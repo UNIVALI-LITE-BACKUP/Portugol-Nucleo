@@ -12,4 +12,9 @@ public final class ArvoreSintaticaAbstrataPrograma extends ArvoreSintaticaAbstra
 	{
 
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitante) {
+        visitante.visitar(this);
+    }
 }

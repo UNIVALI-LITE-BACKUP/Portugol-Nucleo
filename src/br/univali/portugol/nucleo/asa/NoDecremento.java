@@ -31,4 +31,10 @@ public final class NoDecremento extends NoExpressao
 		
 		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

@@ -8,5 +8,7 @@ package br.univali.portugol.nucleo.asa;
 
 public abstract class NoBloco
 {
-	
+
+    public abstract void aceitar(VisitanteASA visitante);
+    
 }

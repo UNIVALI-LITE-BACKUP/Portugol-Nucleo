@@ -12,4 +12,10 @@ public final class NoDeclaracaoVariavel extends NoDeclaracao
 	{
 		super(nome, tipoDado, constante);
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    } 
 }

@@ -27,4 +27,10 @@ public final class NoDeclaracaoMatriz extends NoDeclaracao
 	{
 		return numeroColunas;
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

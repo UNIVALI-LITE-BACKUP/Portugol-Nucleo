@@ -8,23 +8,23 @@ package br.univali.portugol.nucleo.asa;
 
 public final class NoCaracter extends NoExpressao
 {
-	private char valor;
-	private TrechoCodigoFonte trechoCodigoFonte;
-	
-	public NoCaracter(char valor)
-	{
-		setValor(valor);
-	}
-	
-	public char getValor()
-	{
-		return valor;
-	}
-	
-	private void setValor(char valor)
-	{
-		this.valor = valor;
-	}
+    private char valor;
+    private TrechoCodigoFonte trechoCodigoFonte;
+
+    public NoCaracter(char valor)
+    {
+        setValor(valor);
+    }
+
+    public char getValor()
+    {
+        return valor;
+    }
+
+    private void setValor(char valor)
+    {
+        this.valor = valor;
+    }
 
     public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
     {
@@ -32,9 +32,15 @@ public final class NoCaracter extends NoExpressao
     }
 	
 
-	@Override
-	protected TrechoCodigoFonte montarTrechoCodigoFonte()
-	{
-		return trechoCodigoFonte;
-	}
+    @Override
+    protected TrechoCodigoFonte montarTrechoCodigoFonte()
+    {
+        return trechoCodigoFonte;
+    }
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

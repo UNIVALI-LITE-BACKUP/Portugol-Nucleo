@@ -32,4 +32,10 @@ public final class NoFacaEnquanto extends NoBloco
 	{
 		return condicao;
 	}
+        
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

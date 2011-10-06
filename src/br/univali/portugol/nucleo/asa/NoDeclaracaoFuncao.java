@@ -44,4 +44,10 @@ public final class NoDeclaracaoFuncao extends NoDeclaracao
 	{
 		this.parametros = parametros;
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

@@ -20,4 +20,10 @@ public final class NoDeclaracaoVetor extends NoDeclaracao
 	{
 		return tamanho;
 	}
+
+    @Override
+    public void aceitar(VisitanteASA visitor) 
+    {
+        visitor.visitar(this);
+    }
 }

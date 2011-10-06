@@ -8,28 +8,34 @@ package br.univali.portugol.nucleo.asa;
 
 public final class NoIncremento extends NoExpressao
 {
-	private NoExpressao expressao;
-	
-	public NoIncremento(NoExpressao expressao)
-	{
-		this.expressao = expressao;
-	}
+    private NoExpressao expressao;
 
-	public NoExpressao getExpressao()
-	{
-		return expressao;
-	}
+    public NoIncremento(NoExpressao expressao)
+    {
+            this.expressao = expressao;
+    }
 
-	@Override
-	protected TrechoCodigoFonte montarTrechoCodigoFonte()
-	{
-		TrechoCodigoFonte token = expressao.getReferenciaCodigo();
-		
-		int linha = token.getLinha();
-		int coluna = token.getColuna();
-		int tamanhoTexto = token.getTamanhoTexto() + 2;
-		
-		return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
-	}	
+    public NoExpressao getExpressao()
+    {
+            return expressao;
+    }
+
+    @Override
+    protected TrechoCodigoFonte montarTrechoCodigoFonte()
+    {
+            TrechoCodigoFonte token = expressao.getReferenciaCodigo();
+
+            int linha = token.getLinha();
+            int coluna = token.getColuna();
+            int tamanhoTexto = token.getTamanhoTexto() + 2;
+
+            return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
+    }
+        
+    @Override
+    public void aceitar(VisitanteASA visitor)
+    {
+        visitor.visitar(this);
+    }
 
 }
