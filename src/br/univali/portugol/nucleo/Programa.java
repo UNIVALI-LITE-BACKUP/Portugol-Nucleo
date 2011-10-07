@@ -10,6 +10,7 @@ import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.execucao.Saida;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import br.univali.portugol.relator.erros.RelatorErros;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,9 @@ import java.util.List;
 
 public final class Programa
 {
+    private String codigo;
+    private RelatorErros relatorErros;
+    
     private Saida saida;
     private Entrada entrada;
     private String funcaoInicial = Interpretador.funcaoInicialPadrao;
@@ -34,6 +38,8 @@ public final class Programa
     
     public Programa() 
     {
+        relatorErros =  new RelatorErros();
+        relatorErros.inicializar("Portugol Núcleo", "1.0");
         observadores = new ArrayList<ObservadorExecucao>();
     }
     
@@ -89,6 +95,7 @@ public final class Programa
                     {   
                         resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                         resultadoExecucao.setErro(new ErroExecucaoNaoTratado(erro));
+                        relatorErros.relatarErro(erro, codigo);
                         notificarEncerramentoExecucao(resultadoExecucao);
                     }
                 }
@@ -179,6 +186,16 @@ public final class Programa
     {
         this.saida = saida;
     }
+
+    public void setCodigo(String codigo) 
+    {
+        this.codigo = codigo;
+    }
+
+    public String getCodigo() 
+    {
+        return codigo;
+    }
     
     public boolean isExecutando()
     {
@@ -197,5 +214,5 @@ public final class Programa
         
         for (ObservadorExecucao observador: observadores)
             observador.execucaoEncerrada(this, resultadoExecucao);
-    }
+    }    
 }

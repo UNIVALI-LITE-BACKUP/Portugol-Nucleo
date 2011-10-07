@@ -26,6 +26,7 @@ public final class Portugol
         if (resultadoAnalise.getNumeroTotalErros() == 0)
         {
             Programa programa = new Programa();
+            programa.setCodigo(codigo);
             programa.setArvoreSintaticaAbstrataPrograma((ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata());
 
             return programa;
