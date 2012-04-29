@@ -7,41 +7,39 @@ import java.util.List;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public class NoPercorra extends NoBloco
 {
     private NoExpressao expessao;
-    private List<NoBloco> blocos; 
+    private List<NoBloco> blocos;
 
     public NoPercorra(NoExpressao expressao)
     {
-            this.expessao = expressao;
+        this.expessao = expressao;
     }
 
     public NoExpressao getExpessao()
     {
-            return expessao;
+        return expessao;
     }
 
     public void setExpessao(NoExpressao expessao)
     {
-            this.expessao = expessao;
+        this.expessao = expessao;
     }
 
     public List<NoBloco> getBlocos()
     {
-            return blocos;
+        return blocos;
     }
 
     public void setBlocos(List<NoBloco> blocos)
     {
-            this.blocos = blocos;
+        this.blocos = blocos;
     }
 
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }
-        
 }

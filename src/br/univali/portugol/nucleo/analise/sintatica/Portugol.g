@@ -456,10 +456,10 @@ finally
 }
 
 
-listaParametrosFuncao returns[List<NoParametro> listaParametros] @init
+listaParametrosFuncao returns[List<NoDeclaracaoParametro> listaParametros] @init
 {
 	pilhaContexto.push("listaParametrosFuncao");
-	listaParametros = new ArrayList<NoParametro>();
+	listaParametros = new ArrayList<NoDeclaracaoParametro>();
 }:
 	(
 		(    vDeclaracaoParametro = declaracaoParametro 
@@ -487,7 +487,7 @@ finally
 }
 
 
-declaracaoParametro returns[NoParametro parametro] @init
+declaracaoParametro returns[NoDeclaracaoParametro parametro] @init
 {
 	pilhaContexto.push("declaracaoParametro");
 }:
@@ -496,13 +496,13 @@ declaracaoParametro returns[NoParametro parametro] @init
 	{
 		if (gerarArvore)
 		{
-			NoParametro.ModoAcesso modoAcesso = null;
+			ModoAcesso modoAcesso = null;
 			TipoDado tipoDado = null;
 			TrechoCodigoFonte trechoCodigoFonteTipoDado = null;
 			
-			if (tkr == null) modoAcesso = NoParametro.ModoAcesso.POR_VALOR;
+			if (tkr == null) modoAcesso = ModoAcesso.POR_VALOR;
 			else
-			if (tkr != null) modoAcesso = NoParametro.ModoAcesso.POR_REFERENCIA;
+			if (tkr != null) modoAcesso = ModoAcesso.POR_REFERENCIA;
 			
 			if (informacaoTipoDado != null) 
 			{
@@ -510,7 +510,7 @@ declaracaoParametro returns[NoParametro parametro] @init
 				trechoCodigoFonteTipoDado = informacaoTipoDado.getTrechoCodigoFonte();
 			}
 			
-			parametro = new NoParametro($ID.text, tipoDado, vQuantificador, modoAcesso);
+			parametro = new NoDeclaracaoParametro($ID.text, tipoDado, vQuantificador, modoAcesso);
 			parametro.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($ID));
 			parametro.setTrechoCodigoFonteTipoDado(trechoCodigoFonteTipoDado);
 		}

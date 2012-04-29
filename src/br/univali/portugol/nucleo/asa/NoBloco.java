@@ -6,9 +6,7 @@ package br.univali.portugol.nucleo.asa;
  * 
  */
 
-public abstract class NoBloco
+public abstract class NoBloco extends No
 {
 
-    public abstract void aceitar(VisitanteASA visitante) throws Exception;
-    
 }

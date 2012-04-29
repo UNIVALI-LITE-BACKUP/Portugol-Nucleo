@@ -7,7 +7,6 @@ import java.util.List;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoCaso extends NoBloco
 {
     private List<NoBloco> blocos;
@@ -34,7 +33,7 @@ public final class NoCaso extends NoBloco
     }
 
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception 
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

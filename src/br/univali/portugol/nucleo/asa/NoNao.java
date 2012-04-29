@@ -5,29 +5,28 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoNao extends NoExpressao
 {
     private NoExpressao expressao;
 
     public NoNao(NoExpressao expressao)
     {
-            this.expressao = expressao;
+        this.expressao = expressao;
     }
 
     public NoExpressao getExpressao()
     {
-            return expressao;
+        return expressao;
     }
 
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
-            return null;
+        return null;
     }
-    
+
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

@@ -5,7 +5,6 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoCadeia extends NoExpressao
 {
     private String valor;
@@ -23,7 +22,7 @@ public final class NoCadeia extends NoExpressao
 
     public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
     {
-    this.trechoCodigoFonte = trechoCodigoFonte;
+        this.trechoCodigoFonte = trechoCodigoFonte;
     }
 
     @Override
@@ -33,7 +32,7 @@ public final class NoCadeia extends NoExpressao
     }
 
     private String tratarCadeia(String valor)
-    {        
+    {
         valor = valor.replace("\\n", "\n");
         valor = valor.replace("\\\"", "\"");
         valor = valor.replace("\\t", "\t");
@@ -42,7 +41,7 @@ public final class NoCadeia extends NoExpressao
     }
 
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception 
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

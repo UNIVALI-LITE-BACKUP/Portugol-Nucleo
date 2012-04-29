@@ -7,17 +7,15 @@ import java.util.List;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoPara extends NoBloco
 {
     private List<NoBloco> blocos;
-    private NoBloco inicializacao;		
+    private NoBloco inicializacao;
     private NoExpressao condicao;
     private NoExpressao incremento;
 
     public NoPara()
     {
-
     }
 
     public void setBlocos(List<NoBloco> blocos)
@@ -33,13 +31,12 @@ public final class NoPara extends NoBloco
     public void setCondicao(NoExpressao condicao)
     {
         this.condicao = condicao;
-    }	
+    }
 
     public void setInicializacao(NoBloco inicializacao)
     {
         this.inicializacao = inicializacao;
     }
-
 
     public List<NoBloco> getBlocos()
     {
@@ -62,7 +59,7 @@ public final class NoPara extends NoBloco
     }
 
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

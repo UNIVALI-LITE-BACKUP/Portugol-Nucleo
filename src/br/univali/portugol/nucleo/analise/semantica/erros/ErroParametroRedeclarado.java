@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
-import br.univali.portugol.nucleo.asa.NoParametro;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.Funcao;
 
@@ -13,9 +13,9 @@ import br.univali.portugol.nucleo.simbolos.Funcao;
 public final class ErroParametroRedeclarado extends ErroSemantico
 {
     private Funcao funcao;
-    private NoParametro parametro;
+    private NoDeclaracaoParametro parametro;
 
-    public ErroParametroRedeclarado(NoParametro parametro, Funcao funcao)
+    public ErroParametroRedeclarado(NoDeclaracaoParametro parametro, Funcao funcao)
     {
         super
         (
@@ -32,7 +32,7 @@ public final class ErroParametroRedeclarado extends ErroSemantico
         return funcao;
     }
 
-    public NoParametro getParametro()
+    public NoDeclaracaoParametro getParametro()
     {            
         return parametro;
     }

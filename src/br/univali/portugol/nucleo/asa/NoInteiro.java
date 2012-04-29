@@ -5,17 +5,16 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoInteiro extends NoExpressao
-{	
+{
     private int valor;
     private TrechoCodigoFonte trechoCodigoFonte;
-	
+
     public NoInteiro(int valor)
     {
         this.valor = valor;
     }
-	
+
     public int getValor()
     {
         return valor;
@@ -26,15 +25,14 @@ public final class NoInteiro extends NoExpressao
         this.trechoCodigoFonte = trechoCodigoFonte;
     }
 
-    
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
         return trechoCodigoFonte;
     }
-    
+
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

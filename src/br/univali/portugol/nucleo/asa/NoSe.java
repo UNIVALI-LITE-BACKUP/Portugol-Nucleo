@@ -7,47 +7,44 @@ import java.util.List;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoSe extends NoBloco
-{	
+{
     private NoExpressao condicao;
-
     private List<NoBloco> blocosFalsos;
-    private List<NoBloco> blocosVerdadeiros;	
-
+    private List<NoBloco> blocosVerdadeiros;
 
     public NoSe(NoExpressao condicao)
     {
-            this.condicao = condicao;
+        this.condicao = condicao;
     }
 
     public NoExpressao getCondicao()
     {
-            return condicao;
+        return condicao;
     }
 
     public void setBlocosFalsos(List<NoBloco> blocosFalsos)
     {
-            this.blocosFalsos = blocosFalsos;
+        this.blocosFalsos = blocosFalsos;
     }
 
     public void setBlocosVerdadeiros(List<NoBloco> blocosVerdadeiros)
     {
-            this.blocosVerdadeiros = blocosVerdadeiros;
+        this.blocosVerdadeiros = blocosVerdadeiros;
     }
 
     public List<NoBloco> getBlocosFalsos()
     {
-            return blocosFalsos;
+        return blocosFalsos;
     }
 
     public List<NoBloco> getBlocosVerdadeiros()
     {
-            return blocosVerdadeiros;
+        return blocosVerdadeiros;
     }
-    
+
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

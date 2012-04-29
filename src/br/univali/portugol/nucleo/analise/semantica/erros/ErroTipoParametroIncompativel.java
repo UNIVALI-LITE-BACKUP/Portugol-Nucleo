@@ -2,7 +2,7 @@ package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoParametro;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.Funcao;
 
@@ -17,11 +17,11 @@ public class ErroTipoParametroIncompativel extends ErroSemantico
     private TipoDado tipoDadoParametroEsperado;
     private TipoDado tipoDadoParametroPassado;
 
-    private NoParametro parametroEsperado;
+    private NoDeclaracaoParametro parametroEsperado;
     private NoExpressao parametroPassado;
     private Funcao funcao;
 
-    public ErroTipoParametroIncompativel(TipoDado tipoDadoParametroEsperado, TipoDado tipoDadoParametroPassado, NoParametro parametroEsperado, NoExpressao parametroPassado, Funcao funcao)
+    public ErroTipoParametroIncompativel(TipoDado tipoDadoParametroEsperado, TipoDado tipoDadoParametroPassado, NoDeclaracaoParametro parametroEsperado, NoExpressao parametroPassado, Funcao funcao)
     {
         super
         (
@@ -37,7 +37,7 @@ public class ErroTipoParametroIncompativel extends ErroSemantico
 
     }
 
-    public NoParametro getParametroEsperado()
+    public NoDeclaracaoParametro getParametroEsperado()
     {
         return parametroEsperado;
     }

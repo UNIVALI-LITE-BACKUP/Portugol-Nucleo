@@ -219,7 +219,7 @@ public class Interpretador
         TipoDado tipoDados = declaracaoFuncao.getTipoDado();
         Quantificador quantificador = declaracaoFuncao.getQuantificador();
 
-        List<NoParametro> parametros = declaracaoFuncao.getParametros();
+        List<NoDeclaracaoParametro> parametros = declaracaoFuncao.getParametros();
         List<NoBloco> blocos = declaracaoFuncao.getBlocos();
 
         tabelaSimbolos.adicionar(new Funcao(nome, tipoDados, quantificador, parametros, blocos));
@@ -1120,12 +1120,12 @@ public class Interpretador
             TabelaSimbolos tabelaSimbolosFuncao = new TabelaSimbolos();
 
             List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
-            List<NoParametro> listaParametrosEsperados = funcao.getParametros();
+            List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
 
             for (int i = 0; i < listaParametrosEsperados.size(); i++)
             {
                     NoExpressao parametroPassado = listaParametrosPassados.get(i);
-                    NoParametro parametroEsperado = listaParametrosEsperados.get(i);
+                    NoDeclaracaoParametro parametroEsperado = listaParametrosEsperados.get(i);
 
                     switch (parametroEsperado.getModoAcesso())
                     {
@@ -1138,7 +1138,7 @@ public class Interpretador
     }
     
     @SuppressWarnings("unchecked")
-    private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao) throws Exception
+    private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao) throws Exception
     {
         String nome = parametroEsperado.getNome();
 
@@ -1229,7 +1229,7 @@ public class Interpretador
     }
     */
 
-    private void passarParametroFuncaoPorReferencia(NoExpressao parametroPassado, NoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
+    private void passarParametroFuncaoPorReferencia(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
             NoReferencia referencia = (NoReferencia) parametroPassado;
             String nome = referencia.getNome();

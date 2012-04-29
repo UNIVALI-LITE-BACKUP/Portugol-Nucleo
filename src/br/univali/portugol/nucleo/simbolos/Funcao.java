@@ -4,7 +4,7 @@ import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.Quantificador;
 import java.util.List;
 import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.asa.NoParametro;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 
 /**
  * 
@@ -16,9 +16,9 @@ public final class Funcao extends Simbolo
 {	
 	private List<NoBloco> blocos;
 	private Quantificador quantificador;
-	private List<NoParametro> parametros;
+	private List<NoDeclaracaoParametro> parametros;
 	
-	public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoParametro> parametros, List<NoBloco> blocos)
+	public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, List<NoBloco> blocos)
 	{
 		super(nome, tipoDado);
 		
@@ -37,7 +37,7 @@ public final class Funcao extends Simbolo
 		return quantificador;
 	}
 
-	public List<NoParametro> getParametros()
+	public List<NoDeclaracaoParametro> getParametros()
 	{
 		return parametros;
 	}	

@@ -5,35 +5,34 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoLogico extends NoExpressao
 {
     private boolean valor;
-    private TrechoCodigoFonte trechoCodigoFonte;	
-	
+    private TrechoCodigoFonte trechoCodigoFonte;
+
     public NoLogico(boolean valor)
     {
-            this.valor = valor;
+        this.valor = valor;
     }
-	
+
     public boolean getValor()
     {
-            return valor;
+        return valor;
     }
 
     public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
     {
         this.trechoCodigoFonte = trechoCodigoFonte;
     }
-	
+
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
-            return trechoCodigoFonte;
+        return trechoCodigoFonte;
     }
 
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

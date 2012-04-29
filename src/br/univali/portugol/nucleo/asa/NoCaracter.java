@@ -5,7 +5,6 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoCaracter extends NoExpressao
 {
     private char valor;
@@ -30,7 +29,6 @@ public final class NoCaracter extends NoExpressao
     {
         this.trechoCodigoFonte = trechoCodigoFonte;
     }
-	
 
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
@@ -39,7 +37,7 @@ public final class NoCaracter extends NoExpressao
     }
 
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception 
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }

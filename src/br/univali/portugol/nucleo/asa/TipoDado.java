@@ -5,16 +5,15 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public enum TipoDado
 {
-    INTEIRO ("inteiro", "inteiro", 0),
-    REAL ("real", "real", 0.0),
-    LOGICO ("logico", "lógico", false),
-    CADEIA ("cadeia", "cadeia", null),
-    CARACTER ("caracter", "caracter", '\0'),
-    VAZIO ("vazio", "vazio", null);
-
+    INTEIRO("inteiro", "inteiro", 0),
+    REAL("real", "real", 0.0),
+    LOGICO("logico", "lógico", false),
+    CADEIA("cadeia", "cadeia", null),
+    CARACTER("caracter", "caracter", '\0'),
+    VAZIO("vazio", "vazio", null);
+    
     private String nome;
     private String descricao;
     private Object valorPadrao;
@@ -41,9 +40,13 @@ public enum TipoDado
     {
         TipoDado[] tiposDado = values();
 
-        for (TipoDado tipoDado: tiposDado)
+        for (TipoDado tipoDado : tiposDado)
+        {
             if (nome.equals(tipoDado.nome))
+            {
                 return tipoDado;
+            }
+        }
 
         return TipoDado.VAZIO;
     }

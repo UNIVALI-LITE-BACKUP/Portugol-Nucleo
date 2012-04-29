@@ -141,9 +141,9 @@ public final class AnalisadorSemantico
 
     private void analizarBlocosFuncao(Funcao funcao, TabelaSimbolos tabelaSimbolosFuncao)
     {
-        List<NoParametro> parametros = funcao.getParametros();
+        List<NoDeclaracaoParametro> parametros = funcao.getParametros();
 
-        for (NoParametro parametro : parametros)
+        for (NoDeclaracaoParametro parametro : parametros)
         {
             String nome = parametro.getNome();
             TipoDado tipoDado = parametro.getTipoDado();
@@ -866,7 +866,7 @@ public final class AnalisadorSemantico
     private void analizarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao, TabelaSimbolos tabelaSimbolos)
     {
         int cont = 0;
-        List<NoParametro> parametrosEsperados = funcao.getParametros();
+        List<NoDeclaracaoParametro> parametrosEsperados = funcao.getParametros();
         List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
 
         if (parametrosPassados.size() > funcao.getParametros().size())

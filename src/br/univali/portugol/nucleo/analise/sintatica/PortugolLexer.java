@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2011-09-23 00:45:27
+// $ANTLR 3.4 D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g 2012-04-29 17:54:46
  
 	package br.univali.portugol.nucleo.analise.sintatica;
 
@@ -90,15 +90,15 @@ public class PortugolLexer extends Lexer {
     public PortugolLexer(CharStream input, RecognizerSharedState state) {
         super(input,state);
     }
-    public String getGrammarFileName() { return "/home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g"; }
+    public String getGrammarFileName() { return "D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g"; }
 
     // $ANTLR start "T__38"
     public final void mT__38() throws RecognitionException {
         try {
             int _type = T__38;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:6:7: ( '!=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:6:9: '!='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:6:7: ( '!=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:6:9: '!='
             {
             match("!="); 
 
@@ -120,8 +120,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__39;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:7:7: ( '%' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:7:9: '%'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:7:7: ( '%' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:7:9: '%'
             {
             match('%'); 
 
@@ -141,8 +141,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:8:7: ( '%=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:8:9: '%='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:8:7: ( '%=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:8:9: '%='
             {
             match("%="); 
 
@@ -164,8 +164,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:9:7: ( '&' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:9:9: '&'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:9:7: ( '&' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:9:9: '&'
             {
             match('&'); 
 
@@ -185,8 +185,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:10:7: ( '(' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:10:9: '('
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:10:7: ( '(' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:10:9: '('
             {
             match('('); 
 
@@ -206,8 +206,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:11:7: ( ')' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:11:9: ')'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:11:7: ( ')' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:11:9: ')'
             {
             match(')'); 
 
@@ -227,8 +227,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:12:7: ( '*' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:12:9: '*'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:12:7: ( '*' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:12:9: '*'
             {
             match('*'); 
 
@@ -248,8 +248,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:13:7: ( '*=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:13:9: '*='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:13:7: ( '*=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:13:9: '*='
             {
             match("*="); 
 
@@ -271,8 +271,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:14:7: ( '+' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:14:9: '+'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:14:7: ( '+' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:14:9: '+'
             {
             match('+'); 
 
@@ -292,8 +292,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:15:7: ( '++' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:15:9: '++'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:15:7: ( '++' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:15:9: '++'
             {
             match("++"); 
 
@@ -315,8 +315,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:16:7: ( '+=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:16:9: '+='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:16:7: ( '+=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:16:9: '+='
             {
             match("+="); 
 
@@ -338,8 +338,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:17:7: ( ',' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:17:9: ','
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:17:7: ( ',' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:17:9: ','
             {
             match(','); 
 
@@ -359,8 +359,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:18:7: ( '-' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:18:9: '-'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:18:7: ( '-' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:18:9: '-'
             {
             match('-'); 
 
@@ -380,8 +380,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:19:7: ( '--' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:19:9: '--'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:19:7: ( '--' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:19:9: '--'
             {
             match("--"); 
 
@@ -403,8 +403,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:20:7: ( '-=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:20:9: '-='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:20:7: ( '-=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:20:9: '-='
             {
             match("-="); 
 
@@ -426,8 +426,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:21:7: ( '/' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:21:9: '/'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:21:7: ( '/' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:21:9: '/'
             {
             match('/'); 
 
@@ -447,8 +447,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:22:7: ( '/=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:22:9: '/='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:22:7: ( '/=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:22:9: '/='
             {
             match("/="); 
 
@@ -470,8 +470,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:23:7: ( ':' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:23:9: ':'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:23:7: ( ':' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:23:9: ':'
             {
             match(':'); 
 
@@ -491,8 +491,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:24:7: ( ';' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:24:9: ';'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:24:7: ( ';' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:24:9: ';'
             {
             match(';'); 
 
@@ -512,8 +512,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:25:7: ( '<' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:25:9: '<'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:25:7: ( '<' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:25:9: '<'
             {
             match('<'); 
 
@@ -533,8 +533,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:26:7: ( '<=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:26:9: '<='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:26:7: ( '<=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:26:9: '<='
             {
             match("<="); 
 
@@ -556,8 +556,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:27:7: ( '=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:27:9: '='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:27:7: ( '=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:27:9: '='
             {
             match('='); 
 
@@ -577,8 +577,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__60;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:28:7: ( '==' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:28:9: '=='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:28:7: ( '==' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:28:9: '=='
             {
             match("=="); 
 
@@ -600,8 +600,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__61;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:29:7: ( '>' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:29:9: '>'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:29:7: ( '>' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:29:9: '>'
             {
             match('>'); 
 
@@ -621,8 +621,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__62;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:30:7: ( '>=' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:30:9: '>='
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:30:7: ( '>=' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:30:9: '>='
             {
             match(">="); 
 
@@ -644,8 +644,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__63;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:31:7: ( '[' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:31:9: '['
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:31:7: ( '[' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:31:9: '['
             {
             match('['); 
 
@@ -665,8 +665,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:32:7: ( ']' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:32:9: ']'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:32:7: ( ']' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:32:9: ']'
             {
             match(']'); 
 
@@ -686,8 +686,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__65;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:33:7: ( 'e' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:33:9: 'e'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:33:7: ( 'e' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:33:9: 'e'
             {
             match('e'); 
 
@@ -707,8 +707,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__66;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:34:7: ( 'ou' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:34:9: 'ou'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:34:7: ( 'ou' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:34:9: 'ou'
             {
             match("ou"); 
 
@@ -730,8 +730,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__67;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:35:7: ( '{' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:35:9: '{'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:35:7: ( '{' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:35:9: '{'
             {
             match('{'); 
 
@@ -751,8 +751,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = T__68;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:36:7: ( '}' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:36:9: '}'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:36:7: ( '}' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:36:9: '}'
             {
             match('}'); 
 
@@ -772,8 +772,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_PROGRAMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:114:15: ( 'programa' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:114:17: 'programa'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:114:15: ( 'programa' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:114:17: 'programa'
             {
             match("programa"); 
 
@@ -795,8 +795,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_REAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:115:12: ( 'real' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:115:14: 'real'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:115:12: ( 'real' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:115:14: 'real'
             {
             match("real"); 
 
@@ -818,8 +818,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_VAZIO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:116:13: ( 'vazio' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:116:15: 'vazio'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:116:13: ( 'vazio' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:116:15: 'vazio'
             {
             match("vazio"); 
 
@@ -841,8 +841,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_LOGICO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:117:14: ( 'logico' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:117:16: 'logico'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:117:14: ( 'logico' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:117:16: 'logico'
             {
             match("logico"); 
 
@@ -864,8 +864,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_CADEIA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:118:14: ( 'cadeia' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:118:16: 'cadeia'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:118:14: ( 'cadeia' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:118:16: 'cadeia'
             {
             match("cadeia"); 
 
@@ -887,8 +887,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_INTEIRO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:119:15: ( 'inteiro' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:119:17: 'inteiro'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:119:15: ( 'inteiro' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:119:17: 'inteiro'
             {
             match("inteiro"); 
 
@@ -910,8 +910,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_CARACTER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:120:15: ( 'caracter' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:120:17: 'caracter'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:120:15: ( 'caracter' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:120:17: 'caracter'
             {
             match("caracter"); 
 
@@ -933,8 +933,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_ESCOLHA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:121:14: ( 'escolha' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:121:16: 'escolha'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:121:14: ( 'escolha' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:121:16: 'escolha'
             {
             match("escolha"); 
 
@@ -956,8 +956,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_CASO_CONTRARIO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:122:20: ( 'caso contrario' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:122:22: 'caso contrario'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:122:20: ( 'caso contrario' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:122:22: 'caso contrario'
             {
             match("caso contrario"); 
 
@@ -979,8 +979,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_CASO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:123:12: ( 'caso' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:123:14: 'caso'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:123:12: ( 'caso' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:123:14: 'caso'
             {
             match("caso"); 
 
@@ -1002,8 +1002,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_CONST;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:124:13: ( 'const' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:124:15: 'const'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:124:13: ( 'const' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:124:15: 'const'
             {
             match("const"); 
 
@@ -1025,8 +1025,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_FUNCAO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:125:14: ( 'funcao' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:125:16: 'funcao'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:125:14: ( 'funcao' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:125:16: 'funcao'
             {
             match("funcao"); 
 
@@ -1048,8 +1048,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_RETORNE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:126:14: ( 'retorne' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:126:16: 'retorne'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:126:14: ( 'retorne' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:126:16: 'retorne'
             {
             match("retorne"); 
 
@@ -1071,8 +1071,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_PARA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:127:12: ( 'para' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:127:14: 'para'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:127:12: ( 'para' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:127:14: 'para'
             {
             match("para"); 
 
@@ -1094,8 +1094,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_PARE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:128:12: ( 'pare' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:128:14: 'pare'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:128:12: ( 'pare' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:128:14: 'pare'
             {
             match("pare"); 
 
@@ -1117,8 +1117,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_FACA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:129:12: ( 'faca' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:129:14: 'faca'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:129:12: ( 'faca' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:129:14: 'faca'
             {
             match("faca"); 
 
@@ -1140,8 +1140,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_ENQUANTO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:130:15: ( 'enquanto' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:130:17: 'enquanto'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:130:15: ( 'enquanto' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:130:17: 'enquanto'
             {
             match("enquanto"); 
 
@@ -1163,8 +1163,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_SE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:131:11: ( 'se' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:131:13: 'se'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:131:11: ( 'se' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:131:13: 'se'
             {
             match("se"); 
 
@@ -1186,8 +1186,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_SENAO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:132:13: ( 'senao' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:132:15: 'senao'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:132:13: ( 'senao' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:132:15: 'senao'
             {
             match("senao"); 
 
@@ -1207,8 +1207,8 @@ public class PortugolLexer extends Lexer {
     // $ANTLR start "PR_FALSO"
     public final void mPR_FALSO() throws RecognitionException {
         try {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:134:21: ( 'falso' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:134:23: 'falso'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:134:21: ( 'falso' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:134:23: 'falso'
             {
             match("falso"); 
 
@@ -1227,8 +1227,8 @@ public class PortugolLexer extends Lexer {
     // $ANTLR start "PR_VERDADEIRO"
     public final void mPR_VERDADEIRO() throws RecognitionException {
         try {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:135:25: ( 'verdadeiro' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:135:27: 'verdadeiro'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:135:25: ( 'verdadeiro' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:135:27: 'verdadeiro'
             {
             match("verdadeiro"); 
 
@@ -1249,8 +1249,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = OPERADOR_NAO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:137:16: ( 'nao' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:137:18: 'nao'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:137:16: ( 'nao' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:137:18: 'nao'
             {
             match("nao"); 
 
@@ -1272,7 +1272,7 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = LOGICO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:139:11: ( PR_VERDADEIRO | PR_FALSO )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:139:11: ( PR_VERDADEIRO | PR_FALSO )
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -1291,7 +1291,7 @@ public class PortugolLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:139:14: PR_VERDADEIRO
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:139:14: PR_VERDADEIRO
                     {
                     mPR_VERDADEIRO(); 
 
@@ -1299,7 +1299,7 @@ public class PortugolLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:139:30: PR_FALSO
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:139:30: PR_FALSO
                     {
                     mPR_FALSO(); 
 
@@ -1322,8 +1322,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:141:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:141:11: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:141:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:141:11: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
@@ -1335,7 +1335,7 @@ public class PortugolLexer extends Lexer {
             }
 
 
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:141:35: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:141:35: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
             loop2:
             do {
                 int alt2=2;
@@ -1348,7 +1348,7 @@ public class PortugolLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
+            	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:
             	    {
             	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
             	        input.consume();
@@ -1385,10 +1385,10 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = INTEIRO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:143:13: ( ( '0' .. '9' )* )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:143:15: ( '0' .. '9' )*
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:143:13: ( ( '0' .. '9' )* )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:143:15: ( '0' .. '9' )*
             {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:143:15: ( '0' .. '9' )*
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:143:15: ( '0' .. '9' )*
             loop3:
             do {
                 int alt3=2;
@@ -1401,7 +1401,7 @@ public class PortugolLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
+            	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:
             	    {
             	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
             	        input.consume();
@@ -1438,10 +1438,10 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = REAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:145:10: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:145:13: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:145:10: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:145:13: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:145:13: ( '0' .. '9' )+
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:145:13: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -1455,7 +1455,7 @@ public class PortugolLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
+            	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:
             	    {
             	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
             	        input.consume();
@@ -1482,7 +1482,7 @@ public class PortugolLexer extends Lexer {
 
             match('.'); 
 
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:145:29: ( '0' .. '9' )+
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:145:29: ( '0' .. '9' )+
             int cnt5=0;
             loop5:
             do {
@@ -1496,7 +1496,7 @@ public class PortugolLexer extends Lexer {
 
                 switch (alt5) {
             	case 1 :
-            	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
+            	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:
             	    {
             	    if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
             	        input.consume();
@@ -1537,12 +1537,12 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = CADEIA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:11: ( '\"' ( SEQ_ESC |~ ( '\\\\' | '\"' ) )* '\"' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:13: '\"' ( SEQ_ESC |~ ( '\\\\' | '\"' ) )* '\"'
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:147:11: ( '\"' ( SEQ_ESC |~ ( '\\\\' | '\"' ) )* '\"' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:147:13: '\"' ( SEQ_ESC |~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
 
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:17: ( SEQ_ESC |~ ( '\\\\' | '\"' ) )*
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:147:17: ( SEQ_ESC |~ ( '\\\\' | '\"' ) )*
             loop6:
             do {
                 int alt6=3;
@@ -1558,7 +1558,7 @@ public class PortugolLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:19: SEQ_ESC
+            	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:147:19: SEQ_ESC
             	    {
             	    mSEQ_ESC(); 
 
@@ -1566,7 +1566,7 @@ public class PortugolLexer extends Lexer {
             	    }
             	    break;
             	case 2 :
-            	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:29: ~ ( '\\\\' | '\"' )
+            	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:147:29: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '!')||(input.LA(1) >= '#' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
             	        input.consume();
@@ -1605,12 +1605,12 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = CARACTER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:149:13: ( '\\'' ( SEQ_ESC |~ ( '\\'' | '\\\\' ) ) '\\'' )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:149:17: '\\'' ( SEQ_ESC |~ ( '\\'' | '\\\\' ) ) '\\''
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:149:13: ( '\\'' ( SEQ_ESC |~ ( '\\'' | '\\\\' ) ) '\\'' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:149:17: '\\'' ( SEQ_ESC |~ ( '\\'' | '\\\\' ) ) '\\''
             {
             match('\''); 
 
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:149:22: ( SEQ_ESC |~ ( '\\'' | '\\\\' ) )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:149:22: ( SEQ_ESC |~ ( '\\'' | '\\\\' ) )
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -1629,7 +1629,7 @@ public class PortugolLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:149:24: SEQ_ESC
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:149:24: SEQ_ESC
                     {
                     mSEQ_ESC(); 
 
@@ -1637,7 +1637,7 @@ public class PortugolLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:149:34: ~ ( '\\'' | '\\\\' )
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:149:34: ~ ( '\\'' | '\\\\' )
                     {
                     if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
                         input.consume();
@@ -1673,8 +1673,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = ESPACO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:151:11: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:151:13: ( ' ' | '\\t' | '\\r' | '\\n' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:151:11: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:151:13: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
             if ( (input.LA(1) >= '\t' && input.LA(1) <= '\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
                 input.consume();
@@ -1702,8 +1702,8 @@ public class PortugolLexer extends Lexer {
     // $ANTLR start "DIGIT_HEX"
     public final void mDIGIT_HEX() throws RecognitionException {
         try {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:154:22: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:154:22: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
                 input.consume();
@@ -1728,7 +1728,7 @@ public class PortugolLexer extends Lexer {
     // $ANTLR start "SEQ_ESC"
     public final void mSEQ_ESC() throws RecognitionException {
         try {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ESC_UNICODE | ESC_OCTAL )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:156:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ESC_UNICODE | ESC_OCTAL )
             int alt8=3;
             int LA8_0 = input.LA(1);
 
@@ -1781,7 +1781,7 @@ public class PortugolLexer extends Lexer {
             }
             switch (alt8) {
                 case 1 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:23: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:156:23: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
 
@@ -1798,7 +1798,7 @@ public class PortugolLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:70: ESC_UNICODE
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:156:70: ESC_UNICODE
                     {
                     mESC_UNICODE(); 
 
@@ -1806,7 +1806,7 @@ public class PortugolLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:87: ESC_OCTAL
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:156:87: ESC_OCTAL
                     {
                     mESC_OCTAL(); 
 
@@ -1826,7 +1826,7 @@ public class PortugolLexer extends Lexer {
     // $ANTLR start "ESC_OCTAL"
     public final void mESC_OCTAL() throws RecognitionException {
         try {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:158:21: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:158:21: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt9=3;
             int LA9_0 = input.LA(1);
 
@@ -1877,7 +1877,7 @@ public class PortugolLexer extends Lexer {
             }
             switch (alt9) {
                 case 1 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:158:23: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:158:23: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1914,7 +1914,7 @@ public class PortugolLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:158:66: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:158:66: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1941,7 +1941,7 @@ public class PortugolLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:158:100: '\\\\' ( '0' .. '7' )
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:158:100: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); 
 
@@ -1970,8 +1970,8 @@ public class PortugolLexer extends Lexer {
     // $ANTLR start "ESC_UNICODE"
     public final void mESC_UNICODE() throws RecognitionException {
         try {
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:160:23: ( '\\\\' 'u' DIGIT_HEX DIGIT_HEX DIGIT_HEX DIGIT_HEX )
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:160:25: '\\\\' 'u' DIGIT_HEX DIGIT_HEX DIGIT_HEX DIGIT_HEX
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:160:23: ( '\\\\' 'u' DIGIT_HEX DIGIT_HEX DIGIT_HEX DIGIT_HEX )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:160:25: '\\\\' 'u' DIGIT_HEX DIGIT_HEX DIGIT_HEX DIGIT_HEX
             {
             match('\\'); 
 
@@ -2004,7 +2004,7 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = COMENTARIO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:162:14: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' | '/*' ( options {greedy=false; } : . )* '*/' )
+            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:162:14: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' | '/*' ( options {greedy=false; } : . )* '*/' )
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -2034,13 +2034,13 @@ public class PortugolLexer extends Lexer {
             }
             switch (alt13) {
                 case 1 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:164:2: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:164:2: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
                     {
                     match("//"); 
 
 
 
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:164:7: (~ ( '\\n' | '\\r' ) )*
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:164:7: (~ ( '\\n' | '\\r' ) )*
                     loop10:
                     do {
                         int alt10=2;
@@ -2053,7 +2053,7 @@ public class PortugolLexer extends Lexer {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
+                    	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:
                     	    {
                     	    if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '\f')||(input.LA(1) >= '\u000E' && input.LA(1) <= '\uFFFF') ) {
                     	        input.consume();
@@ -2074,7 +2074,7 @@ public class PortugolLexer extends Lexer {
                     } while (true);
 
 
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:164:21: ( '\\r' )?
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:164:21: ( '\\r' )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -2083,7 +2083,7 @@ public class PortugolLexer extends Lexer {
                     }
                     switch (alt11) {
                         case 1 :
-                            // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:164:21: '\\r'
+                            // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:164:21: '\\r'
                             {
                             match('\r'); 
 
@@ -2100,13 +2100,13 @@ public class PortugolLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:166:3: '/*' ( options {greedy=false; } : . )* '*/'
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:166:3: '/*' ( options {greedy=false; } : . )* '*/'
                     {
                     match("/*"); 
 
 
 
-                    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:166:8: ( options {greedy=false; } : . )*
+                    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:166:8: ( options {greedy=false; } : . )*
                     loop12:
                     do {
                         int alt12=2;
@@ -2131,7 +2131,7 @@ public class PortugolLexer extends Lexer {
 
                         switch (alt12) {
                     	case 1 :
-                    	    // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:166:36: .
+                    	    // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:166:36: .
                     	    {
                     	    matchAny(); 
 
@@ -2164,12 +2164,12 @@ public class PortugolLexer extends Lexer {
     // $ANTLR end "COMENTARIO"
 
     public void mTokens() throws RecognitionException {
-        // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:8: ( T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO_CONTRARIO | PR_CASO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | OPERADOR_NAO | LOGICO | ID | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO )
+        // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:8: ( T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO_CONTRARIO | PR_CASO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | OPERADOR_NAO | LOGICO | ID | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO )
         int alt14=59;
         alt14 = dfa14.predict(input);
         switch (alt14) {
             case 1 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:10: T__38
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:10: T__38
                 {
                 mT__38(); 
 
@@ -2177,7 +2177,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 2 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:16: T__39
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:16: T__39
                 {
                 mT__39(); 
 
@@ -2185,7 +2185,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 3 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:22: T__40
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:22: T__40
                 {
                 mT__40(); 
 
@@ -2193,7 +2193,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 4 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:28: T__41
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:28: T__41
                 {
                 mT__41(); 
 
@@ -2201,7 +2201,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 5 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:34: T__42
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:34: T__42
                 {
                 mT__42(); 
 
@@ -2209,7 +2209,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 6 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:40: T__43
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:40: T__43
                 {
                 mT__43(); 
 
@@ -2217,7 +2217,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 7 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:46: T__44
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:46: T__44
                 {
                 mT__44(); 
 
@@ -2225,7 +2225,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 8 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:52: T__45
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:52: T__45
                 {
                 mT__45(); 
 
@@ -2233,7 +2233,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 9 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:58: T__46
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:58: T__46
                 {
                 mT__46(); 
 
@@ -2241,7 +2241,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 10 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:64: T__47
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:64: T__47
                 {
                 mT__47(); 
 
@@ -2249,7 +2249,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 11 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:70: T__48
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:70: T__48
                 {
                 mT__48(); 
 
@@ -2257,7 +2257,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 12 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:76: T__49
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:76: T__49
                 {
                 mT__49(); 
 
@@ -2265,7 +2265,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 13 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:82: T__50
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:82: T__50
                 {
                 mT__50(); 
 
@@ -2273,7 +2273,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 14 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:88: T__51
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:88: T__51
                 {
                 mT__51(); 
 
@@ -2281,7 +2281,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 15 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:94: T__52
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:94: T__52
                 {
                 mT__52(); 
 
@@ -2289,7 +2289,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 16 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:100: T__53
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:100: T__53
                 {
                 mT__53(); 
 
@@ -2297,7 +2297,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 17 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:106: T__54
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:106: T__54
                 {
                 mT__54(); 
 
@@ -2305,7 +2305,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 18 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:112: T__55
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:112: T__55
                 {
                 mT__55(); 
 
@@ -2313,7 +2313,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 19 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:118: T__56
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:118: T__56
                 {
                 mT__56(); 
 
@@ -2321,7 +2321,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 20 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:124: T__57
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:124: T__57
                 {
                 mT__57(); 
 
@@ -2329,7 +2329,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 21 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:130: T__58
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:130: T__58
                 {
                 mT__58(); 
 
@@ -2337,7 +2337,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 22 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:136: T__59
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:136: T__59
                 {
                 mT__59(); 
 
@@ -2345,7 +2345,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 23 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:142: T__60
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:142: T__60
                 {
                 mT__60(); 
 
@@ -2353,7 +2353,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 24 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:148: T__61
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:148: T__61
                 {
                 mT__61(); 
 
@@ -2361,7 +2361,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 25 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:154: T__62
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:154: T__62
                 {
                 mT__62(); 
 
@@ -2369,7 +2369,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 26 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:160: T__63
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:160: T__63
                 {
                 mT__63(); 
 
@@ -2377,7 +2377,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 27 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:166: T__64
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:166: T__64
                 {
                 mT__64(); 
 
@@ -2385,7 +2385,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 28 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:172: T__65
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:172: T__65
                 {
                 mT__65(); 
 
@@ -2393,7 +2393,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 29 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:178: T__66
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:178: T__66
                 {
                 mT__66(); 
 
@@ -2401,7 +2401,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 30 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:184: T__67
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:184: T__67
                 {
                 mT__67(); 
 
@@ -2409,7 +2409,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 31 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:190: T__68
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:190: T__68
                 {
                 mT__68(); 
 
@@ -2417,7 +2417,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 32 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:196: PR_PROGRAMA
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:196: PR_PROGRAMA
                 {
                 mPR_PROGRAMA(); 
 
@@ -2425,7 +2425,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 33 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:208: PR_REAL
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:208: PR_REAL
                 {
                 mPR_REAL(); 
 
@@ -2433,7 +2433,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 34 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:216: PR_VAZIO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:216: PR_VAZIO
                 {
                 mPR_VAZIO(); 
 
@@ -2441,7 +2441,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 35 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:225: PR_LOGICO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:225: PR_LOGICO
                 {
                 mPR_LOGICO(); 
 
@@ -2449,7 +2449,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 36 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:235: PR_CADEIA
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:235: PR_CADEIA
                 {
                 mPR_CADEIA(); 
 
@@ -2457,7 +2457,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 37 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:245: PR_INTEIRO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:245: PR_INTEIRO
                 {
                 mPR_INTEIRO(); 
 
@@ -2465,7 +2465,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 38 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:256: PR_CARACTER
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:256: PR_CARACTER
                 {
                 mPR_CARACTER(); 
 
@@ -2473,7 +2473,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 39 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:268: PR_ESCOLHA
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:268: PR_ESCOLHA
                 {
                 mPR_ESCOLHA(); 
 
@@ -2481,7 +2481,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 40 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:279: PR_CASO_CONTRARIO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:279: PR_CASO_CONTRARIO
                 {
                 mPR_CASO_CONTRARIO(); 
 
@@ -2489,7 +2489,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 41 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:297: PR_CASO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:297: PR_CASO
                 {
                 mPR_CASO(); 
 
@@ -2497,7 +2497,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 42 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:305: PR_CONST
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:305: PR_CONST
                 {
                 mPR_CONST(); 
 
@@ -2505,7 +2505,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 43 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:314: PR_FUNCAO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:314: PR_FUNCAO
                 {
                 mPR_FUNCAO(); 
 
@@ -2513,7 +2513,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 44 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:324: PR_RETORNE
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:324: PR_RETORNE
                 {
                 mPR_RETORNE(); 
 
@@ -2521,7 +2521,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 45 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:335: PR_PARA
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:335: PR_PARA
                 {
                 mPR_PARA(); 
 
@@ -2529,7 +2529,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 46 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:343: PR_PARE
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:343: PR_PARE
                 {
                 mPR_PARE(); 
 
@@ -2537,7 +2537,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 47 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:351: PR_FACA
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:351: PR_FACA
                 {
                 mPR_FACA(); 
 
@@ -2545,7 +2545,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 48 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:359: PR_ENQUANTO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:359: PR_ENQUANTO
                 {
                 mPR_ENQUANTO(); 
 
@@ -2553,7 +2553,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 49 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:371: PR_SE
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:371: PR_SE
                 {
                 mPR_SE(); 
 
@@ -2561,7 +2561,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 50 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:377: PR_SENAO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:377: PR_SENAO
                 {
                 mPR_SENAO(); 
 
@@ -2569,7 +2569,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 51 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:386: OPERADOR_NAO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:386: OPERADOR_NAO
                 {
                 mOPERADOR_NAO(); 
 
@@ -2577,7 +2577,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 52 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:399: LOGICO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:399: LOGICO
                 {
                 mLOGICO(); 
 
@@ -2585,7 +2585,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 53 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:406: ID
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:406: ID
                 {
                 mID(); 
 
@@ -2593,7 +2593,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 54 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:409: INTEIRO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:409: INTEIRO
                 {
                 mINTEIRO(); 
 
@@ -2601,7 +2601,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 55 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:417: REAL
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:417: REAL
                 {
                 mREAL(); 
 
@@ -2609,7 +2609,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 56 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:422: CADEIA
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:422: CADEIA
                 {
                 mCADEIA(); 
 
@@ -2617,7 +2617,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 57 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:429: CARACTER
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:429: CARACTER
                 {
                 mCARACTER(); 
 
@@ -2625,7 +2625,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 58 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:438: ESPACO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:438: ESPACO
                 {
                 mESPACO(); 
 
@@ -2633,7 +2633,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 59 :
-                // /home/luiz/Documentos/Projetos/Portugol/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:445: COMENTARIO
+                // D:\\Luiz Fernando\\Documentos\\Projetos\\Portugol\\Portugol-Nucleo\\src\\br\\univali\\portugol\\nucleo\\analise\\sintatica\\Portugol.g:1:445: COMENTARIO
                 {
                 mCOMENTARIO(); 
 

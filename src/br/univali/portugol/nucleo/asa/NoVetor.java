@@ -7,7 +7,6 @@ import java.util.List;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class NoVetor extends NoExpressao
 {
     private TrechoCodigoFonte token;
@@ -33,9 +32,9 @@ public final class NoVetor extends NoExpressao
     {
         return token;
     }
-    
+
     @Override
-    public void aceitar(VisitanteASA visitante) throws Exception
+    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         visitante.visitar(this);
     }
