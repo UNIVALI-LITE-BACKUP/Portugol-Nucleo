@@ -8,5 +8,5 @@ package br.univali.portugol.nucleo.asa;
 
 public abstract class No 
 {
-    public abstract void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA;
+    public abstract Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA;
 }

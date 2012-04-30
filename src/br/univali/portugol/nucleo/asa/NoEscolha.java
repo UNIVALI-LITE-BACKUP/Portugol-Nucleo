@@ -33,8 +33,8 @@ public final class NoEscolha extends NoBloco
     }
 
     @Override
-    public void aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
+    public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
-        visitante.visitar(this);
+        return visitante.visitar(this);
     }
 }
