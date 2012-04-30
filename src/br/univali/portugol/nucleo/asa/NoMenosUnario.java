@@ -25,9 +25,9 @@ public final class NoMenosUnario extends NoExpressao
         return trechoCodigoFonteMenos;
     }
 
-    public void setTrechoCodigoFonteMenos(TrechoCodigoFonte tokenMenos)
+    public void setTrechoCodigoFonteMenos(TrechoCodigoFonte trechoCodigoFonteMenos)
     {
-        this.trechoCodigoFonteMenos = tokenMenos;
+        this.trechoCodigoFonteMenos = trechoCodigoFonteMenos;
     }
 
     @Override
