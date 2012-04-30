@@ -35,8 +35,8 @@ public final class NoReferenciaMatriz extends NoReferencia
         int mLinha = getTrechoCodigoFonteNome().getLinha();
         int mColuna = getTrechoCodigoFonteNome().getColuna();
 
-        tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto() + linha.getReferenciaCodigo().getTamanhoTexto();
-        tamanhoTexto = tamanhoTexto + 4 + coluna.getReferenciaCodigo().getTamanhoTexto();
+        tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto() + linha.getTrechoCodigoFonte().getTamanhoTexto();
+        tamanhoTexto = tamanhoTexto + 4 + coluna.getTrechoCodigoFonte().getTamanhoTexto();
 
         return new TrechoCodigoFonte(mLinha, mColuna, tamanhoTexto);
     }

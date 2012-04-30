@@ -23,8 +23,8 @@ public final class ErroExpressaoTipoLogicoEsperada extends ErroSemantico
     {
         super
         (
-            expressao.getReferenciaCodigo().getLinha(),
-            expressao.getReferenciaCodigo().getColuna()
+            expressao.getTrechoCodigoFonte().getLinha(),
+            expressao.getTrechoCodigoFonte().getColuna()
         );
 
         this.bloco = bloco;

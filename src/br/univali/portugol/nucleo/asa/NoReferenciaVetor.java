@@ -28,7 +28,7 @@ public final class NoReferenciaVetor extends NoReferencia
         int linha = getTrechoCodigoFonteNome().getLinha();
         int coluna = getTrechoCodigoFonteNome().getColuna();
 
-        tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto() + 2 + noIndice.getReferenciaCodigo().getTamanhoTexto();
+        tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto() + 2 + noIndice.getTrechoCodigoFonte().getTamanhoTexto();
 
         return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
     }

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public final class NoVetor extends NoExpressao
 {
-    private TrechoCodigoFonte token;
+    private TrechoCodigoFonte trechoCodigoFonte;
     private List<Object> valores;
 
     public NoVetor(List<Object> valores)
@@ -22,15 +22,15 @@ public final class NoVetor extends NoExpressao
         return valores;
     }
 
-    public void setToken(TrechoCodigoFonte token)
+    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
     {
-        this.token = token;
+        this.trechoCodigoFonte = trechoCodigoFonte;
     }
 
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
-        return token;
+        return trechoCodigoFonte;
     }
 
     @Override

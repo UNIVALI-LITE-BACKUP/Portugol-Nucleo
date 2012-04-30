@@ -22,8 +22,8 @@ public final class ErroOperacaoComExpressaoConstante extends ErroSemantico
     {
         super
         (
-            expressao.getReferenciaCodigo().getLinha(),
-            expressao.getReferenciaCodigo().getColuna()
+            expressao.getTrechoCodigoFonte().getLinha(),
+            expressao.getTrechoCodigoFonte().getColuna()
         );
 
         this.operacao = operacao;

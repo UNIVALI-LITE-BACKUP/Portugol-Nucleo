@@ -40,7 +40,7 @@ public final class NoChamadaFuncao extends NoReferencia
         {
             for (NoExpressao parametro : parametros)
             {
-                tamanhoTexto = tamanhoTexto + parametro.getReferenciaCodigo().getTamanhoTexto();
+                tamanhoTexto = tamanhoTexto + parametro.getTrechoCodigoFonte().getTamanhoTexto();
             }
         }
 

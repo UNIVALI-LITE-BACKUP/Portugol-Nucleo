@@ -22,11 +22,11 @@ public final class NoIncremento extends NoExpressao
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
-        TrechoCodigoFonte token = expressao.getReferenciaCodigo();
+        TrechoCodigoFonte trechoCodigoFonte = expressao.getTrechoCodigoFonte();
 
-        int linha = token.getLinha();
-        int coluna = token.getColuna();
-        int tamanhoTexto = token.getTamanhoTexto() + 2;
+        int linha = trechoCodigoFonte.getLinha();
+        int coluna = trechoCodigoFonte.getColuna();
+        int tamanhoTexto = trechoCodigoFonte.getTamanhoTexto() + 2;
 
         return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
     }

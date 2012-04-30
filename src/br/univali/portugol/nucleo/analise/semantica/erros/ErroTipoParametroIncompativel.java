@@ -25,8 +25,8 @@ public class ErroTipoParametroIncompativel extends ErroSemantico
     {
         super
         (
-            parametroPassado.getReferenciaCodigo().getLinha(),
-            parametroPassado.getReferenciaCodigo().getColuna()
+            parametroPassado.getTrechoCodigoFonte().getLinha(),
+            parametroPassado.getTrechoCodigoFonte().getColuna()
         );
 
         this.tipoDadoParametroEsperado = tipoDadoParametroEsperado;

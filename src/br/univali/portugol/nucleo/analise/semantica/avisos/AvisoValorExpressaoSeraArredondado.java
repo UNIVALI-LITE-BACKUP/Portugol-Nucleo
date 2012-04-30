@@ -17,8 +17,8 @@ public final class AvisoValorExpressaoSeraArredondado extends AvisoAnalise
     {
         super
         (
-            expressao.getReferenciaCodigo().getLinha(),
-            expressao.getReferenciaCodigo().getColuna()
+            expressao.getTrechoCodigoFonte().getLinha(),
+            expressao.getTrechoCodigoFonte().getColuna()
         );
 
         this.expressao = expressao;        

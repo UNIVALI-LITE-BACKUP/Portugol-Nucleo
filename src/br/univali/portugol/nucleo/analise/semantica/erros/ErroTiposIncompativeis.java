@@ -22,8 +22,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
     {
         super
         (
-            operacao.getReferenciaCodigo().getLinha(),
-            operacao.getReferenciaCodigo().getColuna()
+            operacao.getTrechoCodigoFonte().getLinha(),
+            operacao.getTrechoCodigoFonte().getColuna()
         );
 
         this.operacao = operacao.getOperacao();

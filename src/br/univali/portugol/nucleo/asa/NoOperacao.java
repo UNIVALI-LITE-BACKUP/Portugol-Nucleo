@@ -47,11 +47,11 @@ public final class NoOperacao extends NoExpressao
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
-        TrechoCodigoFonte trechoCodigoFonte = operandoEsquerdo.getReferenciaCodigo();
+        TrechoCodigoFonte trechoCodigoFonte = operandoEsquerdo.getTrechoCodigoFonte();
 
         int linha = trechoCodigoFonte.getLinha();
         int coluna = trechoCodigoFonte.getColuna();
-        int tamanhoTexto = trechoCodigoFonte.getTamanhoTexto() + ((getTrechoCodigoFonteOperador() != null) ? getTrechoCodigoFonteOperador().getTamanhoTexto() : 0) + operandoDireito.getReferenciaCodigo().getTamanhoTexto();
+        int tamanhoTexto = trechoCodigoFonte.getTamanhoTexto() + ((getTrechoCodigoFonteOperador() != null) ? getTrechoCodigoFonteOperador().getTamanhoTexto() : 0) + operandoDireito.getTrechoCodigoFonte().getTamanhoTexto();
 
         return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
     }
