@@ -5,12 +5,11 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * 
  */
-
 public final class ExcecaoVisitaASA extends Exception
 {
     private No no;
     private ArvoreSintaticaAbstrata arvoreSintaticaAbstrata;
-    
+
     public ExcecaoVisitaASA(String mensagem, ArvoreSintaticaAbstrata arvoreSintaticaAbstrata, No no)
     {
         super(mensagem);
