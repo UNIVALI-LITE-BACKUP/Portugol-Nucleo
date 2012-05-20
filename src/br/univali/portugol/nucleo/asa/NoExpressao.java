@@ -7,6 +7,7 @@ package br.univali.portugol.nucleo.asa;
  */
 public abstract class NoExpressao extends NoBloco
 {
+    private boolean entreParentesis = false;
     private TrechoCodigoFonte trechoCodigoFonte = null;
 
     public NoExpressao()
@@ -23,5 +24,15 @@ public abstract class NoExpressao extends NoBloco
         return trechoCodigoFonte;
     }
 
+    public boolean estaEntreParentesis()
+    {
+        return entreParentesis;
+    }
+
+    public void setEntreParentesis(boolean entreParentesis)
+    {
+        this.entreParentesis = entreParentesis;
+    }
+    
     protected abstract TrechoCodigoFonte montarTrechoCodigoFonte();
 }

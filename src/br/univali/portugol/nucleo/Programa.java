@@ -2,7 +2,6 @@
 package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.execucao.Entrada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
@@ -14,7 +13,6 @@ import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.relator.erros.RelatorErros;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -73,9 +71,7 @@ public final class Programa
                         interpretador.setFuncaoInicial(funcaoInicial);
 
                         notificarInicioExecucao();
-                                                saida.escrever("Fia da mae!");
-//JOptionPane.showMessageDialog(null, entrada.ler(TipoDado.CADEIA));
-
+                        
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
                         
@@ -100,7 +96,7 @@ public final class Programa
                     catch (Exception erro)
                     {   
                         if (resultadoExecucao == null) resultadoExecucao = new ResultadoExecucao();
-                        erro.printStackTrace();
+                        
                         resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                         resultadoExecucao.setErro(new ErroExecucaoNaoTratado(erro));
                         relatorErros.relatarErro(erro, codigo);

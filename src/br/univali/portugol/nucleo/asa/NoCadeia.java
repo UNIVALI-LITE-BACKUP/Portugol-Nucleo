@@ -33,7 +33,7 @@ public final class NoCadeia extends NoExpressao
 
     private String tratarCadeia(String valor)
     {
-        valor = valor.replace("\\n", "\n");
+        valor = valor.replace("\\n", "\r\n");
         valor = valor.replace("\\\"", "\"");
         valor = valor.replace("\\t", "\t");
 

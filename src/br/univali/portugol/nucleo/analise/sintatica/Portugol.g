@@ -1059,12 +1059,18 @@ expressao8 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao8");
 }:	
 	
-	('(' vExpressao = expressao ')' | vExpressao = tipoPrimitivo | vExpressao = referencia | vExpressao = matrizVetor) 
+	( parentesis = '(' vExpressao = expressao ')' | vExpressao = tipoPrimitivo | vExpressao = referencia | vExpressao = matrizVetor) 
 	
 		(operador = '++' | operador = '--')?
 	{
 		if (gerarArvore)
 		{
+		
+			if (parentesis != null)
+			{
+				vExpressao.setEntreParentesis(true);
+			}
+			
 			if (operador != null)
 			{
 				if (operador.getText().equals("++")) expressao = new NoIncremento(vExpressao);
