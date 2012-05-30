@@ -1,10 +1,13 @@
 package br.univali.portugol.nucleo.asa;
 
 /**
- *
+ * Esta interface serve como base para a implementação de um objeto caminhador da ASA
+ * utilizando o padrão visitor.
+ * 
  * @author Fillipi Domingos Pelz
  * @author Luiz Fernando Noshchang
  * 
+ * @version 1.0
  */
 public interface VisitanteASA
 {
@@ -52,6 +55,13 @@ public interface VisitanteASA
 
     Object visitar(NoPare noPare) throws ExcecaoVisitaASA;
 
+    /**
+     * @param noPercorra           nó da ASA.
+     * @return                     um objeto qualquer. 
+     * @throws ExcecaoVisitaASA
+     * @deprecated                 a classe NoPercoraa será removida nas versões futuras.
+     */
+    @Deprecated
     Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA;
 
     Object visitar(NoReal noReal) throws ExcecaoVisitaASA;

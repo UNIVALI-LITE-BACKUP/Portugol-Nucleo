@@ -1,30 +1,44 @@
 package br.univali.portugol.nucleo.simbolos;
 
 /**
+ * Representa um ponteiro para outro símbolo durante a execução de um programa.
  * 
  * @author Luiz Fernando Noschang
- * 
+ * @since 1.0
  */
-
 public final class Ponteiro extends Simbolo
-{	
-	protected Simbolo simbolo;
-	
-	public Ponteiro(String nome, Simbolo simbolo)
-	{
-		super(nome, simbolo.getTipoDado());
-		this.simbolo = simbolo;
-	}
-	
-	public Simbolo getSimboloApontado()
-	{
-		setUtilizado(true);
-		return simbolo;
-	}
+{
+    protected Simbolo simbolo;
 
-	@Override
-	public Ponteiro copiar(String novoNome)
-	{
-		return new Ponteiro(novoNome, simbolo);
-	}
+    /**
+     * 
+     * @param nome        o nome deste ponteiro.
+     * @param simbolo     o símbolo que está sendo apontado por este ponteiro.
+     */
+    public Ponteiro(String nome, Simbolo simbolo)
+    {
+        super(nome, simbolo.getTipoDado());
+        this.simbolo = simbolo;
+    }
+
+    /**
+     * Obtém o símbolo apontado por este ponteiro.
+     * 
+     * @return      o símbolo apontado por este ponteiro.
+     * @since 1.0
+     */
+    public Simbolo getSimboloApontado()
+    {
+        setUtilizado(true);
+        return simbolo;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Ponteiro copiar(String novoNome)
+    {
+        return new Ponteiro(novoNome, simbolo);
+    }
 }

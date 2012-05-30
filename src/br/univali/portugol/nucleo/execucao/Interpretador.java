@@ -524,7 +524,7 @@ public class Interpretador
             case SUBTRACAO_ACUMULATIVA: return obterValorOperacaoSubtracaoAtribuitiva(operacao, tabelaSimbolos);
             case SOMA_ACUMULATIVA: return obterValorOperacaoSomaAtribuitiva(operacao, tabelaSimbolos);
             case MULTIPLICACAO_ACUMULATIVA: return obterValorOperacaoMultiplicacaoAtribuitiva(operacao, tabelaSimbolos);
-            case MODULO_ATRIBUITIVO: return obterValorOperacaoModuloAtribuitivo(operacao, tabelaSimbolos);
+            case MODULO_ACUMULATIVO: return obterValorOperacaoModuloAtribuitivo(operacao, tabelaSimbolos);
         }
 
         Object valorOperandoEsquerdo = obterValorExpressao(operacao.getOperandoEsquerdo(), tabelaSimbolos);

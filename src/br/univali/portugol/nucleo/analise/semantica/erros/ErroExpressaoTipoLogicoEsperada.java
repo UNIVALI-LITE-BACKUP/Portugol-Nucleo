@@ -1,16 +1,22 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
+import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoEnquanto;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
 import br.univali.portugol.nucleo.asa.NoSe;
+import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
- *
+ * Erro gerado pelo analisador semântico quando uma expressão do tipo {@link TipoDado#LOGICO} era
+ * esperada em um comanndo, mas uma expressão de outro tipo foi encontrada.
+ * 
  * @author Luiz Fernando Noschang
- *
+ * @version 1.0
+ * 
+ * @see AnalisadorSemantico
  */
 
 public final class ErroExpressaoTipoLogicoEsperada extends ErroSemantico
@@ -19,6 +25,12 @@ public final class ErroExpressaoTipoLogicoEsperada extends ErroSemantico
     private NoExpressao expressao;
 
 
+    /**
+     * 
+     * @param bloco         o comando que esperava a expressão do tipo {@link TipoDado#LOGICO}.
+     * @param expressao     a expressão encontrada no lugar da expressão do tipo {@link TipoDado#LOGICO}.
+     * @since 1.0
+     */
     public ErroExpressaoTipoLogicoEsperada(NoBloco bloco, NoExpressao expressao)
     {
         super
@@ -31,16 +43,30 @@ public final class ErroExpressaoTipoLogicoEsperada extends ErroSemantico
         this.expressao = expressao;
     }
 
+    /**
+     * Obtém a expressão encontrada no lugar da expressão do tipo {@link TipoDado#LOGICO}.
+     * 
+     * @return     a expressão encontrada no lugar da expressão do tipo {@link TipoDado#LOGICO}.
+     * @since 1.0
+     */
     public NoExpressao getExpressao()
     {
         return expressao;
     }
-
+    /**
+     * Obtém o comando que esperava a expressão do tipo {@link TipoDado#LOGICO}.
+     * 
+     * @return     o comando que esperava a expressão do tipo {@link TipoDado#LOGICO}.
+     * @since 1.0
+     */
     public NoBloco getBloco()
     {
         return bloco;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     protected String construirMensagem()
     {
@@ -51,16 +77,40 @@ public final class ErroExpressaoTipoLogicoEsperada extends ErroSemantico
         return null;
     }
 
+    /**
+     * Constrói uma mensagem de erro personalizada para o comando 'se'.
+     * 
+     * @return     a mensagem de erro personalizada.
+     * @since 1.0
+     * 
+     * @see NoSe
+     */
     private String construirMensagemBlocoSe()
     {
         return "Tipos incompatíveis! A expressão utilizada com o desvio condicional \"se\" deve ser do tipo lógico!";
     }
 
+   /**
+     * Constrói uma mensagem de erro personalizada para o comando 'enquanto'.
+     * 
+     * @return     a mensagem de erro personalizada.
+     * @since 1.0
+     * 
+     * @see NoEnquanto
+     */
     private String construirMensagemBlocoEnquanto()
     {
         return "Tipos incompatíveis! A expressão utilizada com o laço \"enquanto\" dever ser do tipo lógico!";
     }
 
+    /**
+     * Constrói uma mensagem de erro personalizada para o comando 'faca-enquanto'.
+     * 
+     * @return     a mensagem de erro personalizada.
+     * @since 1.0
+     * 
+     * @see NoFacaEnquanto
+     */    
     private String construirMensagemFacaEnquanto()
     {
         return "Tipos incompatíveis! A expressão utilizada com o laço \"faca-enquanto\" deve ser do tipo lógico!";

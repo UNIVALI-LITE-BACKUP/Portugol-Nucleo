@@ -3,6 +3,7 @@ package br.univali.portugol.nucleo.asa;
 import java.util.List;
 
 /**
+ * @deprecated     Não existe mais na sintaxe do Portugol, será removido nas versões futuras.
  * 
  * @author Luiz Fernando Noschang
  * 
