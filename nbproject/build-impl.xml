@@ -528,7 +528,7 @@ is divided into following sections:
                     <path path="${run.classpath.without.build.classes.dir}"/>
                     <chainedmapper>
                         <flattenmapper/>
-                        <globmapper from="*" to="lib/*"/>
+                        <!--<globmapper from="*" to="lib/*"/>-->
                     </chainedmapper>
                 </pathconvert>
                 <taskdef classname="org.netbeans.modules.java.j2seproject.copylibstask.CopyLibs" classpath="${libs.CopyLibs.classpath}" name="copylibs"/>
@@ -539,6 +539,10 @@ is divided into following sections:
                         <customize/>
                     </manifest>
                 </copylibs>
+                <copy todir="${dist.dir}">
+                    <fileset dir="${dist.dir}/lib"/>
+                </copy>
+                <delete dir="${dist.dir}/lib"/>
             </sequential>
         </macrodef>
     </target>
@@ -726,7 +730,9 @@ is divided into following sections:
         <!-- Empty placeholder for easier customization. -->
         <!-- You can override this target in the ../build.xml file. -->
     </target>
-    <target depends="init,compile,-pre-jar,-do-jar-with-manifest,-do-jar-without-manifest,-do-jar-with-mainclass,-do-jar-with-libraries,-post-jar" description="Build JAR." name="jar"/>
+    <target depends="init,compile,-pre-jar,-do-jar-with-manifest,-do-jar-without-manifest,-do-jar-with-mainclass,-do-jar-with-libraries,-post-jar" description="Build JAR." name="jar">
+        <delete file="${dist.dir}/README.TXT"/>
+    </target>    
     <!--
                 =================
                 EXECUTION SECTION
