@@ -7,42 +7,95 @@ import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceVetorInvalido;
 import br.univali.portugol.nucleo.simbolos.*;
 
-
+/**
+ * Esta classe realiza a execução dos programas escritos em Portugol.
+ * <p>
+ * A execução é realizada percorrendo a ASA gerada durante o parsing do código fonte e 
+ * interpretando cada nó no momento em que é encontrado.
+ * 
+ * @author Luiz Fernando Noschang
+ * @version 1.0
+ */
 public class Interpretador
 {
     public static final String funcaoInicialPadrao = "inicio";
-
     private Saida saida;
     private Entrada entrada;
     private String funcaoInicial = funcaoInicialPadrao;
     private TabelaSimbolos tabelaSimbolosGlobal;
     private String ultimaReferenciaAcessada;
-    
+
+    /**
+     * Define a interface para a entrada de dados do programa.
+     * 
+     * @param entrada      a interface para a entrada de dados do programa.
+     * @since 1.0
+     */
     public void setEntrada(Entrada entrada)
     {
         this.entrada = entrada;
     }
 
+    /**
+     * Define a interface para a saída de dados do programa.
+     * 
+     * @param saida      a interface para a saída de dados do programa.
+     * @since 1.0
+     */
     public void setSaida(Saida saida)
     {
         this.saida = saida;
     }
 
-    public Entrada getEntrada() 
+    /**
+     * Obtém a interface que está sendo utilizada para realizar a entrada de
+     * dados do programa.
+     * 
+     * @return      a interface que está sendo utilizada para realizar a entrada 
+     *              de dados do programa.
+     * @since 1.0
+     */
+    public Entrada getEntrada()
     {
         return entrada;
     }
 
-    public Saida getSaida() 
+    /**
+     * Obtém a interface que está sendo utilizada para realizar a saída de
+     * dados do programa.
+     * 
+     * @return      a interface que está sendo utilizada para realizar a saída
+     *              de dados do programa.
+     * @since 1.0
+     */
+    public Saida getSaida()
     {
         return saida;
     }
 
-    public void setFuncaoInicial(String funcaoInicial) 
+    /**
+     * Define o nome da função do programa que será utilizada como ponto de 
+     * partida para a execução.
+     * 
+     * @param funcaoInicial     o nome da função do programa que será utilizada 
+     *                          como ponto de partida para a execução.
+     * @since 1.0
+     */
+    public void setFuncaoInicial(String funcaoInicial)
     {
         this.funcaoInicial = funcaoInicial;
     }
-    
+
+    /**
+     * Interpreta a ASA do programa para realizar sua execução.
+     * 
+     * @param arvoreSintaticaAbstrata            a ASA do programa que está sendo executado.
+     * @param parametros                         a lista de parâmetros que será passada para a função inicial. A função inicial deve 
+     *                                           declarar um vetor do tipo cadeia para que possa receber esta lista de parâmetros.
+     *                                           como seus parâmetros.
+     * @throws ErroFuncaoInicialNaoDeclarada     erro gerado caso a função inicial não seja encontrada.
+     * @throws Exception                         uma exceção qualquer que possa ocorrer durante a execução e que ainda não foi tratada.
+     */    
     public void interpretar(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrata, String[] parametros) throws ErroFuncaoInicialNaoDeclarada, Exception
     {
         this.tabelaSimbolosGlobal = new TabelaSimbolos();
@@ -55,30 +108,40 @@ public class Interpretador
     {
         if (listaDeclaracoesGlobais != null)
         {
-            for (NoDeclaracao declaracao: listaDeclaracoesGlobais)
+            for (NoDeclaracao declaracao : listaDeclaracoesGlobais)
+            {
                 interpretarDeclaracao(declaracao, tabelaSimbolosGlobal);
+            }
         }
     }
 
     private void interpretarDeclaracao(NoDeclaracao declaracao, TabelaSimbolos tabelaSimbolos) throws Exception
     {
         if (declaracao instanceof NoDeclaracaoVariavel)
+        {
             declararVariavel((NoDeclaracaoVariavel) declaracao, tabelaSimbolos);
-
+        }
         else
-
-        if (declaracao instanceof NoDeclaracaoVetor)
-            declararVetor((NoDeclaracaoVetor) declaracao, tabelaSimbolos);
-
-        else
-
-        if (declaracao instanceof NoDeclaracaoMatriz)
-            declararMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
-
-        else
-
-        if (declaracao instanceof NoDeclaracaoFuncao)
-            declararFuncao((NoDeclaracaoFuncao) declaracao, tabelaSimbolos);
+        {
+            if (declaracao instanceof NoDeclaracaoVetor)
+            {
+                declararVetor((NoDeclaracaoVetor) declaracao, tabelaSimbolos);
+            }
+            else
+            {
+                if (declaracao instanceof NoDeclaracaoMatriz)
+                {
+                    declararMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
+                }
+                else
+                {
+                    if (declaracao instanceof NoDeclaracaoFuncao)
+                    {
+                        declararFuncao((NoDeclaracaoFuncao) declaracao, tabelaSimbolos);
+                    }
+                }
+            }
+        }
     }
 
     private void declararVariavel(NoDeclaracaoVariavel declaracaoVariavel, TabelaSimbolos tabelaSimbolos) throws Exception
@@ -115,20 +178,26 @@ public class Interpretador
 
         Vetor vetor = null;
 
-        if (tamanho == 0) vetor = new Vetor(nome, tipoDado, valores);
-        else vetor = new Vetor(nome, tipoDado, tamanho, valores);
+        if (tamanho == 0)
+        {
+            vetor = new Vetor(nome, tipoDado, valores);
+        }
+        else
+        {
+            vetor = new Vetor(nome, tipoDado, tamanho, valores);
+        }
 
         vetor.setConstante(declaracaoVetor.constante());
 
         tabelaSimbolos.adicionar(vetor);
     }
 
-    private void limpar() throws Exception 
+    private void limpar() throws Exception
     {
         if (saida != null)
         {
             saida.limpar();
-        }            
+        }
     }
 
     private int obterTamanhoVetor(NoDeclaracaoVetor declaracaoVetor, TabelaSimbolos tabelaSimbolos)
@@ -168,15 +237,21 @@ public class Interpretador
 
         Matriz matriz;
 
-        if (numeroLinhas == 0) matriz = new Matriz(nome, tipoDado, valores);
-        else matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas, valores);
+        if (numeroLinhas == 0)
+        {
+            matriz = new Matriz(nome, tipoDado, valores);
+        }
+        else
+        {
+            matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas, valores);
+        }
 
         matriz.setConstante(declaracaoMatriz.constante());
 
         tabelaSimbolos.adicionar(matriz);
     }
 
-    private int obterNumeroLinhas(NoDeclaracaoMatriz declaracaoMatriz,TabelaSimbolos tabelaSimbolos)
+    private int obterNumeroLinhas(NoDeclaracaoMatriz declaracaoMatriz, TabelaSimbolos tabelaSimbolos)
     {
         try
         {
@@ -240,8 +315,10 @@ public class Interpretador
 
             interpretarListaBlocos(funcaoPrincipal.getBlocos(), tabelaSimbolosFuncaoPrincipal);
         }
-
-        else throw new ErroFuncaoInicialNaoDeclarada(funcaoInicial);
+        else
+        {
+            throw new ErroFuncaoInicialNaoDeclarada(funcaoInicial);
+        }
     }
 
     private List<Object> converterVetorEmLista(Object[] vetor)
@@ -251,7 +328,9 @@ public class Interpretador
         if (vetor != null)
         {
             for (int i = 0; i < vetor.length; i++)
+            {
                 lista.add(vetor[i]);
+            }
         }
 
         return lista;
@@ -263,10 +342,12 @@ public class Interpretador
         {
             Object valor = null;
 
-            for (NoBloco bloco: blocos)
+            for (NoBloco bloco : blocos)
             {
                 if ((valor = interpretarBloco(bloco, tabelaSimbolos)) != null)
+                {
                     return valor;
+                }
             }
         }
 
@@ -278,33 +359,51 @@ public class Interpretador
         if (bloco != null)
         {
             if (bloco instanceof NoPara)
+            {
                 return interpretarBlocoPara((NoPara) bloco, tabelaSimbolos);
+            }
 
             if (bloco instanceof NoSe)
+            {
                 return interpretarBlocoSe((NoSe) bloco, tabelaSimbolos);
+            }
 
             if (bloco instanceof NoEnquanto)
+            {
                 return interpretarBlocoEnquanto((NoEnquanto) bloco, tabelaSimbolos);
+            }
 
             if (bloco instanceof NoRetorne)
+            {
                 return obterValorExpressao(((NoRetorne) bloco).getExpressao(), tabelaSimbolos);
+            }
 
             if (bloco instanceof NoPare)
+            {
                 return bloco;
+            }
 
             if (bloco instanceof NoFacaEnquanto)
+            {
                 return interpretarBlocoFacaEnquanto((NoFacaEnquanto) bloco, tabelaSimbolos);
+            }
 
             if (bloco instanceof NoEscolha)
+            {
                 return interpretarBlocoEscolha((NoEscolha) bloco, tabelaSimbolos);
+            }
 
             if (bloco instanceof NoDeclaracao)
+            {
                 interpretarDeclaracao((NoDeclaracao) bloco, tabelaSimbolos);
-
+            }
             else
-
-            if (bloco instanceof NoExpressao)
-                obterValorExpressao((NoExpressao) bloco, tabelaSimbolos);
+            {
+                if (bloco instanceof NoExpressao)
+                {
+                    obterValorExpressao((NoExpressao) bloco, tabelaSimbolos);
+                }
+            }
         }
 
         return null;
@@ -318,17 +417,19 @@ public class Interpretador
         interpretarBloco(blocoPara.getInicializacao(), tabelaSimbolos);
         NoExpressao condicao = blocoPara.getCondicao();
 
-        while ((condicao != null)? (Boolean) obterValorExpressao(condicao, tabelaSimbolos) : true)
+        while ((condicao != null) ? (Boolean) obterValorExpressao(condicao, tabelaSimbolos) : true)
         {
             if ((valorRetorno = interpretarListaBlocos(blocoPara.getBlocos(), tabelaSimbolos)) != null)
+            {
                 break;
+            }
 
             obterValorExpressao(blocoPara.getIncremento(), tabelaSimbolos);
         }
 
         tabelaSimbolos.desempilharEscopo();
 
-        return (valorRetorno instanceof NoPare)? null : valorRetorno;
+        return (valorRetorno instanceof NoPare) ? null : valorRetorno;
     }
 
     private Object interpretarBlocoEscolha(NoEscolha blocoEscolha, TabelaSimbolos tabelaSimbolos) throws Exception
@@ -346,7 +447,10 @@ public class Interpretador
                 Object valorRetorno = interpretarListaBlocos(casos.get(i).getBlocos(), tabelaSimbolos);
                 tabelaSimbolos.desempilharEscopo();
 
-                if (valorRetorno != null) return (valorRetorno instanceof NoPare)? null : valorRetorno;
+                if (valorRetorno != null)
+                {
+                    return (valorRetorno instanceof NoPare) ? null : valorRetorno;
+                }
             }
         }
 
@@ -360,13 +464,17 @@ public class Interpretador
         for (int i = 0; i < valoresCasos.length; i++)
         {
             if (valoresCasos[i] == valorEscolha)
+            {
                 return i;
+            }
         }
 
         for (int i = 0; i < valoresCasos.length; i++)
         {
             if (valoresCasos[i] == null)
+            {
                 return i;
+            }
         }
 
         return -1;
@@ -377,7 +485,9 @@ public class Interpretador
         Object[] valores = new Object[casos.size()];
 
         for (int i = 0; i < casos.size(); i++)
+        {
             valores[i] = obterValorExpressao(casos.get(i).getExpressao(), tabelaSimbolos);
+        }
 
         return valores;
     }
@@ -390,7 +500,10 @@ public class Interpretador
             Object valorRetorno = interpretarListaBlocos(blocoFacaEnquanto.getBlocos(), tabelaSimbolos);
             tabelaSimbolos.desempilharEscopo();
 
-            if (valorRetorno != null) return (valorRetorno instanceof NoPare)? null: valorRetorno;
+            if (valorRetorno != null)
+            {
+                return (valorRetorno instanceof NoPare) ? null : valorRetorno;
+            }
         }
         while ((Boolean) obterValorExpressao(blocoFacaEnquanto.getCondicao(), tabelaSimbolos));
 
@@ -405,7 +518,10 @@ public class Interpretador
             Object valorRetorno = interpretarListaBlocos(blocoEnquanto.getBlocos(), tabelaSimbolos);
             tabelaSimbolos.desempilharEscopo();
 
-            if (valorRetorno != null) return (valorRetorno instanceof NoPare)? null : valorRetorno;
+            if (valorRetorno != null)
+            {
+                return (valorRetorno instanceof NoPare) ? null : valorRetorno;
+            }
         }
 
         return null;
@@ -415,7 +531,7 @@ public class Interpretador
     {
         boolean condicao = (Boolean) obterValorExpressao(blocoSe.getCondicao(), tabelaSimbolos);
 
-        List<NoBloco> blocos = (condicao)? blocoSe.getBlocosVerdadeiros() : blocoSe.getBlocosFalsos();
+        List<NoBloco> blocos = (condicao) ? blocoSe.getBlocosVerdadeiros() : blocoSe.getBlocosFalsos();
 
         tabelaSimbolos.empilharEscopo();
         Object valorRetorno = interpretarListaBlocos(blocos, tabelaSimbolos);
@@ -426,20 +542,59 @@ public class Interpretador
 
     private Object obterValorExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-        if (expressao instanceof NoInteiro)         return ((NoInteiro)     expressao).getValor();
-        if (expressao instanceof NoReal)            return ((NoReal)        expressao).getValor();
-        if (expressao instanceof NoCadeia)          return ((NoCadeia)      expressao).getValor();
-        if (expressao instanceof NoCaracter)        return ((NoCaracter)    expressao).getValor();
-        if (expressao instanceof NoLogico)          return ((NoLogico)      expressao).getValor();
+        if (expressao instanceof NoInteiro)
+        {
+            return ((NoInteiro) expressao).getValor();
+        }
+        if (expressao instanceof NoReal)
+        {
+            return ((NoReal) expressao).getValor();
+        }
+        if (expressao instanceof NoCadeia)
+        {
+            return ((NoCadeia) expressao).getValor();
+        }
+        if (expressao instanceof NoCaracter)
+        {
+            return ((NoCaracter) expressao).getValor();
+        }
+        if (expressao instanceof NoLogico)
+        {
+            return ((NoLogico) expressao).getValor();
+        }
 
-        if (expressao instanceof NoVetor)           return obterValoresVetor        ((NoVetor)          expressao, tabelaSimbolos);
-        if (expressao instanceof NoMatriz)          return obterValoresMatriz       ((NoMatriz)         expressao, tabelaSimbolos);
-        if (expressao instanceof NoNao)             return obterValorNao            ((NoNao)            expressao, tabelaSimbolos);
-        if (expressao instanceof NoMenosUnario)     return obterValorMenosUnario    ((NoMenosUnario)    expressao, tabelaSimbolos);
-        if (expressao instanceof NoReferencia)      return obterValorReferencia     ((NoReferencia)     expressao, tabelaSimbolos);
-        if (expressao instanceof NoOperacao)        return obterValorOperacao       ((NoOperacao)       expressao, tabelaSimbolos);
-        if (expressao instanceof NoIncremento)      return obterValorIncremento     ((NoIncremento)     expressao, tabelaSimbolos);
-        if (expressao instanceof NoDecremento)      return obterValorDecremento     ((NoDecremento)     expressao, tabelaSimbolos);
+        if (expressao instanceof NoVetor)
+        {
+            return obterValoresVetor((NoVetor) expressao, tabelaSimbolos);
+        }
+        if (expressao instanceof NoMatriz)
+        {
+            return obterValoresMatriz((NoMatriz) expressao, tabelaSimbolos);
+        }
+        if (expressao instanceof NoNao)
+        {
+            return obterValorNao((NoNao) expressao, tabelaSimbolos);
+        }
+        if (expressao instanceof NoMenosUnario)
+        {
+            return obterValorMenosUnario((NoMenosUnario) expressao, tabelaSimbolos);
+        }
+        if (expressao instanceof NoReferencia)
+        {
+            return obterValorReferencia((NoReferencia) expressao, tabelaSimbolos);
+        }
+        if (expressao instanceof NoOperacao)
+        {
+            return obterValorOperacao((NoOperacao) expressao, tabelaSimbolos);
+        }
+        if (expressao instanceof NoIncremento)
+        {
+            return obterValorIncremento((NoIncremento) expressao, tabelaSimbolos);
+        }
+        if (expressao instanceof NoDecremento)
+        {
+            return obterValorDecremento((NoDecremento) expressao, tabelaSimbolos);
+        }
 
         return null;
     }
@@ -466,10 +621,12 @@ public class Interpretador
             {
                 List<Object> vetor = valores.get(i);
 
-                int colunas = (vetor == null)? 0 : vetor.size();
+                int colunas = (vetor == null) ? 0 : vetor.size();
 
                 for (int j = 0; j < colunas; j++)
-                    vetor.set(j, obterValorExpressao((NoExpressao)vetor.get(j), tabelaSimbolos));
+                {
+                    vetor.set(j, obterValorExpressao((NoExpressao) vetor.get(j), tabelaSimbolos));
+                }
             }
         }
 
@@ -501,16 +658,25 @@ public class Interpretador
 
     private Object obterValorNao(NoNao nao, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-        return ! (Boolean) obterValorExpressao(nao.getExpressao(), tabelaSimbolos);
+        return !(Boolean) obterValorExpressao(nao.getExpressao(), tabelaSimbolos);
     }
 
     private Object obterValorMenosUnario(NoMenosUnario menosUnario, TabelaSimbolos tabelaSimbolos) throws Exception
     {
         Object valor = obterValorExpressao(menosUnario.getExpressao(), tabelaSimbolos);
 
-        if (valor instanceof Double     ) 	return - ((Double) 	valor);
-        if (valor instanceof Integer    ) 	return - ((Integer) 	valor);
-        if (valor instanceof Character  ) 	return - ((Character) 	valor);
+        if (valor instanceof Double)
+        {
+            return -((Double) valor);
+        }
+        if (valor instanceof Integer)
+        {
+            return -((Integer) valor);
+        }
+        if (valor instanceof Character)
+        {
+            return -((Character) valor);
+        }
 
         return null;
     }
@@ -519,12 +685,18 @@ public class Interpretador
     {
         switch (operacao.getOperacao())
         {
-            case ATRIBUICAO: return obterValorOperacaoAtribuicao(operacao, tabelaSimbolos);
-            case DIVISAO_ACUMULATIVA: return obterValorOperacaoDivisaoAtribuitiva(operacao, tabelaSimbolos);
-            case SUBTRACAO_ACUMULATIVA: return obterValorOperacaoSubtracaoAtribuitiva(operacao, tabelaSimbolos);
-            case SOMA_ACUMULATIVA: return obterValorOperacaoSomaAtribuitiva(operacao, tabelaSimbolos);
-            case MULTIPLICACAO_ACUMULATIVA: return obterValorOperacaoMultiplicacaoAtribuitiva(operacao, tabelaSimbolos);
-            case MODULO_ACUMULATIVO: return obterValorOperacaoModuloAtribuitivo(operacao, tabelaSimbolos);
+            case ATRIBUICAO:
+                return obterValorOperacaoAtribuicao(operacao, tabelaSimbolos);
+            case DIVISAO_ACUMULATIVA:
+                return obterValorOperacaoDivisaoAtribuitiva(operacao, tabelaSimbolos);
+            case SUBTRACAO_ACUMULATIVA:
+                return obterValorOperacaoSubtracaoAtribuitiva(operacao, tabelaSimbolos);
+            case SOMA_ACUMULATIVA:
+                return obterValorOperacaoSomaAtribuitiva(operacao, tabelaSimbolos);
+            case MULTIPLICACAO_ACUMULATIVA:
+                return obterValorOperacaoMultiplicacaoAtribuitiva(operacao, tabelaSimbolos);
+            case MODULO_ACUMULATIVO:
+                return obterValorOperacaoModuloAtribuitivo(operacao, tabelaSimbolos);
         }
 
         Object valorOperandoEsquerdo = obterValorExpressao(operacao.getOperandoEsquerdo(), tabelaSimbolos);
@@ -532,19 +704,32 @@ public class Interpretador
 
         switch (operacao.getOperacao())
         {
-            case DIFERENCA: return obterValorOperacaoDiferenca(valorOperandoEsquerdo, valorOperandoDireito);
-            case DIVISAO: return obterValorOperacaoDivisao(valorOperandoEsquerdo, valorOperandoDireito);
-            case E: return obterValorOperacaoE(valorOperandoEsquerdo, valorOperandoDireito);
-            case IGUALDADE: return obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
-            case MAIOR: return obterValorOperacaoMaior(valorOperandoEsquerdo, valorOperandoDireito);
-            case MAIOR_IGUAL: return obterValorOperacaoMaiorIgual(valorOperandoEsquerdo, valorOperandoDireito);
-            case MENOR: return obterValorOperacaoMenor(valorOperandoEsquerdo, valorOperandoDireito);
-            case MENOR_IGUAL: return obterValorOperacaoMenorIgual(valorOperandoEsquerdo, valorOperandoDireito);
-            case MODULO: return obterValorOperacaoModulo(valorOperandoEsquerdo, valorOperandoDireito);
-            case MULTIPLICACAO: return obterValorOperacaoMultiplicacao(valorOperandoEsquerdo, valorOperandoDireito);
-            case OU: return obterValorOperacaoOu(valorOperandoEsquerdo, valorOperandoDireito);
-            case SOMA: return obterValorOperacaoSoma(valorOperandoEsquerdo, valorOperandoDireito);
-            case SUBTRACAO: return obterValorOperacaoSubtracao(valorOperandoEsquerdo, valorOperandoDireito);
+            case DIFERENCA:
+                return obterValorOperacaoDiferenca(valorOperandoEsquerdo, valorOperandoDireito);
+            case DIVISAO:
+                return obterValorOperacaoDivisao(valorOperandoEsquerdo, valorOperandoDireito);
+            case E:
+                return obterValorOperacaoE(valorOperandoEsquerdo, valorOperandoDireito);
+            case IGUALDADE:
+                return obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
+            case MAIOR:
+                return obterValorOperacaoMaior(valorOperandoEsquerdo, valorOperandoDireito);
+            case MAIOR_IGUAL:
+                return obterValorOperacaoMaiorIgual(valorOperandoEsquerdo, valorOperandoDireito);
+            case MENOR:
+                return obterValorOperacaoMenor(valorOperandoEsquerdo, valorOperandoDireito);
+            case MENOR_IGUAL:
+                return obterValorOperacaoMenorIgual(valorOperandoEsquerdo, valorOperandoDireito);
+            case MODULO:
+                return obterValorOperacaoModulo(valorOperandoEsquerdo, valorOperandoDireito);
+            case MULTIPLICACAO:
+                return obterValorOperacaoMultiplicacao(valorOperandoEsquerdo, valorOperandoDireito);
+            case OU:
+                return obterValorOperacaoOu(valorOperandoEsquerdo, valorOperandoDireito);
+            case SOMA:
+                return obterValorOperacaoSoma(valorOperandoEsquerdo, valorOperandoDireito);
+            case SUBTRACAO:
+                return obterValorOperacaoSubtracao(valorOperandoEsquerdo, valorOperandoDireito);
         }
 
         return null;
@@ -565,20 +750,26 @@ public class Interpretador
         }
 
         if (referencia instanceof NoReferenciaVariavel)
+        {
             return atribuirValorVariavel((Variavel) simbolo, valor);
+        }
 
         if (referencia instanceof NoReferenciaVetor)
+        {
             return atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia, tabelaSimbolos);
+        }
 
         if (referencia instanceof NoReferenciaMatriz)
+        {
             return atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia, tabelaSimbolos);
+        }
 
         return null;
     }
 
     private Object obterValorOperacaoDiferenca(Object valorOperandoEsquerdo, Object valorOperandoDireito)
     {
-        return ! (Boolean) obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
+        return !(Boolean) obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
     }
 
     private Object obterValorOperacaoDivisao(Object valorOperandoEsquerdo, Object valorOperandoDireito)
@@ -587,18 +778,30 @@ public class Interpretador
         {
             int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo / (Integer)    valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo / (Double)     valorOperandoDireito;
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo / (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo / (Double) valorOperandoDireito;
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Double)
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo / (Integer)    valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo / (Double)     valorOperandoDireito;
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo / (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo / (Double) valorOperandoDireito;
+                }
+            }
         }
 
         return null;
@@ -623,45 +826,66 @@ public class Interpretador
         {
             String valorEsquerdo = (String) valorOperandoEsquerdo;
 
-           if (valorOperandoDireito instanceof String) return valorEsquerdo.equals((String) valorOperandoDireito);
+            if (valorOperandoDireito instanceof String)
+            {
+                return valorEsquerdo.equals((String) valorOperandoDireito);
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Character)
         {
-            char valorEsquerdo = (Character) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Character)
+            {
+                char valorEsquerdo = (Character) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Character)  return valorEsquerdo == (Character) valorOperandoDireito;
-        }
+                if (valorOperandoDireito instanceof Character)
+                {
+                    return valorEsquerdo == (Character) valorOperandoDireito;
+                }
+            }
+            else
+            {
+                if (valorOperandoEsquerdo instanceof Integer)
+                {
+                    int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-        else
+                    if (valorOperandoDireito instanceof Integer)
+                    {
+                        return valorEsquerdo == (Integer) valorOperandoDireito;
+                    }
+                    if (valorOperandoDireito instanceof Double)
+                    {
+                        return valorEsquerdo == (Double) valorOperandoDireito;
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Double)
+                    {
+                        double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-        if (valorOperandoEsquerdo instanceof Integer)
-        {
-            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+                        if (valorOperandoDireito instanceof Integer)
+                        {
+                            return valorEsquerdo == (Integer) valorOperandoDireito;
+                        }
+                        if (valorOperandoDireito instanceof Double)
+                        {
+                            return valorEsquerdo == (Double) valorOperandoDireito;
+                        }
+                    }
+                    else
+                    {
+                        if (valorOperandoEsquerdo instanceof Boolean)
+                        {
+                            boolean valorEsquerdo = (Boolean) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo == (Integer)   valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo == (Double)    valorOperandoDireito;
-        }
-
-        else
-
-        if (valorOperandoEsquerdo instanceof Double)
-        {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
-
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo == (Integer)   valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo == (Double)    valorOperandoDireito;
-        }
-
-        else
-
-        if (valorOperandoEsquerdo instanceof Boolean)
-        {
-            boolean valorEsquerdo = (Boolean) valorOperandoEsquerdo;
-
-            if (valorOperandoDireito instanceof Boolean) return valorEsquerdo == ((Boolean) valorOperandoDireito);
+                            if (valorOperandoDireito instanceof Boolean)
+                            {
+                                return valorEsquerdo == ((Boolean) valorOperandoDireito);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         return false;
@@ -671,20 +895,32 @@ public class Interpretador
     {
         if (valorOperandoEsquerdo instanceof Integer)
         {
-                int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-                if (valorOperandoDireito instanceof Integer) return valorEsquerdo > (Integer) valorOperandoDireito;
-                if (valorOperandoDireito instanceof Double) return valorEsquerdo > (Double) valorOperandoDireito;
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo > (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo > (Double) valorOperandoDireito;
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Double)
         {
+            if (valorOperandoEsquerdo instanceof Double)
+            {
                 double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-                if (valorOperandoDireito instanceof Integer) return valorEsquerdo > (Integer) valorOperandoDireito;
-                if (valorOperandoDireito instanceof Double) return valorEsquerdo > (Double) valorOperandoDireito;
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo > (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo > (Double) valorOperandoDireito;
+                }
+            }
         }
 
         return null;
@@ -696,18 +932,30 @@ public class Interpretador
         {
             int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer) return valorEsquerdo >= (Integer) valorOperandoDireito;
-            if (valorOperandoDireito instanceof  Double) return valorEsquerdo >= (Double) valorOperandoDireito;
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo >= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo >= (Double) valorOperandoDireito;
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Double)
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer) return valorEsquerdo >= (Integer) valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double) return valorEsquerdo >= (Double) valorOperandoDireito;
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo >= (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo >= (Double) valorOperandoDireito;
+                }
+            }
         }
 
         return null;
@@ -719,18 +967,30 @@ public class Interpretador
         {
             int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer) return valorEsquerdo < (Integer) valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double) return valorEsquerdo < (Double) valorOperandoDireito;
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo < (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo < (Double) valorOperandoDireito;
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Double)
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer) return valorEsquerdo < (Integer) valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double) return valorEsquerdo < (Double) valorOperandoDireito;
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo < (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo < (Double) valorOperandoDireito;
+                }
+            }
         }
 
         return null;
@@ -742,18 +1002,30 @@ public class Interpretador
         {
             int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer) return valorEsquerdo <= (Integer) valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double) return valorEsquerdo <= (Double) valorOperandoDireito;
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo <= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo <= (Double) valorOperandoDireito;
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Double)
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer) return valorEsquerdo <= (Integer) valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double) return valorEsquerdo <= (Double) valorOperandoDireito;
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo <= (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo <= (Double) valorOperandoDireito;
+                }
+            }
         }
 
         return null;
@@ -765,7 +1037,10 @@ public class Interpretador
         {
             int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer) return (valorEsquerdo) % ((Integer) valorOperandoDireito);
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return (valorEsquerdo) % ((Integer) valorOperandoDireito);
+            }
         }
 
         return null;
@@ -785,18 +1060,30 @@ public class Interpretador
         {
             int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo * (Integer)    valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo * (Double)     valorOperandoDireito;
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo * (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo * (Double) valorOperandoDireito;
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Double)
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo * (Integer)    valorOperandoDireito;
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo * (Double)     valorOperandoDireito;
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo * (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo * (Double) valorOperandoDireito;
+                }
+            }
         }
 
         return null;
@@ -821,52 +1108,94 @@ public class Interpretador
         {
             String valorEsquerdo = (String) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof String)     return valorEsquerdo + ((String)            valorOperandoDireito);
-            if (valorOperandoDireito instanceof Character)  return valorEsquerdo + ((Character)         valorOperandoDireito);
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo + ((Integer)           valorOperandoDireito);
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo + ((Double)            valorOperandoDireito);
-            if (valorOperandoDireito instanceof Boolean)    return valorEsquerdo + (String) (((Boolean) valorOperandoDireito)? "verdadeiro" : "falso");
+            if (valorOperandoDireito instanceof String)
+            {
+                return valorEsquerdo + ((String) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Character)
+            {
+                return valorEsquerdo + ((Character) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo + ((Integer) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo + ((Double) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Boolean)
+            {
+                return valorEsquerdo + (String) (((Boolean) valorOperandoDireito) ? "verdadeiro" : "falso");
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Character)
         {
-            char valorEsquerdo = (Character) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Character)
+            {
+                char valorEsquerdo = (Character) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof String)     return valorEsquerdo + ((String)    valorOperandoDireito);
-            if (valorOperandoDireito instanceof Character)  return valorEsquerdo + (((Character) valorOperandoDireito).toString());
-        }
+                if (valorOperandoDireito instanceof String)
+                {
+                    return valorEsquerdo + ((String) valorOperandoDireito);
+                }
+                if (valorOperandoDireito instanceof Character)
+                {
+                    return valorEsquerdo + (((Character) valorOperandoDireito).toString());
+                }
+            }
+            else
+            {
+                if (valorOperandoEsquerdo instanceof Integer)
+                {
+                    int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-        else
+                    if (valorOperandoDireito instanceof String)
+                    {
+                        return valorEsquerdo + ((String) valorOperandoDireito);
+                    }
+                    if (valorOperandoDireito instanceof Integer)
+                    {
+                        return valorEsquerdo + ((Integer) valorOperandoDireito);
+                    }
+                    if (valorOperandoDireito instanceof Double)
+                    {
+                        return valorEsquerdo + ((Double) valorOperandoDireito);
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Double)
+                    {
+                        double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-        if (valorOperandoEsquerdo instanceof Integer)
-        {
-            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+                        if (valorOperandoDireito instanceof String)
+                        {
+                            return valorEsquerdo + ((String) valorOperandoDireito);
+                        }
+                        if (valorOperandoDireito instanceof Integer)
+                        {
+                            return valorEsquerdo + ((Integer) valorOperandoDireito);
+                        }
+                        if (valorOperandoDireito instanceof Double)
+                        {
+                            return valorEsquerdo + ((Double) valorOperandoDireito);
+                        }
+                    }
+                    else
+                    {
+                        if (valorOperandoEsquerdo instanceof Boolean)
+                        {
+                            boolean valorEsquerdo = (Boolean) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof String)     return valorEsquerdo + ((String)    valorOperandoDireito);
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo + ((Integer)   valorOperandoDireito);
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo + ((Double)    valorOperandoDireito);
-        }
-
-        else
-
-        if (valorOperandoEsquerdo instanceof Double)
-        {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
-
-            if (valorOperandoDireito instanceof String)     return valorEsquerdo + ((String)    valorOperandoDireito);
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo + ((Integer)   valorOperandoDireito);
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo + ((Double)    valorOperandoDireito);
-        }
-
-        else
-
-        if (valorOperandoEsquerdo instanceof Boolean)
-        {
-            boolean valorEsquerdo = (Boolean) valorOperandoEsquerdo;
-            
-            if (valorOperandoDireito instanceof String) return (String) ((valorEsquerdo) ? "verdadeiro" : "falso") + (String) valorOperandoDireito;
+                            if (valorOperandoDireito instanceof String)
+                            {
+                                return (String) ((valorEsquerdo) ? "verdadeiro" : "falso") + (String) valorOperandoDireito;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         return null;
@@ -886,18 +1215,30 @@ public class Interpretador
         {
             int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)    return valorEsquerdo - ((Integer)   valorOperandoDireito);
-            if (valorOperandoDireito instanceof Double)     return valorEsquerdo - ((Double)    valorOperandoDireito);
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo - ((Integer) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo - ((Double) valorOperandoDireito);
+            }
         }
-
         else
-
-        if (valorOperandoEsquerdo instanceof Double)
         {
-            double leftValue = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double leftValue = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)    return leftValue - ((Integer)   valorOperandoDireito);
-            if (valorOperandoDireito instanceof Double)     return leftValue - ((Double)    valorOperandoDireito);
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return leftValue - ((Integer) valorOperandoDireito);
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return leftValue - ((Double) valorOperandoDireito);
+                }
+            }
         }
 
         return null;
@@ -913,230 +1254,284 @@ public class Interpretador
 
     private Object atribuirValorVariavel(Variavel variavel, Object valor)
     {
-            Variavel variable = (Variavel) variavel;
-            variable.setValor(valor);
+        Variavel variable = (Variavel) variavel;
+        variable.setValor(valor);
 
-            return valor;
+        return valor;
     }
 
     private Object atribuirValorVetor(Vetor vetor, Object valor, NoReferenciaVetor referenciaVetor, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            int indice = (Integer) obterValorExpressao(referenciaVetor.getIndice(), tabelaSimbolos);
-            vetor.setValor(indice, valor);
+        int indice = (Integer) obterValorExpressao(referenciaVetor.getIndice(), tabelaSimbolos);
+        vetor.setValor(indice, valor);
 
-            return valor;
+        return valor;
     }
 
     private Object atribuirValorMatriz(Matriz matriz, Object valor, NoReferenciaMatriz referenciaMatriz, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            int linha = (Integer) obterValorExpressao(referenciaMatriz.getLinha(), tabelaSimbolos);
-            int coluna = (Integer) obterValorExpressao(referenciaMatriz.getColuna(), tabelaSimbolos);
-            matriz.setValor(linha, coluna, valor);
+        int linha = (Integer) obterValorExpressao(referenciaMatriz.getLinha(), tabelaSimbolos);
+        int coluna = (Integer) obterValorExpressao(referenciaMatriz.getColuna(), tabelaSimbolos);
+        matriz.setValor(linha, coluna, valor);
 
-            return valor;
+        return valor;
     }
-    
+
     private Object obterValorReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            String nome = referencia.getNome();
-            ultimaReferenciaAcessada = nome;
-            Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
+        String nome = referencia.getNome();
+        ultimaReferenciaAcessada = nome;
+        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
 
-            if (referencia instanceof NoReferenciaVariavel)
-                    return obterValorVariavel((Variavel) simbolo);
+        if (referencia instanceof NoReferenciaVariavel)
+        {
+            return obterValorVariavel((Variavel) simbolo);
+        }
 
-            if (referencia instanceof NoReferenciaVetor)
-                    return obterValorVetor((Vetor) simbolo, (NoReferenciaVetor) referencia, tabelaSimbolos);
+        if (referencia instanceof NoReferenciaVetor)
+        {
+            return obterValorVetor((Vetor) simbolo, (NoReferenciaVetor) referencia, tabelaSimbolos);
+        }
 
-            if (referencia instanceof NoReferenciaMatriz)
-                    return obterValorMatriz((Matriz) simbolo, (NoReferenciaMatriz) referencia, tabelaSimbolos);
+        if (referencia instanceof NoReferenciaMatriz)
+        {
+            return obterValorMatriz((Matriz) simbolo, (NoReferenciaMatriz) referencia, tabelaSimbolos);
+        }
 
-            if (referencia instanceof NoChamadaFuncao)
+        if (referencia instanceof NoChamadaFuncao)
+        {
+            if (referencia.getNome().equals("escreva"))
             {
-                    if (referencia.getNome().equals("escreva"))
-                            escreva((NoChamadaFuncao) referencia, tabelaSimbolos);
-
-                    else
-
-                    if (referencia.getNome().equals("leia"))
-                            leia((NoChamadaFuncao) referencia, tabelaSimbolos);
-
-                    else
-
+                escreva((NoChamadaFuncao) referencia, tabelaSimbolos);
+            }
+            else
+            {
+                if (referencia.getNome().equals("leia"))
+                {
+                    leia((NoChamadaFuncao) referencia, tabelaSimbolos);
+                }
+                else
+                {
                     if (referencia.getNome().equals("limpa"))
                     {
                         limpar();
                     }
-                    
                     else
-                        
-                    if (referencia.getNome().equals("aguarde"))
                     {
-                        aguardar((NoChamadaFuncao) referencia, tabelaSimbolos);
+                        if (referencia.getNome().equals("aguarde"))
+                        {
+                            aguardar((NoChamadaFuncao) referencia, tabelaSimbolos);
+                        }
+                        else
+                        {
+                            if (referencia.getNome().equals("tamanho"))
+                            {
+                                return tamanho((NoChamadaFuncao) referencia, tabelaSimbolos);
+                            }
+                            else
+                            {
+                                if (simbolo instanceof Funcao)
+                                {
+                                    return obterValorFuncao((Funcao) simbolo, (NoChamadaFuncao) referencia, tabelaSimbolos);
+                                }
+                            }
+                        }
                     }
-                    else
-
-                    if (referencia.getNome().equals("tamanho"))
-                        return tamanho((NoChamadaFuncao) referencia, tabelaSimbolos);
-                        
-                    else
-                        
-                    if (simbolo instanceof Funcao)
-                            return obterValorFuncao((Funcao) simbolo, (NoChamadaFuncao) referencia, tabelaSimbolos);
-                    /*
-                    else
-
-                    if (simbolo instanceof FuncaoCompilada)
-                            return obterValorFuncaoCompilada((FuncaoCompilada) simbolo, (NoChamadaFuncao) referencia, tabelaSimbolos);
-                    */
+                }
             }
+            /*
+            else
+            
+            if (simbolo instanceof FuncaoCompilada)
+            return obterValorFuncaoCompilada((FuncaoCompilada) simbolo, (NoChamadaFuncao) referencia, tabelaSimbolos);
+             */
+        }
 
-            return null;
-    }                     
-                     
+        return null;
+    }
+
     /*
     private Object obterValorFuncaoCompilada(FuncaoCompilada funcao, NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
     {
-            List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
-            List<NoParametro> listaParametrosEsperados = funcao.getParametros();
-
-            for (int i = 0; i < listaParametrosEsperados.size(); i++)
-            {
-                    NoExpressao parametroPassado = listaParametrosPassados.get(i);
-                    NoParametro parametroEsperado = listaParametrosEsperados.get(i);
-
-                    switch (parametroEsperado.getModoAcesso())
-                    {
-                            case POR_VALOR: passarParametroFuncaoCompiladaPorValor(); break;
-                            case POR_REFERENCIA: passarParametroFuncaoCompiladaPorReferencia(); break;
-                    }
-            }
-
-            return funcao.executar(null);
+    List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
+    List<NoParametro> listaParametrosEsperados = funcao.getParametros();
+    
+    for (int i = 0; i < listaParametrosEsperados.size(); i++)
+    {
+    NoExpressao parametroPassado = listaParametrosPassados.get(i);
+    NoParametro parametroEsperado = listaParametrosEsperados.get(i);
+    
+    switch (parametroEsperado.getModoAcesso())
+    {
+    case POR_VALOR: passarParametroFuncaoCompiladaPorValor(); break;
+    case POR_REFERENCIA: passarParametroFuncaoCompiladaPorReferencia(); break;
     }
-
+    }
+    
+    return funcao.executar(null);
+    }
+    
     private void passarParametroFuncaoCompiladaPorValor()
     {
-
+    
     }
-
+    
     private void passarParametroFuncaoCompiladaPorReferencia()
     {
-
+    
     }
-    */
-
+     */
     private void escreva(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
+        List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
 
-            for (NoExpressao expressao: listaParametrosPassados)
+        for (NoExpressao expressao : listaParametrosPassados)
+        {
+            if (saida != null)
             {
-                if (saida != null)
+                Object valor = obterValorExpressao(expressao, tabelaSimbolos);
+                if (valor instanceof String)
                 {
-                    Object valor = obterValorExpressao(expressao, tabelaSimbolos);
-                    if (valor instanceof String)
+                    if (valor.equals("${show developers}"))
                     {
-                        if (valor.equals("${show developers}"))
-                            valor = "\n\nDesenvolvedores:\n\nFillipi Domingos Pelz\nLuiz Fernando Noschang\n\n";
-                                    
-                        saida.escrever((String) valor);                        
+                        valor = "\n\nDesenvolvedores:\n\nFillipi Domingos Pelz\nLuiz Fernando Noschang\n\n";
+                    }
+
+                    saida.escrever((String) valor);
+                }
+                else
+                {
+                    if (valor instanceof Boolean)
+                    {
+                        saida.escrever((Boolean) valor);
                     }
                     else
-                    if (valor instanceof Boolean) saida.escrever((Boolean) valor);
-                    else
-                    if (valor instanceof Character) saida.escrever((Character) valor);
-                    else
-                    if (valor instanceof Double) saida.escrever((Double) valor);
-                    else
-                    if (valor instanceof Integer) saida.escrever((Integer) valor);
+                    {
+                        if (valor instanceof Character)
+                        {
+                            saida.escrever((Character) valor);
+                        }
+                        else
+                        {
+                            if (valor instanceof Double)
+                            {
+                                saida.escrever((Double) valor);
+                            }
+                            else
+                            {
+                                if (valor instanceof Integer)
+                                {
+                                    saida.escrever((Integer) valor);
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
     }
 
     private void leia(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
+        List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
 
-            for (NoExpressao expressao: listaParametrosPassados)
+        for (NoExpressao expressao : listaParametrosPassados)
+        {
+            if (expressao instanceof NoReferencia)
             {
-                    if (expressao instanceof NoReferencia)
+                NoReferencia referencia = (NoReferencia) expressao;
+
+                String nome = referencia.getNome();
+
+                Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
+                TipoDado tipoDado = simbolo.getTipoDado();
+                Object valor = null;
+
+                if (entrada != null)
+                {
+                    valor = entrada.ler(tipoDado);
+
+                    if (valor == null)
                     {
-                        NoReferencia referencia = (NoReferencia) expressao;
-
-                        String nome = referencia.getNome();
-
-                        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
-                        TipoDado tipoDado = simbolo.getTipoDado();
-                        Object valor = null;
-
-                        if (entrada != null)
-                        {
-                            valor = entrada.ler(tipoDado);
-                            
-                            if (valor ==  null)
-                                valor = tipoDado.getValorPadrao();
-                        }
-
-                        if (simbolo instanceof Variavel) atribuirValorVariavel((Variavel) simbolo, valor);
-                        else
-                        if (simbolo instanceof Vetor) atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia, tabelaSimbolos);
-                        else
-                        if (simbolo instanceof Matriz) atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia, tabelaSimbolos);
+                        valor = tipoDado.getValorPadrao();
                     }
+                }
+
+                if (simbolo instanceof Variavel)
+                {
+                    atribuirValorVariavel((Variavel) simbolo, valor);
+                }
+                else
+                {
+                    if (simbolo instanceof Vetor)
+                    {
+                        atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia, tabelaSimbolos);
+                    }
+                    else
+                    {
+                        if (simbolo instanceof Matriz)
+                        {
+                            atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia, tabelaSimbolos);
+                        }
+                    }
+                }
             }
+        }
     }
 
-    
     private Object obterValorVariavel(Variavel variavel)
     {
-            return variavel.getValor();
+        return variavel.getValor();
     }
 
     private Object obterValorVetor(Vetor vetor, NoReferenciaVetor referenciaVetor, TabelaSimbolos tabelaSimbolos) throws Exception
     {
         int indice = (Integer) obterValorExpressao(referenciaVetor.getIndice(), tabelaSimbolos);
-        
+
         try
-        {            
+        {
             return vetor.getValor(indice);
         }
         catch (ArrayIndexOutOfBoundsException aioobe)
         {
             throw new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome());
-        }   
+        }
     }
 
     private Object obterValorMatriz(Matriz matriz, NoReferenciaMatriz referenciaMatriz, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            int linha = (Integer) obterValorExpressao(referenciaMatriz.getLinha(), tabelaSimbolos);
-            int coluna = (Integer) obterValorExpressao(referenciaMatriz.getColuna(), tabelaSimbolos);
+        int linha = (Integer) obterValorExpressao(referenciaMatriz.getLinha(), tabelaSimbolos);
+        int coluna = (Integer) obterValorExpressao(referenciaMatriz.getColuna(), tabelaSimbolos);
 
-            return matriz.getValor(linha, coluna);
+        return matriz.getValor(linha, coluna);
     }
 
     private Object obterValorFuncao(Funcao funcao, NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos) throws Exception
     {
-            TabelaSimbolos tabelaSimbolosFuncao = new TabelaSimbolos();
+        TabelaSimbolos tabelaSimbolosFuncao = new TabelaSimbolos();
 
-            List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
-            List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
+        List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
+        List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
 
-            for (int i = 0; i < listaParametrosEsperados.size(); i++)
+        for (int i = 0; i < listaParametrosEsperados.size(); i++)
+        {
+            NoExpressao parametroPassado = listaParametrosPassados.get(i);
+            NoDeclaracaoParametro parametroEsperado = listaParametrosEsperados.get(i);
+
+            switch (parametroEsperado.getModoAcesso())
             {
-                    NoExpressao parametroPassado = listaParametrosPassados.get(i);
-                    NoDeclaracaoParametro parametroEsperado = listaParametrosEsperados.get(i);
-
-                    switch (parametroEsperado.getModoAcesso())
-                    {
-                            case POR_VALOR: passarParametroFuncaoPorValor(parametroPassado, parametroEsperado, tabelaSimbolos, tabelaSimbolosFuncao); break;
-                            case POR_REFERENCIA: passarParametroFuncaoPorReferencia(parametroPassado, parametroEsperado, tabelaSimbolos, tabelaSimbolosFuncao); break;
-                    }
+                case POR_VALOR:
+                    passarParametroFuncaoPorValor(parametroPassado, parametroEsperado, tabelaSimbolos, tabelaSimbolosFuncao);
+                    break;
+                case POR_REFERENCIA:
+                    passarParametroFuncaoPorReferencia(parametroPassado, parametroEsperado, tabelaSimbolos, tabelaSimbolosFuncao);
+                    break;
             }
+        }
 
-            return interpretarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);
+        return interpretarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);
     }
-    
+
     @SuppressWarnings("unchecked")
     private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao) throws Exception
     {
@@ -1148,7 +1543,6 @@ public class Interpretador
             Simbolo simbolo = extrairSimbolo(obterSimbolo(referencia.getNome(), tabelaSimbolos));
             tabelaSimbolosFuncao.adicionar(simbolo.copiar(nome));
         }
-
         else
         {
             Quantificador quantificador = parametroEsperado.getQuantificador();
@@ -1156,17 +1550,23 @@ public class Interpretador
             Object valor = obterValorExpressao(parametroPassado, tabelaSimbolos);
 
             if (quantificador == Quantificador.VALOR)
+            {
                 tabelaSimbolosFuncao.adicionar(new Variavel(nome, tipoDado, valor));
-
+            }
             else
-
-            if (quantificador == Quantificador.VETOR)
-                tabelaSimbolosFuncao.adicionar(new Vetor(nome, tipoDado, (List<Object>) valor));
-
-            else
-
-            if (quantificador == Quantificador.MATRIZ)
-                tabelaSimbolos.adicionar(new Matriz(nome, tipoDado, (List<List<Object>>) valor));
+            {
+                if (quantificador == Quantificador.VETOR)
+                {
+                    tabelaSimbolosFuncao.adicionar(new Vetor(nome, tipoDado, (List<Object>) valor));
+                }
+                else
+                {
+                    if (quantificador == Quantificador.MATRIZ)
+                    {
+                        tabelaSimbolos.adicionar(new Matriz(nome, tipoDado, (List<List<Object>>) valor));
+                    }
+                }
+            }
         }
     }
 
@@ -1174,88 +1574,90 @@ public class Interpretador
     @SuppressWarnings("unchecked")
     private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
-        Quantificador quantificador = parametroEsperado.getQuantificador();
-
-        if (quantificador == Quantificador.VALOR)
-            passarValorPorValor(parametroEsperado, parametroPassado, tabelaSimbolos, tabelaSimbolosFuncao);
-
-        else
-
-        if (quantificador == Quantificador.VETOR)
-            passarVetorPorValor(parametroEsperado, parametroPassado, tabelaSimbolos, tabelaSimbolosFuncao);
-
-        else
-
-        if (quantificador == Quantificador.MATRIZ)
-            passarMatrizPorValor(parametroEsperado, parametroPassado, tabelaSimbolos, tabelaSimbolosFuncao);
+    Quantificador quantificador = parametroEsperado.getQuantificador();
+    
+    if (quantificador == Quantificador.VALOR)
+    passarValorPorValor(parametroEsperado, parametroPassado, tabelaSimbolos, tabelaSimbolosFuncao);
+    
+    else
+    
+    if (quantificador == Quantificador.VETOR)
+    passarVetorPorValor(parametroEsperado, parametroPassado, tabelaSimbolos, tabelaSimbolosFuncao);
+    
+    else
+    
+    if (quantificador == Quantificador.MATRIZ)
+    passarMatrizPorValor(parametroEsperado, parametroPassado, tabelaSimbolos, tabelaSimbolosFuncao);
     }
-
+    
     private void passarMatrizPorValor(NoParametro parametroEsperado, NoExpressao parametroPassado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
-
+    
     }
-
+    
     private void passarVetorPorValor(NoParametro parametroEsperado, NoExpressao parametroPassado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
-        String nome = parametroEsperado.getNome();
-
-        if (parametroPassado instanceof NoReferenciaVariavel)
-        {
-            NoReferenciaVariavel referencia = (NoReferenciaVariavel) parametroPassado;
-            Simbolo vetor = extrairSimbolo(obterSimbolo(referencia.getApelido(), referencia.getNome(), tabelaSimbolos));
-            tabelaSimbolosFuncao.adicionar(vetor.copiar(nome));
-        }
-
-        TipoDado tipoDado = parametroEsperado.getTipoDado();
-        Object valor = obterValorExpressao(parametroPassado, tabelaSimbolos);
-
-        switch (parametroEsperado.getQuantificador())
-                {
-                        case VALOR:  tabelaSimbolosFuncao.adicionar(new Variavel(nome, tipoDado, valor)); break;
-                        case VETOR:  tabelaSimbolosFuncao.adicionar(new Vetor(nome, tipoDado, (List<Object>) valor)); break;
-                        case MATRIZ: tabelaSimbolosFuncao.adicionar(new Matriz(nome, tipoDado, (List<List<Object>>) valor)); break;
-                }
-         
+    String nome = parametroEsperado.getNome();
+    
+    if (parametroPassado instanceof NoReferenciaVariavel)
+    {
+    NoReferenciaVariavel referencia = (NoReferenciaVariavel) parametroPassado;
+    Simbolo vetor = extrairSimbolo(obterSimbolo(referencia.getApelido(), referencia.getNome(), tabelaSimbolos));
+    tabelaSimbolosFuncao.adicionar(vetor.copiar(nome));
     }
-
+    
+    TipoDado tipoDado = parametroEsperado.getTipoDado();
+    Object valor = obterValorExpressao(parametroPassado, tabelaSimbolos);
+    
+    switch (parametroEsperado.getQuantificador())
+    {
+    case VALOR:  tabelaSimbolosFuncao.adicionar(new Variavel(nome, tipoDado, valor)); break;
+    case VETOR:  tabelaSimbolosFuncao.adicionar(new Vetor(nome, tipoDado, (List<Object>) valor)); break;
+    case MATRIZ: tabelaSimbolosFuncao.adicionar(new Matriz(nome, tipoDado, (List<List<Object>>) valor)); break;
+    }
+    
+    }
+    
     private void passarValorPorValor(NoParametro parametroEsperado, NoExpressao parametroPassado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
-        String nome = parametroEsperado.getNome();
-        TipoDado tipoDado = parametroEsperado.getTipoDado();
-
-        Variavel variavel = new Variavel(nome, tipoDado);
-        variavel.setValor(obterValorExpressao(parametroPassado, tabelaSimbolos));
-        tabelaSimbolosFuncao.adicionar(variavel);
+    String nome = parametroEsperado.getNome();
+    TipoDado tipoDado = parametroEsperado.getTipoDado();
+    
+    Variavel variavel = new Variavel(nome, tipoDado);
+    variavel.setValor(obterValorExpressao(parametroPassado, tabelaSimbolos));
+    tabelaSimbolosFuncao.adicionar(variavel);
     }
-    */
-
+     */
     private void passarParametroFuncaoPorReferencia(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado, TabelaSimbolos tabelaSimbolos, TabelaSimbolos tabelaSimbolosFuncao)
     {
-            NoReferencia referencia = (NoReferencia) parametroPassado;
-            String nome = referencia.getNome();
-            Simbolo simbolo = obterSimbolo(nome, tabelaSimbolos);
+        NoReferencia referencia = (NoReferencia) parametroPassado;
+        String nome = referencia.getNome();
+        Simbolo simbolo = obterSimbolo(nome, tabelaSimbolos);
 
-            tabelaSimbolosFuncao.adicionar(new Ponteiro(parametroEsperado.getNome(), simbolo));
+        tabelaSimbolosFuncao.adicionar(new Ponteiro(parametroEsperado.getNome(), simbolo));
     }
-
 
     private Simbolo extrairSimbolo(Simbolo simbolo)
     {
-            while (simbolo instanceof Ponteiro)
-                    simbolo = ((Ponteiro) simbolo).getSimboloApontado();
+        while (simbolo instanceof Ponteiro)
+        {
+            simbolo = ((Ponteiro) simbolo).getSimboloApontado();
+        }
 
-            return simbolo;
+        return simbolo;
     }
 
     private Simbolo obterSimbolo(String nome, TabelaSimbolos tabelaSimbolos)
     {
         if (tabelaSimbolos.contem(nome))
+        {
             return tabelaSimbolos.obter(nome);
+        }
 
         return tabelaSimbolosGlobal.obter(nome);
     }
 
-    private void aguardar(NoChamadaFuncao noChamadaFuncao, TabelaSimbolos tabelaSimbolos) throws Exception 
+    private void aguardar(NoChamadaFuncao noChamadaFuncao, TabelaSimbolos tabelaSimbolos) throws Exception
     {
         List<NoExpressao> parametros = noChamadaFuncao.getParametros();
         Thread.sleep((Integer) obterValorExpressao(parametros.get(0), tabelaSimbolos));
@@ -1265,10 +1667,10 @@ public class Interpretador
     {
         NoReferencia referencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
         String nome = referencia.getNome();
-        ultimaReferenciaAcessada = nome;        
+        ultimaReferenciaAcessada = nome;
         Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
         Vetor vetor = (Vetor) simbolo;
-     
+
         return vetor.getTamanho();
     }
 }
