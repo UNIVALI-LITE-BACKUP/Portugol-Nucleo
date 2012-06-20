@@ -7,44 +7,76 @@ import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 
 /**
+ * Representa uma função alocada em memória durante a execução de um programa.
  * 
  * @author Luiz Fernando Noschang
+ * @version 1.0
  * 
  */
-
 public final class Funcao extends Simbolo
-{	
-	private List<NoBloco> blocos;
-	private Quantificador quantificador;
-	private List<NoDeclaracaoParametro> parametros;
-	
-	public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, List<NoBloco> blocos)
-	{
-		super(nome, tipoDado);
-		
-		this.blocos = blocos;
-		this.parametros = parametros;
-		this.quantificador = quantificador;		
-	}
+{
+    private List<NoBloco> blocos;
+    private Quantificador quantificador;
+    private List<NoDeclaracaoParametro> parametros;
 
-	public List<NoBloco> getBlocos()
-	{
-		return blocos;
-	}
-	
-	public Quantificador getQuantificador()
-	{
-		return quantificador;
-	}
+    /**
+     * 
+     * @param nome              o nome desta função.
+     * @param tipoDado          o tipo de dado do valor de retorno desta função.
+     * @param quantificador     o quantificador do valor de retorno desta função.
+     * @param parametros        a lista de parâmetros esperados por esta função.
+     * @param blocos            a lista de blocos a serem executados por esta função.
+     * @since 1.0
+     */
+    public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, List<NoBloco> blocos)
+    {
+        super(nome, tipoDado);
 
-	public List<NoDeclaracaoParametro> getParametros()
-	{
-		return parametros;
-	}	
-	
-	@Override
-	public Funcao copiar(String novoNome) 
-	{ 
-		return null;
-	}
+        this.blocos = blocos;
+        this.parametros = parametros;
+        this.quantificador = quantificador;
+    }
+
+    /**
+     * Obtém a lista de blocas desta função. Estes blocos serão executados toda vez que uma 
+     * chamada a esta função for feita.
+     * 
+     * @return     a lista de blocos a serem executados por esta função.
+     * @since 1.0
+     */
+    public List<NoBloco> getBlocos()
+    {
+        return blocos;
+    }
+
+    /**
+     * Obtém o quantificador do valor de retorno desta função.
+     * 
+     * @return     o quantificador do valor de retorno desta função.
+     * @since 1.0
+     */
+    public Quantificador getQuantificador()
+    {
+        return quantificador;
+    }
+
+    /**
+     * Obtém a lista de parâmetros esperados por esta função.
+     * 
+     * @return     a lista de parâmetros esperados por esta função.
+     * @since 1.0
+     */
+    public List<NoDeclaracaoParametro> getParametros()
+    {
+        return parametros;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Funcao copiar(String novoNome)
+    {
+        return null;
+    }
 }

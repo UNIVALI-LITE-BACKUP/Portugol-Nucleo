@@ -6,21 +6,29 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
- *
- * @author Luiz Fernando Noschang
+ * Erro gerado pelo interpretador do Portugol quando ocorre um problema na execução dos
+ * programas que ainda não foi detectado e tratado apropriadamente.
  * 
+ * @author Luiz Fernando Noschang
+ * @since 1.0
  */
-
 public final class ErroExecucaoNaoTratado extends ErroExecucao
 {
     private Exception causa;
 
-    
+    /**
+     * 
+     * @param causa    a exceção não tratada que originou este erro.
+     * @since 1.0
+     */
     public ErroExecucaoNaoTratado(Exception causa) 
     {
         this.causa = causa;                
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String construirMensagem() 
     {
@@ -32,6 +40,15 @@ public final class ErroExecucaoNaoTratado extends ErroExecucao
         return construtorTexto.toString();
     }
     
+    /**
+     * Classe utilitária usada para escrever os dados da pilha de execução
+     * na mensagem de erro.
+     * 
+     * @author Luiz Fernando Noschang
+     * @since 1.0
+     * 
+     * @version 1.0
+     */
     private final class FluxoSaidaExcecao extends OutputStream
     {
         private StringBuilder construtorTexto;

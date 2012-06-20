@@ -6,10 +6,19 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.analise.semantica.erros.*;
 import br.univali.portugol.nucleo.analise.semantica.avisos.*;
+import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.simbolos.*;
 
-
+/**
+ * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
+ * 
+ * @author Luiz Fernando Noschang
+ * @version 1.0
+ * 
+ * @see AnalisadorSintatico
+ * @see ObservadorAnaliseSemantica
+ */
 public final class AnalisadorSemantico
 {
     private TabelaSimbolos tabelaSimbolosGlobal;
@@ -20,66 +29,91 @@ public final class AnalisadorSemantico
         observadores = new ArrayList<ObservadorAnaliseSemantica>();
     }
     
+    /** 
+     * Permite adicionar um observador à análise semântica. Os observadores serão notificados sobre cada
+     * erro semântico encontrado no código fonte e deverão tratá-los apropriadamente, exibindo-os em uma 
+     * IDE, por exemplo.
+     * 
+     * @param observadorAnaliseSemantica     o observador da análise semântica a ser registrado.
+     * @since 1.0
+     */
     public void adicionarObservador(ObservadorAnaliseSemantica observadorAnaliseSemantica)
     {
         if (!observadores.contains(observadorAnaliseSemantica))
             observadores.add(observadorAnaliseSemantica);
     }
     
+    /**
+     * Remove um observador da análise previamente registrado utilizando o método 
+     * {@link AnalisadorSemantico#adicionarObservador(br.univali.portugol.nucleo.analise.semantica.ObservadorAnaliseSemantica) }.
+     * Uma vez removido, o observador não será mais notificado dos erros semânticos encontrados durante a análise.
+     * 
+     * @param observadorAnaliseSemantica     um observador de análise semântica previamente registrado.
+     * @since 1.0
+     */
     public void removerObservador(ObservadorAnaliseSemantica observadorAnaliseSemantica)
     {
         observadores.remove(observadorAnaliseSemantica);
     }
 
+    /**
+     * Realiza a análise semântica de uma ASA. Este método não retorna valor e não gera exceções.
+     * Para capturar os erros semânticos gerados durante a análise, deve-se registrar um ou mais
+     * obsrvadores de análise utilizando o método 
+     * {@link AnalisadorSemantico#adicionarObservador(br.univali.portugol.nucleo.analise.semantica.ObservadorAnaliseSemantica) }.
+     * 
+     * @param asa     a ASA que será percorrida em busca de erros semânticos.
+     * @since 1.0
+     */
     public void analisar(ArvoreSintaticaAbstrata asa)
     {
         if (asa != null)
         {
             tabelaSimbolosGlobal = new TabelaSimbolos();
-            analizarListaDeclaracoesGlobais(asa.getListaDeclaracoesGlobais());
+            analisarListaDeclaracoesGlobais(asa.getListaDeclaracoesGlobais());
         }
     }
 
-    private void analizarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
+    private void analisarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais)
     {
         if (listaDeclaracoesGlobais != null)
         {
             for (NoDeclaracao declaracao: listaDeclaracoesGlobais)
-                analizarDeclaracaoGlobal(declaracao, tabelaSimbolosGlobal);
+                analisarDeclaracaoGlobal(declaracao, tabelaSimbolosGlobal);
 
             for (Simbolo simbolo: tabelaSimbolosGlobal)
             {
                 if (simbolo instanceof Funcao)
                 {
                 	tabelaSimbolosGlobal.empilharEscopo();
-                    analizarBlocosFuncao((Funcao) simbolo, tabelaSimbolosGlobal);
+                    analisarBlocosFuncao((Funcao) simbolo, tabelaSimbolosGlobal);
                     tabelaSimbolosGlobal.desempilharEscopo();
                 }
             }
         }
     }
 
-    private void analizarDeclaracaoGlobal(NoDeclaracao declaracao, TabelaSimbolos tabelaSimbolos)
+    private void analisarDeclaracaoGlobal(NoDeclaracao declaracao, TabelaSimbolos tabelaSimbolos)
     {
         if (declaracao instanceof NoDeclaracaoVariavel)
-            analizarDeclaracaoVariavel((NoDeclaracaoVariavel) declaracao, tabelaSimbolos);
+            analisarDeclaracaoVariavel((NoDeclaracaoVariavel) declaracao, tabelaSimbolos);
         else
 
         if (declaracao instanceof NoDeclaracaoFuncao)
-            analizarDeclaracaoFuncao((NoDeclaracaoFuncao) declaracao, tabelaSimbolos);
+            analisarDeclaracaoFuncao((NoDeclaracaoFuncao) declaracao, tabelaSimbolos);
         
         else
             
         if (declaracao instanceof NoDeclaracaoVetor)
-            analizarDeclaracaoVetor((NoDeclaracaoVetor) declaracao, tabelaSimbolos);
+            analisarDeclaracaoVetor((NoDeclaracaoVetor) declaracao, tabelaSimbolos);
         
         else
             
         if (declaracao instanceof NoDeclaracaoMatriz)
-            analizarDeclaracaoMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
+            analisarDeclaracaoMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
     }
 
-    private void analizarDeclaracaoVariavel(NoDeclaracaoVariavel declaracaoVariavel, TabelaSimbolos tabelaSimbolos)
+    private void analisarDeclaracaoVariavel(NoDeclaracaoVariavel declaracaoVariavel, TabelaSimbolos tabelaSimbolos)
     {
         String nome = declaracaoVariavel.getNome();
         TipoDado tipoDados = declaracaoVariavel.getTipoDado();
@@ -110,7 +144,7 @@ public final class AnalisadorSemantico
         }
     }
 
-    private void analizarDeclaracaoFuncao(NoDeclaracaoFuncao declaracaoFuncao, TabelaSimbolos tabelaSimbolos)
+    private void analisarDeclaracaoFuncao(NoDeclaracaoFuncao declaracaoFuncao, TabelaSimbolos tabelaSimbolos)
     {
         String nome = declaracaoFuncao.getNome();
         TipoDado tipoDado = declaracaoFuncao.getTipoDado();
@@ -127,19 +161,19 @@ public final class AnalisadorSemantico
         tabelaSimbolos.adicionar(funcao);
     }
 
-    private void analizarListaBlocos(List<NoBloco> listaBlocos, TabelaSimbolos tabelaSimbolos)
+    private void analisarListaBlocos(List<NoBloco> listaBlocos, TabelaSimbolos tabelaSimbolos)
     {
         if (listaBlocos != null)
         {
             for (NoBloco bloco: listaBlocos)
             {
-                try { analizarBloco(bloco, tabelaSimbolos); }
+                try { analisarBloco(bloco, tabelaSimbolos); }
                 catch (ErroSemantico erro) { notificarErroSemantico(erro); }
             }
         }
     }
 
-    private void analizarBlocosFuncao(Funcao funcao, TabelaSimbolos tabelaSimbolosFuncao)
+    private void analisarBlocosFuncao(Funcao funcao, TabelaSimbolos tabelaSimbolosFuncao)
     {
         List<NoDeclaracaoParametro> parametros = funcao.getParametros();
 
@@ -169,41 +203,41 @@ public final class AnalisadorSemantico
             tabelaSimbolosFuncao.adicionar(simbolo);
         }
 
-        analizarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);
+        analisarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);
     }
 
-    private void analizarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis
+    private void analisarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis
     {
         if (bloco instanceof NoPara)
-            analizarBlocoPara((NoPara) bloco, tabelaSimbolos);
+            analisarBlocoPara((NoPara) bloco, tabelaSimbolos);
 
         else
 
         if (bloco instanceof NoDeclaracao)
-            analizarDeclaracao((NoDeclaracao) bloco, tabelaSimbolos);
+            analisarDeclaracao((NoDeclaracao) bloco, tabelaSimbolos);
 
         else
 
         if (bloco instanceof NoSe)
-            analizarBlocoSe((NoSe) bloco, tabelaSimbolos);
+            analisarBlocoSe((NoSe) bloco, tabelaSimbolos);
 
         else
 
         if (bloco instanceof NoEnquanto)
-            analizarBlocoEnquanto((NoEnquanto) bloco, tabelaSimbolos);
+            analisarBlocoEnquanto((NoEnquanto) bloco, tabelaSimbolos);
 
         else
 
         if (bloco instanceof NoFacaEnquanto)
-            analizarBlocoFacaEnquanto((NoFacaEnquanto) bloco, tabelaSimbolos);
+            analisarBlocoFacaEnquanto((NoFacaEnquanto) bloco, tabelaSimbolos);
 
         else
 
         if (bloco instanceof NoExpressao)
-            analizarExpressao((NoExpressao) bloco, tabelaSimbolos);
+            analisarExpressao((NoExpressao) bloco, tabelaSimbolos);
     }
 
-    private void analizarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis
+    private void analisarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis
     {
         if (expressao instanceof NoOperacao)
         {
@@ -219,15 +253,15 @@ public final class AnalisadorSemantico
         else
 
         if (expressao instanceof NoIncremento)
-            analizarIncremento((NoIncremento) expressao);
+            analisarIncremento((NoIncremento) expressao);
         
         else
         	
         if (expressao instanceof NoReferencia)
-        	analizarReferencia((NoReferencia) expressao, tabelaSimbolos);
+        	analisarReferencia((NoReferencia) expressao, tabelaSimbolos);
     }
     
-    private void analizarReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos)
+    private void analisarReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos)
     {    	
     	String nome = referencia.getNome();
     	
@@ -238,14 +272,14 @@ public final class AnalisadorSemantico
 	    		if (tabelaSimbolos.contem((referencia.getNome())))
 		        {
 	    			Funcao funcao = (Funcao) tabelaSimbolos.obter(referencia.getNome()); 
-	    			analizarChamadaFuncao((NoChamadaFuncao) referencia, funcao, tabelaSimbolos);
+	    			analisarChamadaFuncao((NoChamadaFuncao) referencia, funcao, tabelaSimbolos);
 		        }
 	        
 	    		else notificarErroSemantico(new ErroSimboloNaoDeclarado((NoReferencia) referencia));
     		}
     		else
     		{
-    			analizarChamadaFuncaoEspecial((NoChamadaFuncao) referencia, tabelaSimbolos);
+    			analisarChamadaFuncaoEspecial((NoChamadaFuncao) referencia, tabelaSimbolos);
     		}
         }
     	
@@ -259,20 +293,20 @@ public final class AnalisadorSemantico
     }
 
 
-    private void analizarDeclaracao(NoDeclaracao declaracao, TabelaSimbolos tabelaSimbolos)
+    private void analisarDeclaracao(NoDeclaracao declaracao, TabelaSimbolos tabelaSimbolos)
     {
         if (declaracao instanceof NoDeclaracaoVariavel)
-            analizarDeclaracaoVariavel((NoDeclaracaoVariavel) declaracao, tabelaSimbolos);
+            analisarDeclaracaoVariavel((NoDeclaracaoVariavel) declaracao, tabelaSimbolos);
         
         else
             
         if (declaracao instanceof NoDeclaracaoVetor)
-            analizarDeclaracaoVetor((NoDeclaracaoVetor) declaracao, tabelaSimbolos);
+            analisarDeclaracaoVetor((NoDeclaracaoVetor) declaracao, tabelaSimbolos);
         
         else
             
         if (declaracao instanceof NoDeclaracaoMatriz)
-            analizarDeclaracaoMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
+            analisarDeclaracaoMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
     }
 
     private TipoDado obterTipoDadoExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ExcecaoImpossivelDeterminarTipoDado
@@ -322,7 +356,7 @@ public final class AnalisadorSemantico
                 case MENOR:                         return obterTipoDadoOperacaoMenor                       (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
                 case MENOR_IGUAL:                   return obterTipoDadoOperacaoMenorIgual                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
                 case MODULO:                        return obterTipoDadoOperacaoModulo                      (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MODULO_ATRIBUITIVO:            return obterTipoDadoOperacaoModuloAtribuitivo           (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                case MODULO_ACUMULATIVO:            return obterTipoDadoOperacaoModuloAtribuitivo           (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
                 case MULTIPLICACAO:                 return obterTipoDadoOperacaoMultiplicacao               (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
                 case MULTIPLICACAO_ACUMULATIVA:     return obterTipoDadoOperacaoMultiplicacaoAtribuitiva    (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
                 case OU:                            return obterTipoDadoOperacaoOu                          (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
@@ -810,7 +844,7 @@ public final class AnalisadorSemantico
             throw new ExcecaoImpossivelDeterminarTipoDado();
 
         if (referencia instanceof NoChamadaFuncao)
-            analizarChamadaFuncao((NoChamadaFuncao) referencia, (Funcao) simbolo, tabelaSimbolos);
+            analisarChamadaFuncao((NoChamadaFuncao) referencia, (Funcao) simbolo, tabelaSimbolos);
 
         return simbolo.getTipoDado();
     }
@@ -825,25 +859,25 @@ public final class AnalisadorSemantico
             return simbolo;
     }
 
-    private void analizarBlocoPara(NoPara para, TabelaSimbolos tabelaSimbolos)
+    private void analisarBlocoPara(NoPara para, TabelaSimbolos tabelaSimbolos)
     {
         tabelaSimbolos.empilharEscopo();
 
-        try { analizarBloco(para.getInicializacao(), tabelaSimbolos); }
+        try { analisarBloco(para.getInicializacao(), tabelaSimbolos); }
         catch(ErroTiposIncompativeis erro) { notificarErroSemantico(erro); }
 
-        try { analizarBloco(para.getCondicao(), tabelaSimbolos); }
+        try { analisarBloco(para.getCondicao(), tabelaSimbolos); }
         catch(ErroTiposIncompativeis erro) { notificarErroSemantico(erro); }
 
-        try { analizarBloco(para.getIncremento(), tabelaSimbolos); }
+        try { analisarBloco(para.getIncremento(), tabelaSimbolos); }
         catch(ErroTiposIncompativeis erro) { notificarErroSemantico(erro); }
 
-        analizarListaBlocos(para.getBlocos(), tabelaSimbolos);
+        analisarListaBlocos(para.getBlocos(), tabelaSimbolos);
 
         tabelaSimbolos.desempilharEscopo();
     }
     
-    private void analizarChamadaFuncaoEspecial(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
+    private void analisarChamadaFuncaoEspecial(NoChamadaFuncao chamadaFuncao, TabelaSimbolos tabelaSimbolos)
     {
     	List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
     	
@@ -853,7 +887,7 @@ public final class AnalisadorSemantico
             {
                     try
                     {
-                        analizarExpressao(expressao, tabelaSimbolos);
+                        analisarExpressao(expressao, tabelaSimbolos);
                     }
                     catch (ErroTiposIncompativeis erro) 
                     {
@@ -863,7 +897,7 @@ public final class AnalisadorSemantico
         }
     }
 
-    private void analizarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao, TabelaSimbolos tabelaSimbolos)
+    private void analisarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao, TabelaSimbolos tabelaSimbolos)
     {
         int cont = 0;
         List<NoDeclaracaoParametro> parametrosEsperados = funcao.getParametros();
@@ -904,7 +938,7 @@ public final class AnalisadorSemantico
         }
     }
 
-    private void analizarBlocoSe(NoSe blocoSe, TabelaSimbolos tabelaSimbolos)
+    private void analisarBlocoSe(NoSe blocoSe, TabelaSimbolos tabelaSimbolos)
     {
         try 
         {
@@ -916,15 +950,15 @@ public final class AnalisadorSemantico
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
 
         tabelaSimbolos.empilharEscopo();
-        analizarListaBlocos(blocoSe.getBlocosVerdadeiros(), tabelaSimbolos);
+        analisarListaBlocos(blocoSe.getBlocosVerdadeiros(), tabelaSimbolos);
         tabelaSimbolos.desempilharEscopo();
 
         tabelaSimbolos.empilharEscopo();
-        analizarListaBlocos(blocoSe.getBlocosFalsos(), tabelaSimbolos);
+        analisarListaBlocos(blocoSe.getBlocosFalsos(), tabelaSimbolos);
         tabelaSimbolos.desempilharEscopo();        
     }
 
-    private void analizarBlocoEnquanto(NoEnquanto enquanto, TabelaSimbolos tabelaSimbolos)
+    private void analisarBlocoEnquanto(NoEnquanto enquanto, TabelaSimbolos tabelaSimbolos)
     {
         try
         {
@@ -936,14 +970,14 @@ public final class AnalisadorSemantico
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
 
         tabelaSimbolos.empilharEscopo();
-        analizarListaBlocos(enquanto.getBlocos(), tabelaSimbolos);
+        analisarListaBlocos(enquanto.getBlocos(), tabelaSimbolos);
         tabelaSimbolos.desempilharEscopo();
     }
 
-    private void analizarBlocoFacaEnquanto(NoFacaEnquanto facaEnquanto, TabelaSimbolos tabelaSimbolos)
+    private void analisarBlocoFacaEnquanto(NoFacaEnquanto facaEnquanto, TabelaSimbolos tabelaSimbolos)
     {
         tabelaSimbolos.empilharEscopo();
-        analizarListaBlocos(facaEnquanto.getBlocos(), tabelaSimbolos);
+        analisarListaBlocos(facaEnquanto.getBlocos(), tabelaSimbolos);
         tabelaSimbolos.desempilharEscopo();
 
         try
@@ -956,7 +990,7 @@ public final class AnalisadorSemantico
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
     }
 
-    private void analizarIncremento(NoIncremento incremento)
+    private void analisarIncremento(NoIncremento incremento)
     {
         NoExpressao expressao = incremento.getExpressao();
 
@@ -981,7 +1015,7 @@ public final class AnalisadorSemantico
         }
     }
 
-    private void analizarDeclaracaoVetor(NoDeclaracaoVetor declaracaoVetor, TabelaSimbolos tabelaSimbolos)
+    private void analisarDeclaracaoVetor(NoDeclaracaoVetor declaracaoVetor, TabelaSimbolos tabelaSimbolos)
     {
         
         String nome = declaracaoVetor.getNome();
@@ -992,7 +1026,7 @@ public final class AnalisadorSemantico
             TipoDado tipoDadoTamanho = obterTipoDadoExpressao(declaracaoVetor.getTamanho(), tabelaSimbolos);
 
             if (!(tipoDadoTamanho == TipoDado.INTEIRO))
-                notificarErroSemantico(new ErroTiposIncompativeis2(0, 0, TipoDado.INTEIRO, tipoDadoTamanho));
+                notificarErroSemantico(new ErroTipoIndiceIncompativel(0, 0, TipoDado.INTEIRO, tipoDadoTamanho));
         }
         catch (ErroTiposIncompativeis e){ notificarErroSemantico(e); }
         catch (ExcecaoImpossivelDeterminarTipoDado e2){  }
@@ -1020,7 +1054,7 @@ public final class AnalisadorSemantico
         }
     }
 
-    private void analizarDeclaracaoMatriz(NoDeclaracaoMatriz declaracaoMatriz, TabelaSimbolos tabelaSimbolos) 
+    private void analisarDeclaracaoMatriz(NoDeclaracaoMatriz declaracaoMatriz, TabelaSimbolos tabelaSimbolos) 
     {
         String nome = declaracaoMatriz.getNome();
         TipoDado tipoDado = declaracaoMatriz.getTipoDado();
@@ -1030,7 +1064,7 @@ public final class AnalisadorSemantico
             TipoDado tipoDadoLinha = obterTipoDadoExpressao(declaracaoMatriz.getNumeroLinhas(), tabelaSimbolos);
 
             if (!(tipoDadoLinha == TipoDado.INTEIRO))
-                notificarErroSemantico(new ErroTiposIncompativeis2(0, 0, TipoDado.INTEIRO, tipoDadoLinha));
+                notificarErroSemantico(new ErroTipoIndiceIncompativel(0, 0, TipoDado.INTEIRO, tipoDadoLinha));
         }
         catch (ErroTiposIncompativeis e){ notificarErroSemantico(e); }
         catch (ExcecaoImpossivelDeterminarTipoDado e2){  }
@@ -1040,7 +1074,7 @@ public final class AnalisadorSemantico
             TipoDado tipoDadoColuna = obterTipoDadoExpressao(declaracaoMatriz.getNumeroColunas(), tabelaSimbolos);
 
             if (!(tipoDadoColuna == TipoDado.INTEIRO))
-                notificarErroSemantico(new ErroTiposIncompativeis2(0, 0, TipoDado.INTEIRO, tipoDadoColuna));
+                notificarErroSemantico(new ErroTipoIndiceIncompativel(0, 0, TipoDado.INTEIRO, tipoDadoColuna));
         }
         catch (ErroTiposIncompativeis e){ notificarErroSemantico(e); }
         catch (ExcecaoImpossivelDeterminarTipoDado e2){  }
