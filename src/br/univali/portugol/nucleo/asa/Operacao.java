@@ -3,7 +3,7 @@ package br.univali.portugol.nucleo.asa;
 /**
  * Esta enumeração contém a maioria das operações lógicas e aritméticas do Portugol.
  * <p>
- * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+ * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
  * para verificar os tipos de dados que podem ser utlizados com cada operação.
  * 
  * @author Luiz Fernando Noschang
@@ -24,7 +24,7 @@ public enum Operacao
      * as expressões forem diferentes. Pode ser utilizada para realizar o controle de laços de repetição 
      * e desvios condicionais.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -37,7 +37,7 @@ public enum Operacao
      * A operação de <code>diferença</code> serve para determinar se duas expressões são diferentes.
      * No Portugol, a operação de <code>diferença</code> é representada no código fonte pelo operador "!=".
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -56,7 +56,7 @@ public enum Operacao
      * ou matriz à esquerda e retornado como resultado da operação. Isto significa que, a operação de <code>atribuição</code>
      * pode ser utilizada como operando de outras operações.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * @since 1.0
      */
@@ -157,7 +157,7 @@ public enum Operacao
      * à direita do operador, caso contrário retorna <code>falso</code>.Pode ser utilizada para realizar o 
      * controle de laços de repetição e desvios condicionais.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -176,7 +176,7 @@ public enum Operacao
      * à direita do operador, caso contrário retorna <code>falso</code>.Pode ser utilizada para realizar o 
      * controle de laços de repetição e desvios condicionais.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -194,7 +194,7 @@ public enum Operacao
      * à direita do operador, caso contrário retorna <code>falso</code>.Pode ser utilizada para realizar o 
      * controle de laços de repetição e desvios condicionais.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -212,7 +212,7 @@ public enum Operacao
      * à direita do operador, caso contrário retorna <code>falso</code>.Pode ser utilizada para realizar o 
      * controle de laços de repetição e desvios condicionais.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -226,7 +226,7 @@ public enum Operacao
      * A operação de <code>soma</code> serve para unir duas expressões e é representada no código fonte pelo operador "+".
      * O resultado desta operação, depende do tipo de dado dos seus operandos.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -241,7 +241,7 @@ public enum Operacao
      * atribuído ao operando esquerdo. O operando esquerdo deverá obrigatoriamente ser uma referência de variável, vetor ou matriz.
      * <p>
      * No Portugol, a operação de <code>soma-acumulativa</code> é representada no código fonte pelo operador "+=".
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -254,7 +254,7 @@ public enum Operacao
      * A operação de <code>subtração</code> serve para obter a diferença entre duas expressões e é representada no código 
      * fonte pelo operador "-". O resultado desta operação, depende do tipo de dado dos seus operandos.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -269,7 +269,7 @@ public enum Operacao
      * atribuído ao operando esquerdo. O operando esquerdo deverá obrigatoriamente ser uma referência de variável, vetor ou matriz.
      * <p>
      * No Portugol, a operação de <code>subtracao-acumulativa</code> é representada no código fonte pelo operador "-=".
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -279,7 +279,7 @@ public enum Operacao
     /**
      * Esta enumeração representa a operação de <code>divisão</code> no código fonte e é representada pelo operador "/".
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -294,7 +294,7 @@ public enum Operacao
      * atribuído ao operando esquerdo. O operando esquerdo deverá obrigatoriamente ser uma referência de variável, vetor ou matriz.
      * <p>
      * No Portugol, a operação de <code>divisao-acumulativa</code> é representada no código fonte pelo operador "/=".
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -304,7 +304,7 @@ public enum Operacao
     /**
      * Esta enumeração representa a operação de <code>multiplicação</code> no código fonte e é representada pelo operador "*".
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -319,7 +319,7 @@ public enum Operacao
      * atribuído ao operando esquerdo. O operando esquerdo deverá obrigatoriamente ser uma referência de variável, vetor ou matriz.
      * <p>
      * No Portugol, a operação de <code>multiplicacao-acumulativa</code> é representada no código fonte pelo operador "*=".
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -332,7 +332,7 @@ public enum Operacao
      * A operação de <code>modulo</code> serve para obter o resto da divisão entre duas expressões e é representada no código 
      * fonte pelo operador "%". O resultado desta operação, depende do tipo de dado dos seus operandos.
      * <p>
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0
@@ -348,7 +348,7 @@ public enum Operacao
      * ou matriz.
      * <p>
      * No Portugol, a operação de <code>modulo-acumulativo</code> é representada no código fonte pelo operador "%=".
-     * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
      * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
      * 
      * @since 1.0

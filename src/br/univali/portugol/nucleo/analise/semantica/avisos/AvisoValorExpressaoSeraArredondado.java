@@ -9,7 +9,7 @@ import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
  * Aviso gerado pelo analisador semântico quando é realizada a atribuição de uma expressão do tipo
  * {@link TipoDado#REAL} à uma expressão do tipo {@link TipoDado#INTEIRO}. 
  * <p>
- * Consulte o documento <a href='../asa/doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+ * Consulte o documento <a href='../asa/doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
  * para obter mais detalhes.
  * 
  * @author Luiz Fernando Noschang

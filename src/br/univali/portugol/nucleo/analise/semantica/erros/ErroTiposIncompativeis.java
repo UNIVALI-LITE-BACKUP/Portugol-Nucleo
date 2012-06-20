@@ -26,7 +26,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  * 
  * </pre></code>
  * <p>
- * Consulte o documento <a href='doc-files/compatibilidade_tipos.pdf' target='blank'>Compatibilidade de tipos do Portugol</a> 
+ * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
  * para verificar os tipos de dados que podem ser utlizados com cada operação.
  * 
  * @author Luiz Fernando Noschang

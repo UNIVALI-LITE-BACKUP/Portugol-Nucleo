@@ -23,32 +23,24 @@ import java.util.List;
  * 
  * <code><pre>
  * 
- *      funcao exemploEscolha(cadeia umaNamorada)
+ *      funcao exemploEscolha(inteiro diaDaSemana)
  *      {
- *           escolha (umaNamorada)
+ *           escolha (numeroDeIngresos)
  *           {
- *                caso "Megan Fox" : 
- *                     escreva("Ta podendo hein?")
- *                pare
+ *               caso 2 : escreva("Terça") pare
  *             
- *                caso "Natalie Portman" : 
- *                     escreva("Ô lá em casa!")
- *                pare
+ *               caso 3 : escreva ("Quarta") pare
  * 
- *                caso "Scarlett Johansson" : 
- *                     escreva("Tu é o cara! Leva a próxima de brinde:")
+ *               caso 4 : escreva ("Quinta") pare
+ *           
+ *               caso 5 : escreva("Sexta") pare
+ *
+ *               caso 1 : escreva("Domingo")
+ *               case 6 : escreva("É final de semana") pare
  * 
- *                caso "Michelle Monaghan" :
- *                     escreva("Fiu-fiu!")
- *                pare
- * 
- *                caso "Terry Crews" : 
- *                     escreva("Hhhhhuuuuummmmmm! Tô sabendo! Tu gosta né...")
- *                pare
- * 
- *                caso contrario : 
- *                  escreva("Tá encalhado! Perdedor!")
- *                pare
+ *               caso contrario : 
+ *                     escreva("Dia da semana inválido!")
+ *               pare
  *           }
  *      }
  * 
