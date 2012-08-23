@@ -235,8 +235,27 @@ public final class AnalisadorSemantico
 
         if (bloco instanceof NoExpressao)
             analisarExpressao((NoExpressao) bloco, tabelaSimbolos);
+        
+        else
+            
+        if (bloco instanceof NoRetorne)
+            analisarNoRetorne((NoRetorne) bloco, tabelaSimbolos);
+            
     }
 
+    private void analisarNoRetorne(NoRetorne noRetorne, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis
+    {
+        NoExpressao expressao = noRetorne.getExpressao();
+        
+        if (expressao instanceof NoOperacao)
+        {
+            try { obterTipoDadoOperacao((NoOperacao) expressao, tabelaSimbolos); }
+            catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
+        }
+        
+        else analisarExpressao(expressao, tabelaSimbolos);            
+    }
+    
     private void analisarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis
     {
         if (expressao instanceof NoOperacao)
