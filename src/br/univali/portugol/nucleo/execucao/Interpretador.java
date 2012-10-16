@@ -906,23 +906,34 @@ public class Interpretador
                 return valorEsquerdo > (Double) valorOperandoDireito;
             }
         }
-        else
+        else if (valorOperandoEsquerdo instanceof Double)
         {
-            if (valorOperandoEsquerdo instanceof Double)
-            {
-                double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-                if (valorOperandoDireito instanceof Integer)
-                {
-                    return valorEsquerdo > (Integer) valorOperandoDireito;
-                }
-                if (valorOperandoDireito instanceof Double)
-                {
-                    return valorEsquerdo > (Double) valorOperandoDireito;
-                }
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo > (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo > (Double) valorOperandoDireito;
             }
         }
-
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) > 0;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) > 0;
+            }
+        }
+        
         return null;
     }
 
@@ -941,20 +952,31 @@ public class Interpretador
                 return valorEsquerdo >= (Double) valorOperandoDireito;
             }
         }
-        else
+        else if (valorOperandoEsquerdo instanceof Double)
         {
-            if (valorOperandoEsquerdo instanceof Double)
-            {
-                double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-                if (valorOperandoDireito instanceof Integer)
-                {
-                    return valorEsquerdo >= (Integer) valorOperandoDireito;
-                }
-                if (valorOperandoDireito instanceof Double)
-                {
-                    return valorEsquerdo >= (Double) valorOperandoDireito;
-                }
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo >= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo >= (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) >= 0;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) >= 0;
             }
         }
 
@@ -976,23 +998,33 @@ public class Interpretador
                 return valorEsquerdo < (Double) valorOperandoDireito;
             }
         }
-        else
+        else if (valorOperandoEsquerdo instanceof Double)
         {
-            if (valorOperandoEsquerdo instanceof Double)
-            {
-                double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-                if (valorOperandoDireito instanceof Integer)
-                {
-                    return valorEsquerdo < (Integer) valorOperandoDireito;
-                }
-                if (valorOperandoDireito instanceof Double)
-                {
-                    return valorEsquerdo < (Double) valorOperandoDireito;
-                }
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo < (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo < (Double) valorOperandoDireito;
             }
         }
-
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) < 0;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) < 0;
+            }
+        }
         return null;
     }
 
@@ -1011,23 +1043,33 @@ public class Interpretador
                 return valorEsquerdo <= (Double) valorOperandoDireito;
             }
         }
-        else
+        else if (valorOperandoEsquerdo instanceof Double)
         {
-            if (valorOperandoEsquerdo instanceof Double)
-            {
-                double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-                if (valorOperandoDireito instanceof Integer)
-                {
-                    return valorEsquerdo <= (Integer) valorOperandoDireito;
-                }
-                if (valorOperandoDireito instanceof Double)
-                {
-                    return valorEsquerdo <= (Double) valorOperandoDireito;
-                }
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo <= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo <= (Double) valorOperandoDireito;
+            }
+        }        
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) <= 0;
             }
         }
-
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) <= 0;
+            }
+        }
         return null;
     }
 

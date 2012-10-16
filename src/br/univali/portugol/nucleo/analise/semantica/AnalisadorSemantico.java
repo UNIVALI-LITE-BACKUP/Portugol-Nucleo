@@ -581,6 +581,19 @@ public final class AnalisadorSemantico
             if (tipoDadoOperandoDireito == TipoDado.REAL) return TipoDado.LOGICO;
         }
 
+                
+        else
+        
+        if ((tipoDadoOperandoEsquerdo == TipoDado.CARACTER 
+                && tipoDadoOperandoDireito == TipoDado.CARACTER)
+            ||    
+             (tipoDadoOperandoEsquerdo == TipoDado.CADEIA 
+                && tipoDadoOperandoDireito == TipoDado.CADEIA))
+        {
+            return TipoDado.LOGICO;
+        }
+        
+        
         throw new ErroTiposIncompativeis(operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
     }
 
@@ -599,6 +612,19 @@ public final class AnalisadorSemantico
             if (tipoDadoOperandoDireito == TipoDado.INTEIRO) return TipoDado.LOGICO;
             if (tipoDadoOperandoDireito == TipoDado.REAL) return TipoDado.LOGICO;
         }
+        
+                
+        else
+        
+        if ((tipoDadoOperandoEsquerdo == TipoDado.CARACTER 
+                && tipoDadoOperandoDireito == TipoDado.CARACTER)
+            ||    
+             (tipoDadoOperandoEsquerdo == TipoDado.CADEIA 
+                && tipoDadoOperandoDireito == TipoDado.CADEIA))
+        {
+            return TipoDado.LOGICO;
+        }
+        
 
         throw new ErroTiposIncompativeis(operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
     }
@@ -618,6 +644,18 @@ public final class AnalisadorSemantico
             if (tipoDadoOperandoDireito == TipoDado.INTEIRO) return TipoDado.LOGICO;
             if (tipoDadoOperandoDireito == TipoDado.REAL) return TipoDado.LOGICO;
         }
+        
+        else
+        
+        if ((tipoDadoOperandoEsquerdo == TipoDado.CARACTER 
+                && tipoDadoOperandoDireito == TipoDado.CARACTER)
+            ||    
+             (tipoDadoOperandoEsquerdo == TipoDado.CADEIA 
+                && tipoDadoOperandoDireito == TipoDado.CADEIA))
+        {
+            return TipoDado.LOGICO;
+        }
+        
 
         throw new ErroTiposIncompativeis(operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
     }
@@ -636,6 +674,17 @@ public final class AnalisadorSemantico
         {
             if (tipoDadoOperandoDireito == TipoDado.INTEIRO) return TipoDado.LOGICO;
             if (tipoDadoOperandoDireito == TipoDado.REAL) return TipoDado.LOGICO;
+        }
+         
+        else
+        
+        if ((tipoDadoOperandoEsquerdo == TipoDado.CARACTER 
+                && tipoDadoOperandoDireito == TipoDado.CARACTER)
+            ||    
+             (tipoDadoOperandoEsquerdo == TipoDado.CADEIA 
+                && tipoDadoOperandoDireito == TipoDado.CADEIA))
+        {
+            return TipoDado.LOGICO;
         }
 
         throw new ErroTiposIncompativeis(operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
