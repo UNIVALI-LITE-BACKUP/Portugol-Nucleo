@@ -277,7 +277,7 @@ public final class AnalisadorSemantico
         else
         	
         if (expressao instanceof NoReferencia)
-        	analisarReferencia((NoReferencia) expressao, tabelaSimbolos);
+            analisarReferencia((NoReferencia) expressao, tabelaSimbolos);
     }
     
     private void analisarReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos)
@@ -388,8 +388,8 @@ public final class AnalisadorSemantico
 
         throw new ExcecaoImpossivelDeterminarTipoDado();
     }
-
-    private TipoDado obterTipoDadoOperacaoAtribuicao(NoOperacao operacao, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito) throws ErroTiposIncompativeis
+    
+     private TipoDado obterTipoDadoOperacaoAtribuicao(NoOperacao operacao, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito) throws ErroTiposIncompativeis
     {
         if (tipoDadoOperandoEsquerdo == TipoDado.CADEIA)
         {
