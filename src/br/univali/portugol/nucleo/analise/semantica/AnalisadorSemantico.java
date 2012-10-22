@@ -1,14 +1,14 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.analise.semantica.avisos.*;
+import br.univali.portugol.nucleo.analise.semantica.erros.*;
+import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
+import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
+import br.univali.portugol.nucleo.mensagens.ErroSemantico;
+import br.univali.portugol.nucleo.simbolos.*;
 import java.util.ArrayList;
 import java.util.List;
-import br.univali.portugol.nucleo.mensagens.ErroSemantico;
-import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.analise.semantica.erros.*;
-import br.univali.portugol.nucleo.analise.semantica.avisos.*;
-import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
-import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
-import br.univali.portugol.nucleo.simbolos.*;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.

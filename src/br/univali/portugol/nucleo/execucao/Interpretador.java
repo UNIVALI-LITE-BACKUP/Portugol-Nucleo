@@ -25,6 +25,31 @@ public class Interpretador
     private TabelaSimbolos tabelaSimbolosGlobal;
     private String ultimaReferenciaAcessada;
 
+    
+    private List<ObservadorInterpretacao> observadoresInterpretacao;
+    
+    public void addObservadorInterpretacao(ObservadorInterpretacao observador){
+        observadoresInterpretacao.add(observador);
+    }
+    
+    private void notificaDeclaracao(Variavel variavel){
+        for (ObservadorInterpretacao o : observadoresInterpretacao){
+            o.variavelDeclarada(variavel);
+        }
+    }
+    
+    private void notificaDeclaracao(Vetor vetor){
+        for (ObservadorInterpretacao o : observadoresInterpretacao){
+            o.vetorDeclarado(vetor);
+        }
+    }
+    
+    private void notificaDeclaracao(Matriz matriz){
+        for (ObservadorInterpretacao o : observadoresInterpretacao){
+            o.matrizDeclarada(matriz);
+        }
+    }
+    
     /**
      * Define a interface para a entrada de dados do programa.
      * 
@@ -166,6 +191,7 @@ public class Interpretador
         }
 
         tabelaSimbolos.adicionar(variavel);
+        notificaDeclaracao(variavel);
     }
 
     private void declararVetor(NoDeclaracaoVetor declaracaoVetor, TabelaSimbolos tabelaSimbolos)
@@ -190,6 +216,7 @@ public class Interpretador
         vetor.setConstante(declaracaoVetor.constante());
 
         tabelaSimbolos.adicionar(vetor);
+        notificaDeclaracao(vetor);
     }
 
     private void limpar() throws Exception
@@ -249,6 +276,7 @@ public class Interpretador
         matriz.setConstante(declaracaoMatriz.constante());
 
         tabelaSimbolos.adicionar(matriz);
+        notificaDeclaracao(matriz);
     }
 
     private int obterNumeroLinhas(NoDeclaracaoMatriz declaracaoMatriz, TabelaSimbolos tabelaSimbolos)
