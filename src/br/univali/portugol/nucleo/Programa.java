@@ -5,6 +5,7 @@ import br.univali.portugol.nucleo.execucao.Entrada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
+import br.univali.portugol.nucleo.execucao.ObservadorInterpretacao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.execucao.Saida;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
@@ -77,6 +78,11 @@ public final class Programa
         observadores.remove(observador);
     }
 
+    private List<ObservadorInterpretacao> observadoresInter = new ArrayList<ObservadorInterpretacao>();
+    public void addObservadorInterpretacao(ObservadorInterpretacao o) {
+        observadoresInter.add(o);
+    }
+    
     /**
      * Executa este programa com os parâmetros especificados. Se o programa já estiver
      * executando não faz nada.
@@ -101,13 +107,17 @@ public final class Programa
                         interpretador.setSaida(saida);
                         interpretador.setFuncaoInicial(funcaoInicial);
 
+                        for (ObservadorInterpretacao oi : observadoresInter){
+                            interpretador.addObservadorInterpretacao(oi);
+                        }
+                        
                         notificarInicioExecucao();
 
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
 
                         interpretador.interpretar(arvoreSintaticaAbstrataPrograma, parametros);
-
+                        
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
                         notificarEncerramentoExecucao(resultadoExecucao);

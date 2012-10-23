@@ -26,7 +26,7 @@ public class Interpretador
     private String ultimaReferenciaAcessada;
 
     
-    private List<ObservadorInterpretacao> observadoresInterpretacao;
+    private List<ObservadorInterpretacao> observadoresInterpretacao = new ArrayList<ObservadorInterpretacao>();
     
     public void addObservadorInterpretacao(ObservadorInterpretacao observador){
         observadoresInterpretacao.add(observador);
@@ -126,7 +126,14 @@ public class Interpretador
         this.tabelaSimbolosGlobal = new TabelaSimbolos();
 
         interpretarListaDeclaracoesGlobais(arvoreSintaticaAbstrata.getListaDeclaracoesGlobais());
-        interpretarFuncaoPrincipal(parametros);
+        TabelaSimbolos tabelaSimbolos = interpretarFuncaoPrincipal(parametros);
+        disparaInterpretacaoFinalizada(tabelaSimbolos);
+    }
+    
+    private void disparaInterpretacaoFinalizada(TabelaSimbolos tabelaSimbolos){
+        for (ObservadorInterpretacao oi :observadoresInterpretacao) {
+            oi.interpretacaoFinalizada(tabelaSimbolos.iterator());
+        }
     }
 
     private void interpretarListaDeclaracoesGlobais(List<NoDeclaracao> listaDeclaracoesGlobais) throws Exception
@@ -328,7 +335,7 @@ public class Interpretador
         tabelaSimbolos.adicionar(new Funcao(nome, tipoDados, quantificador, parametros, blocos));
     }
 
-    private void interpretarFuncaoPrincipal(String[] parametros) throws ErroFuncaoInicialNaoDeclarada, Exception
+    private TabelaSimbolos interpretarFuncaoPrincipal(String[] parametros) throws ErroFuncaoInicialNaoDeclarada, Exception
     {
         if (tabelaSimbolosGlobal.contem(funcaoInicial))
         {
@@ -342,6 +349,7 @@ public class Interpretador
             }
 
             interpretarListaBlocos(funcaoPrincipal.getBlocos(), tabelaSimbolosFuncaoPrincipal);
+            return tabelaSimbolosFuncaoPrincipal;
         }
         else
         {
