@@ -18,7 +18,7 @@ import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 public abstract class Simbolo
 {
     private String nome;
-    private TipoDado tipoDado;
+    protected TipoDado tipoDado;
     private TrechoCodigoFonte trechoCodigoFonteNome;
     private TrechoCodigoFonte trechoCodigoFonteTipoDado;
     private boolean constante = false;

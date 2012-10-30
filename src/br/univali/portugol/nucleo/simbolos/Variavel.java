@@ -59,6 +59,14 @@ public final class Variavel extends Simbolo
      */
     public void setValor(Object value)
     {
+        
+        if ((value instanceof Double) && (tipoDado == TipoDado.INTEIRO))
+        {
+            double val = (Double) value;
+            value = (int) val;
+        }
+
+        
         setInicializado(true);
         this.valor = value;
     }
