@@ -436,8 +436,642 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoOperacao noOperacao) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        switch (noOperacao.getOperacao())
+        {
+            case ATRIBUICAO:
+                return obterValorOperacaoAtribuicao(noOperacao);
+            case DIVISAO_ACUMULATIVA:
+                return obterValorOperacaoDivisaoAtribuitiva(noOperacao);
+            case SUBTRACAO_ACUMULATIVA:
+                return obterValorOperacaoSubtracaoAtribuitiva(noOperacao);
+            case SOMA_ACUMULATIVA:
+                return obterValorOperacaoSomaAtribuitiva(noOperacao);
+            case MULTIPLICACAO_ACUMULATIVA:
+                return obterValorOperacaoMultiplicacaoAtribuitiva(noOperacao);
+            case MODULO_ACUMULATIVO:
+                return obterValorOperacaoModuloAtribuitivo(noOperacao);
+        }
+        
+        Object valorOperandoEsquerdo = noOperacao.getOperandoEsquerdo().aceitar(this);
+        Object valorOperandoDireito = noOperacao.getOperandoDireito().aceitar(this);
+        
+        switch (noOperacao.getOperacao())
+        {
+            case DIFERENCA:
+                return obterValorOperacaoDiferenca(valorOperandoEsquerdo, valorOperandoDireito);
+            case DIVISAO:
+                return obterValorOperacaoDivisao(valorOperandoEsquerdo, valorOperandoDireito);
+            case E:
+                return obterValorOperacaoE(valorOperandoEsquerdo, valorOperandoDireito);
+            case IGUALDADE:
+                return obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
+            case MAIOR:
+                return obterValorOperacaoMaior(valorOperandoEsquerdo, valorOperandoDireito);
+            case MAIOR_IGUAL:
+                return obterValorOperacaoMaiorIgual(valorOperandoEsquerdo, valorOperandoDireito);
+            case MENOR:
+                return obterValorOperacaoMenor(valorOperandoEsquerdo, valorOperandoDireito);
+            case MENOR_IGUAL:
+                return obterValorOperacaoMenorIgual(valorOperandoEsquerdo, valorOperandoDireito);
+            case MODULO:
+                return obterValorOperacaoModulo(valorOperandoEsquerdo, valorOperandoDireito);
+            case MULTIPLICACAO:
+                return obterValorOperacaoMultiplicacao(valorOperandoEsquerdo, valorOperandoDireito);
+            case OU:
+                return obterValorOperacaoOu(valorOperandoEsquerdo, valorOperandoDireito);
+            case SOMA:
+                return obterValorOperacaoSoma(valorOperandoEsquerdo, valorOperandoDireito);
+            case SUBTRACAO:
+                return obterValorOperacaoSubtracao(valorOperandoEsquerdo, valorOperandoDireito);
+        }
+
+        return null;
     }
+    
+     private Object obterValorOperacaoAtribuicao(NoOperacao atribuicao) throws ExcecaoVisitaASA
+    {
+        NoReferencia referencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
+
+        String nome = referencia.getNome();
+        Simbolo simbolo = null;//extrairSimbolo(obterSimbolo(nome, null));
+        Object valor = atribuicao.getOperandoDireito().aceitar(this);//, null);
+
+        if ((valor instanceof Double) && (simbolo.getTipoDado() == TipoDado.INTEIRO))
+        {
+            double val = (Double) valor;
+            valor = (int) val;
+        }
+
+        if (referencia instanceof NoReferenciaVariavel)
+        {
+            return atribuirValorVariavel((Variavel) simbolo, valor);
+        }
+
+        if (referencia instanceof NoReferenciaVetor)
+        {
+            return atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia);
+        }
+
+        if (referencia instanceof NoReferenciaMatriz)
+        {
+            return atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia);
+        }
+
+        return null;
+    }
+
+    private Object obterValorOperacaoDiferenca(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        return !(Boolean) obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
+    }
+
+    private Object obterValorOperacaoDivisao(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo / (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo / (Double) valorOperandoDireito;
+            }
+        }
+        else
+        {
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo / (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo / (Double) valorOperandoDireito;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Object obterValorOperacaoDivisaoAtribuitiva(NoOperacao operacao ) throws ExcecaoVisitaASA
+    {
+        NoOperacao divisao = new NoOperacao(Operacao.DIVISAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
+        NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), divisao);
+
+        return obterValorOperacaoAtribuicao(atribuicao);
+    }
+
+    private Object obterValorOperacaoE(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        return (Boolean) valorOperandoEsquerdo && (Boolean) valorOperandoDireito;
+    }
+
+    private Object obterValorOperacaoIgualdade(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof String)
+        {
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof String)
+            {
+                return valorEsquerdo.equals((String) valorOperandoDireito);
+            }
+        }
+        else
+        {
+            if (valorOperandoEsquerdo instanceof Character)
+            {
+                char valorEsquerdo = (Character) valorOperandoEsquerdo;
+
+                if (valorOperandoDireito instanceof Character)
+                {
+                    return valorEsquerdo == (Character) valorOperandoDireito;
+                }
+            }
+            else
+            {
+                if (valorOperandoEsquerdo instanceof Integer)
+                {
+                    int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+                    if (valorOperandoDireito instanceof Integer)
+                    {
+                        return valorEsquerdo == (Integer) valorOperandoDireito;
+                    }
+                    if (valorOperandoDireito instanceof Double)
+                    {
+                        return valorEsquerdo == (Double) valorOperandoDireito;
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Double)
+                    {
+                        double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+                        if (valorOperandoDireito instanceof Integer)
+                        {
+                            return valorEsquerdo == (Integer) valorOperandoDireito;
+                        }
+                        if (valorOperandoDireito instanceof Double)
+                        {
+                            return valorEsquerdo == (Double) valorOperandoDireito;
+                        }
+                    }
+                    else
+                    {
+                        if (valorOperandoEsquerdo instanceof Boolean)
+                        {
+                            boolean valorEsquerdo = (Boolean) valorOperandoEsquerdo;
+
+                            if (valorOperandoDireito instanceof Boolean)
+                            {
+                                return valorEsquerdo == ((Boolean) valorOperandoDireito);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private Object obterValorOperacaoMaior(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo > (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo > (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Double)
+        {
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo > (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo > (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) > 0;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) > 0;
+            }
+        }
+        
+        return null;
+    }
+
+    private Object obterValorOperacaoMaiorIgual(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo >= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo >= (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Double)
+        {
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo >= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo >= (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) >= 0;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) >= 0;
+            }
+        }
+
+        return null;
+    }
+
+    private Object obterValorOperacaoMenor(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo < (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo < (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Double)
+        {
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo < (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo < (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) < 0;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) < 0;
+            }
+        }
+        return null;
+    }
+
+    private Object obterValorOperacaoMenorIgual(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo <= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo <= (Double) valorOperandoDireito;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Double)
+        {
+            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo <= (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo <= (Double) valorOperandoDireito;
+            }
+        }        
+        else if (valorOperandoEsquerdo instanceof String) { 
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof  String) {
+                String valorDireito = (String) valorOperandoDireito;
+                return valorEsquerdo.compareTo(valorDireito) <= 0;
+            }
+        }
+        else if (valorOperandoEsquerdo instanceof Character) {
+            Character valorEsquero = (Character) valorOperandoEsquerdo;
+            if (valorOperandoDireito instanceof Character) {
+                Character valorDireito = (Character) valorOperandoDireito;
+                return valorEsquero.compareTo(valorDireito) <= 0;
+            }
+        }
+        return null;
+    }
+
+    private Object obterValorOperacaoModulo(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return (valorEsquerdo) % ((Integer) valorOperandoDireito);
+            }
+        }
+
+        return null;
+    }
+
+    private Object obterValorOperacaoModuloAtribuitivo(NoOperacao operacao) throws ExcecaoVisitaASA
+    {
+        NoOperacao modulo = new NoOperacao(Operacao.MODULO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
+        NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), modulo);
+
+        return obterValorOperacaoAtribuicao(atribuicao);
+    }
+
+    private Object obterValorOperacaoMultiplicacao(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo * (Integer) valorOperandoDireito;
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo * (Double) valorOperandoDireito;
+            }
+        }
+        else
+        {
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo * (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo * (Double) valorOperandoDireito;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Object obterValorOperacaoMultiplicacaoAtribuitiva(NoOperacao operacao) throws ExcecaoVisitaASA
+    {
+        NoOperacao multiplicacao = new NoOperacao(Operacao.MULTIPLICACAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
+        NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), multiplicacao);
+
+        return obterValorOperacaoAtribuicao(atribuicao);
+    }
+
+    private Object obterValorOperacaoOu(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        return (Boolean) valorOperandoEsquerdo || (Boolean) valorOperandoDireito;
+    }
+
+    private Object obterValorOperacaoSoma(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof String)
+        {
+            String valorEsquerdo = (String) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof String)
+            {
+                return valorEsquerdo + ((String) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Character)
+            {
+                return valorEsquerdo + ((Character) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo + ((Integer) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo + ((Double) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Boolean)
+            {
+                return valorEsquerdo + (String) (((Boolean) valorOperandoDireito) ? "verdadeiro" : "falso");
+            }
+        }
+        else
+        {
+            if (valorOperandoEsquerdo instanceof Character)
+            {
+                char valorEsquerdo = (Character) valorOperandoEsquerdo;
+
+                if (valorOperandoDireito instanceof String)
+                {
+                    return valorEsquerdo + ((String) valorOperandoDireito);
+                }
+                if (valorOperandoDireito instanceof Character)
+                {
+                    return valorEsquerdo + (((Character) valorOperandoDireito).toString());
+                }
+            }
+            else
+            {
+                if (valorOperandoEsquerdo instanceof Integer)
+                {
+                    int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+                    if (valorOperandoDireito instanceof String)
+                    {
+                        return valorEsquerdo + ((String) valorOperandoDireito);
+                    }
+                    if (valorOperandoDireito instanceof Integer)
+                    {
+                        return valorEsquerdo + ((Integer) valorOperandoDireito);
+                    }
+                    if (valorOperandoDireito instanceof Double)
+                    {
+                        return valorEsquerdo + ((Double) valorOperandoDireito);
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Double)
+                    {
+                        double valorEsquerdo = (Double) valorOperandoEsquerdo;
+
+                        if (valorOperandoDireito instanceof String)
+                        {
+                            return valorEsquerdo + ((String) valorOperandoDireito);
+                        }
+                        if (valorOperandoDireito instanceof Integer)
+                        {
+                            return valorEsquerdo + ((Integer) valorOperandoDireito);
+                        }
+                        if (valorOperandoDireito instanceof Double)
+                        {
+                            return valorEsquerdo + ((Double) valorOperandoDireito);
+                        }
+                    }
+                    else
+                    {
+                        if (valorOperandoEsquerdo instanceof Boolean)
+                        {
+                            boolean valorEsquerdo = (Boolean) valorOperandoEsquerdo;
+
+                            if (valorOperandoDireito instanceof String)
+                            {
+                                return (String) ((valorEsquerdo) ? "verdadeiro" : "falso") + (String) valorOperandoDireito;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Object obterValorOperacaoSomaAtribuitiva(NoOperacao operacao) throws ExcecaoVisitaASA
+    {
+        NoOperacao soma = new NoOperacao(Operacao.SOMA, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
+        NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), soma);
+
+        return obterValorOperacaoAtribuicao(atribuicao);
+    }
+
+    private Object obterValorOperacaoSubtracao(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    {
+        if (valorOperandoEsquerdo instanceof Integer)
+        {
+            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
+
+            if (valorOperandoDireito instanceof Integer)
+            {
+                return valorEsquerdo - ((Integer) valorOperandoDireito);
+            }
+            if (valorOperandoDireito instanceof Double)
+            {
+                return valorEsquerdo - ((Double) valorOperandoDireito);
+            }
+        }
+        else
+        {
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double leftValue = (Double) valorOperandoEsquerdo;
+
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return leftValue - ((Integer) valorOperandoDireito);
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return leftValue - ((Double) valorOperandoDireito);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Object obterValorOperacaoSubtracaoAtribuitiva(NoOperacao operacao ) throws ExcecaoVisitaASA
+    {
+        NoOperacao subtracao = new NoOperacao(Operacao.SUBTRACAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
+        NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), subtracao);
+
+        return obterValorOperacaoAtribuicao(atribuicao);
+    }
+    
+    private Object atribuirValorVariavel(Variavel variavel, Object valor)
+    {
+        Variavel variable = (Variavel) variavel;
+        variable.setValor(valor);
+
+        return valor;
+    }
+
+    private Object atribuirValorVetor(Vetor vetor, Object valor, NoReferenciaVetor referenciaVetor) throws ExcecaoVisitaASA
+    {
+        int indice = (Integer) referenciaVetor.getIndice().aceitar(this);
+        vetor.setValor(indice, valor);
+
+        return valor;
+    }
+
+    private Object atribuirValorMatriz(Matriz matriz, Object valor, NoReferenciaMatriz referenciaMatriz) throws ExcecaoVisitaASA
+    {
+        int linha = (Integer) referenciaMatriz.getLinha().aceitar(this);
+        int coluna = (Integer) referenciaMatriz.getColuna().aceitar(this);
+        matriz.setValor(linha, coluna, valor);
+
+        return valor;
+    }
+    
 
     @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
