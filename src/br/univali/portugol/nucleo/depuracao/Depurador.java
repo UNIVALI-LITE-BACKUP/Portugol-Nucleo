@@ -4,6 +4,7 @@
  */
 package br.univali.portugol.nucleo.depuracao;
 
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoBloco;
@@ -54,6 +55,7 @@ import br.univali.portugol.nucleo.simbolos.Variavel;
 import br.univali.portugol.nucleo.simbolos.Vetor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  *
@@ -62,10 +64,67 @@ import java.util.List;
 public class Depurador implements VisitanteASA
 {
     
-    
+    public static final String funcaoInicialPadrao = "inicio";
+      
+    private String funcaoInicial = funcaoInicialPadrao;
     private String ultimaReferenciaAcessada;
 
     private TabelaSimbolos tabelaSimbolosGlobal;
+    Stack<TabelaSimbolos> tabelaSimbolosLocal = new Stack<TabelaSimbolos>();
+    
+    public void Depurar(Programa programa, String[] parametros)
+    {
+        try {
+            visitar(programa.getArvoreSintaticaAbstrata());
+            
+            
+            if (tabelaSimbolosGlobal.contem(funcaoInicial))
+            {
+            
+                Funcao funcaoPrincipal = (Funcao) tabelaSimbolosGlobal.obter(funcaoInicial);
+                TabelaSimbolos tabelaSimbolosFuncaoPrincipal = new TabelaSimbolos();
+                tabelaSimbolosLocal.push(tabelaSimbolosFuncaoPrincipal);
+                if (funcaoPrincipal.getParametros().size() > 0)
+                {
+                    List<Object> listaParametros = converterVetorEmLista(parametros);
+                    tabelaSimbolosFuncaoPrincipal.adicionar(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, listaParametros.size(), listaParametros));
+                }
+                interpretarListaBlocos(funcaoPrincipal.getBlocos());
+                tabelaSimbolosLocal.pop();
+            } else {
+                throw new RuntimeException();
+            }
+        
+        } catch (Exception e)
+        {
+        }    
+    }
+    
+    private Simbolo obterSimbolo(String nome, TabelaSimbolos tabelaSimbolos)
+    {
+        if (tabelaSimbolos.contem(nome))
+        {
+            return tabelaSimbolos.obter(nome);
+        }
+
+        return tabelaSimbolosGlobal.obter(nome);
+    }
+
+     private List<Object> converterVetorEmLista(Object[] vetor)
+    {
+        List<Object> lista = new ArrayList<Object>();
+
+        if (vetor != null)
+        {
+            for (int i = 0; i < vetor.length; i++)
+            {
+                lista.add(vetor[i]);
+            }
+        }
+
+        return lista;
+    }
+    
     
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
@@ -74,11 +133,11 @@ public class Depurador implements VisitanteASA
         List<NoDeclaracao> listaDeclaracoesGlobais = asap.getListaDeclaracoesGlobais();
         for (NoDeclaracao noDeclaracao : listaDeclaracoesGlobais)
         {
-            noDeclaracao.aceitar(this);
+            Simbolo simbolo = (Simbolo) noDeclaracao.aceitar(this);
+            tabelaSimbolosGlobal.adicionar(simbolo);
         }
         
         return null; 
-
     }
 
     @Override
@@ -102,9 +161,9 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
-        Funcao funcao = null;// chamadaFuncao.getNome();
+        Funcao funcao = (Funcao) obterSimbolo(chamadaFuncao.getNome(), tabelaSimbolosLocal.peek());
         
-        TabelaSimbolos tabelaSimbolosFuncao = new TabelaSimbolos();
+        tabelaSimbolosLocal.push(new TabelaSimbolos());
 
         List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
         List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
@@ -117,36 +176,49 @@ public class Depurador implements VisitanteASA
             switch (parametroEsperado.getModoAcesso())
             {
                 case POR_VALOR:
-                    passarParametroFuncaoPorValor(parametroPassado, parametroEsperado, tabelaSimbolosFuncao);
+                    passarParametroFuncaoPorValor(parametroPassado, parametroEsperado);
                     break;
                 case POR_REFERENCIA:
-                    passarParametroFuncaoPorReferencia(parametroPassado, parametroEsperado, tabelaSimbolosFuncao);
+                    passarParametroFuncaoPorReferencia(parametroPassado, parametroEsperado);
                     break;
             }
         }
-
-        return interpretarListaBlocos(funcao.getBlocos());
+        Object retorno = interpretarListaBlocos(funcao.getBlocos());
+        
+        tabelaSimbolosLocal.pop();
+        return retorno;
     }
 
-     private void passarParametroFuncaoPorReferencia(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado, TabelaSimbolos tabelaSimbolosFuncao)
+     private void passarParametroFuncaoPorReferencia(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado)
     {
         NoReferencia referencia = (NoReferencia) parametroPassado;
         String nome = referencia.getNome();
-        Simbolo simbolo =null;// obterSimbolo(nome, tabelaSimbolos);
+        
+        Simbolo simbolo = obterSimbolo(nome,tabelaSimbolosLocal.peek());
 
-        tabelaSimbolosFuncao.adicionar(new Ponteiro(parametroEsperado.getNome(), simbolo));
+        tabelaSimbolosLocal.peek().adicionar(new Ponteiro(parametroEsperado.getNome(), simbolo));
     }
     
+     private Simbolo extrairSimbolo(Simbolo simbolo)
+    {
+        while (simbolo instanceof Ponteiro)
+        {
+            simbolo = ((Ponteiro) simbolo).getSimboloApontado();
+        }
+
+        return simbolo;
+    }
+     
      @SuppressWarnings("unchecked")
-    private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado, TabelaSimbolos tabelaSimbolosFuncao) throws ExcecaoVisitaASA
+    private void passarParametroFuncaoPorValor(NoExpressao parametroPassado, NoDeclaracaoParametro parametroEsperado) throws ExcecaoVisitaASA
     {
         String nome = parametroEsperado.getNome();
 
         if (parametroPassado instanceof NoReferenciaVariavel)
         {
             NoReferenciaVariavel referencia = (NoReferenciaVariavel) parametroPassado;
-            Simbolo simbolo = null;//extrairSimbolo(obterSimbolo(referencia.getNome(), tabelaSimbolos));
-            tabelaSimbolosFuncao.adicionar(simbolo.copiar(nome));
+            Simbolo simbolo = extrairSimbolo(obterSimbolo(referencia.getNome(), tabelaSimbolosLocal.peek()));
+            tabelaSimbolosLocal.peek().adicionar(simbolo.copiar(nome));
         }
         else
         {
@@ -156,19 +228,19 @@ public class Depurador implements VisitanteASA
 
             if (quantificador == Quantificador.VALOR)
             {
-                tabelaSimbolosFuncao.adicionar(new Variavel(nome, tipoDado, valor));
+                tabelaSimbolosLocal.peek().adicionar(new Variavel(nome, tipoDado, valor));
             }
             else
             {
                 if (quantificador == Quantificador.VETOR)
                 {
-                    tabelaSimbolosFuncao.adicionar(new Vetor(nome, tipoDado, (List<Object>) valor));
+                    tabelaSimbolosLocal.peek().adicionar(new Vetor(nome, tipoDado, (List<Object>) valor));
                 }
                 else
                 {
                     if (quantificador == Quantificador.MATRIZ)
                     {
-                        //tabelaSimbolos.adicionar(new Matriz(nome, tipoDado, (List<List<Object>>) valor));
+                        tabelaSimbolosLocal.peek().adicionar(new Matriz(nome, tipoDado, (List<List<Object>>) valor));
   
                     }
                 }
@@ -270,10 +342,8 @@ public class Depurador implements VisitanteASA
     {
         while ((Boolean) noEnquanto.getCondicao().aceitar(this))
         {
-            //tabelaSimbolos.empilharEscopo();
             Object valorRetorno = interpretarListaBlocos(noEnquanto.getBlocos());
-            //tabelaSimbolos.desempilharEscopo();
-
+            
             if (valorRetorno != null)
             {
                 return (valorRetorno instanceof NoPare) ? null : valorRetorno;
@@ -285,6 +355,7 @@ public class Depurador implements VisitanteASA
     
     private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {
+        tabelaSimbolosLocal.peek().empilharEscopo();
         for (NoBloco noBloco : blocos)
         {
             Object valor = noBloco.aceitar(this);
@@ -293,6 +364,7 @@ public class Depurador implements VisitanteASA
                 return valor;
             }
         }
+        tabelaSimbolosLocal.peek().desempilharEscopo();
         return null;
     }
 
@@ -308,9 +380,7 @@ public class Depurador implements VisitanteASA
         {
             for (int i = indiceValorEscolhido; i < casos.size(); i++)
             {
-                //tabelaSimbolos.empilharEscopo();
                 Object valorRetorno = interpretarListaBlocos(casos.get(i).getBlocos());
-                //tabelaSimbolos.desempilharEscopo();
 
                 if (valorRetorno != null)
                 {
@@ -331,8 +401,6 @@ public class Depurador implements VisitanteASA
                 return casos.indexOf(caso);
             }
 
-
-
             if (caso.aceitar(this) == null)
             {
                 return casos.indexOf(caso);
@@ -348,9 +416,7 @@ public class Depurador implements VisitanteASA
     {
         do
         {
-            //tabelaSimbolos.empilharEscopo();
             Object valorRetorno = interpretarListaBlocos(noFacaEnquanto.getBlocos());
-            //tabelaSimbolos.desempilharEscopo();
 
             if (valorRetorno != null)
             {
@@ -493,7 +559,7 @@ public class Depurador implements VisitanteASA
         NoReferencia referencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
 
         String nome = referencia.getNome();
-        Simbolo simbolo = null;//extrairSimbolo(obterSimbolo(nome, null));
+        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome, tabelaSimbolosLocal.peek()));
         Object valor = atribuicao.getOperandoDireito().aceitar(this);//, null);
 
         if ((valor instanceof Double) && (simbolo.getTipoDado() == TipoDado.INTEIRO))
@@ -1078,7 +1144,7 @@ public class Depurador implements VisitanteASA
     {
          Object valorRetorno = null;
          
-        //tabelaSimbolos.empilharEscopo();
+        tabelaSimbolosLocal.peek().empilharEscopo();
         noPara.getInicializacao().aceitar(this);
         NoExpressao condicao = noPara.getCondicao();
 
@@ -1092,7 +1158,7 @@ public class Depurador implements VisitanteASA
             noPara.getIncremento().aceitar(this);
         }
 
-        //tabelaSimbolos.desempilharEscopo();
+        tabelaSimbolosLocal.peek().desempilharEscopo();
 
         return (valorRetorno instanceof NoPare) ? null : valorRetorno;
     }
@@ -1120,8 +1186,8 @@ public class Depurador implements VisitanteASA
     {
         int linha = (Integer) noReferenciaMatriz.getLinha().aceitar(this);
         int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
-
-        Matriz matriz = null;// = extrairSimbolo(obterSimbolo(nome, tabelaSimbolos));
+        String nome = noReferenciaMatriz.getNome();
+        Matriz matriz = (Matriz) extrairSimbolo(obterSimbolo(nome, tabelaSimbolosLocal.peek()));
         
         return matriz.getValor(linha, coluna);
     }
@@ -1129,7 +1195,7 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
-        Variavel variavel = null; //noReferenciaVariavel.getNome();
+        Variavel variavel = (Variavel) obterSimbolo(noReferenciaVariavel.getNome(),tabelaSimbolosLocal.peek());
         return variavel.getValor();
     }
 
@@ -1137,7 +1203,7 @@ public class Depurador implements VisitanteASA
     public Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA
     {
         
-        Vetor vetor = null; //noReferenciaVetor.getNome()));
+        Vetor vetor = (Vetor) obterSimbolo(noReferenciaVetor.getNome(),tabelaSimbolosLocal.peek());
         int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
 
         try
@@ -1162,10 +1228,8 @@ public class Depurador implements VisitanteASA
         boolean condicao = (Boolean) noSe.getCondicao().aceitar(this);
 
         List<NoBloco> blocos = (condicao) ? noSe.getBlocosVerdadeiros() : noSe.getBlocosFalsos();
-
-        //tabelaSimbolos.empilharEscopo();
-        Object valorRetorno = interpretarListaBlocos(blocos);//, tabelaSimbolos);
-        //tabelaSimbolos.desempilharEscopo();
+       
+        Object valorRetorno = interpretarListaBlocos(blocos);
 
         return valorRetorno;
     }
@@ -1182,7 +1246,7 @@ public class Depurador implements VisitanteASA
             {
                 try
                 {
-                    valores.add(((NoExpressao) valoresVetor.get(i)).aceitar(this));//, tabelaSimbolos));
+                    valores.add(((NoExpressao) valoresVetor.get(i)).aceitar(this));
                 }
                 catch (ArrayIndexOutOfBoundsException aioobe)
                 {
