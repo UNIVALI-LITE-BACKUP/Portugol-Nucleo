@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.depuracao.Depurador;
 import br.univali.portugol.nucleo.execucao.Entrada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
@@ -102,6 +103,7 @@ public final class Programa
                 {
                     try
                     {
+                        /*
                         Interpretador interpretador = new Interpretador();
                         interpretador.setEntrada(entrada);
                         interpretador.setSaida(saida);
@@ -121,10 +123,29 @@ public final class Programa
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
                         notificarEncerramentoExecucao(resultadoExecucao);
+                        */
+                      
+                        Depurador depurador = new Depurador();
+                        depurador.setEntrada(entrada);
+                        depurador.setSaida(saida);
+                        
+                        notificarInicioExecucao();
+                          
+                          
+                        resultadoExecucao = new ResultadoExecucao();
+                        horaInicialExecucao = System.currentTimeMillis();
+                        
+                        depurador.Depurar(Programa.this, parametros);
+                        
+                        threadExecucao = null;
+                        resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
+                        
+                        notificarEncerramentoExecucao(resultadoExecucao);
+                        
                     }
-                    catch (InterruptedException excecaoThreadInterrompida)
-                    {
-                    }
+                    //catch (InterruptedException excecaoThreadInterrompida)
+                    //{
+                    //}
                     catch (ErroExecucao erroExecucao)
                     {
                         if (resultadoExecucao == null)
