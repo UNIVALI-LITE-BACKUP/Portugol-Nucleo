@@ -142,7 +142,6 @@ public class Depurador implements VisitanteASA
         return lista;
     }
     
-    
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
     {
@@ -240,6 +239,7 @@ public class Depurador implements VisitanteASA
         {
             simbolo = ((Ponteiro) simbolo).getSimboloApontado();
         }
+        
 
         return simbolo;
     }
@@ -1342,8 +1342,39 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        switch (noDeclaracaoParametro.getModoAcesso()) {
+            case POR_REFERENCIA:
+                //noDeclaracaoParametro.
+                break;
+            case POR_VALOR:
+                String nome = noDeclaracaoParametro.getNome();
+                Quantificador quantificador = noDeclaracaoParametro.getQuantificador();
+                TipoDado tipoDado = noDeclaracaoParametro.getTipoDado();
+                Simbolo simbolo = null;
+                switch (quantificador) {
+                    case VALOR:
+                    {
+                        simbolo = new Variavel(nome, tipoDado, null);
+                        break;
+                    }
+                    case VETOR:
+                    {
+                        simbolo = new Vetor(nome, tipoDado, null);
+                        break;
+                    }
+                    case MATRIZ:
+                    {
+                        simbolo = new Matriz(nome, tipoDado, null);                        
+                        break;
+                    }
+                }
+                tabelaSimbolosLocal.peek().adicionar(simbolo);
+            break;    
+        }
+        return null;
     }
+    
     
     
     
