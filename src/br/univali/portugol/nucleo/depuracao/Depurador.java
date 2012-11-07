@@ -313,7 +313,7 @@ public class Depurador implements VisitanteASA
         String nome = noDeclaracaoVetor.getNome();
         TipoDado tipoDado = noDeclaracaoVetor.getTipoDado();
 
-        int tamanho = (Integer) noDeclaracaoVetor.getTamanho().aceitar(this);
+        int tamanho = (noDeclaracaoVetor.getTamanho() == null) ? 0 : (Integer) noDeclaracaoVetor.getTamanho().aceitar(this);
         List<Object> valores = (List<Object>) noDeclaracaoVetor.getInicializacao().aceitar(this);
 
         Vetor vetor = null;
