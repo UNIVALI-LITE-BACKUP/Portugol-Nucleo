@@ -1,6 +1,8 @@
 package br.univali.portugol.nucleo.simbolos;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,8 +13,7 @@ import java.util.List;
  */
 public final class Vetor extends Simbolo
 {
-    private int tamanho;
-    private Object[] valores;
+    private List<Object> valores;
 
     /**
      * Aloca um vetor em memória sem definir seu tamanho nem seus valores.
@@ -39,7 +40,7 @@ public final class Vetor extends Simbolo
     public Vetor(String nome, TipoDado tipoDado, int tamanho)
     {
         super(nome, tipoDado);
-        inicializarComTamanho(tamanho);
+        valores = new ArrayList<Object>(tamanho);
         setInicializado(true);
     }
 
@@ -55,7 +56,10 @@ public final class Vetor extends Simbolo
     public Vetor(String nome, TipoDado tipoDado, int tamanho, List<Object> valores)
     {
         super(nome, tipoDado);
-        inicializarComTamanhoValores(tamanho, valores);
+        this.valores = valores;
+        for (int i = 0; i < tamanho - valores.size(); i++) {
+            valores.add(tipoDado.getValorPadrao());
+        }
         setInicializado(true);
     }
 
@@ -71,7 +75,7 @@ public final class Vetor extends Simbolo
     public Vetor(String nome, TipoDado tipoDado, List<Object> valores)
     {
         super(nome, tipoDado);
-        inicializarComValores(valores);
+        this.valores = valores;
         setInicializado(true);
     }
     
@@ -83,7 +87,7 @@ public final class Vetor extends Simbolo
      */
     public int getTamanho()
     {
-        return tamanho;
+        return valores.size();
     }
 
     /**
@@ -96,7 +100,7 @@ public final class Vetor extends Simbolo
     public Object getValor(int indice)
     {
         setUtilizado(true);
-        return valores[indice];
+        return valores.get(indice);
     }
 
     /**
@@ -108,52 +112,14 @@ public final class Vetor extends Simbolo
      */
     public void setValor(int indice, Object valor)
     {
-        this.valores[indice] = valor;
-    }
-
-    private void inicializarComTamanho(int tamanho)
-    {
-        Object valorPadrao = getTipoDado().getValorPadrao();
-
-        this.tamanho = tamanho;
-        valores = new Object[tamanho];
-
-        for (int i = 0; i < tamanho; i++)
-        {
-            valores[i] = valorPadrao;
-        }
-    }
-
-    private void inicializarComTamanhoValores(int tamanho, List<Object> valores)
-    {
-        Object valorPadrao = getTipoDado().getValorPadrao();
-
-        this.tamanho = tamanho;
-        this.valores = new Object[tamanho];
-
-        for (int i = 0; i < tamanho; i++)
-        {
-            try
-            {
-                this.valores[i] = obterValor(valores.get(i));
-            }
-            catch (Exception e)
-            {
-                this.valores[i] = valorPadrao;
-            }
-        }
-    }
-
-    private void inicializarComValores(List<Object> valores)
-    {
-        inicializarComTamanhoValores(valores.size(), valores);
-    }
-
-    private Object obterValor(Object valor)
-    {
-        return (valor == null) ? getTipoDado().getValorPadrao() : valor;
+        this.valores.set(indice, valor);
     }
     
+    public void inicializarComValores(List<Object> valores)
+    {
+        Collections.copy(this.valores, valores);
+    }
+        
     /**
      * {@inheritDoc }
      */
@@ -161,9 +127,13 @@ public final class Vetor extends Simbolo
     public Vetor copiar(String novoNome)
     {
         Vetor vetor = new Vetor(novoNome, getTipoDado());
-        vetor.tamanho = tamanho;
-        vetor.valores = valores.clone();
-
+        vetor.valores = new ArrayList<Object>(this.valores.size());
+        Collections.copy(vetor.valores, this.valores);
         return vetor;
+    }
+
+    public List<Object> obterValores()
+    {
+        return new ArrayList<Object>(valores);
     }
 }

@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -167,7 +168,7 @@ public final class Matriz extends Simbolo
         }
     }
 
-    private void inicializarComValores(List<List<Object>> valores)
+    public void inicializarComValores(List<List<Object>> valores)
     {
         inicializarComDimensoesValores(obterNumeroLinhas(valores), obterNumeroColunas(valores), valores);
     }
@@ -210,6 +211,19 @@ public final class Matriz extends Simbolo
 
         return matriz;
     }
+    
+    public List<List<Object>> obterValores()
+    {
+        List<List<Object>> retorno = new ArrayList<List<Object>>();
+        for (int i = 0; i < numeroLinhas; i++){
+            List<Object> linha = new ArrayList<Object>();
+            for (int j = 0; j < numeroColunas; j++ ){
+                linha.add(this.valores[i][j]);
+            }
+            retorno.add(linha);
+        }
+        return retorno;
+    }
 
     private Object[][] copiarValores()
     {
@@ -221,5 +235,5 @@ public final class Matriz extends Simbolo
         }
 
         return copia;
-    }
+    }    
 }

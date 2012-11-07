@@ -21,6 +21,11 @@ public final class Ponteiro extends Simbolo
         this.simbolo = simbolo;
     }
 
+    public void setSimbolo(Simbolo simbolo)
+    {
+        this.simbolo = simbolo;
+    }
+    
     /**
      * Obtém o símbolo apontado por este ponteiro.
      * 
@@ -29,6 +34,9 @@ public final class Ponteiro extends Simbolo
      */
     public Simbolo getSimboloApontado()
     {
+        if (simbolo == null) {
+            throw new IllegalStateException("É necessário adicionar um simbolo a ser apontado");
+        }
         setUtilizado(true);
         return simbolo;
     }
