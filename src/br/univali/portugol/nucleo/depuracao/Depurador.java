@@ -185,7 +185,7 @@ public class Depurador implements VisitanteASA
             try {
                 escreva(noChamadaFuncao);
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
         else if (noChamadaFuncao.getNome().equals("leia"))
@@ -198,15 +198,19 @@ public class Depurador implements VisitanteASA
         } else {
 
             Funcao funcao = (Funcao) obterSimbolo(noChamadaFuncao.getNome());
+            TabelaSimbolos tabelaSimbolos = new TabelaSimbolos();
 
-            tabelaSimbolosLocal.push(new TabelaSimbolos());
+            
 
             List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
             List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
 
             for (int i = 0; i < listaParametrosEsperados.size(); i++)
             {
-                Simbolo simbolo = (Simbolo) listaParametrosEsperados.get(i).aceitar(this);
+                tabelaSimbolosLocal.push(tabelaSimbolos);
+                NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+                Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
+                tabelaSimbolosLocal.pop();
                 
                 this.chamaFuncao = true;
                 if (simbolo instanceof Variavel) {
@@ -226,8 +230,8 @@ public class Depurador implements VisitanteASA
                 }
                 this.chamaFuncao = false;
             }
+            tabelaSimbolosLocal.push(tabelaSimbolos);
             Object retorno = interpretarListaBlocos(funcao.getBlocos());
-
             tabelaSimbolosLocal.pop();
             return retorno;
         } 
@@ -265,8 +269,8 @@ public class Depurador implements VisitanteASA
          String nome = noDeclaracaoMatriz.getNome();
         TipoDado tipoDado = noDeclaracaoMatriz.getTipoDado();
 
-        int numeroLinhas = (Integer) noDeclaracaoMatriz.getNumeroLinhas().aceitar(this);
-        int numeroColunas = (Integer) noDeclaracaoMatriz.getNumeroColunas().aceitar(this);
+        int numeroLinhas = (noDeclaracaoMatriz.getNumeroLinhas() == null) ? 0 : (Integer) noDeclaracaoMatriz.getNumeroLinhas().aceitar(this);
+        int numeroColunas = (noDeclaracaoMatriz.getNumeroColunas() == null) ? 0 : (Integer) noDeclaracaoMatriz.getNumeroColunas().aceitar(this);
         List<List<Object>> valores = (List<List<Object>>) noDeclaracaoMatriz.getInicializacao().aceitar(this);
 
         Matriz matriz;
@@ -484,7 +488,7 @@ public class Depurador implements VisitanteASA
 
                 for (int j = 0; j < colunas; j++)
                 {
-                    vetor.set(j, ((NoExpressao) vetor.get(j)).aceitar(this));
+                    vetor.set(j,  vetor.get(j));
                 }
             }
         }
@@ -1331,12 +1335,12 @@ public class Depurador implements VisitanteASA
                     }
                     case VETOR:
                     {
-                        simbolo = new Vetor(nome, tipoDado, (List<Object>) tipoDado.getValorPadrao());
+                        simbolo = new Vetor(nome, tipoDado, null);
                         break;
                     }
                     case MATRIZ:
                     {
-                        simbolo = new Matriz(nome, tipoDado, (List<List<Object>>) tipoDado.getValorPadrao());                        
+                        simbolo = new Matriz(nome, tipoDado, null);                        
                         break;
                     }
                 }

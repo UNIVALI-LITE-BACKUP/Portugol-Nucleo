@@ -117,7 +117,7 @@ public final class Vetor extends Simbolo
     
     public void inicializarComValores(List<Object> valores)
     {
-        Collections.copy(this.valores, valores);
+        this.valores = new ArrayList<Object>(valores);
     }
         
     /**

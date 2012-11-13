@@ -74,8 +74,11 @@ public final class Matriz extends Simbolo
     public Matriz(String nome, TipoDado tipoDado, List<List<Object>> valores)
     {
         super(nome, tipoDado);
-        inicializarComValores(valores);
-        setInicializado(true);
+        if (valores != null)
+        {
+            inicializarComValores(valores);
+            setInicializado(true);
+        }
     }
 
     /**
