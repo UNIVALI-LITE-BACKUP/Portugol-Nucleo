@@ -22,6 +22,11 @@ grammar Portugol;
 	private Stack<String> pilhaContexto = new Stack<String>();
 	private List<ObservadorParsing> observadores  = new ArrayList<ObservadorParsing>();
 	
+	public PortugolParser(CommonTokenStream a, RecognizerSharedState b)
+	{
+		super(a, b);
+	}
+	
 	public void adicionarObservadorParsing(ObservadorParsing observador)
 	{
 		if (!observadores.contains(observador))
@@ -849,6 +854,8 @@ expressao returns[NoExpressao expressao] @init
 			}
 			
 			expressao = (NoExpressao) vPilha.pop();
+
+			System.out.println("Test");
 		}
 	}
 ;
@@ -958,20 +965,44 @@ expressao5 returns[NoExpressao expressao] @init
 
 	operandoEsquerdo = expressao6	
 	( 	
-		{
-			if (gerarArvore)
+		(
+		
 			{
-				if (operandoDireito != null)
+				if (gerarArvore)
 				{
-					NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
-					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-				 	operandoEsquerdo = operacao; 
+					if (operandoDireito != null)
+					{
+						NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+						operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+					 	operandoEsquerdo = operacao; 
+					 }
 				 }
-			 }
-		}
-
+			}
 			
-		(operador = '+' operandoDireito = expressao6) | ('-')=> operador = '-' operandoDireito = expressao6
+			operador = '+' operandoDireito = expressao6
+		) 
+		
+		|
+		
+		(	
+		
+		 	('-')=> 
+		 	
+			{
+				if (gerarArvore)
+				{
+					if (operandoDireito != null)
+					{
+						NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+						operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+					 	operandoEsquerdo = operacao; 
+					 }
+				 }
+			}
+		 	
+		 	operador = '-' operandoDireito = expressao6 
+		 
+		)
 		
 		
 	)*
