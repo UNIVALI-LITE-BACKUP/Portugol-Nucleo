@@ -39,9 +39,12 @@ public final class Vetor extends Simbolo
      */
     public Vetor(String nome, TipoDado tipoDado, int tamanho)
     {
-        super(nome, tipoDado);
+        this(nome, tipoDado);
         valores = new ArrayList<Object>(tamanho);
-        setInicializado(true);
+        for (int i = 0; i < tamanho; i ++)
+        {
+            valores.add(tipoDado.getValorPadrao());
+        }
     }
 
     /**
@@ -55,10 +58,9 @@ public final class Vetor extends Simbolo
      */    
     public Vetor(String nome, TipoDado tipoDado, int tamanho, List<Object> valores)
     {
-        super(nome, tipoDado);
-        this.valores = valores;
-        for (int i = 0; i < tamanho - valores.size(); i++) {
-            valores.add(tipoDado.getValorPadrao());
+        this(nome, tipoDado, tamanho);
+        for (int i = 0; i < this.valores.size(); i++) {
+            this.valores.set(i,valores.get(i));
         }
         setInicializado(true);
     }
@@ -74,8 +76,8 @@ public final class Vetor extends Simbolo
      */        
     public Vetor(String nome, TipoDado tipoDado, List<Object> valores)
     {
-        super(nome, tipoDado);
-        this.valores = valores;
+        this(nome, tipoDado);
+        this.valores = new ArrayList<Object>(valores);
         setInicializado(true);
     }
     

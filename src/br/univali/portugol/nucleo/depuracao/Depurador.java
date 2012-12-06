@@ -57,6 +57,7 @@ import br.univali.portugol.nucleo.simbolos.Simbolo;
 import br.univali.portugol.nucleo.simbolos.TabelaSimbolos;
 import br.univali.portugol.nucleo.simbolos.Variavel;
 import br.univali.portugol.nucleo.simbolos.Vetor;
+import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -271,13 +272,21 @@ public class Depurador implements VisitanteASA
 
         int numeroLinhas = (noDeclaracaoMatriz.getNumeroLinhas() == null) ? 0 : (Integer) noDeclaracaoMatriz.getNumeroLinhas().aceitar(this);
         int numeroColunas = (noDeclaracaoMatriz.getNumeroColunas() == null) ? 0 : (Integer) noDeclaracaoMatriz.getNumeroColunas().aceitar(this);
-        List<List<Object>> valores = (List<List<Object>>) noDeclaracaoMatriz.getInicializacao().aceitar(this);
-
+        
+        List<List<Object>> valores = null;
+        if (noDeclaracaoMatriz.getInicializacao() != null) {
+            valores = (List<List<Object>>) noDeclaracaoMatriz.getInicializacao().aceitar(this);
+        }
+        
         Matriz matriz;
 
-        if (numeroLinhas == 0)
+        if (numeroLinhas == 0 && valores != null)
         {
             matriz = new Matriz(nome, tipoDado, valores);
+        }
+        else if (valores == null) 
+        {
+            matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas);
         }
         else
         {
@@ -318,14 +327,21 @@ public class Depurador implements VisitanteASA
         TipoDado tipoDado = noDeclaracaoVetor.getTipoDado();
 
         int tamanho = (noDeclaracaoVetor.getTamanho() == null) ? 0 : (Integer) noDeclaracaoVetor.getTamanho().aceitar(this);
-        List<Object> valores = (List<Object>) noDeclaracaoVetor.getInicializacao().aceitar(this);
-
+        List<Object> valores = null;
+        if (noDeclaracaoVetor.getInicializacao() != null) {
+             valores = (List<Object>) noDeclaracaoVetor.getInicializacao().aceitar(this);
+        } 
+        
         Vetor vetor = null;
 
-        if (tamanho == 0)
+        if (tamanho == 0 && valores != null)
         {
             vetor = new Vetor(nome, tipoDado, valores);
         }
+        else if (valores == null)
+        {
+            vetor = new Vetor(nome, tipoDado, tamanho);
+        } 
         else
         {
             vetor = new Vetor(nome, tipoDado, tamanho, valores);
@@ -1219,7 +1235,7 @@ public class Depurador implements VisitanteASA
         String nome = noReferenciaMatriz.getNome();
         Matriz matriz = (Matriz) extrairSimbolo(obterSimbolo(nome));
         
-        return ((NoExpressao)matriz.getValor(linha, coluna)).aceitar(this);
+        return matriz.getValor(linha, coluna);
     }
 
     @Override
@@ -1251,7 +1267,7 @@ public class Depurador implements VisitanteASA
         if (indice >= vetor.getTamanho()) {
             throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()),asa,noReferenciaVetor);
         }
-        
+                
         return vetor.getValor(indice);        
     }
 
@@ -1358,6 +1374,9 @@ public class Depurador implements VisitanteASA
             if (saida != null)
             {
                 Object valor = expressao.aceitar(this);
+                while (valor instanceof NoExpressao) {
+                    valor = ((NoExpressao)valor).aceitar(this);
+                }
                 if (valor instanceof String)
                 {
                     if (valor.equals("${show developers}"))
@@ -1425,7 +1444,7 @@ public class Depurador implements VisitanteASA
                                     {
                                         Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                                     }
-                                }
+                                }                                 
                             }
                         }
                     }
