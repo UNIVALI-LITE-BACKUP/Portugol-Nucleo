@@ -1235,7 +1235,14 @@ public class Depurador implements VisitanteASA
         String nome = noReferenciaMatriz.getNome();
         Matriz matriz = (Matriz) extrairSimbolo(obterSimbolo(nome));
         
-        return matriz.getValor(linha, coluna);
+         Object valor = matriz.getValor(linha, coluna);
+        
+        while (valor instanceof NoExpressao) 
+        {
+            valor = ((NoExpressao)valor).aceitar(this);
+        }
+        
+        return valor;
     }
 
     @Override
@@ -1268,7 +1275,14 @@ public class Depurador implements VisitanteASA
             throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()),asa,noReferenciaVetor);
         }
                 
-        return vetor.getValor(indice);        
+        Object valor = vetor.getValor(indice);
+        
+        while (valor instanceof NoExpressao) 
+        {
+            valor = ((NoExpressao)valor).aceitar(this);
+        }
+        
+        return valor;        
     }
 
     @Override
@@ -1374,9 +1388,7 @@ public class Depurador implements VisitanteASA
             if (saida != null)
             {
                 Object valor = expressao.aceitar(this);
-                while (valor instanceof NoExpressao) {
-                    valor = ((NoExpressao)valor).aceitar(this);
-                }
+                
                 if (valor instanceof String)
                 {
                     if (valor.equals("${show developers}"))

@@ -2921,7 +2921,6 @@ public class PortugolParser extends Parser {
             			
             			expressao = (NoExpressao) vPilha.pop();
 
-            			System.out.println("Test");
             		}
             	}
 

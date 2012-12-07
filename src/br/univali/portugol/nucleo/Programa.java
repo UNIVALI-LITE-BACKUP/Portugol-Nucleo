@@ -103,28 +103,6 @@ public final class Programa
                 {
                     try
                     {
-                        /*
-                        Interpretador interpretador = new Interpretador();
-                        interpretador.setEntrada(entrada);
-                        interpretador.setSaida(saida);
-                        interpretador.setFuncaoInicial(funcaoInicial);
-
-                        for (ObservadorInterpretacao oi : observadoresInter){
-                            interpretador.addObservadorInterpretacao(oi);
-                        }
-                        
-                        notificarInicioExecucao();
-
-                        resultadoExecucao = new ResultadoExecucao();
-                        horaInicialExecucao = System.currentTimeMillis();
-
-                        interpretador.interpretar(arvoreSintaticaAbstrataPrograma, parametros);
-                        
-                        threadExecucao = null;
-                        resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-                        notificarEncerramentoExecucao(resultadoExecucao);
-                        */
-                      
                         Depurador depurador = new Depurador();
                         depurador.setEntrada(entrada);
                         depurador.setSaida(saida);
@@ -143,9 +121,6 @@ public final class Programa
                         notificarEncerramentoExecucao(resultadoExecucao);
                         
                     }
-                    //catch (InterruptedException excecaoThreadInterrompida)
-                    //{
-                    //}
                     catch (ErroExecucao erroExecucao)
                     {
                         if (resultadoExecucao == null)
