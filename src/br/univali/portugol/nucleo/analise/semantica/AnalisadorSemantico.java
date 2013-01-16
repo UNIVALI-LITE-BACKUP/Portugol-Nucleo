@@ -286,8 +286,8 @@ public final class AnalisadorSemantico
     	
     	if (referencia instanceof NoChamadaFuncao)
         {	
-    		if (!nome.equals("escreva") && !nome.equals("limpa") && !nome.equals("leia") && !nome.equals("aguarde") && !nome.equals("tamanho"))
-    		{
+    		if (!nome.equals("escreva") && !nome.equals("leia"))
+                {
 	    		if (tabelaSimbolos.contem((referencia.getNome())))
 		        {
 	    			Funcao funcao = (Funcao) tabelaSimbolos.obter(referencia.getNome()); 
@@ -970,21 +970,27 @@ public final class AnalisadorSemantico
         int cont = 0;
         List<NoDeclaracaoParametro> parametrosEsperados = funcao.getParametros();
         List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
-
+        
+        if (parametrosPassados == null &&  parametrosEsperados.size() > 0){
+            cont = 0;
+            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, parametrosEsperados.size(), funcao, chamadaFuncao));
+        }
+        
+        else
+            
+        if (  parametrosEsperados.size() > parametrosPassados.size())
+        {
+            cont = chamadaFuncao.getParametros().size();
+            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
+        }
+        
+        else 
+        
         if (parametrosPassados.size() > funcao.getParametros().size())
         {
             cont = chamadaFuncao.getParametros().size();
             notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
         }
-
-        else
-
-        if (parametrosEsperados.size() > parametrosPassados.size())
-        {
-            cont = chamadaFuncao.getParametros().size();
-            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
-        }
-
         else cont = parametrosPassados.size();
 
         for (int i = 0; i < cont; i++)

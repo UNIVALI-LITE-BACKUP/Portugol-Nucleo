@@ -12,6 +12,11 @@ import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorMissingTo
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorNoViableAltException;
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorUnwantedTokenException;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
+import br.univali.portugol.nucleo.asa.ModoAcesso;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
+import br.univali.portugol.nucleo.asa.Quantificador;
+import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +96,49 @@ public final class AnalisadorSintatico implements ObservadorParsing
             PortugolParser portugolParser = new PortugolParser(commonTokenStream);
 
             portugolParser.adicionarObservadorParsing(this);
-            return portugolParser.parse();
+            ArvoreSintaticaAbstrata asa = portugolParser.parse();
+            
+            NoDeclaracaoFuncao aguarde = new NoDeclaracaoFuncao("aguarde", TipoDado.VAZIO, Quantificador.VALOR);
+            NoDeclaracaoParametro intervalo = new NoDeclaracaoParametro("intervalo", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            List<NoDeclaracaoParametro> parametrosAguarde =  new ArrayList<NoDeclaracaoParametro>();
+            parametrosAguarde.add(intervalo);
+            aguarde.setParametros(parametrosAguarde);
+            asa.getListaDeclaracoesGlobais().add(aguarde);
+            
+            NoDeclaracaoFuncao limpa = new NoDeclaracaoFuncao("limpa", TipoDado.VAZIO, Quantificador.VALOR);
+            limpa.setParametros(new ArrayList<NoDeclaracaoParametro>());
+            asa.getListaDeclaracoesGlobais().add(limpa);
+            
+            NoDeclaracaoFuncao sorteia = new NoDeclaracaoFuncao("sorteia", TipoDado.INTEIRO, Quantificador.VALOR);
+            List<NoDeclaracaoParametro> parametrosSorteia = new ArrayList<NoDeclaracaoParametro>();
+            NoDeclaracaoParametro limite = new NoDeclaracaoParametro("limite", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            parametrosSorteia.add(limite);
+            sorteia.setParametros(parametrosSorteia);
+            asa.getListaDeclaracoesGlobais().add(sorteia);
+            
+            NoDeclaracaoFuncao potencia = new NoDeclaracaoFuncao("potencia", TipoDado.INTEIRO, Quantificador.VALOR);
+            NoDeclaracaoParametro base = new NoDeclaracaoParametro("base", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            NoDeclaracaoParametro expoente = new NoDeclaracaoParametro("expoente", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            List<NoDeclaracaoParametro> parametrosPotencia = new ArrayList<NoDeclaracaoParametro>();
+            parametrosPotencia.add(base);
+            parametrosPotencia.add(expoente);
+            potencia.setParametros(parametrosPotencia);
+            asa.getListaDeclaracoesGlobais().add(potencia);
+            
+            NoDeclaracaoFuncao raiz = new NoDeclaracaoFuncao("raiz", TipoDado.REAL, Quantificador.VALOR);
+            List<NoDeclaracaoParametro> parametrosRaiz = new ArrayList<NoDeclaracaoParametro>();
+            NoDeclaracaoParametro valor = new NoDeclaracaoParametro("valor", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            parametrosRaiz.add(valor);
+            raiz.setParametros(parametrosRaiz);
+            asa.getListaDeclaracoesGlobais().add(raiz);
+            
+            NoDeclaracaoFuncao tamanho = new NoDeclaracaoFuncao("tamanho", TipoDado.INTEIRO, Quantificador.VALOR);
+            List<NoDeclaracaoParametro> parametrosTamanho = new ArrayList<NoDeclaracaoParametro>();
+            NoDeclaracaoParametro vetor = new NoDeclaracaoParametro("vetor", TipoDado.VAZIO, Quantificador.VETOR, ModoAcesso.POR_REFERENCIA);
+            parametrosTamanho.add(vetor);
+            tamanho.setParametros(parametrosTamanho);
+            
+            return asa;
         }
         catch (RecognitionException excecao)
         {

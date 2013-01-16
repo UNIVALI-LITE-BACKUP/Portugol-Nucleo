@@ -60,6 +60,7 @@ import br.univali.portugol.nucleo.simbolos.Vetor;
 import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,9 +71,7 @@ import java.util.logging.Logger;
  */
 public class Depurador implements VisitanteASA
 {
-    
     public static final String funcaoInicialPadrao = "inicio";
-      
     private Saida saida;
     private Entrada entrada;
     private boolean referencia = false;
@@ -88,23 +87,22 @@ public class Depurador implements VisitanteASA
     {
         this.saida = saida;
     }
-    
     private String funcaoInicial = funcaoInicialPadrao;
     private String ultimaReferenciaAcessada;
-
     private TabelaSimbolos tabelaSimbolosGlobal;
     Stack<TabelaSimbolos> tabelaSimbolosLocal = new Stack<TabelaSimbolos>();
-    
+
     public void Depurar(Programa programa, String[] parametros) throws ErroExecucao
     {
-        try {
+        try
+        {
             asa = programa.getArvoreSintaticaAbstrata();
             visitar(programa.getArvoreSintaticaAbstrata());
-            
-            
+
+
             if (tabelaSimbolosGlobal.contem(funcaoInicial))
             {
-            
+
                 Funcao funcaoPrincipal = (Funcao) tabelaSimbolosGlobal.obter(funcaoInicial);
                 TabelaSimbolos tabelaSimbolosFuncaoPrincipal = new TabelaSimbolos();
                 tabelaSimbolosLocal.push(tabelaSimbolosFuncaoPrincipal);
@@ -115,24 +113,28 @@ public class Depurador implements VisitanteASA
                 }
                 interpretarListaBlocos(funcaoPrincipal.getBlocos());
                 tabelaSimbolosLocal.pop();
-            } else {
+            }
+            else
+            {
                 throw new RuntimeException();
             }
-        
-        } catch (Exception e)
+
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
-            if (e.getCause() instanceof ErroExecucao){
-                throw (ErroExecucao)e.getCause();
+            if (e.getCause() instanceof ErroExecucao)
+            {
+                throw (ErroExecucao) e.getCause();
             }
-            
-        }    
+
+        }
     }
-    
+
     private Simbolo obterSimbolo(String nome)
     {
         TabelaSimbolos tabelaSimbolos = tabelaSimbolosLocal.peek();
-        
+
         if (tabelaSimbolos.contem(nome))
         {
             return tabelaSimbolos.obter(nome);
@@ -155,7 +157,7 @@ public class Depurador implements VisitanteASA
 
         return lista;
     }
-    
+
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
     {
@@ -165,10 +167,10 @@ public class Depurador implements VisitanteASA
         for (NoDeclaracao noDeclaracao : listaDeclaracoesGlobais)
         {
             noDeclaracao.aceitar(this);
-        }        
-        return null; 
+        }
+        return null;
     }
-    
+
     @Override
     public Object visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
     {
@@ -193,74 +195,180 @@ public class Depurador implements VisitanteASA
         if (noChamadaFuncao.getNome().equals("escreva"))
         {
             escreva(noChamadaFuncao);
-            
-        } else if (noChamadaFuncao.getNome().equals("leia"))
+
+        }
+        else
         {
-            leia(noChamadaFuncao);
-            
-        } else {
-
-            Funcao funcao = (Funcao) obterSimbolo(noChamadaFuncao.getNome());
-            TabelaSimbolos tabelaSimbolos = new TabelaSimbolos();
-
-            List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
-            List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
-
-            for (int i = 0; i < listaParametrosEsperados.size(); i++)
+            if (noChamadaFuncao.getNome().equals("leia"))
             {
-                tabelaSimbolosLocal.push(tabelaSimbolos);
-                NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
-                tabelaSimbolosLocal.pop();
-                
-                this.chamaFuncao = true;
-                if (simbolo instanceof Variavel) {
-                    Object valor = listaParametrosPassados.get(i).aceitar(this);
-                    ((Variavel)simbolo).setValor(valor);
-                } else if (simbolo instanceof Ponteiro) {
-                    referencia = true;
-                    Object valor = listaParametrosPassados.get(i).aceitar(this);
-                    referencia = false;
-                    ((Ponteiro)simbolo).setSimbolo((Simbolo)valor);
-                } else if (simbolo instanceof Vetor){
-                    List<Object> valores = (List<Object>) listaParametrosPassados.get(i).aceitar(this);
-                    ((Vetor)simbolo).inicializarComValores(valores);
-                } else if (simbolo instanceof Matriz) {
-                    List<List<Object>> valores = (List<List<Object>>) listaParametrosPassados.get(i).aceitar(this);
-                    ((Matriz)simbolo).inicializarComValores(valores);
-                }
-                this.chamaFuncao = false;
+                leia(noChamadaFuncao);
+
             }
-            tabelaSimbolosLocal.push(tabelaSimbolos);
-            Object retorno = interpretarListaBlocos(funcao.getBlocos());
-            tabelaSimbolosLocal.pop();
-            return retorno;
-        } 
+            else
+            {
+                if (noChamadaFuncao.getNome().equals("limpa"))
+                {
+                    try
+                    {
+                        limpar();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else
+                {
+                    if (noChamadaFuncao.getNome().equals("aguarde"))
+                    {
+                        aguardar(noChamadaFuncao);
+                    }
+                    else
+                    {
+                        if (noChamadaFuncao.getNome().equals("tamanho"))
+                        {
+                            return tamanho(noChamadaFuncao);
+                        }
+                        else
+                        {
+                            if (noChamadaFuncao.getNome().equals("potencia"))
+                            {
+                                return potencia(noChamadaFuncao);
+                            }
+                            else
+                            {
+                                if (noChamadaFuncao.getNome().equals("raiz"))
+                                {
+                                    return raiz(noChamadaFuncao);
+                                }
+                                else
+                                {
+                                    if (noChamadaFuncao.getNome().equals("sorteia"))
+                                    {
+                                        return sorteia(noChamadaFuncao);
+                                    }
+                                    else
+                                    {
+
+                                        Funcao funcao = (Funcao) obterSimbolo(noChamadaFuncao.getNome());
+                                        TabelaSimbolos tabelaSimbolos = new TabelaSimbolos();
+
+                                        List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
+                                        List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
+
+                                        for (int i = 0; i < listaParametrosEsperados.size(); i++)
+                                        {
+                                            tabelaSimbolosLocal.push(tabelaSimbolos);
+                                            NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+                                            Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
+                                            tabelaSimbolosLocal.pop();
+
+                                            this.chamaFuncao = true;
+                                            if (simbolo instanceof Variavel)
+                                            {
+                                                Object valor = listaParametrosPassados.get(i).aceitar(this);
+                                                ((Variavel) simbolo).setValor(valor);
+                                            }
+                                            else
+                                            {
+                                                if (simbolo instanceof Ponteiro)
+                                                {
+                                                    referencia = true;
+                                                    Object valor = listaParametrosPassados.get(i).aceitar(this);
+                                                    referencia = false;
+                                                    ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
+                                                }
+                                                else
+                                                {
+                                                    if (simbolo instanceof Vetor)
+                                                    {
+                                                        List<Object> valores = (List<Object>) listaParametrosPassados.get(i).aceitar(this);
+                                                        ((Vetor) simbolo).inicializarComValores(valores);
+                                                    }
+                                                    else
+                                                    {
+                                                        if (simbolo instanceof Matriz)
+                                                        {
+                                                            List<List<Object>> valores = (List<List<Object>>) listaParametrosPassados.get(i).aceitar(this);
+                                                            ((Matriz) simbolo).inicializarComValores(valores);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            this.chamaFuncao = false;
+                                        }
+                                        tabelaSimbolosLocal.push(tabelaSimbolos);
+                                        Object retorno = interpretarListaBlocos(funcao.getBlocos());
+                                        tabelaSimbolosLocal.pop();
+                                        return retorno;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
         return null;
     }
-    
+
+    private void limpar() throws Exception
+    {
+        if (saida != null)
+        {
+            saida.limpar();
+        }
+    }
+
+    private void aguardar(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
+    {
+        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
+        try
+        {
+            Thread.sleep((Integer) parametros.get(0).aceitar(this));
+        }
+        catch (InterruptedException ex)
+        {
+            Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private int tamanho(NoChamadaFuncao chamadaFuncao)
+    {
+        NoReferencia referencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
+        String nome = referencia.getNome();
+        ultimaReferenciaAcessada = nome;
+        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome));
+        Vetor vetor = (Vetor) simbolo;
+
+        return vetor.getTamanho();
+    }
+
     private Simbolo extrairSimbolo(Simbolo simbolo)
     {
         while (simbolo instanceof Ponteiro)
         {
             simbolo = ((Ponteiro) simbolo).getSimboloApontado();
-        }        
+        }
         return simbolo;
     }
-     
+
     @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
-    {        
+    {
         String nome = declaracaoFuncao.getNome();
         TipoDado tipoDados = declaracaoFuncao.getTipoDado();
         Quantificador quantificador = declaracaoFuncao.getQuantificador();
 
         List<NoDeclaracaoParametro> parametros = declaracaoFuncao.getParametros();
         List<NoBloco> blocos = declaracaoFuncao.getBlocos();
-        Funcao funcao = new Funcao(nome, tipoDados, quantificador, parametros, blocos);        
-        
+        Funcao funcao = new Funcao(nome, tipoDados, quantificador, parametros, blocos);
+
         tabelaSimbolosLocal.peek().adicionar(funcao);
-        
+
         return null;
     }
 
@@ -272,31 +380,35 @@ public class Depurador implements VisitanteASA
 
         int numeroLinhas = (noDeclaracaoMatriz.getNumeroLinhas() == null) ? 0 : (Integer) noDeclaracaoMatriz.getNumeroLinhas().aceitar(this);
         int numeroColunas = (noDeclaracaoMatriz.getNumeroColunas() == null) ? 0 : (Integer) noDeclaracaoMatriz.getNumeroColunas().aceitar(this);
-        
+
         List<List<Object>> valores = null;
-        if (noDeclaracaoMatriz.getInicializacao() != null) {
+        if (noDeclaracaoMatriz.getInicializacao() != null)
+        {
             valores = (List<List<Object>>) noDeclaracaoMatriz.getInicializacao().aceitar(this);
         }
-        
+
         Matriz matriz;
 
         if (numeroLinhas == 0 && valores != null)
         {
             matriz = new Matriz(nome, tipoDado, valores);
         }
-        else if (valores == null) 
-        {
-            matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas);
-        }
         else
         {
-            matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas, valores);
+            if (valores == null)
+            {
+                matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas);
+            }
+            else
+            {
+                matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas, valores);
+            }
         }
 
         matriz.setConstante(noDeclaracaoMatriz.constante());
-        
+
         tabelaSimbolosLocal.peek().adicionar(matriz);
-        
+
         return null;
     }
 
@@ -305,18 +417,19 @@ public class Depurador implements VisitanteASA
     {
         String nome = noDeclaracaoVariavel.getNome();
         TipoDado tipoDado = noDeclaracaoVariavel.getTipoDado();
-        
+
         Variavel variavel = new Variavel(nome, tipoDado);
-        
-        if (noDeclaracaoVariavel.getInicializacao() != null) {
+
+        if (noDeclaracaoVariavel.getInicializacao() != null)
+        {
             Object valor = noDeclaracaoVariavel.getInicializacao().aceitar(this);
-            variavel.setValor(valor);            
+            variavel.setValor(valor);
         }
-        
+
         variavel.setConstante(noDeclaracaoVariavel.constante());
-        
+
         tabelaSimbolosLocal.peek().adicionar(variavel);
-        
+
         return null;
     }
 
@@ -328,29 +441,33 @@ public class Depurador implements VisitanteASA
 
         int tamanho = (noDeclaracaoVetor.getTamanho() == null) ? 0 : (Integer) noDeclaracaoVetor.getTamanho().aceitar(this);
         List<Object> valores = null;
-        if (noDeclaracaoVetor.getInicializacao() != null) {
-             valores = (List<Object>) noDeclaracaoVetor.getInicializacao().aceitar(this);
-        } 
-        
+        if (noDeclaracaoVetor.getInicializacao() != null)
+        {
+            valores = (List<Object>) noDeclaracaoVetor.getInicializacao().aceitar(this);
+        }
+
         Vetor vetor = null;
 
         if (tamanho == 0 && valores != null)
         {
             vetor = new Vetor(nome, tipoDado, valores);
         }
-        else if (valores == null)
-        {
-            vetor = new Vetor(nome, tipoDado, tamanho);
-        } 
         else
         {
-            vetor = new Vetor(nome, tipoDado, tamanho, valores);
+            if (valores == null)
+            {
+                vetor = new Vetor(nome, tipoDado, tamanho);
+            }
+            else
+            {
+                vetor = new Vetor(nome, tipoDado, tamanho, valores);
+            }
         }
 
         vetor.setConstante(noDeclaracaoVetor.constante());
 
         tabelaSimbolosLocal.peek().adicionar(vetor);
-        
+
         return null;
     }
 
@@ -363,7 +480,8 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
-        try {
+        try
+        {
             while ((Boolean) noEnquanto.getCondicao().aceitar(this))
             {
                 Object valorRetorno = interpretarListaBlocos(noEnquanto.getBlocos());
@@ -373,29 +491,35 @@ public class Depurador implements VisitanteASA
                     return valorRetorno;
                 }
             }
-        } catch (PareException pe) {
-        
+        }
+        catch (PareException pe)
+        {
         }
 
         return null;
     }
-    
+
     private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {
         if (blocos == null)
         {
             return null;
         }
-        
+
         tabelaSimbolosLocal.peek().empilharEscopo();
-        try {
+        try
+        {
             for (NoBloco noBloco : blocos)
             {
                 noBloco.aceitar(this);
             }
-        } catch (RetorneException re) {
+        }
+        catch (RetorneException re)
+        {
             return re.getValor();
-        } finally {
+        }
+        finally
+        {
             tabelaSimbolosLocal.peek().desempilharEscopo();
         }
         return null;
@@ -411,7 +535,8 @@ public class Depurador implements VisitanteASA
 
         if (indiceValorEscolhido >= 0)
         {
-            try {
+            try
+            {
                 for (int i = indiceValorEscolhido; i < casos.size(); i++)
                 {
                     Object valorRetorno = interpretarListaBlocos(casos.get(i).getBlocos());
@@ -421,18 +546,19 @@ public class Depurador implements VisitanteASA
                         return valorRetorno;
                     }
                 }
-            } catch (PareException pe) {
-            
+            }
+            catch (PareException pe)
+            {
             }
         }
 
         return null;
     }
-    
+
     private int procurarIndiceValorEscolhido(Object valorEscolha, List<NoCaso> casos) throws ExcecaoVisitaASA
     {
         for (NoCaso caso : casos)
-        {          
+        {
             if (caso.aceitar(this) == valorEscolha)
             {
                 return casos.indexOf(caso);
@@ -441,16 +567,16 @@ public class Depurador implements VisitanteASA
             if (caso.aceitar(this) == null)
             {
                 return casos.indexOf(caso);
-            }            
+            }
         }
         return -1;
     }
-        
 
     @Override
     public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA
     {
-        try {
+        try
+        {
             do
             {
                 Object valorRetorno = interpretarListaBlocos(noFacaEnquanto.getBlocos());
@@ -461,8 +587,9 @@ public class Depurador implements VisitanteASA
                 }
             }
             while ((Boolean) noFacaEnquanto.getCondicao().aceitar(this));
-        } catch (PareException pe) {
-        
+        }
+        catch (PareException pe)
+        {
         }
         return null;
     }
@@ -488,7 +615,7 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
     {
-        
+
         List<List<Object>> valores = noMatriz.getValores();
 
         if (valores != null)
@@ -503,7 +630,7 @@ public class Depurador implements VisitanteASA
 
                 for (int j = 0; j < colunas; j++)
                 {
-                    vetor.set(j,  vetor.get(j));
+                    vetor.set(j, vetor.get(j));
                 }
             }
         }
@@ -514,7 +641,7 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA
     {
-         Object valor = noMenosUnario.getExpressao().aceitar(this);
+        Object valor = noMenosUnario.getExpressao().aceitar(this);
 
         if (valor instanceof Double)
         {
@@ -535,7 +662,7 @@ public class Depurador implements VisitanteASA
     @Override
     public Object visitar(NoNao noNao) throws ExcecaoVisitaASA
     {
-        return !((Boolean)noNao.getExpressao().aceitar(this));
+        return !((Boolean) noNao.getExpressao().aceitar(this));
     }
 
     @Override
@@ -556,10 +683,10 @@ public class Depurador implements VisitanteASA
             case MODULO_ACUMULATIVO:
                 return obterValorOperacaoModuloAtribuitivo(noOperacao);
         }
-        
+
         Object valorOperandoEsquerdo = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object valorOperandoDireito = noOperacao.getOperandoDireito().aceitar(this);
-        
+
         switch (noOperacao.getOperacao())
         {
             case DIFERENCA:
@@ -592,8 +719,8 @@ public class Depurador implements VisitanteASA
 
         return null;
     }
-    
-     private Object obterValorOperacaoAtribuicao(NoOperacao atribuicao) throws ExcecaoVisitaASA
+
+    private Object obterValorOperacaoAtribuicao(NoOperacao atribuicao) throws ExcecaoVisitaASA
     {
         NoReferencia referencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
 
@@ -665,7 +792,7 @@ public class Depurador implements VisitanteASA
         return null;
     }
 
-    private Object obterValorOperacaoDivisaoAtribuitiva(NoOperacao operacao ) throws ExcecaoVisitaASA
+    private Object obterValorOperacaoDivisaoAtribuitiva(NoOperacao operacao) throws ExcecaoVisitaASA
     {
         NoOperacao divisao = new NoOperacao(Operacao.DIVISAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
         NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), divisao);
@@ -764,34 +891,47 @@ public class Depurador implements VisitanteASA
                 return valorEsquerdo > (Double) valorOperandoDireito;
             }
         }
-        else if (valorOperandoEsquerdo instanceof Double)
+        else
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo > (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo > (Double) valorOperandoDireito;
+                }
+            }
+            else
             {
-                return valorEsquerdo > (Integer) valorOperandoDireito;
-            }
-            if (valorOperandoDireito instanceof Double)
-            {
-                return valorEsquerdo > (Double) valorOperandoDireito;
+                if (valorOperandoEsquerdo instanceof String)
+                {
+                    String valorEsquerdo = (String) valorOperandoEsquerdo;
+                    if (valorOperandoDireito instanceof String)
+                    {
+                        String valorDireito = (String) valorOperandoDireito;
+                        return valorEsquerdo.compareTo(valorDireito) > 0;
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Character)
+                    {
+                        Character valorEsquero = (Character) valorOperandoEsquerdo;
+                        if (valorOperandoDireito instanceof Character)
+                        {
+                            Character valorDireito = (Character) valorOperandoDireito;
+                            return valorEsquero.compareTo(valorDireito) > 0;
+                        }
+                    }
+                }
             }
         }
-        else if (valorOperandoEsquerdo instanceof String) { 
-            String valorEsquerdo = (String) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof  String) {
-                String valorDireito = (String) valorOperandoDireito;
-                return valorEsquerdo.compareTo(valorDireito) > 0;
-            }
-        }
-        else if (valorOperandoEsquerdo instanceof Character) {
-            Character valorEsquero = (Character) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof Character) {
-                Character valorDireito = (Character) valorOperandoDireito;
-                return valorEsquero.compareTo(valorDireito) > 0;
-            }
-        }
-        
+
         return null;
     }
 
@@ -810,31 +950,44 @@ public class Depurador implements VisitanteASA
                 return valorEsquerdo >= (Double) valorOperandoDireito;
             }
         }
-        else if (valorOperandoEsquerdo instanceof Double)
+        else
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo >= (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo >= (Double) valorOperandoDireito;
+                }
+            }
+            else
             {
-                return valorEsquerdo >= (Integer) valorOperandoDireito;
-            }
-            if (valorOperandoDireito instanceof Double)
-            {
-                return valorEsquerdo >= (Double) valorOperandoDireito;
-            }
-        }
-        else if (valorOperandoEsquerdo instanceof String) { 
-            String valorEsquerdo = (String) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof  String) {
-                String valorDireito = (String) valorOperandoDireito;
-                return valorEsquerdo.compareTo(valorDireito) >= 0;
-            }
-        }
-        else if (valorOperandoEsquerdo instanceof Character) {
-            Character valorEsquero = (Character) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof Character) {
-                Character valorDireito = (Character) valorOperandoDireito;
-                return valorEsquero.compareTo(valorDireito) >= 0;
+                if (valorOperandoEsquerdo instanceof String)
+                {
+                    String valorEsquerdo = (String) valorOperandoEsquerdo;
+                    if (valorOperandoDireito instanceof String)
+                    {
+                        String valorDireito = (String) valorOperandoDireito;
+                        return valorEsquerdo.compareTo(valorDireito) >= 0;
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Character)
+                    {
+                        Character valorEsquero = (Character) valorOperandoEsquerdo;
+                        if (valorOperandoDireito instanceof Character)
+                        {
+                            Character valorDireito = (Character) valorOperandoDireito;
+                            return valorEsquero.compareTo(valorDireito) >= 0;
+                        }
+                    }
+                }
             }
         }
 
@@ -856,31 +1009,44 @@ public class Depurador implements VisitanteASA
                 return valorEsquerdo < (Double) valorOperandoDireito;
             }
         }
-        else if (valorOperandoEsquerdo instanceof Double)
+        else
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo < (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo < (Double) valorOperandoDireito;
+                }
+            }
+            else
             {
-                return valorEsquerdo < (Integer) valorOperandoDireito;
-            }
-            if (valorOperandoDireito instanceof Double)
-            {
-                return valorEsquerdo < (Double) valorOperandoDireito;
-            }
-        }
-        else if (valorOperandoEsquerdo instanceof String) { 
-            String valorEsquerdo = (String) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof  String) {
-                String valorDireito = (String) valorOperandoDireito;
-                return valorEsquerdo.compareTo(valorDireito) < 0;
-            }
-        }
-        else if (valorOperandoEsquerdo instanceof Character) {
-            Character valorEsquero = (Character) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof Character) {
-                Character valorDireito = (Character) valorOperandoDireito;
-                return valorEsquero.compareTo(valorDireito) < 0;
+                if (valorOperandoEsquerdo instanceof String)
+                {
+                    String valorEsquerdo = (String) valorOperandoEsquerdo;
+                    if (valorOperandoDireito instanceof String)
+                    {
+                        String valorDireito = (String) valorOperandoDireito;
+                        return valorEsquerdo.compareTo(valorDireito) < 0;
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Character)
+                    {
+                        Character valorEsquero = (Character) valorOperandoEsquerdo;
+                        if (valorOperandoDireito instanceof Character)
+                        {
+                            Character valorDireito = (Character) valorOperandoDireito;
+                            return valorEsquero.compareTo(valorDireito) < 0;
+                        }
+                    }
+                }
             }
         }
         return null;
@@ -901,31 +1067,44 @@ public class Depurador implements VisitanteASA
                 return valorEsquerdo <= (Double) valorOperandoDireito;
             }
         }
-        else if (valorOperandoEsquerdo instanceof Double)
+        else
         {
-            double valorEsquerdo = (Double) valorOperandoEsquerdo;
+            if (valorOperandoEsquerdo instanceof Double)
+            {
+                double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
-            if (valorOperandoDireito instanceof Integer)
+                if (valorOperandoDireito instanceof Integer)
+                {
+                    return valorEsquerdo <= (Integer) valorOperandoDireito;
+                }
+                if (valorOperandoDireito instanceof Double)
+                {
+                    return valorEsquerdo <= (Double) valorOperandoDireito;
+                }
+            }
+            else
             {
-                return valorEsquerdo <= (Integer) valorOperandoDireito;
-            }
-            if (valorOperandoDireito instanceof Double)
-            {
-                return valorEsquerdo <= (Double) valorOperandoDireito;
-            }
-        }        
-        else if (valorOperandoEsquerdo instanceof String) { 
-            String valorEsquerdo = (String) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof  String) {
-                String valorDireito = (String) valorOperandoDireito;
-                return valorEsquerdo.compareTo(valorDireito) <= 0;
-            }
-        }
-        else if (valorOperandoEsquerdo instanceof Character) {
-            Character valorEsquero = (Character) valorOperandoEsquerdo;
-            if (valorOperandoDireito instanceof Character) {
-                Character valorDireito = (Character) valorOperandoDireito;
-                return valorEsquero.compareTo(valorDireito) <= 0;
+                if (valorOperandoEsquerdo instanceof String)
+                {
+                    String valorEsquerdo = (String) valorOperandoEsquerdo;
+                    if (valorOperandoDireito instanceof String)
+                    {
+                        String valorDireito = (String) valorOperandoDireito;
+                        return valorEsquerdo.compareTo(valorDireito) <= 0;
+                    }
+                }
+                else
+                {
+                    if (valorOperandoEsquerdo instanceof Character)
+                    {
+                        Character valorEsquero = (Character) valorOperandoEsquerdo;
+                        if (valorOperandoDireito instanceof Character)
+                        {
+                            Character valorDireito = (Character) valorOperandoDireito;
+                            return valorEsquero.compareTo(valorDireito) <= 0;
+                        }
+                    }
+                }
             }
         }
         return null;
@@ -1144,14 +1323,14 @@ public class Depurador implements VisitanteASA
         return null;
     }
 
-    private Object obterValorOperacaoSubtracaoAtribuitiva(NoOperacao operacao ) throws ExcecaoVisitaASA
+    private Object obterValorOperacaoSubtracaoAtribuitiva(NoOperacao operacao) throws ExcecaoVisitaASA
     {
         NoOperacao subtracao = new NoOperacao(Operacao.SUBTRACAO, operacao.getOperandoEsquerdo(), operacao.getOperandoDireito());
         NoOperacao atribuicao = new NoOperacao(Operacao.ATRIBUICAO, operacao.getOperandoEsquerdo(), subtracao);
 
         return obterValorOperacaoAtribuicao(atribuicao);
     }
-    
+
     private Object atribuirValorVariavel(Variavel variavel, Object valor)
     {
         Variavel variable = (Variavel) variavel;
@@ -1176,17 +1355,17 @@ public class Depurador implements VisitanteASA
 
         return valor;
     }
-    
 
     @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
-         Object valorRetorno = null;
-         
+        Object valorRetorno = null;
+
         tabelaSimbolosLocal.peek().empilharEscopo();
         noPara.getInicializacao().aceitar(this);
         NoExpressao condicao = noPara.getCondicao();
-        try {
+        try
+        {
             while ((condicao != null) ? (Boolean) condicao.aceitar(this) : true)
             {
                 if ((valorRetorno = interpretarListaBlocos(noPara.getBlocos())) != null)
@@ -1196,12 +1375,15 @@ public class Depurador implements VisitanteASA
 
                 noPara.getIncremento().aceitar(this);
             }
-        } catch (PareException pe) {
-            
-        } finally {
+        }
+        catch (PareException pe)
+        {
+        }
+        finally
+        {
             tabelaSimbolosLocal.peek().desempilharEscopo();
         }
-        
+
         return valorRetorno;
     }
 
@@ -1210,10 +1392,34 @@ public class Depurador implements VisitanteASA
     {
         throw new PareException();
     }
-    
-    private class PareException extends RuntimeException {
-        
-    }   
+
+    private Object potencia(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
+    {
+        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
+        Integer base = (Integer) parametros.get(0).aceitar(this);
+        Integer expoente = (Integer) parametros.get(1).aceitar(this);
+        Double potencia = Math.pow(base, expoente);
+        return potencia.intValue();
+    }
+
+    private Object raiz(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
+    {
+        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
+        Integer valor = (Integer) parametros.get(0).aceitar(this);
+        return Math.sqrt(valor);
+    }
+
+    private Object sorteia(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
+    {
+        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
+        Integer n = (Integer) parametros.get(0).aceitar(this);
+        Random random = new Random(System.currentTimeMillis());
+        return random.nextInt(n);
+    }
+
+    private class PareException extends RuntimeException
+    {
+    }
 
     @Override
     public Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA
@@ -1234,14 +1440,14 @@ public class Depurador implements VisitanteASA
         int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
         String nome = noReferenciaMatriz.getNome();
         Matriz matriz = (Matriz) extrairSimbolo(obterSimbolo(nome));
-        
-         Object valor = matriz.getValor(linha, coluna);
-        
-        while (valor instanceof NoExpressao) 
+
+        Object valor = matriz.getValor(linha, coluna);
+
+        while (valor instanceof NoExpressao)
         {
-            valor = ((NoExpressao)valor).aceitar(this);
+            valor = ((NoExpressao) valor).aceitar(this);
         }
-        
+
         return valor;
     }
 
@@ -1249,19 +1455,28 @@ public class Depurador implements VisitanteASA
     public Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
         Simbolo simbolo = obterSimbolo(noReferenciaVariavel.getNome());
-        if (referencia) 
+        if (referencia)
         {
-            return  simbolo;
-        } else {
-            if (chamaFuncao) {
-                if (simbolo instanceof Vetor) {
-                    return ((Vetor)simbolo).obterValores();
-                } else if (simbolo instanceof Matriz) {
-                    return ((Matriz)simbolo).obterValores();
+            return simbolo;
+        }
+        else
+        {
+            if (chamaFuncao)
+            {
+                if (simbolo instanceof Vetor)
+                {
+                    return ((Vetor) simbolo).obterValores();
+                }
+                else
+                {
+                    if (simbolo instanceof Matriz)
+                    {
+                        return ((Matriz) simbolo).obterValores();
+                    }
                 }
             }
-            
-            return ((Variavel)simbolo).getValor();
+
+            return ((Variavel) simbolo).getValor();
         }
     }
 
@@ -1270,28 +1485,32 @@ public class Depurador implements VisitanteASA
     {
         Vetor vetor = (Vetor) obterSimbolo(noReferenciaVetor.getNome());
         int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
-        
-        if (indice >= vetor.getTamanho()) {
-            throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()),asa,noReferenciaVetor);
-        }
-                
-        Object valor = vetor.getValor(indice);
-        
-        while (valor instanceof NoExpressao) 
+
+        if (indice >= vetor.getTamanho())
         {
-            valor = ((NoExpressao)valor).aceitar(this);
+            throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, noReferenciaVetor);
         }
-        
-        return valor;        
+
+        Object valor = vetor.getValor(indice);
+
+        while (valor instanceof NoExpressao)
+        {
+            valor = ((NoExpressao) valor).aceitar(this);
+        }
+
+        return valor;
     }
 
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
         throw new RetorneException(noRetorne.getExpressao().aceitar(this));
+
+
     }
-    
-    private class RetorneException extends RuntimeException {
+
+    private class RetorneException extends RuntimeException
+    {
         private Object valor;
 
         public RetorneException(Object valor)
@@ -1311,7 +1530,7 @@ public class Depurador implements VisitanteASA
         boolean condicao = (Boolean) noSe.getCondicao().aceitar(this);
 
         List<NoBloco> blocos = (condicao) ? noSe.getBlocosVerdadeiros() : noSe.getBlocosFalsos();
-        
+
         Object valorRetorno = interpretarListaBlocos(blocos);
 
         return valorRetorno;
@@ -1322,7 +1541,7 @@ public class Depurador implements VisitanteASA
     {
         List<Object> valoresVetor = noVetor.getValores();
         List<Object> valores = new ArrayList<Object>(noVetor.getValores().size());
-        
+
         if (valores != null)
         {
             for (int i = 0; i < valoresVetor.size(); i++)
@@ -1333,7 +1552,7 @@ public class Depurador implements VisitanteASA
                 }
                 catch (ArrayIndexOutOfBoundsException aioobe)
                 {
-                    throw new ExcecaoVisitaASA( new ErroIndiceVetorInvalido(valores.size(), i, ultimaReferenciaAcessada), null, noVetor);
+                    throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(valores.size(), i, ultimaReferenciaAcessada), null, noVetor);
                 }
             }
         }
@@ -1345,15 +1564,17 @@ public class Depurador implements VisitanteASA
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
         Simbolo simbolo = null;
-        switch (noDeclaracaoParametro.getModoAcesso()) {                        
+        switch (noDeclaracaoParametro.getModoAcesso())
+        {
             case POR_REFERENCIA:
                 simbolo = new Ponteiro(noDeclaracaoParametro.getNome(), null);
                 break;
-            case POR_VALOR:                           
+            case POR_VALOR:
                 String nome = noDeclaracaoParametro.getNome();
                 Quantificador quantificador = noDeclaracaoParametro.getQuantificador();
                 TipoDado tipoDado = noDeclaracaoParametro.getTipoDado();
-                switch (quantificador) {
+                switch (quantificador)
+                {
                     case VALOR:
                     {
                         simbolo = new Variavel(nome, tipoDado, tipoDado.getValorPadrao());
@@ -1366,19 +1587,16 @@ public class Depurador implements VisitanteASA
                     }
                     case MATRIZ:
                     {
-                        simbolo = new Matriz(nome, tipoDado, null);                        
+                        simbolo = new Matriz(nome, tipoDado, null);
                         break;
                     }
                 }
-                break;    
+                break;
         }
         tabelaSimbolosLocal.peek().adicionar(simbolo);
         return simbolo;
     }
-    
-    
-    
-    
+
     private void escreva(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
@@ -1388,7 +1606,7 @@ public class Depurador implements VisitanteASA
             if (saida != null)
             {
                 Object valor = expressao.aceitar(this);
-                
+
                 if (valor instanceof String)
                 {
                     if (valor.equals("${show developers}"))
@@ -1398,12 +1616,15 @@ public class Depurador implements VisitanteASA
                     try
                     {
                         saida.escrever((String) valor);
+
+
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Depurador.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                 }
                 else
                 {
@@ -1412,10 +1633,13 @@ public class Depurador implements VisitanteASA
                         try
                         {
                             saida.escrever((Boolean) valor);
+
+
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Depurador.class
+                                    .getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     else
@@ -1425,10 +1649,13 @@ public class Depurador implements VisitanteASA
                             try
                             {
                                 saida.escrever((Character) valor);
+
+
                             }
                             catch (Exception ex)
                             {
-                                Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(Depurador.class
+                                        .getName()).log(Level.SEVERE, null, ex);
                             }
                         }
                         else
@@ -1438,10 +1665,13 @@ public class Depurador implements VisitanteASA
                                 try
                                 {
                                     saida.escrever((Double) valor);
+
+
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(Depurador.class
+                                            .getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
                             else
@@ -1451,12 +1681,15 @@ public class Depurador implements VisitanteASA
                                     try
                                     {
                                         saida.escrever((Integer) valor);
+
+
                                     }
                                     catch (Exception ex)
                                     {
-                                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+                                        Logger.getLogger(Depurador.class
+                                                .getName()).log(Level.SEVERE, null, ex);
                                     }
-                                }                                 
+                                }
                             }
                         }
                     }
@@ -1465,7 +1698,7 @@ public class Depurador implements VisitanteASA
         }
     }
 
-    private void leia(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA 
+    private void leia(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
 
@@ -1490,11 +1723,14 @@ public class Depurador implements VisitanteASA
                         if (valor == null)
                         {
                             valor = tipoDado.getValorPadrao();
+
+
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Depurador.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
 
@@ -1519,7 +1755,4 @@ public class Depurador implements VisitanteASA
             }
         }
     }
-    
-    
-    
 }
