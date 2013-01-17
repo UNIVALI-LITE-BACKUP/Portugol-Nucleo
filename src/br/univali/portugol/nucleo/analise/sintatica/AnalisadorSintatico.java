@@ -137,6 +137,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
             NoDeclaracaoParametro vetor = new NoDeclaracaoParametro("vetor", TipoDado.VAZIO, Quantificador.VETOR, ModoAcesso.POR_REFERENCIA);
             parametrosTamanho.add(vetor);
             tamanho.setParametros(parametrosTamanho);
+            asa.getListaDeclaracoesGlobais().add(tamanho);
             
             return asa;
         }

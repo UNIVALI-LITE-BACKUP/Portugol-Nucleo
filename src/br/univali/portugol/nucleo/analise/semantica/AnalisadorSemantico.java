@@ -959,7 +959,7 @@ public final class AnalisadorSemantico
                     }
                     catch (ErroTiposIncompativeis erro) 
                     {
-                            notificarErroSemantico(erro);
+                         notificarErroSemantico(erro);
                     }
             }
         }
