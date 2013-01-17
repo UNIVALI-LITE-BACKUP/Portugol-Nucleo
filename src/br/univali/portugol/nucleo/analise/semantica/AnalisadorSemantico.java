@@ -151,7 +151,9 @@ public final class AnalisadorSemantico
         Quantificador quantificador = declaracaoFuncao.getQuantificador();
 
         Funcao funcao = new Funcao(nome, tipoDado, quantificador, declaracaoFuncao.getParametros(), declaracaoFuncao.getBlocos());
-
+        funcao.setTrechoCodigoFonteNome(declaracaoFuncao.getTrechoCodigoFonteNome());
+        funcao.setTrechoCodigoFonteTipoDado(declaracaoFuncao.getTrechoCodigoFonteTipoDado());
+        
         if (tabelaSimbolos.contem(nome))
         {
             notificarErroSemantico(new ErroSimboloRedeclarado(funcao, tabelaSimbolos.obter(nome)));
@@ -953,6 +955,7 @@ public final class AnalisadorSemantico
         {        
             for (NoExpressao expressao: parametrosPassados)
             {
+                    
                     try
                     {
                         analisarExpressao(expressao, tabelaSimbolos);
