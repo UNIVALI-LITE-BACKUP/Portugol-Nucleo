@@ -115,6 +115,8 @@ public final class Programa
                         
                         depurador.Depurar(Programa.this, parametros);
                         
+                        System.out.println("acabei!");  
+                        
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
                         
@@ -147,7 +149,14 @@ public final class Programa
                 }
             });
 
-            threadExecucao.start();
+            try {
+                threadExecucao.start();            
+            } catch (RuntimeException ie){
+                if (ie.getCause() instanceof InterruptedException)
+                {
+                    notificarEncerramentoExecucao(resultadoExecucao);
+                }
+            }
         }
     }
 
@@ -175,31 +184,11 @@ public final class Programa
              * a interrupção da thread e nem causa outros efeitos colaterais (será?)
              * 
              */
-
-            threadExecucao.interrupt();
-            threadExecucao = null;
-
             resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-
-            new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        Thread.sleep(500);
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-
-                    notificarEncerramentoExecucao(resultadoExecucao);
-
-                    resultadoExecucao = null;
-                }
-            }).start();
+            
+            threadExecucao.interrupt();
+            threadExecucao = null;
         }
     }
 

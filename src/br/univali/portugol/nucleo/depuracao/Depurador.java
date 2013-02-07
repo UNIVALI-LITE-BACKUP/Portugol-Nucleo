@@ -331,7 +331,7 @@ public class Depurador implements VisitanteASA
         }
         catch (InterruptedException ex)
         {
-            Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
         }
 
     }

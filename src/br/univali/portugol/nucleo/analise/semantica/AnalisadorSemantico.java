@@ -979,23 +979,23 @@ public final class AnalisadorSemantico
             notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, parametrosEsperados.size(), funcao, chamadaFuncao));
         }
         
-        else
+        else if (parametrosPassados != null){
             
-        if (  parametrosEsperados.size() > parametrosPassados.size())
-        {
-            cont = chamadaFuncao.getParametros().size();
-            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
-        }
-        
-        else 
-        
-        if (parametrosPassados.size() > funcao.getParametros().size())
-        {
-            cont = chamadaFuncao.getParametros().size();
-            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
-        }
-        else cont = parametrosPassados.size();
+            if (  parametrosEsperados.size() > parametrosPassados.size())
+            {
+                cont = chamadaFuncao.getParametros().size();
+                notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
+            }
 
+            else 
+
+            if (parametrosPassados.size() > funcao.getParametros().size())
+            {
+                cont = chamadaFuncao.getParametros().size();
+                notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
+            }
+            else cont = parametrosPassados.size();
+        }
         for (int i = 0; i < cont; i++)
         {
             TipoDado tipoDadoParametroEsperado = TipoDado.VAZIO;
