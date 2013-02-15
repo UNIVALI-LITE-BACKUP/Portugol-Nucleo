@@ -64,6 +64,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sun.awt.windows.ThemeReader;
 
 /**
  *
@@ -94,6 +95,7 @@ public class Depurador implements VisitanteASA
 
     public void Depurar(Programa programa, String[] parametros) throws ErroExecucao
     {
+
         try
         {
             asa = programa.getArvoreSintaticaAbstrata();
@@ -116,7 +118,7 @@ public class Depurador implements VisitanteASA
             }
             else
             {
-                throw new RuntimeException();
+                throw new RuntimeException("O programa não contem uma função inicio.");
             }
 
         }
@@ -127,8 +129,8 @@ public class Depurador implements VisitanteASA
             {
                 throw (ErroExecucao) e.getCause();
             }
-
         }
+
     }
 
     private Simbolo obterSimbolo(String nome)
@@ -214,6 +216,10 @@ public class Depurador implements VisitanteASA
                     }
                     catch (Exception ex)
                     {
+                        if (ex instanceof InterruptedException)
+                        {
+                            throw new RuntimeException();
+                        }
                         Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -501,6 +507,11 @@ public class Depurador implements VisitanteASA
 
     private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {
+        if (Thread.currentThread().isInterrupted())
+        {
+            throw new RuntimeException(new InterruptedException());
+        }
+
         if (blocos == null)
         {
             return null;
@@ -1616,13 +1627,14 @@ public class Depurador implements VisitanteASA
                     try
                     {
                         saida.escrever((String) valor);
-
-
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger(Depurador.class
-                                .getName()).log(Level.SEVERE, null, ex);
+                        if (ex instanceof InterruptedException)
+                        {
+                            throw new RuntimeException();
+                        }
+                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                 }
@@ -1633,13 +1645,14 @@ public class Depurador implements VisitanteASA
                         try
                         {
                             saida.escrever((Boolean) valor);
-
-
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger(Depurador.class
-                                    .getName()).log(Level.SEVERE, null, ex);
+                            if (ex instanceof InterruptedException)
+                            {
+                                throw new RuntimeException();
+                            }
+                            Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     else
@@ -1648,14 +1661,16 @@ public class Depurador implements VisitanteASA
                         {
                             try
                             {
+
                                 saida.escrever((Character) valor);
-
-
                             }
                             catch (Exception ex)
                             {
-                                Logger.getLogger(Depurador.class
-                                        .getName()).log(Level.SEVERE, null, ex);
+                                if (ex instanceof InterruptedException)
+                                {
+                                    throw new RuntimeException();
+                                }
+                                Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
                         else
@@ -1665,13 +1680,14 @@ public class Depurador implements VisitanteASA
                                 try
                                 {
                                     saida.escrever((Double) valor);
-
-
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.getLogger(Depurador.class
-                                            .getName()).log(Level.SEVERE, null, ex);
+                                    if (ex instanceof InterruptedException)
+                                    {
+                                        throw new RuntimeException();
+                                    }
+                                    Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
                             else
@@ -1681,13 +1697,14 @@ public class Depurador implements VisitanteASA
                                     try
                                     {
                                         saida.escrever((Integer) valor);
-
-
                                     }
                                     catch (Exception ex)
                                     {
-                                        Logger.getLogger(Depurador.class
-                                                .getName()).log(Level.SEVERE, null, ex);
+                                        if (ex instanceof InterruptedException)
+                                        {
+                                            throw new RuntimeException();
+                                        }
+                                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                                     }
                                 }
                             }
@@ -1723,14 +1740,15 @@ public class Depurador implements VisitanteASA
                         if (valor == null)
                         {
                             valor = tipoDado.getValorPadrao();
-
-
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger(Depurador.class
-                                .getName()).log(Level.SEVERE, null, ex);
+                        if (ex instanceof InterruptedException)
+                        {
+                            throw new RuntimeException();
+                        }
+                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
 
