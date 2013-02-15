@@ -1,7 +1,7 @@
 package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.depuracao.Depurador;
+import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.Entrada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
@@ -103,7 +103,7 @@ public final class Programa
                 {
                     try
                     {
-                        Depurador depurador = new Depurador();
+                        Interpretador depurador = new Interpretador();
                         depurador.setEntrada(entrada);
                         depurador.setSaida(saida);
                         
