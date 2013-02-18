@@ -1,76 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.asa.NoCadeia;
-import br.univali.portugol.nucleo.asa.NoCaracter;
-import br.univali.portugol.nucleo.asa.NoCaso;
-import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
-import br.univali.portugol.nucleo.asa.NoDecremento;
-import br.univali.portugol.nucleo.asa.NoEnquanto;
-import br.univali.portugol.nucleo.asa.NoEscolha;
-import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
-import br.univali.portugol.nucleo.asa.NoIncremento;
-import br.univali.portugol.nucleo.asa.NoInteiro;
-import br.univali.portugol.nucleo.asa.NoLogico;
-import br.univali.portugol.nucleo.asa.NoMatriz;
-import br.univali.portugol.nucleo.asa.NoMenosUnario;
-import br.univali.portugol.nucleo.asa.NoNao;
-import br.univali.portugol.nucleo.asa.NoOperacao;
-import br.univali.portugol.nucleo.asa.NoPara;
-import br.univali.portugol.nucleo.asa.NoPare;
-import br.univali.portugol.nucleo.asa.NoPercorra;
-import br.univali.portugol.nucleo.asa.NoReal;
-import br.univali.portugol.nucleo.asa.NoReferencia;
-import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
-import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
-import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
-import br.univali.portugol.nucleo.asa.NoRetorne;
-import br.univali.portugol.nucleo.asa.NoSe;
-import br.univali.portugol.nucleo.asa.NoVetor;
-import br.univali.portugol.nucleo.asa.Operacao;
-import br.univali.portugol.nucleo.asa.Quantificador;
-import br.univali.portugol.nucleo.asa.TipoDado;
-import br.univali.portugol.nucleo.asa.VisitanteASA;
-import br.univali.portugol.nucleo.execucao.Entrada;
-import br.univali.portugol.nucleo.execucao.Saida;
+import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceVetorInvalido;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import br.univali.portugol.nucleo.simbolos.Funcao;
-import br.univali.portugol.nucleo.simbolos.Matriz;
-import br.univali.portugol.nucleo.simbolos.Ponteiro;
-import br.univali.portugol.nucleo.simbolos.Simbolo;
-import br.univali.portugol.nucleo.simbolos.TabelaSimbolos;
-import br.univali.portugol.nucleo.simbolos.Variavel;
-import br.univali.portugol.nucleo.simbolos.Vetor;
-import java.beans.Expression;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
+import br.univali.portugol.nucleo.simbolos.*;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.awt.windows.ThemeReader;
 
-/**
- *
- * @author fillipi
- */
 public class Interpretador implements VisitanteASA
 {
     public static final String funcaoInicialPadrao = "inicio";
@@ -125,7 +64,6 @@ public class Interpretador implements VisitanteASA
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             if (e instanceof ErroExecucao)
             {
                 throw (ErroExecucao) e.getCause();
@@ -152,10 +90,7 @@ public class Interpretador implements VisitanteASA
 
         if (vetor != null)
         {
-            for (int i = 0; i < vetor.length; i++)
-            {
-                lista.add(vetor[i]);
-            }
+            lista.addAll(Arrays.asList(vetor));
         }
 
         return lista;
@@ -345,8 +280,8 @@ public class Interpretador implements VisitanteASA
 
     private int tamanho(NoChamadaFuncao chamadaFuncao)
     {
-        NoReferencia referencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
-        String nome = referencia.getNome();
+        NoReferencia noReferencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
+        String nome = noReferencia.getNome();
         ultimaReferenciaAcessada = nome;
         Simbolo simbolo = extrairSimbolo(obterSimbolo(nome));
         Vetor vetor = (Vetor) simbolo;
@@ -453,7 +388,7 @@ public class Interpretador implements VisitanteASA
             valores = (List<Object>) noDeclaracaoVetor.getInicializacao().aceitar(this);
         }
 
-        Vetor vetor = null;
+        Vetor vetor;
 
         if (tamanho == 0 && valores != null)
         {
@@ -734,9 +669,9 @@ public class Interpretador implements VisitanteASA
 
     private Object obterValorOperacaoAtribuicao(NoOperacao atribuicao) throws ExcecaoVisitaASA
     {
-        NoReferencia referencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
+        NoReferencia noReferencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
 
-        String nome = referencia.getNome();
+        String nome = noReferencia.getNome();
         Simbolo simbolo = extrairSimbolo(obterSimbolo(nome));
         Object valor = atribuicao.getOperandoDireito().aceitar(this);//, null);
 
@@ -746,19 +681,19 @@ public class Interpretador implements VisitanteASA
             valor = (int) val;
         }
 
-        if (referencia instanceof NoReferenciaVariavel)
+        if (noReferencia instanceof NoReferenciaVariavel)
         {
             return atribuirValorVariavel((Variavel) simbolo, valor);
         }
 
-        if (referencia instanceof NoReferenciaVetor)
+        if (noReferencia instanceof NoReferenciaVetor)
         {
-            return atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia);
+            return atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) noReferencia);
         }
 
-        if (referencia instanceof NoReferenciaMatriz)
+        if (noReferencia instanceof NoReferenciaMatriz)
         {
-            return atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia);
+            return atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) noReferencia);
         }
 
         return null;
@@ -1724,9 +1659,9 @@ public class Interpretador implements VisitanteASA
         {
             if (expressao instanceof NoReferencia)
             {
-                NoReferencia referencia = (NoReferencia) expressao;
+                NoReferencia noReferencia = (NoReferencia) expressao;
 
-                String nome = referencia.getNome();
+                String nome = noReferencia.getNome();
 
                 Simbolo simbolo = extrairSimbolo(obterSimbolo(nome));
                 TipoDado tipoDado = simbolo.getTipoDado();
@@ -1761,13 +1696,13 @@ public class Interpretador implements VisitanteASA
                 {
                     if (simbolo instanceof Vetor)
                     {
-                        atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) referencia);
+                        atribuirValorVetor((Vetor) simbolo, valor, (NoReferenciaVetor) noReferencia);
                     }
                     else
                     {
                         if (simbolo instanceof Matriz)
                         {
-                            atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) referencia);
+                            atribuirValorMatriz((Matriz) simbolo, valor, (NoReferenciaMatriz) noReferencia);
                         }
                     }
                 }
