@@ -108,14 +108,11 @@ public final class Programa
                         depurador.setSaida(saida);
                         
                         notificarInicioExecucao();
-                          
-                          
+                        
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
                         
                         depurador.Depurar(Programa.this, parametros);
-                        
-                        System.out.println("acabei!");  
                         
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
