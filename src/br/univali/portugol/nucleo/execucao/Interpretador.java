@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 public class Interpretador implements VisitanteASA
 {
+    Random random = new Random(System.currentTimeMillis());
     public static final String funcaoInicialPadrao = "inicio";
     private Saida saida;
     private Entrada entrada;
@@ -1360,7 +1361,6 @@ public class Interpretador implements VisitanteASA
     {
         List<NoExpressao> parametros = noChamadaFuncao.getParametros();
         Integer n = (Integer) parametros.get(0).aceitar(this);
-        Random random = new Random(System.currentTimeMillis());
         return random.nextInt(n);
     }
 
