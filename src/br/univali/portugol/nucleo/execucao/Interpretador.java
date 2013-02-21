@@ -2,6 +2,8 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.execucao.erros.ErroDivisaoPorZero;
+import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceVetorInvalido;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
@@ -34,7 +36,7 @@ public class Interpretador implements VisitanteASA
     private TabelaSimbolos tabelaSimbolosGlobal;
     Stack<TabelaSimbolos> tabelaSimbolosLocal = new Stack<TabelaSimbolos>();
 
-    public void Depurar(Programa programa, String[] parametros) throws ErroExecucao
+    public void interpretar(Programa programa, String[] parametros) throws ErroExecucao
     {
 
         try
@@ -65,10 +67,15 @@ public class Interpretador implements VisitanteASA
         }
         catch (Exception e)
         {
-            if (e instanceof ErroExecucao)
-            {
+            if (e instanceof ExcecaoVisitaASA)
+            {                
                 throw (ErroExecucao) e.getCause();
             }
+            if (e instanceof ErroExecucao)
+            {
+                throw (ErroExecucao) e;
+            }
+            throw new ErroExecucaoNaoTratado(e);
         }
 
     }
@@ -664,7 +671,7 @@ public class Interpretador implements VisitanteASA
             case SUBTRACAO:
                 return obterValorOperacaoSubtracao(valorOperandoEsquerdo, valorOperandoDireito);
         }
-
+        
         return null;
     }
 
@@ -705,26 +712,12 @@ public class Interpretador implements VisitanteASA
         return !(Boolean) obterValorOperacaoIgualdade(valorOperandoEsquerdo, valorOperandoDireito);
     }
 
-    private Object obterValorOperacaoDivisao(Object valorOperandoEsquerdo, Object valorOperandoDireito)
+    private Object obterValorOperacaoDivisao(Object valorOperandoEsquerdo, Object valorOperandoDireito) throws ExcecaoVisitaASA
     {
-        if (valorOperandoEsquerdo instanceof Integer)
-        {
-            int valorEsquerdo = (Integer) valorOperandoEsquerdo;
-
-            if (valorOperandoDireito instanceof Integer)
+        try {
+            if (valorOperandoEsquerdo instanceof Integer)
             {
-                return valorEsquerdo / (Integer) valorOperandoDireito;
-            }
-            if (valorOperandoDireito instanceof Double)
-            {
-                return valorEsquerdo / (Double) valorOperandoDireito;
-            }
-        }
-        else
-        {
-            if (valorOperandoEsquerdo instanceof Double)
-            {
-                double valorEsquerdo = (Double) valorOperandoEsquerdo;
+                int valorEsquerdo = (Integer) valorOperandoEsquerdo;
 
                 if (valorOperandoDireito instanceof Integer)
                 {
@@ -735,8 +728,26 @@ public class Interpretador implements VisitanteASA
                     return valorEsquerdo / (Double) valorOperandoDireito;
                 }
             }
-        }
+            else
+            {
+                if (valorOperandoEsquerdo instanceof Double)
+                {
+                    double valorEsquerdo = (Double) valorOperandoEsquerdo;
 
+                    if (valorOperandoDireito instanceof Integer)
+                    {
+                        return valorEsquerdo / (Integer) valorOperandoDireito;
+                    }
+                    if (valorOperandoDireito instanceof Double)
+                    {
+                        return valorEsquerdo / (Double) valorOperandoDireito;
+                    }
+                }
+            }
+        } catch (ArithmeticException ae)
+        {
+            throw new ExcecaoVisitaASA(new ErroDivisaoPorZero(),null,null);
+        }
         return null;
     }
 

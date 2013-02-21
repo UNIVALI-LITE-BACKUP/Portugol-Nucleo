@@ -35,6 +35,7 @@ public final class TradutorUnwantedTokenException
         int coluna = erro.charPositionInLine;
         String contextoAtual = pilhaContexto.pop();
 
+        
         return new ErroParsingNaoTratado(erro, mensagemPadrao, contextoAtual);
     }
 }

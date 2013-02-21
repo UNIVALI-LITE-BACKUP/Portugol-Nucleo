@@ -112,7 +112,7 @@ public final class Programa
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
                         
-                        depurador.Depurar(Programa.this, parametros);
+                        depurador.interpretar(Programa.this, parametros);
                         
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);

@@ -901,7 +901,7 @@ public final class AnalisadorSemantico
 
         if (referencia instanceof NoChamadaFuncao)
         {
-            if (nome.equals("escreva") || nome.equals("leia") || nome.equals("limpa") || nome.equals("aguarde"))
+            if (nome.equals("escreva") || nome.equals("leia"))
                 return TipoDado.VAZIO;
             
             else

@@ -3,6 +3,7 @@ package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.analise.sintatica.PortugolLexer;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroAbreFechaParentesis;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroCaracterInvalido;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopoNaoFoiFechadoCorretamente;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroNomeSimboloEstaFaltando;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroPalavraReservadaEstaFaltando;
@@ -39,7 +40,8 @@ public final class TradutorMismatchedTokenException
         int linha = erro.line;
         int coluna = erro.charPositionInLine;
         String contextoAtual = pilhaContexto.pop();
-
+        int unexpectedType = erro.getUnexpectedType();
+        
         if (erro.expecting == PortugolLexer.ID)
         {
             return new ErroNomeSimboloEstaFaltando(linha, coluna, contextoAtual);
@@ -48,6 +50,10 @@ public final class TradutorMismatchedTokenException
         {
             if (erro.expecting == PortugolLexer.T__68)
             {
+                if (unexpectedType == PortugolLexer.T__49)
+                {
+                    return new ErroCaracterInvalido(linha,coluna,",");
+                }
                 return new ErroEscopoNaoFoiFechadoCorretamente(linha, coluna, contextoAtual);
             }
             else
