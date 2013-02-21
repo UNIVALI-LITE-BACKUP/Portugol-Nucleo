@@ -121,15 +121,23 @@ public final class Programa
                         
                     }
                     catch (ErroExecucao erroExecucao)
-                    {
-                        if (resultadoExecucao == null)
+                    {                  
+                        if (( erroExecucao.getCause() != null && !(erroExecucao.getCause() instanceof InterruptedException)))
                         {
-                            resultadoExecucao = new ResultadoExecucao();
-                        }
+                        
+                            if (resultadoExecucao == null)
+                            {
+                                resultadoExecucao = new ResultadoExecucao();
+                            }
 
-                        resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
-                        resultadoExecucao.setErro(erroExecucao);
-                        notificarEncerramentoExecucao(resultadoExecucao);
+                            resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
+                            resultadoExecucao.setErro(erroExecucao);
+                        }
+                        
+                        if (resultadoExecucao != null)
+                        {
+                            notificarEncerramentoExecucao(resultadoExecucao);
+                        }
                     }
                     catch (Exception erro)
                     {
@@ -137,10 +145,11 @@ public final class Programa
                         {
                             resultadoExecucao = new ResultadoExecucao();
                         }
-
+                       
                         resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                         resultadoExecucao.setErro(new ErroExecucaoNaoTratado(erro));
-                        relatorErros.relatarErro(erro, codigo);
+                        
+                        relatorErros.relatarErro(erro, codigo);                  
                         notificarEncerramentoExecucao(resultadoExecucao);
                     }
                 }
