@@ -113,6 +113,9 @@ public final class AnalisadorSemantico
             analisarDeclaracaoMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
     }
 
+    private static final List<String> funcoesReservadas = getLista();
+        
+    
     private void analisarDeclaracaoVariavel(NoDeclaracaoVariavel declaracaoVariavel, TabelaSimbolos tabelaSimbolos)
     {
         String nome = declaracaoVariavel.getNome();
@@ -127,6 +130,11 @@ public final class AnalisadorSemantico
         {
             variavel.setRedeclarado(true);
             notificarErroSemantico(new ErroSimboloRedeclarado(variavel, tabelaSimbolos.obter(nome)));
+        } else if (funcoesReservadas.contains(nome)){
+            variavel.setRedeclarado(true);
+            Funcao funcaoSistam = new Funcao(nome, tipoDados.VAZIO, Quantificador.VETOR, null, null);
+            notificarErroSemantico(new ErroSimboloRedeclarado(variavel, funcaoSistam));
+        
         }
 
         tabelaSimbolos.adicionar(variavel);
@@ -1177,5 +1185,15 @@ public final class AnalisadorSemantico
             catch (ErroSemantico erro) { notificarErroSemantico(erro); }
             catch (Exception e) {}
         }        
+    }
+
+    private static List<String> getLista()
+    {
+        List<String> funcoes = new ArrayList<String>();
+        
+        funcoes.add("leia");
+        funcoes.add("escreva");
+        
+        return funcoes;
     }
 }

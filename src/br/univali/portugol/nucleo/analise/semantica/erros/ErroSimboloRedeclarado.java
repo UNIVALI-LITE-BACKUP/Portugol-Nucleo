@@ -95,20 +95,22 @@ public final class ErroSimboloRedeclarado extends ErroSemantico
         construtorString.append(simboloRedeclarado.getNome());
         construtorString.append("\" já foi declarado como ");
 
-        if (simboloRedeclarado instanceof Vetor) construtorString.append("um vetor");
+        if (simboloExistente instanceof Vetor) construtorString.append("um vetor");
         else
-        if (simboloRedeclarado instanceof Matriz) construtorString.append("uma matriz");
+        if (simboloExistente instanceof Matriz) construtorString.append("uma matriz");
         else
-        if (simboloRedeclarado instanceof Variavel) construtorString.append("uma variável");
+        if (simboloExistente instanceof Variavel) construtorString.append("uma variável");
         else
-        if (simboloRedeclarado instanceof Funcao) construtorString.append("uma função");
+        if (simboloExistente instanceof Funcao) construtorString.append("uma função");
 
-        construtorString.append(" na linha: ");
-        construtorString.append(simboloExistente.getTrechoCodigoFonteNome().getLinha());
-        construtorString.append(", coluna: ");
-        construtorString.append(simboloExistente.getTrechoCodigoFonteNome().getColuna());
-        construtorString.append(".");
-
+        if (simboloExistente.getTrechoCodigoFonteNome() != null) {
+            construtorString.append(" na linha: ");
+            construtorString.append(simboloExistente.getTrechoCodigoFonteNome().getLinha());
+            construtorString.append(", coluna: ");
+            construtorString.append(simboloExistente.getTrechoCodigoFonteNome().getColuna());
+            construtorString.append(".");
+        }
+        
         return construtorString.toString();
     }
 }
