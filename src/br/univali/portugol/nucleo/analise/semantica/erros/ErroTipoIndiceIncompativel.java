@@ -36,24 +36,7 @@ public class ErroTipoIndiceIncompativel extends ErroSemantico
     private TipoDado tipoEsperado;
     private TipoDado tipoObtido;
     
-    /**
-     * 
-     * @param linha            a linha onde o erro ocorreu.
-     * @param coluna           a coluna onde o erro cocorreu.
-     * @param tipoEsperado     o tipo de dado esperado.
-     * @param tipoObtido       o tipo de dado da expressão que foi passada como índice.
-     * @since 1.0
-     * @deprecated             o parãmetro 'tipoEsperado' não faz sentido, já que um índice de vetor ou matriz sempre 
-     *                         espera um inteiro. Nas versões futuras este parâmetro será removido.
-     */
-    @Deprecated
-    public ErroTipoIndiceIncompativel(int linha, int coluna, TipoDado tipoEsperado, TipoDado tipoObtido) 
-    {
-        super(linha, coluna);
-        this.tipoEsperado = tipoEsperado;
-        this.tipoObtido = tipoObtido;
-    }
-
+    
     /**
      * 
      * @param linha            a linha onde o erro ocorreu.

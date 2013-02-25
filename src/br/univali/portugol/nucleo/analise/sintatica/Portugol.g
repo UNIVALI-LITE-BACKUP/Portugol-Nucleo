@@ -101,6 +101,20 @@ grammar Portugol;
 		return null;
 	}
 	
+	private TrechoCodigoFonte criarTrechoCodigoFonteLista(Token abreEscopo, Token fechaEscopo)
+	{
+	      	if ((abreEscopo != null) && (fechaEscopo != null))
+	      	{
+	      		int linha = abreEscopo.getLine();
+			int coluna = abreEscopo.getCharPositionInLine();			
+			int tamanhoTexto = fechaEscopo.getTokenIndex() - abreEscopo.getTokenIndex();
+			
+			return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
+	      	}
+	      	
+	      	return null;
+	}
+	
 	private NoExpressao selecionarExpressao(NoExpressao operandoEsquerdo, NoExpressao operandoDireito, Token operador)
 	{
 		if (operandoDireito != null) 
@@ -1333,11 +1347,14 @@ vetor returns[NoExpressao expressao] @init
 	pilhaContexto.push("vetor");
 }:	
 
-	'{' vListaExpressoes = listaExpressoes '}'
+	abre_ch = '{' vListaExpressoes = listaExpressoes fecha_ch = '}'
 	 {
 		if (gerarArvore)
 		{
-			expressao = new NoVetor(vListaExpressoes);
+			NoVetor noVetor = new NoVetor(vListaExpressoes);
+			noVetor.setTrechoCodigoFonte(criarTrechoCodigoFonteLista($abre_ch, $fecha_ch));
+			
+			expressao = noVetor;
 		}
 	 }
 ;
@@ -1352,13 +1369,16 @@ matriz returns[NoExpressao expressao] @init
 	pilhaContexto.push("matriz");
 }:	
 	
-	'{'
+	abre_ch = '{'
 		vListaListaExpressoes = listaListaExpressoes
-	'}'
+	fecha_ch = '}'
 	 {
 		if (gerarArvore)
 	 	{
-			expressao = new NoMatriz(vListaListaExpressoes);
+			NoMatriz noMatriz = new NoMatriz(vListaListaExpressoes);
+			noMatriz.setTrechoCodigoFonte(criarTrechoCodigoFonteLista($abre_ch, $fecha_ch));
+			
+			expressao = noMatriz;
 		}
 	 }
 ;
