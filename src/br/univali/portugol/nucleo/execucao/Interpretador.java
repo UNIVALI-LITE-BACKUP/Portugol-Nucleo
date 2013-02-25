@@ -1301,8 +1301,12 @@ public class Interpretador implements VisitanteASA
     private Object atribuirValorVetor(Vetor vetor, Object valor, NoReferenciaVetor referenciaVetor) throws ExcecaoVisitaASA
     {
         int indice = (Integer) referenciaVetor.getIndice().aceitar(this);
-        vetor.setValor(indice, valor);
-
+        try {
+            vetor.setValor(indice, valor);
+        } catch (IndexOutOfBoundsException ie)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, referenciaVetor);
+        }
         return valor;
     }
 
