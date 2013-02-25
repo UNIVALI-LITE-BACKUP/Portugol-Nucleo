@@ -32,6 +32,9 @@ public final class Portugol
             return programa;
         }
         
-        else throw new ErroCompilacao(resultadoAnalise);
+        else
+        {
+            throw new ErroCompilacao(resultadoAnalise);
+        }
     }
 }

@@ -103,16 +103,16 @@ public final class Programa
                 {
                     try
                     {
-                        Interpretador depurador = new Interpretador();
-                        depurador.setEntrada(entrada);
-                        depurador.setSaida(saida);
+                        Interpretador interpretador = new Interpretador();
+                        interpretador.setEntrada(entrada);
+                        interpretador.setSaida(saida);
                         
                         notificarInicioExecucao();
                         
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
                         
-                        depurador.interpretar(Programa.this, parametros);
+                        interpretador.interpretar(Programa.this, parametros);
                         
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
@@ -122,9 +122,13 @@ public final class Programa
                     }
                     catch (ErroExecucao erroExecucao)
                     {                  
-                        if (( erroExecucao.getCause() != null && !(erroExecucao.getCause() instanceof InterruptedException)))
-                        {
-                        
+                        if ( erroExecucao instanceof ErroExecucaoNaoTratado 
+                                && ((ErroExecucaoNaoTratado)erroExecucao).getCausa().getCause() != null 
+                                && ((ErroExecucaoNaoTratado)erroExecucao).getCausa().getCause() instanceof InterruptedException)
+                        {                           
+                            notificarEncerramentoExecucao(resultadoExecucao);
+                          
+                        } else { 
                             if (resultadoExecucao == null)
                             {
                                 resultadoExecucao = new ResultadoExecucao();
@@ -132,10 +136,6 @@ public final class Programa
 
                             resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                             resultadoExecucao.setErro(erroExecucao);
-                        }
-                        
-                        if (resultadoExecucao != null)
-                        {
                             notificarEncerramentoExecucao(resultadoExecucao);
                         }
                     }

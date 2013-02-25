@@ -23,7 +23,12 @@ public final class ErroExecucaoNaoTratado extends ErroExecucao
      */
     public ErroExecucaoNaoTratado(Exception causa) 
     {
-        this.causa = causa;                
+        this.causa = causa;
+    }
+
+    public Exception getCausa()
+    {
+        return causa;
     }
 
     /**
