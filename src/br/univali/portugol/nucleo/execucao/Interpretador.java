@@ -19,7 +19,6 @@ public class Interpretador implements VisitanteASA
     private Saida saida;
     private Entrada entrada;
     private boolean referencia = false;
-    private boolean chamaFuncao = false;
     private ArvoreSintaticaAbstrata asa;
 
     public void setEntrada(Entrada entrada)
@@ -213,7 +212,6 @@ public class Interpretador implements VisitanteASA
                                             Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
                                             tabelaSimbolosLocal.pop();
 
-                                            this.chamaFuncao = true;
                                             if (simbolo instanceof Variavel)
                                             {
                                                 Object valor = listaParametrosPassados.get(i).aceitar(this);
@@ -244,8 +242,7 @@ public class Interpretador implements VisitanteASA
                                                         }
                                                     }
                                                 }
-                                            }
-                                            this.chamaFuncao = false;
+                                            }                                            
                                         }
                                         tabelaSimbolosLocal.push(tabelaSimbolos);
                                         Object retorno = interpretarListaBlocos(funcao.getBlocos());
@@ -1423,20 +1420,19 @@ public class Interpretador implements VisitanteASA
         }
         else
         {
-            if (chamaFuncao)
+            
+            if (simbolo instanceof Vetor)
             {
-                if (simbolo instanceof Vetor)
+                return ((Vetor) simbolo).obterValores();
+            }
+            else
+            {
+                if (simbolo instanceof Matriz)
                 {
-                    return ((Vetor) simbolo).obterValores();
-                }
-                else
-                {
-                    if (simbolo instanceof Matriz)
-                    {
-                        return ((Matriz) simbolo).obterValores();
-                    }
+                    return ((Matriz) simbolo).obterValores();
                 }
             }
+           
 
             return ((Variavel) simbolo).getValor();
         }
