@@ -1236,13 +1236,34 @@ public final class AnalisadorSemantico
         if (declaracaoMatriz.getInicializacao() != null)
         {
             NoExpressao inicializacao = declaracaoMatriz.getInicializacao();
-            NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
-            referencia.setTrechoCodigoFonteNome(declaracaoMatriz.getTrechoCodigoFonteNome());
-            NoOperacao operacao = new NoOperacao(Operacao.ATRIBUICAO, referencia, inicializacao);
+            try {
+                if (inicializacao instanceof NoReferenciaVariavel){
+                    NoReferenciaVariavel nrv = (NoReferenciaVariavel) inicializacao;
+                    Simbolo simbolo = obterSimbolo(nrv.getNome(), tabelaSimbolos);
+                    if (!(simbolo instanceof Matriz))
+                    {
+                        throw new ErroAtribuicaoInvalida(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                    }
+                }
+                else if (!(inicializacao instanceof NoMatriz))
+                {
+                    throw new ErroAtribuicaoInvalida(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                }
+                
+                TipoDado tipoDadoOperandoEsquerdo = matriz.getTipoDado();
+                TipoDado tipoDadoOperandoDireito = null;
 
-            try { obterTipoDadoExpressao(operacao, tabelaSimbolos); }
-            catch (ErroSemantico erro) { notificarErroSemantico(erro); }
-            catch (Exception e) {}
+                try { tipoDadoOperandoDireito = obterTipoDadoExpressao(inicializacao, tabelaSimbolos); }
+                catch (ExcecaoImpossivelDeterminarTipoDado excecao) {}
+
+                if (tipoDadoOperandoDireito != null)
+                {
+                    obterTipoDadoOperacaoAtribuicao(null, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                }
+            } catch (ErroSemantico erro)
+            {
+                notificarErroSemantico(erro);
+            }          
         }        
     }
 
