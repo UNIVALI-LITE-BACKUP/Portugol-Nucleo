@@ -157,7 +157,7 @@ public final class AnalisadorSemantico
             }
             else
             {
-                notificarErroSemantico(new ErroAtribuicaoInvalida(declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getLinha()
+                notificarErroSemantico(new ErroAtribuicaoInvalida(declaracaoVariavel,declaracaoVariavel.getInicializacao(),declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getLinha()
                         , declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getColuna()));
             }
         }
@@ -371,17 +371,17 @@ public final class AnalisadorSemantico
             
             if (expressao instanceof NoReferenciaVariavel && !(simbolo instanceof Variavel))
             {
-                throw new ErroReferenciaInvalida(expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna());
+                throw new ErroReferenciaInvalida(expressao, simbolo,expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna());
             }
             
             if (expressao instanceof NoReferenciaVetor && !(simbolo instanceof Vetor))
             {
-                throw new ErroReferenciaInvalida(expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna());
+                throw new ErroReferenciaInvalida(expressao, simbolo,expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna());
             }
             
             if (expressao instanceof NoReferenciaMatriz && !(simbolo instanceof Matriz))
             {
-                throw new ErroReferenciaInvalida(expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna());
+                throw new ErroReferenciaInvalida(expressao, simbolo,expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna());
             }
         }
     }
@@ -1173,12 +1173,12 @@ public final class AnalisadorSemantico
                     Simbolo simbolo = obterSimbolo(nrv.getNome(), tabelaSimbolos);
                     if (!(simbolo instanceof Vetor))
                     {
-                        throw new ErroAtribuicaoInvalida(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                        throw new ErroAtribuicaoInvalida(simbolo,declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                     }
                 } 
                 else if (!(inicializacao instanceof NoVetor))
                 {
-                    throw new ErroAtribuicaoInvalida(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                    throw new ErroAtribuicaoInvalida(declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                 }
             
                 TipoDado tipoDadoOperandoEsquerdo = vetor.getTipoDado();
@@ -1242,12 +1242,12 @@ public final class AnalisadorSemantico
                     Simbolo simbolo = obterSimbolo(nrv.getNome(), tabelaSimbolos);
                     if (!(simbolo instanceof Matriz))
                     {
-                        throw new ErroAtribuicaoInvalida(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                        throw new ErroAtribuicaoInvalida(simbolo,declaracaoMatriz,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                     }
                 }
                 else if (!(inicializacao instanceof NoMatriz))
                 {
-                    throw new ErroAtribuicaoInvalida(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                    throw new ErroAtribuicaoInvalida(declaracaoMatriz,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                 }
                 
                 TipoDado tipoDadoOperandoEsquerdo = matriz.getTipoDado();
