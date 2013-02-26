@@ -868,8 +868,7 @@ expressao returns[NoExpressao expressao] @init
 			}
 			
 			expressao = (NoExpressao) vPilha.pop();
-
-			System.out.println("Test");
+			
 		}
 	}
 ;
