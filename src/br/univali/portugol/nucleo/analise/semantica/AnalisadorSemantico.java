@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuicaoInvalida;
 import br.univali.portugol.nucleo.analise.semantica.avisos.*;
 import br.univali.portugol.nucleo.analise.semantica.erros.*;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
@@ -10,8 +9,6 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
@@ -157,7 +154,7 @@ public final class AnalisadorSemantico
             }
             else
             {
-                notificarErroSemantico(new ErroAtribuicaoInvalida(declaracaoVariavel,declaracaoVariavel.getInicializacao(),declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getLinha()
+                notificarErroSemantico(new ErroInicializacaoInvalida(declaracaoVariavel,declaracaoVariavel.getInicializacao(),declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getLinha()
                         , declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getColuna()));
             }
         }
@@ -1173,12 +1170,12 @@ public final class AnalisadorSemantico
                     Simbolo simbolo = obterSimbolo(nrv.getNome(), tabelaSimbolos);
                     if (!(simbolo instanceof Vetor))
                     {
-                        throw new ErroAtribuicaoInvalida(simbolo,declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                        throw new ErroInicializacaoInvalida(simbolo,declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                     }
                 } 
                 else if (!(inicializacao instanceof NoVetor))
                 {
-                    throw new ErroAtribuicaoInvalida(declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                    throw new ErroInicializacaoInvalida(declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                 }
             
                 TipoDado tipoDadoOperandoEsquerdo = vetor.getTipoDado();
@@ -1242,12 +1239,12 @@ public final class AnalisadorSemantico
                     Simbolo simbolo = obterSimbolo(nrv.getNome(), tabelaSimbolos);
                     if (!(simbolo instanceof Matriz))
                     {
-                        throw new ErroAtribuicaoInvalida(simbolo,declaracaoMatriz,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                        throw new ErroInicializacaoInvalida(simbolo,declaracaoMatriz,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                     }
                 }
                 else if (!(inicializacao instanceof NoMatriz))
                 {
-                    throw new ErroAtribuicaoInvalida(declaracaoMatriz,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                    throw new ErroInicializacaoInvalida(declaracaoMatriz,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                 }
                 
                 TipoDado tipoDadoOperandoEsquerdo = matriz.getTipoDado();

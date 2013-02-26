@@ -26,22 +26,35 @@ public class ErroReferenciaInvalida extends ErroSemantico
     protected String construirMensagem()
     {
         StringBuilder stringBuilder = new StringBuilder();
+        String s = null;
         
         if (simbolo instanceof Vetor)
-            stringBuilder.append("O vetor está sendo utilizado como ");
+        {
+            s = "O vetor '%s' está sendo utilizado como ";
+        }
         else if (simbolo instanceof Matriz)
-            stringBuilder.append("A matriz está sendo utilizada como ");
+        {
+            s = "A matriz '%s' está sendo utilizada como ";
+        }
         else if (simbolo instanceof Variavel)
-            stringBuilder.append("A variável está sendo utilizada como ");
+        {
+            s = "A variável '%s' está sendo utilizada como ";
+        }
         
+        stringBuilder.append(String.format(s, simbolo.getNome()));
         
         if (expressao instanceof NoReferenciaVariavel)
+        {
             stringBuilder.append("uma variável");
+        }
         else if (expressao instanceof NoReferenciaMatriz)
+        {
             stringBuilder.append("uma matriz");
+        }
         else if (expressao instanceof NoReferenciaVetor)
+        {
             stringBuilder.append("um vetor");
-        
+        }
         
         return stringBuilder.toString();
     }    
