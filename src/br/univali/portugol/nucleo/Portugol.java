@@ -18,23 +18,20 @@ public final class Portugol
         return new AnalisadorAlgoritmo().analisar(codigo);
     }
     
-    public static Programa compilar(String codigo) throws ErroCompilacao
+    public static Programa compilar(String codigo) throws ErroCompilacao, AvisoCompilacao
     {
         AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
         ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
         
-        if (resultadoAnalise.getNumeroTotalErros() == 0)
-        {
-            Programa programa = new Programa();
-            programa.setCodigo(codigo);
-            programa.setArvoreSintaticaAbstrataPrograma((ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata());
-
-            return programa;
-        }
-        
-        else
-        {
+        if (resultadoAnalise.getNumeroTotalErros() > 0)
             throw new ErroCompilacao(resultadoAnalise);
-        }
+        if (resultadoAnalise.getNumeroAvisos() > 0)
+            throw new AvisoCompilacao(resultadoAnalise);
+
+        Programa programa = new Programa();
+        programa.setCodigo(codigo);
+        programa.setArvoreSintaticaAbstrataPrograma((ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata());
+
+        return programa;
     }
 }
