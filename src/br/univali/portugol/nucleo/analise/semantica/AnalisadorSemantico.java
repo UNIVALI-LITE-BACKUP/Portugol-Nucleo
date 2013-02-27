@@ -308,9 +308,14 @@ public final class AnalisadorSemantico
                 {
 	    		if (tabelaSimbolos.contem((referencia.getNome())))
 		        {
-	    			Funcao funcao = (Funcao) tabelaSimbolos.obter(referencia.getNome()); 
-	    			analisarChamadaFuncao((NoChamadaFuncao) referencia, funcao, tabelaSimbolos);
-		        }
+	    			Simbolo simbolo = tabelaSimbolos.obter(referencia.getNome()); 
+                                if (simbolo instanceof Funcao) {
+                                    Funcao funcao = (Funcao) simbolo;
+                                    analisarChamadaFuncao((NoChamadaFuncao) referencia, funcao, tabelaSimbolos);
+                                } else {
+                                    notificarErroSemantico(new ErroSimboloNaoFuncao(referencia));
+                                }
+                        }
 	        
 	    		else notificarErroSemantico(new ErroSimboloNaoDeclarado((NoReferencia) referencia));
     		}
