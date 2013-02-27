@@ -1356,8 +1356,19 @@ public class Interpretador implements VisitanteASA
     private Object potencia(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
     {
         List<NoExpressao> parametros = noChamadaFuncao.getParametros();
-        Integer base = (Integer) parametros.get(0).aceitar(this);
-        Integer expoente = (Integer) parametros.get(1).aceitar(this);
+        Double base = null;
+        Object b = parametros.get(0).aceitar(this);
+        if (b instanceof Double) {
+            base = (Double) b;
+        } else if (b instanceof Integer)
+            base = ((Integer)b).doubleValue();
+        Double expoente = null;
+        Object e = parametros.get(1).aceitar(this);
+        if (e instanceof Double) {
+            expoente = (Double) e;
+        } else if (e instanceof Integer) {
+            expoente = ((Integer)e).doubleValue();
+        }
         Double potencia = Math.pow(base, expoente);
         return potencia.intValue();
     }
@@ -1365,7 +1376,15 @@ public class Interpretador implements VisitanteASA
     private Object raiz(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
     {
         List<NoExpressao> parametros = noChamadaFuncao.getParametros();
-        Integer valor = (Integer) parametros.get(0).aceitar(this);
+        Double valor = null;
+        Object v = parametros.get(0).aceitar(this);
+        
+        if (v instanceof Double) {
+            valor = (Double) v;
+        } else if (v instanceof Integer) {
+            valor = ((Integer)v).doubleValue();
+        }
+        
         return Math.sqrt(valor);
     }
 
