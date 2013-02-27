@@ -116,9 +116,9 @@ public final class AnalisadorSintatico implements ObservadorParsing
             sorteia.setParametros(parametrosSorteia);
             asa.getListaDeclaracoesGlobais().add(sorteia);
             
-            NoDeclaracaoFuncao potencia = new NoDeclaracaoFuncao("potencia", TipoDado.INTEIRO, Quantificador.VALOR);
-            NoDeclaracaoParametro base = new NoDeclaracaoParametro("base", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
-            NoDeclaracaoParametro expoente = new NoDeclaracaoParametro("expoente", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            NoDeclaracaoFuncao potencia = new NoDeclaracaoFuncao("potencia", TipoDado.REAL, Quantificador.VALOR);
+            NoDeclaracaoParametro base = new NoDeclaracaoParametro("base", TipoDado.REAL, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            NoDeclaracaoParametro expoente = new NoDeclaracaoParametro("expoente", TipoDado.REAL, Quantificador.VALOR, ModoAcesso.POR_VALOR);
             List<NoDeclaracaoParametro> parametrosPotencia = new ArrayList<NoDeclaracaoParametro>();
             parametrosPotencia.add(base);
             parametrosPotencia.add(expoente);
@@ -127,7 +127,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
             
             NoDeclaracaoFuncao raiz = new NoDeclaracaoFuncao("raiz", TipoDado.REAL, Quantificador.VALOR);
             List<NoDeclaracaoParametro> parametrosRaiz = new ArrayList<NoDeclaracaoParametro>();
-            NoDeclaracaoParametro valor = new NoDeclaracaoParametro("valor", TipoDado.INTEIRO, Quantificador.VALOR, ModoAcesso.POR_VALOR);
+            NoDeclaracaoParametro valor = new NoDeclaracaoParametro("valor", TipoDado.REAL, Quantificador.VALOR, ModoAcesso.POR_VALOR);
             parametrosRaiz.add(valor);
             raiz.setParametros(parametrosRaiz);
             asa.getListaDeclaracoesGlobais().add(raiz);
