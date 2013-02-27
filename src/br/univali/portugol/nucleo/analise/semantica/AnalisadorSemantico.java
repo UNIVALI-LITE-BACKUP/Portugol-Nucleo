@@ -395,9 +395,6 @@ public final class AnalisadorSemantico
         NoExpressao operandoEsquerdo = operacao.getOperandoEsquerdo();
         NoExpressao operandoDireito = operacao.getOperandoDireito();
 
-        verificaErroReferencia(operandoEsquerdo, tabelaSimbolos);
-        verificaErroReferencia(operandoDireito, tabelaSimbolos);
-        
         TipoDado tipoDadoOperandoEsquerdo = TipoDado.VAZIO;
         TipoDado tipoDadoOperandoDireito = TipoDado.VAZIO;
 
@@ -408,9 +405,12 @@ public final class AnalisadorSemantico
         try { tipoDadoOperandoDireito = obterTipoDadoExpressao(operandoDireito, tabelaSimbolos); }
         catch (ErroTiposIncompativeis e) { notificarErroSemantico(e); erro = true; }
         catch (ExcecaoImpossivelDeterminarTipoDado e) { erro = true; }
-
+        
         if (!erro)
         {
+            verificaErroReferencia(operandoEsquerdo, tabelaSimbolos);
+            verificaErroReferencia(operandoDireito, tabelaSimbolos);
+       
             switch (operacao.getOperacao())
             {
                 case ATRIBUICAO:                    return obterTipoDadoOperacaoAtribuicao                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
