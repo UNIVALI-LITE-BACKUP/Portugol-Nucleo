@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroCaracterInsperadoInvalido;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParsingNaoTratado;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.Stack;
@@ -33,9 +34,8 @@ public final class TradutorUnwantedTokenException
     {
         int linha = erro.line;
         int coluna = erro.charPositionInLine;
-        String contextoAtual = pilhaContexto.pop();
-
         
-        return new ErroParsingNaoTratado(erro, mensagemPadrao, contextoAtual);
+        
+       return new ErroCaracterInsperadoInvalido(linha, coluna, erro.getUnexpectedToken().getText());
     }
 }
