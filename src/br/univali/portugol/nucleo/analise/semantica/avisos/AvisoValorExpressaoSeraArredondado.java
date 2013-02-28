@@ -50,6 +50,6 @@ public final class AvisoValorExpressaoSeraArredondado extends AvisoAnalise
     @Override
     protected String construirMensagem()
     {
-        return "O valor da expressão à direita da atribuição será arredondado.";
+        return "O valor da expressão à direita da atribuição perderá precisão.";
     }
 }
