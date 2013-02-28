@@ -1370,7 +1370,7 @@ public class Interpretador implements VisitanteASA
             expoente = ((Integer)e).doubleValue();
         }
         Double potencia = Math.pow(base, expoente);
-        return potencia.intValue();
+        return potencia;
     }
 
     private Object raiz(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
