@@ -18,15 +18,13 @@ public final class Portugol
         return new AnalisadorAlgoritmo().analisar(codigo);
     }
     
-    public static Programa compilar(String codigo) throws ErroCompilacao, AvisoCompilacao
+    public static Programa compilar(String codigo) throws ErroCompilacao
     {
         AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
         ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
         
         if (resultadoAnalise.getNumeroTotalErros() > 0)
             throw new ErroCompilacao(resultadoAnalise);
-        if (resultadoAnalise.getNumeroAvisos() > 0)
-            throw new AvisoCompilacao(resultadoAnalise);
 
         Programa programa = new Programa();
         programa.setCodigo(codigo);
