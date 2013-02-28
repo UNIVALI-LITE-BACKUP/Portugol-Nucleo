@@ -52,6 +52,7 @@ public final class TradutorMismatchedTokenException
             {
                 if (unexpectedType == PortugolLexer.T__49)
                 {
+                    //@TODO AQUI TA CRIANDO UMA MENSAGEM RUIM.
                     return new ErroVirgulaNoLugarPontoRealInvalido(linha,coluna);
                 }
                 return new ErroEscopoNaoFoiFechadoCorretamente(linha, coluna, contextoAtual);
