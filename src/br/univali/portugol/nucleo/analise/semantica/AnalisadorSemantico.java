@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoVetorMaisValoresTamanho;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroLeiaNecessitaReferencia;
 import br.univali.portugol.nucleo.analise.semantica.avisos.*;
 import br.univali.portugol.nucleo.analise.semantica.erros.*;
@@ -1202,6 +1203,11 @@ public final class AnalisadorSemantico
                 else if (!(inicializacao instanceof NoVetor))
                 {
                     throw new ErroInicializacaoInvalida(declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+                } else {
+                    NoVetor valores = (NoVetor) inicializacao;
+                    if (valores.getValores().size() > ((NoInteiro)declaracaoVetor.getTamanho()).getValor()){
+                        throw new ErroInicializacaoVetorMaisValoresTamanho(declaracaoVetor,inicializacao);
+                    }
                 }
             
                 TipoDado tipoDadoOperandoEsquerdo = vetor.getTipoDado();

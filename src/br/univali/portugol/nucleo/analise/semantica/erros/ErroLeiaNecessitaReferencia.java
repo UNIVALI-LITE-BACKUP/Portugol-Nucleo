@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 public class ErroLeiaNecessitaReferencia extends ErroSemantico
 {
-
+    
     
     
     public ErroLeiaNecessitaReferencia(NoChamadaFuncao chamadaFuncao, NoExpressao expressao)
