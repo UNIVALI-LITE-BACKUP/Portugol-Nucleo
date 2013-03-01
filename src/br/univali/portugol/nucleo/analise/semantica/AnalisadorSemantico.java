@@ -10,6 +10,8 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
@@ -328,10 +330,20 @@ public final class AnalisadorSemantico
     	
     	else
     		
-    	if (referencia instanceof NoReferenciaVariavel)
+    	if (referencia instanceof NoReferenciaVariavel 
+            || referencia instanceof NoReferenciaVetor 
+            || referencia instanceof NoReferenciaMatriz)
     	{
-    		if (!tabelaSimbolos.contem(nome))
-    			notificarErroSemantico(new ErroSimboloNaoDeclarado(referencia));
+                try
+                {
+                    if (!tabelaSimbolos.contem(nome))
+                            notificarErroSemantico(new ErroSimboloNaoDeclarado(referencia));
+                verificaErroReferencia(referencia, tabelaSimbolos);
+                }
+                catch (ErroReferenciaInvalida ex)
+                {
+                   notificarErroSemantico(ex);
+                }
     	}
     }
 
@@ -1003,10 +1015,13 @@ public final class AnalisadorSemantico
                     {
                         if (!(expressao instanceof NoReferenciaVariavel 
                                 || expressao instanceof NoReferenciaVetor 
-                                || expressao instanceof NoReferenciaMatriz))
+                                || expressao instanceof NoReferenciaMatriz)){
                             notificarErroSemantico(new ErroLeiaNecessitaReferencia(chamadaFuncao,expressao));
+                        } 
                     }
                 
+                    
+                    
                     try
                     {
                         analisarExpressao(expressao, tabelaSimbolos);
