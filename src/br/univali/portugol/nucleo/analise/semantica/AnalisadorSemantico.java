@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroLeiaNecessitaReferencia;
 import br.univali.portugol.nucleo.analise.semantica.avisos.*;
 import br.univali.portugol.nucleo.analise.semantica.erros.*;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
@@ -304,7 +305,7 @@ public final class AnalisadorSemantico
     	
     	if (referencia instanceof NoChamadaFuncao)
         {	
-    		if (!nome.equals("escreva") && !nome.equals("leia"))
+    		if (!funcoesReservadas.contains(nome))
                 {
 	    		if (tabelaSimbolos.contem((referencia.getNome())))
 		        {
@@ -940,13 +941,8 @@ public final class AnalisadorSemantico
 
         if (referencia instanceof NoChamadaFuncao)
         {
-            if (nome.equals("escreva") || nome.equals("leia"))
+            if (funcoesReservadas.contains(nome))
                 return TipoDado.VAZIO;
-            
-            else
-                
-            if (nome.equals("tamanho"))
-                return TipoDado.INTEIRO;            
         }
         
         if (simbolo == null)
@@ -1003,6 +999,14 @@ public final class AnalisadorSemantico
             for (NoExpressao expressao: parametrosPassados)
             {
                     
+                    if ("leia".equals(chamadaFuncao.getNome()))
+                    {
+                        if (!(expressao instanceof NoReferenciaVariavel 
+                                || expressao instanceof NoReferenciaVetor 
+                                || expressao instanceof NoReferenciaMatriz))
+                            notificarErroSemantico(new ErroLeiaNecessitaReferencia(chamadaFuncao,expressao));
+                    }
+                
                     try
                     {
                         analisarExpressao(expressao, tabelaSimbolos);
