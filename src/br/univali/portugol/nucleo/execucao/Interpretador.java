@@ -680,12 +680,6 @@ public class Interpretador implements VisitanteASA
         Simbolo simbolo = extrairSimbolo(obterSimbolo(nome));
         Object valor = atribuicao.getOperandoDireito().aceitar(this);//, null);
 
-        if ((valor instanceof Double) && (simbolo.getTipoDado() == TipoDado.INTEIRO))
-        {
-            double val = (Double) valor;
-            valor = (int) val;
-        }
-
         if (noReferencia instanceof NoReferenciaVariavel)
         {
             return atribuirValorVariavel((Variavel) simbolo, valor);

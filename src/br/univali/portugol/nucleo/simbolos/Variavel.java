@@ -22,7 +22,7 @@ public final class Variavel extends Simbolo
     public Variavel(String nome, TipoDado tipoDado)
     {
         super(nome, tipoDado);
-        valor = tipoDado.getValorPadrao();
+        setValor(tipoDado.getValorPadrao());
     }
 
     /**
@@ -54,21 +54,27 @@ public final class Variavel extends Simbolo
     /**
      * Armazena um valor nesta variável.
      * 
-     * @param value     o valor que será armazenado nesta variável
+     * @param valor     o valor que será armazenado nesta variável
      * @since 1.0
      */
-    public void setValor(Object value)
+    public void setValor(Object valor)
     {
         
-        if ((value instanceof Double) && (tipoDado == TipoDado.INTEIRO))
+        if ((valor instanceof Double) && (tipoDado == TipoDado.INTEIRO))
         {
-            double val = (Double) value;
-            value = (int) val;
+            double val = (Double) valor;
+            valor = (int) val;
         }
 
+        else 
         
+        if((valor instanceof Integer) && (tipoDado == TipoDado.REAL))
+        {
+            valor = ((Integer)valor).doubleValue();
+        }
+
         setInicializado(true);
-        this.valor = value;
+        this.valor = valor;
     }
 
     /**

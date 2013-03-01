@@ -1056,8 +1056,10 @@ public final class AnalisadorSemantico
 
             if (tipoDadoParametroEsperado != TipoDado.VAZIO && tipoDadoParametroPassado != TipoDado.VAZIO)
             {
-                if (tipoDadoParametroEsperado != tipoDadoParametroPassado)
-                    notificarErroSemantico(new ErroTipoParametroIncompativel(tipoDadoParametroEsperado, tipoDadoParametroPassado, parametrosEsperados.get(i), parametrosPassados.get(i), funcao));
+                if (tipoDadoParametroEsperado != tipoDadoParametroPassado){
+                    if (!(tipoDadoParametroPassado == TipoDado.INTEIRO && tipoDadoParametroEsperado == TipoDado.REAL))
+                        notificarErroSemantico(new ErroTipoParametroIncompativel(tipoDadoParametroEsperado, tipoDadoParametroPassado, parametrosEsperados.get(i), parametrosPassados.get(i), funcao));
+                }
             }
         }
     }
