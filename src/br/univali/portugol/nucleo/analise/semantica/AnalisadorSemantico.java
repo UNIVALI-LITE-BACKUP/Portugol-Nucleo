@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoVetorMaisValoresTamanho;
+import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoTamanhoReferenciaInicializacao;
+import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoInicializacaoVetorMaisValoresTamanho;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroLeiaNecessitaReferencia;
 import br.univali.portugol.nucleo.analise.semantica.avisos.*;
 import br.univali.portugol.nucleo.analise.semantica.erros.*;
@@ -1205,8 +1206,14 @@ public final class AnalisadorSemantico
                     throw new ErroInicializacaoInvalida(declaracaoVetor,inicializacao,inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
                 } else {
                     NoVetor valores = (NoVetor) inicializacao;
-                    if (valores.getValores().size() > ((NoInteiro)declaracaoVetor.getTamanho()).getValor()){
-                        throw new ErroInicializacaoVetorMaisValoresTamanho(declaracaoVetor,inicializacao);
+                    if (declaracaoVetor.getTamanho() instanceof NoInteiro){
+                        if (valores.getValores().size() > ((NoInteiro)declaracaoVetor.getTamanho()).getValor()){
+                            notificarAviso(new AvisoInicializacaoVetorMaisValoresTamanho(declaracaoVetor,inicializacao));
+                        }
+                    } else if (declaracaoVetor.getTamanho() instanceof NoReferenciaVariavel){
+                        NoReferenciaVariavel nrv = (NoReferenciaVariavel) declaracaoVetor.getTamanho();
+                        Simbolo simbolo = obterSimbolo(nrv.getNome(), tabelaSimbolos);
+                        notificarAviso(new AvisoTamanhoReferenciaInicializacao(simbolo,declaracaoVetor,inicializacao));
                     }
                 }
             

@@ -1,19 +1,17 @@
-package br.univali.portugol.nucleo.analise.semantica.erros;
+package br.univali.portugol.nucleo.analise.semantica.avisos;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.mensagens.ErroSemantico;
+import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 
-public class ErroInicializacaoVetorMaisValoresTamanho extends ErroSemantico
+public class AvisoInicializacaoVetorMaisValoresTamanho extends AvisoAnalise
 {
 
     private NoDeclaracaoVetor declaracaoVetor;
-    private NoExpressao inicializacao;
     
-    public ErroInicializacaoVetorMaisValoresTamanho(NoDeclaracaoVetor declaracaoVetor, NoExpressao inicializacao)
+    public AvisoInicializacaoVetorMaisValoresTamanho(NoDeclaracaoVetor declaracaoVetor, NoExpressao inicializacao)
     {
         super(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
-        this.inicializacao = inicializacao;
         this.declaracaoVetor = declaracaoVetor;
     }
 
