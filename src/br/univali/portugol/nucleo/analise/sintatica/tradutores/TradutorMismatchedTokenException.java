@@ -3,7 +3,6 @@ package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.analise.sintatica.PortugolLexer;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroAbreFechaParentesis;
-import br.univali.portugol.nucleo.analise.sintatica.erros.ErroVirgulaNoLugarPontoRealInvalido;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopoNaoFoiFechadoCorretamente;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroNomeSimboloEstaFaltando;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroPalavraReservadaEstaFaltando;
@@ -49,11 +48,7 @@ public final class TradutorMismatchedTokenException
         else
         {
             if (erro.expecting == PortugolLexer.T__68)
-            {
-                if (unexpectedType == PortugolLexer.T__49)
-                {
-                    return new ErroVirgulaNoLugarPontoRealInvalido(linha,coluna);
-                }
+            {  
                 return new ErroEscopoNaoFoiFechadoCorretamente(linha, coluna, contextoAtual);
             }
             else
