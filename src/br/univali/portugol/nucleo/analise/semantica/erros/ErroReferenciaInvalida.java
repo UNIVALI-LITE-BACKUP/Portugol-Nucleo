@@ -27,35 +27,35 @@ public class ErroReferenciaInvalida extends ErroSemantico
     {
         StringBuilder stringBuilder = new StringBuilder();
         String s = null;
+        if (simbolo != null){
+            if (simbolo instanceof Vetor)
+            {
+                s = "O vetor '%s' está sendo utilizado como ";
+            }
+            else if (simbolo instanceof Matriz)
+            {
+                s = "A matriz '%s' está sendo utilizada como ";
+            }
+            else if (simbolo instanceof Variavel)
+            {
+                s = "A variável '%s' está sendo utilizada como ";
+            }
         
-        if (simbolo instanceof Vetor)
-        {
-            s = "O vetor '%s' está sendo utilizado como ";
-        }
-        else if (simbolo instanceof Matriz)
-        {
-            s = "A matriz '%s' está sendo utilizada como ";
-        }
-        else if (simbolo instanceof Variavel)
-        {
-            s = "A variável '%s' está sendo utilizada como ";
-        }
+            stringBuilder.append(String.format(s, simbolo.getNome()));
         
-        stringBuilder.append(String.format(s, simbolo.getNome()));
-        
-        if (expressao instanceof NoReferenciaVariavel)
-        {
-            stringBuilder.append("uma variável");
+            if (expressao instanceof NoReferenciaVariavel)
+            {
+                stringBuilder.append("uma variável");
+            }
+            else if (expressao instanceof NoReferenciaMatriz)
+            {
+                stringBuilder.append("uma matriz");
+            }
+            else if (expressao instanceof NoReferenciaVetor)
+            {
+                stringBuilder.append("um vetor");
+            }
         }
-        else if (expressao instanceof NoReferenciaMatriz)
-        {
-            stringBuilder.append("uma matriz");
-        }
-        else if (expressao instanceof NoReferenciaVetor)
-        {
-            stringBuilder.append("um vetor");
-        }
-        
         return stringBuilder.toString();
     }    
 }

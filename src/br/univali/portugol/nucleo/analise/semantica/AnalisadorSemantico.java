@@ -339,10 +339,10 @@ public final class AnalisadorSemantico
                 try
                 {
                     if (!tabelaSimbolos.contem(nome))
-                            notificarErroSemantico(new ErroSimboloNaoDeclarado(referencia));
-                verificaErroReferencia(referencia, tabelaSimbolos);
+                            throw new ErroSimboloNaoDeclarado(referencia);                
+                    verificaErroReferencia(referencia, tabelaSimbolos);
                 }
-                catch (ErroReferenciaInvalida ex)
+                catch (ErroSemantico ex)
                 {
                    notificarErroSemantico(ex);
                 }
@@ -1022,8 +1022,6 @@ public final class AnalisadorSemantico
                         } 
                     }
                 
-                    
-                    
                     try
                     {
                         analisarExpressao(expressao, tabelaSimbolos);
