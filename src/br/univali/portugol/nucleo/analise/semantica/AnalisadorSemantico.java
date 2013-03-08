@@ -229,7 +229,7 @@ public final class AnalisadorSemantico
         analisarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);
     }
 
-    private void analisarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida
+    private void analisarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida, ErroOperacaoComExpressaoConstante
     {
         if (bloco instanceof NoPara)
             analisarBlocoPara((NoPara) bloco, tabelaSimbolos);
@@ -266,7 +266,7 @@ public final class AnalisadorSemantico
             
     }
 
-    private void analisarNoRetorne(NoRetorne noRetorne, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida
+    private void analisarNoRetorne(NoRetorne noRetorne, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida, ErroOperacaoComExpressaoConstante
     {
         NoExpressao expressao = noRetorne.getExpressao();
         
@@ -279,7 +279,7 @@ public final class AnalisadorSemantico
         else analisarExpressao(expressao, tabelaSimbolos);            
     }
     
-    private void analisarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida
+    private void analisarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida, ErroOperacaoComExpressaoConstante
     {
         if (expressao instanceof NoOperacao)
         {
@@ -377,6 +377,10 @@ public final class AnalisadorSemantico
         if (expressao instanceof NoReferencia)  return obterTipoDadoReferencia  ((NoReferencia) expressao, tabelaSimbolos);
         if (expressao instanceof NoOperacao)    return obterTipoDadoOperacao    ((NoOperacao)   expressao, tabelaSimbolos);
 
+        try {
+            if (expressao instanceof NoIncremento) return obterTipoDadoIncremento((NoIncremento) expressao, tabelaSimbolos);
+        } catch (ErroSemantico e) {notificarErroSemantico(e);}
+        
         notificarErroSemantico(new ErroSemantico(expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna())
         {
             @Override
@@ -1152,13 +1156,12 @@ public final class AnalisadorSemantico
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
     }
 
-    private void analisarIncremento(NoIncremento incremento)
+    private void analisarIncremento(NoIncremento incremento) throws ErroOperacaoComExpressaoConstante
     {
         NoExpressao expressao = incremento.getExpressao();
 
         if (!(expressao instanceof NoReferenciaVariavel) && !(expressao instanceof NoReferenciaVetor) && !(expressao instanceof NoReferenciaMatriz))
-            notificarErroSemantico(new ErroOperacaoComExpressaoConstante(incremento, expressao));
-
+            throw new ErroOperacaoComExpressaoConstante(incremento, expressao);        
     }
 
     private void notificarAviso(AvisoAnalise aviso)
@@ -1326,5 +1329,22 @@ public final class AnalisadorSemantico
         funcoes.add("escreva");
         
         return funcoes;
+    }
+
+    private TipoDado obterTipoDadoIncremento(NoIncremento noIncremento, TabelaSimbolos tabelaSimbolos) throws ErroSemantico, ErroTiposIncompativeis, ExcecaoImpossivelDeterminarTipoDado
+    {
+        TipoDado tipo = obterTipoDadoExpressao(noIncremento.getExpressao(), tabelaSimbolos);
+        
+        if (tipo != TipoDado.INTEIRO || tipo != TipoDado.REAL)
+            throw new ErroSemantico(noIncremento.getTrechoCodigoFonte().getLinha(), noIncremento.getTrechoCodigoFonte().getColuna()) 
+            {
+                @Override
+                protected String construirMensagem()
+                {
+                    return "Um incremento só pode ser realizado com variáveis do tipo inteiro ou real"; 
+                }
+            };
+    
+        return tipo;
     }
 }
