@@ -5,6 +5,7 @@ import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoEnquanto;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
+import br.univali.portugol.nucleo.asa.NoPara;
 import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
@@ -73,7 +74,7 @@ public final class ErroExpressaoTipoLogicoEsperada extends ErroSemantico
         if (bloco instanceof NoSe) return construirMensagemBlocoSe();
         if (bloco instanceof NoEnquanto) return construirMensagemBlocoEnquanto();
         if (bloco instanceof NoFacaEnquanto) return construirMensagemFacaEnquanto();
-
+        if (bloco instanceof NoPara) return construirMensagemPara();
         return null;
     }
 
@@ -114,5 +115,10 @@ public final class ErroExpressaoTipoLogicoEsperada extends ErroSemantico
     private String construirMensagemFacaEnquanto()
     {
         return "Tipos incompatíveis! A expressão utilizada com o laço \"faca-enquanto\" deve ser do tipo lógico!";
+    }
+    
+    private String construirMensagemPara()
+    {
+        return "Tipos incompatíveis! A expressão utilizada na condição do bloco \"para\" deve ser do tipo lógico!";
     }
 }

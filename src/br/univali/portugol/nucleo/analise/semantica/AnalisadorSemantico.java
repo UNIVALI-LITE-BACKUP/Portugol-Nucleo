@@ -993,8 +993,17 @@ public final class AnalisadorSemantico
         try { analisarBloco(para.getInicializacao(), tabelaSimbolos);}
         catch(ErroSemantico erro) { notificarErroSemantico(erro); }
 
-        try { analisarBloco(para.getCondicao(), tabelaSimbolos); }
-        catch(ErroSemantico erro) { notificarErroSemantico(erro); }
+        try { 
+            
+            analisarBloco(para.getCondicao(), tabelaSimbolos); 
+            TipoDado tipo = obterTipoDadoExpressao(para.getCondicao(), tabelaSimbolos);
+            NoOperacao o = (NoOperacao) para.getCondicao();
+            if (tipo != TipoDado.LOGICO)
+                throw new ErroExpressaoTipoLogicoEsperada(para, para.getCondicao());
+        
+        }
+        catch(ErroSemantico erro) { notificarErroSemantico(erro); }        
+        catch (ExcecaoImpossivelDeterminarTipoDado ex) { ex.printStackTrace(System.err); }
 
         try { analisarBloco(para.getIncremento(), tabelaSimbolos); }
         catch(ErroSemantico erro) { notificarErroSemantico(erro); }
@@ -1089,7 +1098,7 @@ public final class AnalisadorSemantico
         {
             NoExpressao condicao = blocoSe.getCondicao();
             TipoDado tipoDado = obterTipoDadoExpressao(condicao, tabelaSimbolos);
-            if (tipoDado != TipoDado.LOGICO) notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(blocoSe, condicao));
+            if (tipoDado != TipoDado.LOGICO) throw new ErroExpressaoTipoLogicoEsperada(blocoSe, condicao);
         }
         catch (ErroSemantico erro) { notificarErroSemantico(erro); }
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
