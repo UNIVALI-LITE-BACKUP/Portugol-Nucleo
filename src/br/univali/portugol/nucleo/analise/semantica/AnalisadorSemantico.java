@@ -377,6 +377,14 @@ public final class AnalisadorSemantico
         if (expressao instanceof NoReferencia)  return obterTipoDadoReferencia  ((NoReferencia) expressao, tabelaSimbolos);
         if (expressao instanceof NoOperacao)    return obterTipoDadoOperacao    ((NoOperacao)   expressao, tabelaSimbolos);
 
+        notificarErroSemantico(new ErroSemantico(expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna())
+        {
+            @Override
+            protected String construirMensagem()
+            {
+                return "Não foi possível identificar a expressão";
+            }
+        });
         throw new ExcecaoImpossivelDeterminarTipoDado();
     }
 
