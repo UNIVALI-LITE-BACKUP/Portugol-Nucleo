@@ -1,9 +1,12 @@
 grammar Portugol;
 
+
 @lexer::header 
 { 
 	package br.univali.portugol.nucleo.analise.sintatica;
 }
+ 
+ 
  
 @parser::header
 {
@@ -14,6 +17,8 @@ grammar Portugol;
 	import org.antlr.runtime.Token;
 	import br.univali.portugol.nucleo.asa.*;
 }
+
+
 
 @parser::members
 {
@@ -130,6 +135,7 @@ grammar Portugol;
 }
 
 
+
 PR_PROGRAMA			:	'programa'		;
 PR_REAL				:	'real'			;
 PR_VAZIO				:	'vazio'			;
@@ -149,7 +155,9 @@ PR_FACA				:	'faca'			;
 PR_ENQUANTO			:	'enquanto'		;
 PR_SE					:	'se'			;
 PR_SENAO				:	'senao'			;
-    
+
+GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'^'|'\''|'`'|'|'|'&'|'\\';
+ 
 fragment PR_FALSO			:	'falso'			;
 fragment PR_VERDADEIRO		:	'verdadeiro'		;
 
@@ -184,8 +192,6 @@ COMENTARIO			:
 	
 	 '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
  ;
-
-
 
 parse returns[ArvoreSintaticaAbstrata asa]:
 
@@ -1103,7 +1109,10 @@ expressao8 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao8");
 }:	
 	
-	( parentesis = '(' vExpressao = expressao ')' | vExpressao = tipoPrimitivo | vExpressao = referencia | vExpressao = matrizVetor) 
+	( parentesis = '(' vExpressao = expressao ')' 
+	| vExpressao = referencia
+	| vExpressao = tipoPrimitivo 
+	| vExpressao = matrizVetor) 
 	
 		(operador = '++' | operador = '--')?
 	{
@@ -1177,11 +1186,20 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 	
 	INTEIRO
 	{
+		try
+		{
+	
 		if (gerarArvore)
 		{
 			NoInteiro inteiro = new NoInteiro(Integer.parseInt($INTEIRO.text));
 			inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte($INTEIRO));
 			expressao = inteiro;
+		}
+		}
+		catch(NumberFormatException ex)
+		{
+			RecognitionException a = new RecognitionException();
+			a.addSuppressed(new RuntimeException("Caracter inválido detectado")); 
 		}
 	} 
 	
@@ -1441,3 +1459,5 @@ finally
 {
 	pilhaContexto.pop();
 }
+
+

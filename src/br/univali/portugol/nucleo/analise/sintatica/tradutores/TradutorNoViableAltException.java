@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroCadeiaIncompleta;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroCaracterInvalidoReferencia;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopoSimples;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressaoEsperada;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressaoIncompleta;
@@ -57,6 +58,10 @@ public final class TradutorNoViableAltException
             return criarErroExpressaoIncompleta(erro, pilhaContexto, linha, coluna, mensagemPadrao);
         }
 
+        if (contextoAtual.equals("referencia")){
+            return new ErroCaracterInvalidoReferencia(linha, coluna, erro.token.getText());
+        }
+        
         return new ErroParsingNaoTratado(erro, mensagemPadrao, contextoAtual);
     }
 

@@ -18,9 +18,17 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.asa.Quantificador;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.EarlyExitException;
@@ -90,7 +98,11 @@ public final class AnalisadorSintatico implements ObservadorParsing
     {
         try
         {
-            ANTLRStringStream antlrStringStream = new ANTLRStringStream(codigo);
+            byte[] buffer = codigo.getBytes();
+            ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+            
+            ANTLRInputStream antlrStringStream = new ANTLRInputStream(bais,"UTF-8");
+            
             PortugolLexer portugolLexer = new PortugolLexer(antlrStringStream);
             CommonTokenStream commonTokenStream = new CommonTokenStream(portugolLexer);
             PortugolParser portugolParser = new PortugolParser(commonTokenStream);
@@ -148,6 +160,10 @@ public final class AnalisadorSintatico implements ObservadorParsing
         {
             excecao.printStackTrace();
             return null;
+        }
+        catch (IOException ex)
+        {
+            throw new RuntimeException(ex);
         }
     }
 
