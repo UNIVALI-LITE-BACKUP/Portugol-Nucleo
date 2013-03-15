@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-03-14 14:42:44
+// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-03-15 13:36:45
  
 	package br.univali.portugol.nucleo.analise.sintatica;
 
@@ -1210,10 +1210,10 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = GAMBIARRA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:159:12: ( '.' | 'á' | 'à' | 'ã' | 'â' | 'é' | 'ê' | 'í' | 'ó' | 'ô' | 'õ' | 'ú' | 'ü' | 'ç' | 'Á' | 'À' | 'Ã' | 'Â' | 'É' | 'Ê' | 'Í' | 'Ó' | 'Ô' | 'Õ' | 'Ú' | 'Ü' | 'Ç' | '#' | '$' | '\"' | '§' | '?' | '¹' | '²' | '³' | '£' | '¢' | '¬' | 'ª' | 'º' | '~' | '^' | '\\'' | '`' | '|' | '&' | '\\\\' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:159:12: ( '.' | 'á' | 'à' | 'ã' | 'â' | 'é' | 'ê' | 'í' | 'ó' | 'ô' | 'õ' | 'ú' | 'ü' | 'ç' | 'Á' | 'À' | 'Ã' | 'Â' | 'É' | 'Ê' | 'Í' | 'Ó' | 'Ô' | 'Õ' | 'Ú' | 'Ü' | 'Ç' | '#' | '$' | '\"' | '§' | '?' | '¹' | '²' | '³' | '£' | '¢' | '¬' | 'ª' | 'º' | '~' | '^' | '\\'' | '`' | '|' | '&' | '\\\\' | '@' )
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
             {
-            if ( (input.LA(1) >= '\"' && input.LA(1) <= '$')||(input.LA(1) >= '&' && input.LA(1) <= '\'')||input.LA(1)=='.'||input.LA(1)=='?'||input.LA(1)=='\\'||input.LA(1)=='^'||input.LA(1)=='`'||input.LA(1)=='|'||input.LA(1)=='~'||(input.LA(1) >= '\u00A2' && input.LA(1) <= '\u00A3')||input.LA(1)=='\u00A7'||input.LA(1)=='\u00AA'||input.LA(1)=='\u00AC'||(input.LA(1) >= '\u00B2' && input.LA(1) <= '\u00B3')||(input.LA(1) >= '\u00B9' && input.LA(1) <= '\u00BA')||(input.LA(1) >= '\u00C0' && input.LA(1) <= '\u00C3')||input.LA(1)=='\u00C7'||(input.LA(1) >= '\u00C9' && input.LA(1) <= '\u00CA')||input.LA(1)=='\u00CD'||(input.LA(1) >= '\u00D3' && input.LA(1) <= '\u00D5')||input.LA(1)=='\u00DA'||input.LA(1)=='\u00DC'||(input.LA(1) >= '\u00E0' && input.LA(1) <= '\u00E3')||input.LA(1)=='\u00E7'||(input.LA(1) >= '\u00E9' && input.LA(1) <= '\u00EA')||input.LA(1)=='\u00ED'||(input.LA(1) >= '\u00F3' && input.LA(1) <= '\u00F5')||input.LA(1)=='\u00FA'||input.LA(1)=='\u00FC' ) {
+            if ( (input.LA(1) >= '\"' && input.LA(1) <= '$')||(input.LA(1) >= '&' && input.LA(1) <= '\'')||input.LA(1)=='.'||(input.LA(1) >= '?' && input.LA(1) <= '@')||input.LA(1)=='\\'||input.LA(1)=='^'||input.LA(1)=='`'||input.LA(1)=='|'||input.LA(1)=='~'||(input.LA(1) >= '\u00A2' && input.LA(1) <= '\u00A3')||input.LA(1)=='\u00A7'||input.LA(1)=='\u00AA'||input.LA(1)=='\u00AC'||(input.LA(1) >= '\u00B2' && input.LA(1) <= '\u00B3')||(input.LA(1) >= '\u00B9' && input.LA(1) <= '\u00BA')||(input.LA(1) >= '\u00C0' && input.LA(1) <= '\u00C3')||input.LA(1)=='\u00C7'||(input.LA(1) >= '\u00C9' && input.LA(1) <= '\u00CA')||input.LA(1)=='\u00CD'||(input.LA(1) >= '\u00D3' && input.LA(1) <= '\u00D5')||input.LA(1)=='\u00DA'||input.LA(1)=='\u00DC'||(input.LA(1) >= '\u00E0' && input.LA(1) <= '\u00E3')||input.LA(1)=='\u00E7'||(input.LA(1) >= '\u00E9' && input.LA(1) <= '\u00EA')||input.LA(1)=='\u00ED'||(input.LA(1) >= '\u00F3' && input.LA(1) <= '\u00F5')||input.LA(1)=='\u00FA'||input.LA(1)=='\u00FC' ) {
                 input.consume();
             }
             else {
@@ -2739,14 +2739,14 @@ public class PortugolLexer extends Lexer {
     static final String[] DFA14_transitionS = {
             "\2\45\2\uffff\1\45\22\uffff\1\45\1\1\1\36\2\44\1\2\1\3\1\43"+
             "\1\4\1\5\1\6\1\7\1\10\1\11\1\44\1\12\12\41\1\13\1\14\1\15\1"+
-            "\16\1\17\1\44\1\uffff\32\40\1\20\1\44\1\21\1\44\1\40\1\44\2"+
-            "\40\1\32\1\40\1\22\1\34\2\40\1\33\2\40\1\31\1\40\1\37\1\23\1"+
-            "\26\1\40\1\27\1\35\2\40\1\30\4\40\1\24\1\44\1\25\1\44\43\uffff"+
-            "\2\44\3\uffff\1\44\2\uffff\1\44\1\uffff\1\44\5\uffff\2\44\5"+
-            "\uffff\2\44\5\uffff\4\44\3\uffff\1\44\1\uffff\2\44\2\uffff\1"+
-            "\44\5\uffff\3\44\4\uffff\1\44\1\uffff\1\44\3\uffff\4\44\3\uffff"+
-            "\1\44\1\uffff\2\44\2\uffff\1\44\5\uffff\3\44\4\uffff\1\44\1"+
-            "\uffff\1\44",
+            "\16\1\17\2\44\32\40\1\20\1\44\1\21\1\44\1\40\1\44\2\40\1\32"+
+            "\1\40\1\22\1\34\2\40\1\33\2\40\1\31\1\40\1\37\1\23\1\26\1\40"+
+            "\1\27\1\35\2\40\1\30\4\40\1\24\1\44\1\25\1\44\43\uffff\2\44"+
+            "\3\uffff\1\44\2\uffff\1\44\1\uffff\1\44\5\uffff\2\44\5\uffff"+
+            "\2\44\5\uffff\4\44\3\uffff\1\44\1\uffff\2\44\2\uffff\1\44\5"+
+            "\uffff\3\44\4\uffff\1\44\1\uffff\1\44\3\uffff\4\44\3\uffff\1"+
+            "\44\1\uffff\2\44\2\uffff\1\44\5\uffff\3\44\4\uffff\1\44\1\uffff"+
+            "\1\44",
             "",
             "\1\46",
             "",
