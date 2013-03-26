@@ -50,13 +50,31 @@ public class Interpretador implements VisitanteASA
                 Funcao funcaoPrincipal = (Funcao) tabelaSimbolosGlobal.obter(funcaoInicial);
                 TabelaSimbolos tabelaSimbolosFuncaoPrincipal = new TabelaSimbolos();
                 tabelaSimbolosLocal.push(tabelaSimbolosFuncaoPrincipal);
-                if (funcaoPrincipal.getParametros().size() > 0)
-                {
-                    List<Object> listaParametros = converterVetorEmLista(parametros);
-                    tabelaSimbolosFuncaoPrincipal.adicionar(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, listaParametros.size(), listaParametros));
+                
+                if ( funcaoPrincipal.getParametros().isEmpty() || (funcaoPrincipal.getParametros().size() == 1 && 
+                        funcaoPrincipal.getParametros().get(0).getQuantificador() == Quantificador.VETOR && funcaoPrincipal.getParametros().get(0).getTipoDado() == TipoDado.CADEIA)){
+                
+                
+                
+                    if (funcaoPrincipal.getParametros().size() == 1)
+                    {
+                        List<Object> listaParametros = converterVetorEmLista(parametros);
+                        tabelaSimbolosFuncaoPrincipal.adicionar(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, listaParametros.size(), listaParametros));
+                    }
+
+                    interpretarListaBlocos(funcaoPrincipal.getBlocos());
+                    tabelaSimbolosLocal.pop();                
                 }
-                interpretarListaBlocos(funcaoPrincipal.getBlocos());
-                tabelaSimbolosLocal.pop();
+                else {
+                    throw new ErroExecucao() 
+                    {
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return "A função principal \"" + funcaoInicial + "\" não deve possuir parâmetros ou o parâmetro deve ser um vetor do tipo CADEIA.";
+                        }
+                    };
+                }
             }
             else
             {
@@ -131,7 +149,7 @@ public class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA
     {
-        return noCaso.getExpressao().aceitar(this);
+        return noCaso.getExpressao() != null ? noCaso.getExpressao().aceitar(this) : null;
     }
 
     @Override

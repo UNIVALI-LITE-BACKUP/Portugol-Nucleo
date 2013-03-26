@@ -95,29 +95,48 @@ public final class ErroNumeroParametrosPassadosFuncao extends ErroSemantico
     protected String construirMensagem()
     {
         StringBuilder construtorString = new StringBuilder();
+        String nomeFuncao = (numeroParametrosEsperados > 0)? funcao.getNome() : (numeroParametrosEsperados == -1)? "escreva" : "leia";
 
         construtorString.append("A função \"");
-        construtorString.append(funcao.getNome());
-        construtorString.append("\" esperarava ");
+        construtorString.append(nomeFuncao);
+        construtorString.append("\"");
+        
+        
+        if (numeroParametrosEsperados == 0)
+            construtorString.append(" não espera nenhum parâmetro ");
+        
+        else
+            
+        if (numeroParametrosEsperados < 0)
+            construtorString.append(" espera ao menos um parâmetro ");
+        
+        else
+        {
+        
+            construtorString.append(" espera ");
+            construtorString.append(numeroParametrosEsperados);
 
-        if (numeroParametrosEsperados < numeroParametrosPassados)
-            construtorString.append("apenas ");
+            if (numeroParametrosEsperados == 1) construtorString.append(" parâmetro ");
+            else construtorString.append(" parâmetros ");
+        
+        }
+        
+        if (numeroParametrosPassados == 0)
+            construtorString.append("mas não foi passado nenhum parâmetro");
+        
+        else
+        {
+            if (numeroParametrosPassados == 1) construtorString.append("mas foi passado ");
+            else construtorString.append("mas foram passados ");
 
-        construtorString.append(numeroParametrosEsperados);
+            if (numeroParametrosEsperados > numeroParametrosPassados)
+                construtorString.append("apenas ");
 
-        if (numeroParametrosEsperados == 1) construtorString.append(" parâmetro");
-        else construtorString.append(" parâmetros");
+            construtorString.append(numeroParametrosPassados);
 
-        if (numeroParametrosPassados == 1) construtorString.append(" mas foi passado ");
-        else construtorString.append(" mas foram passados ");
-
-        if (numeroParametrosEsperados > numeroParametrosPassados)
-            construtorString.append("apenas ");
-
-        construtorString.append(numeroParametrosPassados);
-
-        if (numeroParametrosPassados == 1) construtorString.append(" parâmetro.");
-        else construtorString.append(" parâmetros.");
+            if (numeroParametrosPassados == 1) construtorString.append(" parâmetro.");
+            else construtorString.append(" parâmetros.");
+        }
 
         return construtorString.toString();
     }

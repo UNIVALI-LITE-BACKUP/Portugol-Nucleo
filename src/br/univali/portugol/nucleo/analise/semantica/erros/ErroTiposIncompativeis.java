@@ -1,6 +1,8 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
+import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.asa.NoEscolha;
 import br.univali.portugol.nucleo.asa.Operacao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.NoOperacao;
@@ -37,6 +39,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 public final class ErroTiposIncompativeis extends ErroSemantico
 {
+    private NoBloco bloco;
     private Operacao operacao;
     private TipoDado tipoDadoOperandoDireito;
     private TipoDado tipoDadoOperandoEsquerdo;
@@ -60,6 +63,27 @@ public final class ErroTiposIncompativeis extends ErroSemantico
         this.tipoDadoOperandoDireito = tipoDadoOperandoDireito;
         this.tipoDadoOperandoEsquerdo = tipoDadoOperandoEsquerdo;
     }
+    
+    /**
+     * 
+     * @param escolha                     a operação que estava sendo realizada entre as duas expressões.
+     * @param tipoDadoOperandoEsquerdo     o tipo de dado da expressão à esquerda do operador.
+     * @param tipoDadoOperandoDireito      o tipo de dado da expressão á direita do operador.
+     * @since 1.0
+     */
+    public ErroTiposIncompativeis(NoEscolha escolha, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito)
+    {
+        super
+        (
+            escolha.getExpressao().getTrechoCodigoFonte().getLinha(),
+            escolha.getExpressao().getTrechoCodigoFonte().getColuna()
+        );
+
+        this.bloco = escolha;
+        this.tipoDadoOperandoEsquerdo = tipoDadoOperandoEsquerdo;
+        this.tipoDadoOperandoDireito = tipoDadoOperandoDireito;
+    }
+    
     
     /**
      * Obtém  a operação que estava sendo realizada entre as duas expressões.
@@ -100,27 +124,36 @@ public final class ErroTiposIncompativeis extends ErroSemantico
     @Override
     protected String construirMensagem()
     {
-        switch (operacao)
+        if (bloco != null)
         {
-            case ATRIBUICAO: return construirMensagemAtribuicao();
-            case DIFERENCA: return construirMensagemDiferenca();
-            case DIVISAO: return construirMensagemDivisao();
-            case DIVISAO_ACUMULATIVA: return construirMensagemDivisaoAcumulativa();
-            case E: return construirMensagemE();
-            case IGUALDADE: return construirMensagemIgualdade();
-            case MAIOR: return construirMensagemMaior();
-            case MAIOR_IGUAL: return construirMensagemMaiorIgual();
-            case MENOR: return construirMensagemMenor();
-            case MENOR_IGUAL: return construirMensagemMenorIgual();
-            case MODULO: return construirMensagemModulo();
-            case MODULO_ACUMULATIVO: return construirMensagemModuloAcumulativo();
-            case MULTIPLICACAO: return construirMensagemMultiplicacao();
-            case MULTIPLICACAO_ACUMULATIVA: return construirMensagemMultiplicacaoAcumulativa();
-            case OU: return construirMensagemOu();
-            case SOMA: return construirMensagemSoma();
-            case SOMA_ACUMULATIVA: return construirMensagemSomaAcumulativa();
-            case SUBTRACAO: return construirMensagemSubtracao();
-            case SUBTRACAO_ACUMULATIVA: return construirMensagemSubtracaoAcumulativa();
+            if (bloco instanceof NoEscolha)
+                return construirMensagemEscolha();
+        }        
+        
+        else
+        {
+            switch (operacao)
+            {
+                case ATRIBUICAO: return construirMensagemAtribuicao();
+                case DIFERENCA: return construirMensagemDiferenca();
+                case DIVISAO: return construirMensagemDivisao();
+                case DIVISAO_ACUMULATIVA: return construirMensagemDivisaoAcumulativa();
+                case E: return construirMensagemE();
+                case IGUALDADE: return construirMensagemIgualdade();
+                case MAIOR: return construirMensagemMaior();
+                case MAIOR_IGUAL: return construirMensagemMaiorIgual();
+                case MENOR: return construirMensagemMenor();
+                case MENOR_IGUAL: return construirMensagemMenorIgual();
+                case MODULO: return construirMensagemModulo();
+                case MODULO_ACUMULATIVO: return construirMensagemModuloAcumulativo();
+                case MULTIPLICACAO: return construirMensagemMultiplicacao();
+                case MULTIPLICACAO_ACUMULATIVA: return construirMensagemMultiplicacaoAcumulativa();
+                case OU: return construirMensagemOu();
+                case SOMA: return construirMensagemSoma();
+                case SOMA_ACUMULATIVA: return construirMensagemSomaAcumulativa();
+                case SUBTRACAO: return construirMensagemSubtracao();
+                case SUBTRACAO_ACUMULATIVA: return construirMensagemSubtracaoAcumulativa();
+            }
         }
 
         return null;
@@ -523,5 +556,18 @@ public final class ErroTiposIncompativeis extends ErroSemantico
         construtorString.append("\".");
 
         return construtorString.toString();
+    }
+
+    private String construirMensagemEscolha()
+    {
+        StringBuilder construtorString = new StringBuilder();
+
+        construtorString.append("Tipos incompatíveis! O bloco \"escolha\" espera uma expressão do tipo \"");
+        construtorString.append(tipoDadoOperandoEsquerdo);
+        construtorString.append("\" mas foi passada uma expressão do tipo \"");
+        construtorString.append(tipoDadoOperandoDireito);
+        construtorString.append("\".");
+
+        return construtorString.toString();        
     }
 }
