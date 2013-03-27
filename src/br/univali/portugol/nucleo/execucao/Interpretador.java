@@ -1537,7 +1537,8 @@ public class Interpretador implements VisitanteASA
             {
                 try
                 {
-                    valores.add(((NoExpressao) valoresVetor.get(i)).aceitar(this));
+                    final NoExpressao expr = (NoExpressao) valoresVetor.get(i);
+                    valores.add(expr != null ? expr.aceitar(this) : null);
                 }
                 catch (ArrayIndexOutOfBoundsException aioobe)
                 {
