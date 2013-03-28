@@ -5,6 +5,7 @@ import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.execucao.erros.ErroDivisaoPorZero;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
+import br.univali.portugol.nucleo.execucao.erros.ErroIndiceMatrizInvalido;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceVetorInvalido;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -1323,8 +1324,12 @@ public class Interpretador implements VisitanteASA
     {
         int linha = (Integer) referenciaMatriz.getLinha().aceitar(this);
         int coluna = (Integer) referenciaMatriz.getColuna().aceitar(this);
-        matriz.setValor(linha, coluna, valor);
-
+        try {
+            matriz.setValor(linha, coluna, valor);
+        } catch (IndexOutOfBoundsException ie)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz,linha,coluna), asa, referenciaMatriz);
+        }
         return valor;
     }
 
@@ -1430,9 +1435,15 @@ public class Interpretador implements VisitanteASA
         int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
         String nome = noReferenciaMatriz.getNome();
         Matriz matriz = (Matriz) extrairSimbolo(obterSimbolo(nome));
-
-        Object valor = matriz.getValor(linha, coluna);
-
+        
+        Object valor;
+        try {
+            valor = matriz.getValor(linha, coluna);
+        } catch (IndexOutOfBoundsException ie)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz,linha,coluna), asa, noReferenciaMatriz);
+        }
+        
         while (valor instanceof NoExpressao)
         {
             valor = ((NoExpressao) valor).aceitar(this);
@@ -1479,8 +1490,15 @@ public class Interpretador implements VisitanteASA
         {
             throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, noReferenciaVetor);
         }
-
-        Object valor = vetor.getValor(indice);
+        
+        Object valor;
+        try { 
+            valor = vetor.getValor(indice);
+        }
+        catch (ArrayIndexOutOfBoundsException aioobe)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, ultimaReferenciaAcessada), null, noReferenciaVetor);
+        }
 
         while (valor instanceof NoExpressao)
         {
