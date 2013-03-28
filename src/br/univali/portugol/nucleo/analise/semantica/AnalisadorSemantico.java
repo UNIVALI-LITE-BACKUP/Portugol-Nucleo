@@ -458,6 +458,8 @@ public final class AnalisadorSemantico
 
         if (expressao instanceof NoVetor)       return obterTipoDadoVetor(((NoVetor) expressao), tabelaSimbolos);
         if (expressao instanceof NoMatriz)      return obterTipoDadoMatriz(((NoMatriz) expressao),tabelaSimbolos);
+        if (expressao instanceof NoMenosUnario) return obterTipoDadoExpressao(((NoMenosUnario)expressao).getExpressao(), tabelaSimbolos);
+        
         try {
             if (expressao instanceof NoIncremento) return obterTipoDadoIncremento((NoIncremento) expressao, tabelaSimbolos);
         } catch (ErroSemantico e) {notificarErroSemantico(e);}
