@@ -102,7 +102,8 @@ public final class Vetor extends Simbolo
     public Object getValor(int indice)
     {
         setUtilizado(true);
-        return valores.get(indice);
+        final Object valor = valores.get(indice);
+        return valor != null ? valor : tipoDado.getValorPadrao();
     }
 
     /**

@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-03-15 13:36:44
+// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-03-27 15:15:10
 
 
 	package br.univali.portugol.nucleo.analise.sintatica;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class PortugolParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "CADEIA", "CARACTER", "COMENTARIO", "DIGIT_HEX", "ESC_OCTAL", "ESC_UNICODE", "ESPACO", "GAMBIARRA", "ID", "INTEIRO", "LOGICO", "OPERADOR_NAO", "PR_CADEIA", "PR_CARACTER", "PR_CASO", "PR_CASO_CONTRARIO", "PR_CONST", "PR_ENQUANTO", "PR_ESCOLHA", "PR_FACA", "PR_FALSO", "PR_FUNCAO", "PR_INTEIRO", "PR_LOGICO", "PR_PARA", "PR_PARE", "PR_PROGRAMA", "PR_REAL", "PR_RETORNE", "PR_SE", "PR_SENAO", "PR_VAZIO", "PR_VERDADEIRO", "REAL", "SEQ_ESC", "'!='", "'%'", "'%='", "'&'", "'('", "')'", "'*'", "'*='", "'+'", "'++'", "'+='", "','", "'-'", "'--'", "'-='", "'/'", "'/='", "':'", "';'", "'<'", "'<='", "'='", "'=='", "'>'", "'>='", "'['", "']'", "'e'", "'ou'", "'{'", "'}'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "CADEIA", "CARACTER", "COMENTARIO", "DIGIT_HEX", "ESC_OCTAL", "ESC_UNICODE", "ESPACO", "GAMBIARRA", "ID", "INTEIRO", "LOGICO", "OPERADOR_NAO", "PR_CADEIA", "PR_CARACTER", "PR_CASO", "PR_CONST", "PR_CONTRARIO", "PR_ENQUANTO", "PR_ESCOLHA", "PR_FACA", "PR_FALSO", "PR_FUNCAO", "PR_INTEIRO", "PR_LOGICO", "PR_PARA", "PR_PARE", "PR_PROGRAMA", "PR_REAL", "PR_RETORNE", "PR_SE", "PR_SENAO", "PR_VAZIO", "PR_VERDADEIRO", "REAL", "SEQ_ESC", "'!='", "'%'", "'%='", "'&'", "'('", "')'", "'*'", "'*='", "'+'", "'++'", "'+='", "','", "'-'", "'--'", "'-='", "'/'", "'/='", "':'", "';'", "'<'", "'<='", "'='", "'=='", "'>'", "'>='", "'['", "']'", "'e'", "'ou'", "'{'", "'}'"
     };
 
     public static final int EOF=-1;
@@ -68,8 +68,8 @@ public class PortugolParser extends Parser {
     public static final int PR_CADEIA=16;
     public static final int PR_CARACTER=17;
     public static final int PR_CASO=18;
-    public static final int PR_CASO_CONTRARIO=19;
-    public static final int PR_CONST=20;
+    public static final int PR_CONST=19;
+    public static final int PR_CONTRARIO=20;
     public static final int PR_ENQUANTO=21;
     public static final int PR_ESCOLHA=22;
     public static final int PR_FACA=23;
@@ -222,7 +222,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "parse"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:196:1: parse returns [ArvoreSintaticaAbstrata asa] : prog= programa ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:197:1: parse returns [ArvoreSintaticaAbstrata asa] : prog= programa ;
     public final ArvoreSintaticaAbstrata parse() throws RecognitionException {
         ArvoreSintaticaAbstrata asa = null;
 
@@ -231,10 +231,10 @@ public class PortugolParser extends Parser {
 
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:196:43: (prog= programa )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:198:2: prog= programa
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:197:43: (prog= programa )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:199:2: prog= programa
             {
-            pushFollow(FOLLOW_programa_in_parse875);
+            pushFollow(FOLLOW_programa_in_parse863);
             prog=programa();
 
             state._fsp--;
@@ -262,7 +262,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "programa"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:205:1: programa returns [ArvoreSintaticaAbstrata asa] : PR_PROGRAMA '{' ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:206:1: programa returns [ArvoreSintaticaAbstrata asa] : PR_PROGRAMA '{' ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' ;
     public final ArvoreSintaticaAbstrata programa() throws RecognitionException {
         ArvoreSintaticaAbstrata asa = null;
 
@@ -271,12 +271,12 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("programa");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:208:2: ( PR_PROGRAMA '{' ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:210:2: PR_PROGRAMA '{' ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:209:2: ( PR_PROGRAMA '{' ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:211:2: PR_PROGRAMA '{' ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}'
             {
-            match(input,PR_PROGRAMA,FOLLOW_PR_PROGRAMA_in_programa897); if (state.failed) return asa;
+            match(input,PR_PROGRAMA,FOLLOW_PR_PROGRAMA_in_programa885); if (state.failed) return asa;
 
-            match(input,68,FOLLOW_68_in_programa900); if (state.failed) return asa;
+            match(input,68,FOLLOW_68_in_programa888); if (state.failed) return asa;
 
             if ( state.backtracking==0 ) {
             			if (gerarArvore)
@@ -286,7 +286,7 @@ public class PortugolParser extends Parser {
             			}
             		 }
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:220:3: ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:221:3: ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )*
             loop1:
             do {
                 int alt1=3;
@@ -302,9 +302,9 @@ public class PortugolParser extends Parser {
 
                 switch (alt1) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:220:4: declaracoesGlobais[asa]
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:221:4: declaracoesGlobais[asa]
             	    {
-            	    pushFollow(FOLLOW_declaracoesGlobais_in_programa912);
+            	    pushFollow(FOLLOW_declaracoesGlobais_in_programa900);
             	    declaracoesGlobais(asa);
 
             	    state._fsp--;
@@ -313,9 +313,9 @@ public class PortugolParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:220:30: declaracaoFuncao[asa]
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:221:30: declaracaoFuncao[asa]
             	    {
-            	    pushFollow(FOLLOW_declaracaoFuncao_in_programa917);
+            	    pushFollow(FOLLOW_declaracaoFuncao_in_programa905);
             	    declaracaoFuncao(asa);
 
             	    state._fsp--;
@@ -330,7 +330,7 @@ public class PortugolParser extends Parser {
             } while (true);
 
 
-            match(input,69,FOLLOW_69_in_programa923); if (state.failed) return asa;
+            match(input,69,FOLLOW_69_in_programa911); if (state.failed) return asa;
 
             }
 
@@ -353,7 +353,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "declaracoesGlobais"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:229:1: declaracoesGlobais[ArvoreSintaticaAbstrata asa] : vListaDeclaracoes= listaDeclaracoes ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:230:1: declaracoesGlobais[ArvoreSintaticaAbstrata asa] : vListaDeclaracoes= listaDeclaracoes ;
     public final void declaracoesGlobais(ArvoreSintaticaAbstrata asa) throws RecognitionException {
         List<NoDeclaracao> vListaDeclaracoes =null;
 
@@ -362,10 +362,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("declaracoesGlobais");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:232:2: (vListaDeclaracoes= listaDeclaracoes )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:234:2: vListaDeclaracoes= listaDeclaracoes
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:233:2: (vListaDeclaracoes= listaDeclaracoes )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:235:2: vListaDeclaracoes= listaDeclaracoes
             {
-            pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesGlobais949);
+            pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesGlobais937);
             vListaDeclaracoes=listaDeclaracoes();
 
             state._fsp--;
@@ -408,7 +408,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "declaracoesLocais"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:257:1: declaracoesLocais[List<NoBloco> listaBlocos] : vListaDeclaracoes= listaDeclaracoes ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:258:1: declaracoesLocais[List<NoBloco> listaBlocos] : vListaDeclaracoes= listaDeclaracoes ;
     public final void declaracoesLocais(List<NoBloco> listaBlocos) throws RecognitionException {
         List<NoDeclaracao> vListaDeclaracoes =null;
 
@@ -417,10 +417,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("declaracoesLocais");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:260:2: (vListaDeclaracoes= listaDeclaracoes )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:262:2: vListaDeclaracoes= listaDeclaracoes
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:261:2: (vListaDeclaracoes= listaDeclaracoes )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:263:2: vListaDeclaracoes= listaDeclaracoes
             {
-            pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesLocais977);
+            pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesLocais965);
             vListaDeclaracoes=listaDeclaracoes();
 
             state._fsp--;
@@ -458,7 +458,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "listaDeclaracoes"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:280:1: listaDeclaracoes returns [List<NoDeclaracao> listaDeclaracoes] : ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:281:1: listaDeclaracoes returns [List<NoDeclaracao> listaDeclaracoes] : ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) ;
     public final List<NoDeclaracao> listaDeclaracoes() throws RecognitionException {
         List<NoDeclaracao> listaDeclaracoes = null;
 
@@ -474,15 +474,15 @@ public class PortugolParser extends Parser {
         	listaDeclaracoes = new ArrayList<NoDeclaracao>();
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:284:2: ( ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:285:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:285:2: ( ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:286:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:285:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:286:2: (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:286:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:287:2: (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )*
             {
             if ( state.backtracking==0 ) {tokenConst = null; }
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:288:2: (tokenConst= PR_CONST )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:289:2: (tokenConst= PR_CONST )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -491,9 +491,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:288:3: tokenConst= PR_CONST
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:289:3: tokenConst= PR_CONST
                     {
-                    tokenConst=(Token)match(input,PR_CONST,FOLLOW_PR_CONST_in_listaDeclaracoes1014); if (state.failed) return listaDeclaracoes;
+                    tokenConst=(Token)match(input,PR_CONST,FOLLOW_PR_CONST_in_listaDeclaracoes1002); if (state.failed) return listaDeclaracoes;
 
                     }
                     break;
@@ -501,16 +501,16 @@ public class PortugolParser extends Parser {
             }
 
 
-            pushFollow(FOLLOW_declaracaoTipoDado_in_listaDeclaracoes1022);
+            pushFollow(FOLLOW_declaracaoTipoDado_in_listaDeclaracoes1010);
             informacaoTipoDado=declaracaoTipoDado();
 
             state._fsp--;
             if (state.failed) return listaDeclaracoes;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:290:2: (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:290:4: vDeclaracao= declaracao[tokenConst, informacaoTipoDado]
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:291:2: (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:291:4: vDeclaracao= declaracao[tokenConst, informacaoTipoDado]
             {
-            pushFollow(FOLLOW_declaracao_in_listaDeclaracoes1033);
+            pushFollow(FOLLOW_declaracao_in_listaDeclaracoes1021);
             vDeclaracao=declaracao(tokenConst, informacaoTipoDado);
 
             state._fsp--;
@@ -529,7 +529,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:301:2: ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:302:2: ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )*
             loop3:
             do {
                 int alt3=2;
@@ -542,11 +542,11 @@ public class PortugolParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:301:3: ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado]
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:302:3: ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado]
             	    {
-            	    match(input,50,FOLLOW_50_in_listaDeclaracoes1055); if (state.failed) return listaDeclaracoes;
+            	    match(input,50,FOLLOW_50_in_listaDeclaracoes1043); if (state.failed) return listaDeclaracoes;
 
-            	    pushFollow(FOLLOW_declaracao_in_listaDeclaracoes1061);
+            	    pushFollow(FOLLOW_declaracao_in_listaDeclaracoes1049);
             	    vDeclaracao=declaracao(tokenConst, informacaoTipoDado);
 
             	    state._fsp--;
@@ -595,7 +595,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "declaracao"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:319:1: declaracao[Token tokenConst, InformacaoTipoDado informacaoTipoDado] returns [NoDeclaracao declaracao] : ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:320:1: declaracao[Token tokenConst, InformacaoTipoDado informacaoTipoDado] returns [NoDeclaracao declaracao] : ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) ;
     public final NoDeclaracao declaracao(Token tokenConst, InformacaoTipoDado informacaoTipoDado) throws RecognitionException {
         NoDeclaracao declaracao = null;
 
@@ -614,15 +614,15 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("declaracao");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:322:2: ( ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:323:2: ( ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:3: ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:3: ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )?
             {
-            ID1=(Token)match(input,ID,FOLLOW_ID_in_declaracao1100); if (state.failed) return declaracao;
+            ID1=(Token)match(input,ID,FOLLOW_ID_in_declaracao1088); if (state.failed) return declaracao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:6: (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:6: (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -631,11 +631,11 @@ public class PortugolParser extends Parser {
             }
             switch (alt7) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:7: tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )?
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:7: tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )?
                     {
-                    tk1=(Token)match(input,64,FOLLOW_64_in_declaracao1107); if (state.failed) return declaracao;
+                    tk1=(Token)match(input,64,FOLLOW_64_in_declaracao1095); if (state.failed) return declaracao;
 
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:17: (ind1= expressao )?
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:17: (ind1= expressao )?
                     int alt4=2;
                     int LA4_0 = input.LA(1);
 
@@ -644,9 +644,9 @@ public class PortugolParser extends Parser {
                     }
                     switch (alt4) {
                         case 1 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:18: ind1= expressao
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:18: ind1= expressao
                             {
-                            pushFollow(FOLLOW_expressao_in_declaracao1114);
+                            pushFollow(FOLLOW_expressao_in_declaracao1102);
                             ind1=expressao();
 
                             state._fsp--;
@@ -658,9 +658,9 @@ public class PortugolParser extends Parser {
                     }
 
 
-                    match(input,65,FOLLOW_65_in_declaracao1118); if (state.failed) return declaracao;
+                    match(input,65,FOLLOW_65_in_declaracao1106); if (state.failed) return declaracao;
 
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:41: (tk2= '[' (ind2= expressao )? ']' )?
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:41: (tk2= '[' (ind2= expressao )? ']' )?
                     int alt6=2;
                     int LA6_0 = input.LA(1);
 
@@ -669,11 +669,11 @@ public class PortugolParser extends Parser {
                     }
                     switch (alt6) {
                         case 1 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:42: tk2= '[' (ind2= expressao )? ']'
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:42: tk2= '[' (ind2= expressao )? ']'
                             {
-                            tk2=(Token)match(input,64,FOLLOW_64_in_declaracao1125); if (state.failed) return declaracao;
+                            tk2=(Token)match(input,64,FOLLOW_64_in_declaracao1113); if (state.failed) return declaracao;
 
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:52: (ind2= expressao )?
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:52: (ind2= expressao )?
                             int alt5=2;
                             int LA5_0 = input.LA(1);
 
@@ -682,9 +682,9 @@ public class PortugolParser extends Parser {
                             }
                             switch (alt5) {
                                 case 1 :
-                                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:53: ind2= expressao
+                                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:53: ind2= expressao
                                     {
-                                    pushFollow(FOLLOW_expressao_in_declaracao1132);
+                                    pushFollow(FOLLOW_expressao_in_declaracao1120);
                                     ind2=expressao();
 
                                     state._fsp--;
@@ -696,7 +696,7 @@ public class PortugolParser extends Parser {
                             }
 
 
-                            match(input,65,FOLLOW_65_in_declaracao1136); if (state.failed) return declaracao;
+                            match(input,65,FOLLOW_65_in_declaracao1124); if (state.failed) return declaracao;
 
                             }
                             break;
@@ -710,7 +710,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:80: ( '=' inicializacao= expressao )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:80: ( '=' inicializacao= expressao )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -719,11 +719,11 @@ public class PortugolParser extends Parser {
             }
             switch (alt8) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:324:81: '=' inicializacao= expressao
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:325:81: '=' inicializacao= expressao
                     {
-                    match(input,60,FOLLOW_60_in_declaracao1143); if (state.failed) return declaracao;
+                    match(input,60,FOLLOW_60_in_declaracao1131); if (state.failed) return declaracao;
 
-                    pushFollow(FOLLOW_expressao_in_declaracao1149);
+                    pushFollow(FOLLOW_expressao_in_declaracao1137);
                     inicializacao=expressao();
 
                     state._fsp--;
@@ -785,7 +785,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "declaracaoTipoDado"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:357:1: declaracaoTipoDado returns [InformacaoTipoDado informacaoTipoDado] : (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:358:1: declaracaoTipoDado returns [InformacaoTipoDado informacaoTipoDado] : (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) ;
     public final InformacaoTipoDado declaracaoTipoDado() throws RecognitionException {
         InformacaoTipoDado informacaoTipoDado = null;
 
@@ -796,10 +796,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("declaracaoTipoDado");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:360:2: ( (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:362:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:361:2: ( (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:363:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:362:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:363:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
             int alt9=5;
             switch ( input.LA(1) ) {
             case PR_INTEIRO:
@@ -838,37 +838,37 @@ public class PortugolParser extends Parser {
 
             switch (alt9) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:362:3: tokenTipoDado= PR_INTEIRO
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:363:3: tokenTipoDado= PR_INTEIRO
                     {
-                    tokenTipoDado=(Token)match(input,PR_INTEIRO,FOLLOW_PR_INTEIRO_in_declaracaoTipoDado1184); if (state.failed) return informacaoTipoDado;
+                    tokenTipoDado=(Token)match(input,PR_INTEIRO,FOLLOW_PR_INTEIRO_in_declaracaoTipoDado1172); if (state.failed) return informacaoTipoDado;
 
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:362:32: tokenTipoDado= PR_REAL
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:363:32: tokenTipoDado= PR_REAL
                     {
-                    tokenTipoDado=(Token)match(input,PR_REAL,FOLLOW_PR_REAL_in_declaracaoTipoDado1192); if (state.failed) return informacaoTipoDado;
+                    tokenTipoDado=(Token)match(input,PR_REAL,FOLLOW_PR_REAL_in_declaracaoTipoDado1180); if (state.failed) return informacaoTipoDado;
 
                     }
                     break;
                 case 3 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:362:58: tokenTipoDado= PR_CARACTER
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:363:58: tokenTipoDado= PR_CARACTER
                     {
-                    tokenTipoDado=(Token)match(input,PR_CARACTER,FOLLOW_PR_CARACTER_in_declaracaoTipoDado1200); if (state.failed) return informacaoTipoDado;
+                    tokenTipoDado=(Token)match(input,PR_CARACTER,FOLLOW_PR_CARACTER_in_declaracaoTipoDado1188); if (state.failed) return informacaoTipoDado;
 
                     }
                     break;
                 case 4 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:362:88: tokenTipoDado= PR_CADEIA
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:363:88: tokenTipoDado= PR_CADEIA
                     {
-                    tokenTipoDado=(Token)match(input,PR_CADEIA,FOLLOW_PR_CADEIA_in_declaracaoTipoDado1208); if (state.failed) return informacaoTipoDado;
+                    tokenTipoDado=(Token)match(input,PR_CADEIA,FOLLOW_PR_CADEIA_in_declaracaoTipoDado1196); if (state.failed) return informacaoTipoDado;
 
                     }
                     break;
                 case 5 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:362:116: tokenTipoDado= PR_LOGICO
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:363:116: tokenTipoDado= PR_LOGICO
                     {
-                    tokenTipoDado=(Token)match(input,PR_LOGICO,FOLLOW_PR_LOGICO_in_declaracaoTipoDado1216); if (state.failed) return informacaoTipoDado;
+                    tokenTipoDado=(Token)match(input,PR_LOGICO,FOLLOW_PR_LOGICO_in_declaracaoTipoDado1204); if (state.failed) return informacaoTipoDado;
 
                     }
                     break;
@@ -906,7 +906,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "declaracaoTipoDadoVazio"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:378:1: declaracaoTipoDadoVazio returns [InformacaoTipoDado informacaoTipoDado] : PR_VAZIO ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:379:1: declaracaoTipoDadoVazio returns [InformacaoTipoDado informacaoTipoDado] : PR_VAZIO ;
     public final InformacaoTipoDado declaracaoTipoDadoVazio() throws RecognitionException {
         InformacaoTipoDado informacaoTipoDado = null;
 
@@ -917,10 +917,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("declaracaoTipoDadoVazio");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:381:2: ( PR_VAZIO )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:383:2: PR_VAZIO
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:382:2: ( PR_VAZIO )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:384:2: PR_VAZIO
             {
-            PR_VAZIO2=(Token)match(input,PR_VAZIO,FOLLOW_PR_VAZIO_in_declaracaoTipoDadoVazio1243); if (state.failed) return informacaoTipoDado;
+            PR_VAZIO2=(Token)match(input,PR_VAZIO,FOLLOW_PR_VAZIO_in_declaracaoTipoDadoVazio1231); if (state.failed) return informacaoTipoDado;
 
             if ( state.backtracking==0 ) { 
             		if (gerarArvore)
@@ -952,7 +952,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "quantificador"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:400:1: quantificador returns [Quantificador quantificador] : (tk1= '[' ']' (tk2= '[' ']' )? )? ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:401:1: quantificador returns [Quantificador quantificador] : (tk1= '[' ']' (tk2= '[' ']' )? )? ;
     public final Quantificador quantificador() throws RecognitionException {
         Quantificador quantificador = null;
 
@@ -964,10 +964,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("quantificador");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:403:2: ( (tk1= '[' ']' (tk2= '[' ']' )? )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:405:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:404:2: ( (tk1= '[' ']' (tk2= '[' ']' )? )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:406:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:405:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:406:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -976,13 +976,13 @@ public class PortugolParser extends Parser {
             }
             switch (alt11) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:405:3: tk1= '[' ']' (tk2= '[' ']' )?
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:406:3: tk1= '[' ']' (tk2= '[' ']' )?
                     {
-                    tk1=(Token)match(input,64,FOLLOW_64_in_quantificador1275); if (state.failed) return quantificador;
+                    tk1=(Token)match(input,64,FOLLOW_64_in_quantificador1263); if (state.failed) return quantificador;
 
-                    match(input,65,FOLLOW_65_in_quantificador1277); if (state.failed) return quantificador;
+                    match(input,65,FOLLOW_65_in_quantificador1265); if (state.failed) return quantificador;
 
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:405:17: (tk2= '[' ']' )?
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:406:17: (tk2= '[' ']' )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -991,11 +991,11 @@ public class PortugolParser extends Parser {
                     }
                     switch (alt10) {
                         case 1 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:405:18: tk2= '[' ']'
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:406:18: tk2= '[' ']'
                             {
-                            tk2=(Token)match(input,64,FOLLOW_64_in_quantificador1284); if (state.failed) return quantificador;
+                            tk2=(Token)match(input,64,FOLLOW_64_in_quantificador1272); if (state.failed) return quantificador;
 
-                            match(input,65,FOLLOW_65_in_quantificador1286); if (state.failed) return quantificador;
+                            match(input,65,FOLLOW_65_in_quantificador1274); if (state.failed) return quantificador;
 
                             }
                             break;
@@ -1041,7 +1041,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "tipoRetornoFuncao"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:423:1: tipoRetornoFuncao returns [InformacaoTipoDado informacaoTipoDado] : (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:424:1: tipoRetornoFuncao returns [InformacaoTipoDado informacaoTipoDado] : (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? ;
     public final InformacaoTipoDado tipoRetornoFuncao() throws RecognitionException {
         InformacaoTipoDado informacaoTipoDado = null;
 
@@ -1053,10 +1053,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("tipoRetornoFuncao");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:426:2: ( (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:428:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:427:2: ( (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:429:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:428:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:429:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
             int alt12=3;
             int LA12_0 = input.LA(1);
 
@@ -1068,9 +1068,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt12) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:428:3: informacao= declaracaoTipoDado
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:429:3: informacao= declaracaoTipoDado
                     {
-                    pushFollow(FOLLOW_declaracaoTipoDado_in_tipoRetornoFuncao1322);
+                    pushFollow(FOLLOW_declaracaoTipoDado_in_tipoRetornoFuncao1310);
                     informacao=declaracaoTipoDado();
 
                     state._fsp--;
@@ -1079,9 +1079,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:428:37: informacao= declaracaoTipoDadoVazio
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:429:37: informacao= declaracaoTipoDadoVazio
                     {
-                    pushFollow(FOLLOW_declaracaoTipoDadoVazio_in_tipoRetornoFuncao1330);
+                    pushFollow(FOLLOW_declaracaoTipoDadoVazio_in_tipoRetornoFuncao1318);
                     informacao=declaracaoTipoDadoVazio();
 
                     state._fsp--;
@@ -1127,7 +1127,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "declaracaoFuncao"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:448:1: declaracaoFuncao[ArvoreSintaticaAbstrata asa] : PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:449:1: declaracaoFuncao[ArvoreSintaticaAbstrata asa] : PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' ;
     public final void declaracaoFuncao(ArvoreSintaticaAbstrata asa) throws RecognitionException {
         Token ID3=null;
         InformacaoTipoDado informacaoTipoDado =null;
@@ -1143,44 +1143,44 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("declaracaoFuncao");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:451:2: ( PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:453:2: PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:452:2: ( PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:454:2: PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}'
             {
-            match(input,PR_FUNCAO,FOLLOW_PR_FUNCAO_in_declaracaoFuncao1357); if (state.failed) return ;
+            match(input,PR_FUNCAO,FOLLOW_PR_FUNCAO_in_declaracaoFuncao1345); if (state.failed) return ;
 
-            pushFollow(FOLLOW_tipoRetornoFuncao_in_declaracaoFuncao1367);
+            pushFollow(FOLLOW_tipoRetornoFuncao_in_declaracaoFuncao1355);
             informacaoTipoDado=tipoRetornoFuncao();
 
             state._fsp--;
             if (state.failed) return ;
 
-            pushFollow(FOLLOW_quantificador_in_declaracaoFuncao1376);
+            pushFollow(FOLLOW_quantificador_in_declaracaoFuncao1364);
             vQuantificador=quantificador();
 
             state._fsp--;
             if (state.failed) return ;
 
-            ID3=(Token)match(input,ID,FOLLOW_ID_in_declaracaoFuncao1383); if (state.failed) return ;
+            ID3=(Token)match(input,ID,FOLLOW_ID_in_declaracaoFuncao1371); if (state.failed) return ;
 
-            match(input,43,FOLLOW_43_in_declaracaoFuncao1385); if (state.failed) return ;
+            match(input,43,FOLLOW_43_in_declaracaoFuncao1373); if (state.failed) return ;
 
-            pushFollow(FOLLOW_listaParametrosFuncao_in_declaracaoFuncao1391);
+            pushFollow(FOLLOW_listaParametrosFuncao_in_declaracaoFuncao1379);
             vListaParametros=listaParametrosFuncao();
 
             state._fsp--;
             if (state.failed) return ;
 
-            match(input,44,FOLLOW_44_in_declaracaoFuncao1393); if (state.failed) return ;
+            match(input,44,FOLLOW_44_in_declaracaoFuncao1381); if (state.failed) return ;
 
-            match(input,68,FOLLOW_68_in_declaracaoFuncao1413); if (state.failed) return ;
+            match(input,68,FOLLOW_68_in_declaracaoFuncao1401); if (state.failed) return ;
 
-            pushFollow(FOLLOW_blocos_in_declaracaoFuncao1421);
+            pushFollow(FOLLOW_blocos_in_declaracaoFuncao1409);
             vBlocos=blocos();
 
             state._fsp--;
             if (state.failed) return ;
 
-            match(input,69,FOLLOW_69_in_declaracaoFuncao1431); if (state.failed) return ;
+            match(input,69,FOLLOW_69_in_declaracaoFuncao1419); if (state.failed) return ;
 
             if ( state.backtracking==0 ) {
                      	if (gerarArvore)
@@ -1217,7 +1217,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "listaParametrosFuncao"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:484:1: listaParametrosFuncao returns [List<NoDeclaracaoParametro> listaParametros] : ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:485:1: listaParametrosFuncao returns [List<NoDeclaracaoParametro> listaParametros] : ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? ;
     public final List<NoDeclaracaoParametro> listaParametrosFuncao() throws RecognitionException {
         List<NoDeclaracaoParametro> listaParametros = null;
 
@@ -1230,10 +1230,10 @@ public class PortugolParser extends Parser {
         	listaParametros = new ArrayList<NoDeclaracaoParametro>();
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:488:2: ( ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:489:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:489:2: ( ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:490:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:489:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:490:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1242,12 +1242,12 @@ public class PortugolParser extends Parser {
             }
             switch (alt14) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:490:3: (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )*
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:491:3: (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )*
                     {
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:490:3: (vDeclaracaoParametro= declaracaoParametro )
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:490:8: vDeclaracaoParametro= declaracaoParametro
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:491:3: (vDeclaracaoParametro= declaracaoParametro )
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:491:8: vDeclaracaoParametro= declaracaoParametro
                     {
-                    pushFollow(FOLLOW_declaracaoParametro_in_listaParametrosFuncao1486);
+                    pushFollow(FOLLOW_declaracaoParametro_in_listaParametrosFuncao1474);
                     vDeclaracaoParametro=declaracaoParametro();
 
                     state._fsp--;
@@ -1263,7 +1263,7 @@ public class PortugolParser extends Parser {
                     }
 
 
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:499:3: ( ',' vDeclaracaoParametro= declaracaoParametro )*
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:500:3: ( ',' vDeclaracaoParametro= declaracaoParametro )*
                     loop13:
                     do {
                         int alt13=2;
@@ -1276,11 +1276,11 @@ public class PortugolParser extends Parser {
 
                         switch (alt13) {
                     	case 1 :
-                    	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:499:4: ',' vDeclaracaoParametro= declaracaoParametro
+                    	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:500:4: ',' vDeclaracaoParametro= declaracaoParametro
                     	    {
-                    	    match(input,50,FOLLOW_50_in_listaParametrosFuncao1514); if (state.failed) return listaParametros;
+                    	    match(input,50,FOLLOW_50_in_listaParametrosFuncao1502); if (state.failed) return listaParametros;
 
-                    	    pushFollow(FOLLOW_declaracaoParametro_in_listaParametrosFuncao1520);
+                    	    pushFollow(FOLLOW_declaracaoParametro_in_listaParametrosFuncao1508);
                     	    vDeclaracaoParametro=declaracaoParametro();
 
                     	    state._fsp--;
@@ -1329,7 +1329,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "declaracaoParametro"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:515:1: declaracaoParametro returns [NoDeclaracaoParametro parametro] : informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:516:1: declaracaoParametro returns [NoDeclaracaoParametro parametro] : informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador ;
     public final NoDeclaracaoParametro declaracaoParametro() throws RecognitionException {
         NoDeclaracaoParametro parametro = null;
 
@@ -1345,16 +1345,16 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("declaracaoParametro");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:518:2: (informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:520:2: informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:519:2: (informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:521:2: informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador
             {
-            pushFollow(FOLLOW_declaracaoTipoDado_in_declaracaoParametro1567);
+            pushFollow(FOLLOW_declaracaoTipoDado_in_declaracaoParametro1555);
             informacaoTipoDado=declaracaoTipoDado();
 
             state._fsp--;
             if (state.failed) return parametro;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:520:42: (tkr= '&' )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:521:42: (tkr= '&' )?
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -1363,9 +1363,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt15) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:520:43: tkr= '&'
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:521:43: tkr= '&'
                     {
-                    tkr=(Token)match(input,42,FOLLOW_42_in_declaracaoParametro1574); if (state.failed) return parametro;
+                    tkr=(Token)match(input,42,FOLLOW_42_in_declaracaoParametro1562); if (state.failed) return parametro;
 
                     }
                     break;
@@ -1373,9 +1373,9 @@ public class PortugolParser extends Parser {
             }
 
 
-            ID4=(Token)match(input,ID,FOLLOW_ID_in_declaracaoParametro1578); if (state.failed) return parametro;
+            ID4=(Token)match(input,ID,FOLLOW_ID_in_declaracaoParametro1566); if (state.failed) return parametro;
 
-            pushFollow(FOLLOW_quantificador_in_declaracaoParametro1584);
+            pushFollow(FOLLOW_quantificador_in_declaracaoParametro1572);
             vQuantificador=quantificador();
 
             state._fsp--;
@@ -1425,7 +1425,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "blocos"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:551:1: blocos returns [List<NoBloco> blocos] : (vBloco= bloco | declaracoesLocais[blocos] )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:552:1: blocos returns [List<NoBloco> blocos] : (vBloco= bloco | declaracoesLocais[blocos] )* ;
     public final List<NoBloco> blocos() throws RecognitionException {
         List<NoBloco> blocos = null;
 
@@ -1438,10 +1438,10 @@ public class PortugolParser extends Parser {
         	blocos = new ArrayList<NoBloco>();
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:555:2: ( (vBloco= bloco | declaracoesLocais[blocos] )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:556:2: (vBloco= bloco | declaracoesLocais[blocos] )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:556:2: ( (vBloco= bloco | declaracoesLocais[blocos] )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:557:2: (vBloco= bloco | declaracoesLocais[blocos] )*
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:556:2: (vBloco= bloco | declaracoesLocais[blocos] )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:557:2: (vBloco= bloco | declaracoesLocais[blocos] )*
             loop16:
             do {
                 int alt16=3;
@@ -1457,9 +1457,9 @@ public class PortugolParser extends Parser {
 
                 switch (alt16) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:557:2: vBloco= bloco
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:558:2: vBloco= bloco
             	    {
-            	    pushFollow(FOLLOW_bloco_in_blocos1616);
+            	    pushFollow(FOLLOW_bloco_in_blocos1604);
             	    vBloco=bloco();
 
             	    state._fsp--;
@@ -1470,9 +1470,9 @@ public class PortugolParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:557:43: declaracoesLocais[blocos]
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:558:43: declaracoesLocais[blocos]
             	    {
-            	    pushFollow(FOLLOW_declaracoesLocais_in_blocos1622);
+            	    pushFollow(FOLLOW_declaracoesLocais_in_blocos1610);
             	    declaracoesLocais(blocos);
 
             	    state._fsp--;
@@ -1508,7 +1508,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "bloco"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:566:1: bloco returns [NoBloco bloco] : (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:567:1: bloco returns [NoBloco bloco] : (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) ;
     public final NoBloco bloco() throws RecognitionException {
         NoBloco bloco = null;
 
@@ -1534,10 +1534,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("bloco");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:569:2: ( (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:570:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:570:2: ( (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:571:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:570:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:571:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
             int alt17=8;
             switch ( input.LA(1) ) {
             case CADEIA:
@@ -1600,9 +1600,9 @@ public class PortugolParser extends Parser {
 
             switch (alt17) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:571:3: vExpressao= expressao
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:572:3: vExpressao= expressao
                     {
-                    pushFollow(FOLLOW_expressao_in_bloco1656);
+                    pushFollow(FOLLOW_expressao_in_bloco1644);
                     vExpressao=expressao();
 
                     state._fsp--;
@@ -1613,9 +1613,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:572:3: vPara= para
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:573:3: vPara= para
                     {
-                    pushFollow(FOLLOW_para_in_bloco1671);
+                    pushFollow(FOLLOW_para_in_bloco1659);
                     vPara=para();
 
                     state._fsp--;
@@ -1626,9 +1626,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:573:3: vPare= pare
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:574:3: vPare= pare
                     {
-                    pushFollow(FOLLOW_pare_in_bloco1689);
+                    pushFollow(FOLLOW_pare_in_bloco1677);
                     vPare=pare();
 
                     state._fsp--;
@@ -1639,9 +1639,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:574:3: vRetorne= retorne
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:575:3: vRetorne= retorne
                     {
-                    pushFollow(FOLLOW_retorne_in_bloco1706);
+                    pushFollow(FOLLOW_retorne_in_bloco1694);
                     vRetorne=retorne();
 
                     state._fsp--;
@@ -1652,9 +1652,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:575:3: vSe= se
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:576:3: vSe= se
                     {
-                    pushFollow(FOLLOW_se_in_bloco1722);
+                    pushFollow(FOLLOW_se_in_bloco1710);
                     vSe=se();
 
                     state._fsp--;
@@ -1665,9 +1665,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:576:3: vEnquanto= enquanto
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:577:3: vEnquanto= enquanto
                     {
-                    pushFollow(FOLLOW_enquanto_in_bloco1739);
+                    pushFollow(FOLLOW_enquanto_in_bloco1727);
                     vEnquanto=enquanto();
 
                     state._fsp--;
@@ -1678,9 +1678,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:577:3: vFacaEnquanto= facaEnquanto
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:578:3: vFacaEnquanto= facaEnquanto
                     {
-                    pushFollow(FOLLOW_facaEnquanto_in_bloco1753);
+                    pushFollow(FOLLOW_facaEnquanto_in_bloco1741);
                     vFacaEnquanto=facaEnquanto();
 
                     state._fsp--;
@@ -1691,9 +1691,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:578:3: vEscolha= escolha
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:579:3: vEscolha= escolha
                     {
-                    pushFollow(FOLLOW_escolha_in_bloco1767);
+                    pushFollow(FOLLOW_escolha_in_bloco1755);
                     vEscolha=escolha();
 
                     state._fsp--;
@@ -1728,7 +1728,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "para"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:587:1: para returns [NoPara para] : PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? ')' vBlocos= listaBlocos ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:588:1: para returns [NoPara para] : PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? ')' vBlocos= listaBlocos ;
     public final NoPara para() throws RecognitionException {
         NoPara para = null;
 
@@ -1746,14 +1746,14 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("para");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:590:2: ( PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? ')' vBlocos= listaBlocos )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:592:2: PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? ')' vBlocos= listaBlocos
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:591:2: ( PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? ')' vBlocos= listaBlocos )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:593:2: PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? ')' vBlocos= listaBlocos
             {
-            match(input,PR_PARA,FOLLOW_PR_PARA_in_para1799); if (state.failed) return para;
+            match(input,PR_PARA,FOLLOW_PR_PARA_in_para1787); if (state.failed) return para;
 
-            match(input,43,FOLLOW_43_in_para1801); if (state.failed) return para;
+            match(input,43,FOLLOW_43_in_para1789); if (state.failed) return para;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:592:14: (inicializacao= inicializacaoPara )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:593:14: (inicializacao= inicializacaoPara )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -1762,9 +1762,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt18) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:592:15: inicializacao= inicializacaoPara
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:593:15: inicializacao= inicializacaoPara
                     {
-                    pushFollow(FOLLOW_inicializacaoPara_in_para1808);
+                    pushFollow(FOLLOW_inicializacaoPara_in_para1796);
                     inicializacao=inicializacaoPara();
 
                     state._fsp--;
@@ -1776,9 +1776,9 @@ public class PortugolParser extends Parser {
             }
 
 
-            match(input,57,FOLLOW_57_in_para1812); if (state.failed) return para;
+            match(input,57,FOLLOW_57_in_para1800); if (state.failed) return para;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:592:55: (condicao= expressao )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:593:55: (condicao= expressao )?
             int alt19=2;
             int LA19_0 = input.LA(1);
 
@@ -1787,9 +1787,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt19) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:592:56: condicao= expressao
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:593:56: condicao= expressao
                     {
-                    pushFollow(FOLLOW_expressao_in_para1819);
+                    pushFollow(FOLLOW_expressao_in_para1807);
                     condicao=expressao();
 
                     state._fsp--;
@@ -1801,9 +1801,9 @@ public class PortugolParser extends Parser {
             }
 
 
-            match(input,57,FOLLOW_57_in_para1823); if (state.failed) return para;
+            match(input,57,FOLLOW_57_in_para1811); if (state.failed) return para;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:592:83: (incremento= expressao )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:593:83: (incremento= expressao )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -1812,9 +1812,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt20) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:592:84: incremento= expressao
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:593:84: incremento= expressao
                     {
-                    pushFollow(FOLLOW_expressao_in_para1830);
+                    pushFollow(FOLLOW_expressao_in_para1818);
                     incremento=expressao();
 
                     state._fsp--;
@@ -1826,9 +1826,9 @@ public class PortugolParser extends Parser {
             }
 
 
-            match(input,44,FOLLOW_44_in_para1834); if (state.failed) return para;
+            match(input,44,FOLLOW_44_in_para1822); if (state.failed) return para;
 
-            pushFollow(FOLLOW_listaBlocos_in_para1840);
+            pushFollow(FOLLOW_listaBlocos_in_para1828);
             vBlocos=listaBlocos();
 
             state._fsp--;
@@ -1866,7 +1866,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "inicializacaoPara"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:610:1: inicializacaoPara returns [NoBloco bloco] : (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:611:1: inicializacaoPara returns [NoBloco bloco] : (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) ;
     public final NoBloco inicializacaoPara() throws RecognitionException {
         NoBloco bloco = null;
 
@@ -1880,10 +1880,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("inicializacaoPara");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:613:2: ( (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:615:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:614:2: ( (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:616:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:615:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:616:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -1903,9 +1903,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt21) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:615:3: vExpressao= expressao
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:616:3: vExpressao= expressao
                     {
-                    pushFollow(FOLLOW_expressao_in_inicializacaoPara1871);
+                    pushFollow(FOLLOW_expressao_in_inicializacaoPara1859);
                     vExpressao=expressao();
 
                     state._fsp--;
@@ -1914,9 +1914,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:615:28: vListaDeclaracoes= listaDeclaracoes
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:616:28: vListaDeclaracoes= listaDeclaracoes
                     {
-                    pushFollow(FOLLOW_listaDeclaracoes_in_inicializacaoPara1879);
+                    pushFollow(FOLLOW_listaDeclaracoes_in_inicializacaoPara1867);
                     vListaDeclaracoes=listaDeclaracoes();
 
                     state._fsp--;
@@ -1958,7 +1958,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "listaBlocos"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:631:1: listaBlocos returns [List<NoBloco> listaBlocos] : ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:632:1: listaBlocos returns [List<NoBloco> listaBlocos] : ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) ;
     public final List<NoBloco> listaBlocos() throws RecognitionException {
         List<NoBloco> listaBlocos = null;
 
@@ -1972,10 +1972,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("listaBlocos");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:634:2: ( ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:635:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:635:2: ( ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:636:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:635:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:636:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2010,11 +2010,11 @@ public class PortugolParser extends Parser {
             }
             switch (alt22) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:636:2: ( '{' )=> '{' vListaBlocos= blocos '}'
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:637:2: ( '{' )=> '{' vListaBlocos= blocos '}'
                     {
-                    match(input,68,FOLLOW_68_in_listaBlocos1912); if (state.failed) return listaBlocos;
+                    match(input,68,FOLLOW_68_in_listaBlocos1900); if (state.failed) return listaBlocos;
 
-                    pushFollow(FOLLOW_blocos_in_listaBlocos1918);
+                    pushFollow(FOLLOW_blocos_in_listaBlocos1906);
                     vListaBlocos=blocos();
 
                     state._fsp--;
@@ -2022,14 +2022,14 @@ public class PortugolParser extends Parser {
 
                     if ( state.backtracking==0 ) { listaBlocos = vListaBlocos; }
 
-                    match(input,69,FOLLOW_69_in_listaBlocos1922); if (state.failed) return listaBlocos;
+                    match(input,69,FOLLOW_69_in_listaBlocos1910); if (state.failed) return listaBlocos;
 
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:640:2: vBloco= bloco
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:641:2: vBloco= bloco
                     {
-                    pushFollow(FOLLOW_bloco_in_listaBlocos1938);
+                    pushFollow(FOLLOW_bloco_in_listaBlocos1926);
                     vBloco=bloco();
 
                     state._fsp--;
@@ -2070,7 +2070,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "pare"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:656:1: pare returns [NoPare pare] : PR_PARE ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:657:1: pare returns [NoPare pare] : PR_PARE ;
     public final NoPare pare() throws RecognitionException {
         NoPare pare = null;
 
@@ -2079,10 +2079,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("pare");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:659:2: ( PR_PARE )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:661:2: PR_PARE
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:660:2: ( PR_PARE )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:662:2: PR_PARE
             {
-            match(input,PR_PARE,FOLLOW_PR_PARE_in_pare1966); if (state.failed) return pare;
+            match(input,PR_PARE,FOLLOW_PR_PARE_in_pare1954); if (state.failed) return pare;
 
             if ( state.backtracking==0 ) {
             		if (gerarArvore)
@@ -2112,50 +2112,150 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "escolha"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:676:1: escolha returns [NoEscolha escolha] : PR_ESCOLHA '(' vExpressao= expressao ')' '{' vListaCasos= listaCasos '}' ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:677:1: escolha returns [NoEscolha escolha] : PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}' ;
     public final NoEscolha escolha() throws RecognitionException {
         NoEscolha escolha = null;
 
 
+        NoExpressao vExpressaoEscolha =null;
+
         NoExpressao vExpressao =null;
 
-        List<NoCaso> vListaCasos =null;
+        List<NoBloco> vBlocos =null;
 
 
 
         	pilhaContexto.push("escolha");
+        	List<NoCaso> casos =  new ArrayList<NoCaso>();
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:679:2: ( PR_ESCOLHA '(' vExpressao= expressao ')' '{' vListaCasos= listaCasos '}' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:681:2: PR_ESCOLHA '(' vExpressao= expressao ')' '{' vListaCasos= listaCasos '}'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:681:2: ( PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:683:2: PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}'
             {
-            match(input,PR_ESCOLHA,FOLLOW_PR_ESCOLHA_in_escolha1993); if (state.failed) return escolha;
+            match(input,PR_ESCOLHA,FOLLOW_PR_ESCOLHA_in_escolha1981); if (state.failed) return escolha;
 
-            match(input,43,FOLLOW_43_in_escolha1995); if (state.failed) return escolha;
+            match(input,43,FOLLOW_43_in_escolha1983); if (state.failed) return escolha;
 
-            pushFollow(FOLLOW_expressao_in_escolha2001);
-            vExpressao=expressao();
-
-            state._fsp--;
-            if (state.failed) return escolha;
-
-            match(input,44,FOLLOW_44_in_escolha2003); if (state.failed) return escolha;
-
-            match(input,68,FOLLOW_68_in_escolha2006); if (state.failed) return escolha;
-
-            pushFollow(FOLLOW_listaCasos_in_escolha2015);
-            vListaCasos=listaCasos();
+            pushFollow(FOLLOW_expressao_in_escolha1989);
+            vExpressaoEscolha=expressao();
 
             state._fsp--;
             if (state.failed) return escolha;
 
-            match(input,69,FOLLOW_69_in_escolha2018); if (state.failed) return escolha;
+            match(input,44,FOLLOW_44_in_escolha1991); if (state.failed) return escolha;
+
+            match(input,68,FOLLOW_68_in_escolha1994); if (state.failed) return escolha;
+
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:686:3: ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+
+            int cnt23=0;
+            loop23:
+            do {
+                int alt23=2;
+                int LA23_0 = input.LA(1);
+
+                if ( (LA23_0==PR_CASO) ) {
+                    int LA23_1 = input.LA(2);
+
+                    if ( ((LA23_1 >= CADEIA && LA23_1 <= CARACTER)||(LA23_1 >= ID && LA23_1 <= OPERADOR_NAO)||LA23_1==REAL||LA23_1==43||LA23_1==51||LA23_1==68) ) {
+                        alt23=1;
+                    }
+
+
+                }
+
+
+                switch (alt23) {
+            	case 1 :
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:686:4: PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso
+            	    {
+            	    match(input,PR_CASO,FOLLOW_PR_CASO_in_escolha2003); if (state.failed) return escolha;
+
+            	    pushFollow(FOLLOW_expressao_in_escolha2009);
+            	    vExpressao=expressao();
+
+            	    state._fsp--;
+            	    if (state.failed) return escolha;
+
+            	    match(input,56,FOLLOW_56_in_escolha2011); if (state.failed) return escolha;
+
+            	    pushFollow(FOLLOW_blocosCaso_in_escolha2017);
+            	    vBlocos=blocosCaso();
+
+            	    state._fsp--;
+            	    if (state.failed) return escolha;
+
+            	    if ( state.backtracking==0 ) {			
+            	    			if (gerarArvore)
+            	    			{
+            	    				NoCaso caso = new NoCaso(vExpressao);
+            	    				caso.setBlocos(vBlocos);
+            	    				casos.add(caso);
+            	    				
+            	    				vExpressao = null;
+            	    			}
+            	    		}
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt23 >= 1 ) break loop23;
+            	    if (state.backtracking>0) {state.failed=true; return escolha;}
+                        EarlyExitException eee =
+                            new EarlyExitException(23, input);
+                        throw eee;
+                }
+                cnt23++;
+            } while (true);
+
+
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:698:4: ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )?
+            int alt24=2;
+            int LA24_0 = input.LA(1);
+
+            if ( (LA24_0==PR_CASO) ) {
+                alt24=1;
+            }
+            switch (alt24) {
+                case 1 :
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:698:5: PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso
+                    {
+                    match(input,PR_CASO,FOLLOW_PR_CASO_in_escolha2032); if (state.failed) return escolha;
+
+                    match(input,PR_CONTRARIO,FOLLOW_PR_CONTRARIO_in_escolha2034); if (state.failed) return escolha;
+
+                    match(input,56,FOLLOW_56_in_escolha2036); if (state.failed) return escolha;
+
+                    pushFollow(FOLLOW_blocosCaso_in_escolha2042);
+                    vBlocos=blocosCaso();
+
+                    state._fsp--;
+                    if (state.failed) return escolha;
+
+                    if ( state.backtracking==0 ) {			
+                    			if (gerarArvore)
+                    			{
+                    				NoCaso caso = new NoCaso(vExpressao);
+                    				caso.setBlocos(vBlocos);
+                    				casos.add(caso);
+                    				
+                    				vExpressao = null;
+                    			}
+                    		}
+
+                    }
+                    break;
+
+            }
+
+
+            match(input,69,FOLLOW_69_in_escolha2056); if (state.failed) return escolha;
 
             if ( state.backtracking==0 ) {
             	 	if (gerarArvore)
             	 	{
-            			escolha = new NoEscolha(vExpressao);
-            			escolha.setCasos(vListaCasos);
+            			escolha = new NoEscolha(vExpressaoEscolha);
+            			escolha.setCasos(casos);
             		}
             	 }
 
@@ -2179,169 +2279,8 @@ public class PortugolParser extends Parser {
 
 
 
-    // $ANTLR start "listaCasos"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:700:1: listaCasos returns [List<NoCaso> casos] : ( ( casoContrario | PR_CASO vExpressao= expressao ) ':' vBlocos= blocosCaso )* ;
-    public final List<NoCaso> listaCasos() throws RecognitionException {
-        List<NoCaso> casos = null;
-
-
-        NoExpressao vExpressao =null;
-
-        List<NoBloco> vBlocos =null;
-
-
-
-        	pilhaContexto.push("listaCasos");
-        	casos = new ArrayList<NoCaso>();
-
-        try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:704:2: ( ( ( casoContrario | PR_CASO vExpressao= expressao ) ':' vBlocos= blocosCaso )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:705:3: ( ( casoContrario | PR_CASO vExpressao= expressao ) ':' vBlocos= blocosCaso )*
-            {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:705:3: ( ( casoContrario | PR_CASO vExpressao= expressao ) ':' vBlocos= blocosCaso )*
-            loop24:
-            do {
-                int alt24=2;
-                int LA24_0 = input.LA(1);
-
-                if ( ((LA24_0 >= PR_CASO && LA24_0 <= PR_CASO_CONTRARIO)) ) {
-                    alt24=1;
-                }
-
-
-                switch (alt24) {
-            	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:706:3: ( casoContrario | PR_CASO vExpressao= expressao ) ':' vBlocos= blocosCaso
-            	    {
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:706:3: ( casoContrario | PR_CASO vExpressao= expressao )
-            	    int alt23=2;
-            	    int LA23_0 = input.LA(1);
-
-            	    if ( (LA23_0==PR_CASO_CONTRARIO) ) {
-            	        alt23=1;
-            	    }
-            	    else if ( (LA23_0==PR_CASO) ) {
-            	        alt23=2;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return casos;}
-            	        NoViableAltException nvae =
-            	            new NoViableAltException("", 23, 0, input);
-
-            	        throw nvae;
-
-            	    }
-            	    switch (alt23) {
-            	        case 1 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:706:5: casoContrario
-            	            {
-            	            pushFollow(FOLLOW_casoContrario_in_listaCasos2050);
-            	            casoContrario();
-
-            	            state._fsp--;
-            	            if (state.failed) return casos;
-
-            	            }
-            	            break;
-            	        case 2 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:706:20: PR_CASO vExpressao= expressao
-            	            {
-            	            match(input,PR_CASO,FOLLOW_PR_CASO_in_listaCasos2053); if (state.failed) return casos;
-
-            	            pushFollow(FOLLOW_expressao_in_listaCasos2059);
-            	            vExpressao=expressao();
-
-            	            state._fsp--;
-            	            if (state.failed) return casos;
-
-            	            }
-            	            break;
-
-            	    }
-
-
-            	    match(input,56,FOLLOW_56_in_listaCasos2062); if (state.failed) return casos;
-
-            	    pushFollow(FOLLOW_blocosCaso_in_listaCasos2068);
-            	    vBlocos=blocosCaso();
-
-            	    state._fsp--;
-            	    if (state.failed) return casos;
-
-            	    if ( state.backtracking==0 ) {
-            	    		if (gerarArvore)
-            	    		{
-            	    			NoCaso caso = new NoCaso(vExpressao);
-            	    			caso.setBlocos(vBlocos);
-            	    			casos.add(caso);
-            	    			
-            	    			vExpressao = null;
-            	    		}
-            	    	}
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop24;
-                }
-            } while (true);
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-
-        finally {
-        	// do for sure before leaving
-
-            	pilhaContexto.pop();
-
-        }
-        return casos;
-    }
-    // $ANTLR end "listaCasos"
-
-
-
-    // $ANTLR start "casoContrario"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:725:1: casoContrario : PR_CASO_CONTRARIO ;
-    public final void casoContrario() throws RecognitionException {
-
-        	pilhaContexto.push("casoContrario");
-
-        try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:728:2: ( PR_CASO_CONTRARIO )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:729:2: PR_CASO_CONTRARIO
-            {
-            match(input,PR_CASO_CONTRARIO,FOLLOW_PR_CASO_CONTRARIO_in_casoContrario2094); if (state.failed) return ;
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-
-        finally {
-        	// do for sure before leaving
-
-            	pilhaContexto.pop();
-
-        }
-        return ;
-    }
-    // $ANTLR end "casoContrario"
-
-
-
     // $ANTLR start "blocosCaso"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:737:1: blocosCaso returns [List<NoBloco> listaBlocos] : ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:726:1: blocosCaso returns [List<NoBloco> listaBlocos] : ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) ;
     public final List<NoBloco> blocosCaso() throws RecognitionException {
         List<NoBloco> listaBlocos = null;
 
@@ -2353,10 +2292,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("blocosCaso");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:740:2: ( ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:729:2: ( ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
             int alt25=2;
             int LA25_0 = input.LA(1);
 
@@ -2378,7 +2317,7 @@ public class PortugolParser extends Parser {
 
                 }
             }
-            else if ( ((LA25_0 >= CADEIA && LA25_0 <= CARACTER)||(LA25_0 >= ID && LA25_0 <= PR_FACA)||(LA25_0 >= PR_INTEIRO && LA25_0 <= PR_PARE)||(LA25_0 >= PR_REAL && LA25_0 <= PR_SE)||LA25_0==REAL||LA25_0==43||LA25_0==51||LA25_0==69) ) {
+            else if ( ((LA25_0 >= CADEIA && LA25_0 <= CARACTER)||(LA25_0 >= ID && LA25_0 <= PR_CONST)||(LA25_0 >= PR_ENQUANTO && LA25_0 <= PR_FACA)||(LA25_0 >= PR_INTEIRO && LA25_0 <= PR_PARE)||(LA25_0 >= PR_REAL && LA25_0 <= PR_SE)||LA25_0==REAL||LA25_0==43||LA25_0==51||LA25_0==69) ) {
                 alt25=2;
             }
             else {
@@ -2391,20 +2330,20 @@ public class PortugolParser extends Parser {
             }
             switch (alt25) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:4: ( '{' )=> ( '{' vBlocos= blocos '}' )
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:4: ( '{' )=> ( '{' vBlocos= blocos '}' )
                     {
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:12: ( '{' vBlocos= blocos '}' )
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:13: '{' vBlocos= blocos '}'
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:12: ( '{' vBlocos= blocos '}' )
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:13: '{' vBlocos= blocos '}'
                     {
-                    match(input,68,FOLLOW_68_in_blocosCaso2125); if (state.failed) return listaBlocos;
+                    match(input,68,FOLLOW_68_in_blocosCaso2092); if (state.failed) return listaBlocos;
 
-                    pushFollow(FOLLOW_blocos_in_blocosCaso2131);
+                    pushFollow(FOLLOW_blocos_in_blocosCaso2098);
                     vBlocos=blocos();
 
                     state._fsp--;
                     if (state.failed) return listaBlocos;
 
-                    match(input,69,FOLLOW_69_in_blocosCaso2133); if (state.failed) return listaBlocos;
+                    match(input,69,FOLLOW_69_in_blocosCaso2100); if (state.failed) return listaBlocos;
 
                     }
 
@@ -2412,12 +2351,12 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:41: (vBlocos= blocos )
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:41: (vBlocos= blocos )
                     {
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:41: (vBlocos= blocos )
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:42: vBlocos= blocos
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:41: (vBlocos= blocos )
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:42: vBlocos= blocos
                     {
-                    pushFollow(FOLLOW_blocos_in_blocosCaso2143);
+                    pushFollow(FOLLOW_blocos_in_blocosCaso2110);
                     vBlocos=blocos();
 
                     state._fsp--;
@@ -2457,7 +2396,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "enquanto"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:753:1: enquanto returns [NoEnquanto enquanto] : PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:1: enquanto returns [NoEnquanto enquanto] : PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ;
     public final NoEnquanto enquanto() throws RecognitionException {
         NoEnquanto enquanto = null;
 
@@ -2471,22 +2410,22 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("enquanto");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:756:2: ( PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:758:2: PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:745:2: ( PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:747:2: PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos
             {
-            match(input,PR_ENQUANTO,FOLLOW_PR_ENQUANTO_in_enquanto2172); if (state.failed) return enquanto;
+            match(input,PR_ENQUANTO,FOLLOW_PR_ENQUANTO_in_enquanto2139); if (state.failed) return enquanto;
 
-            match(input,43,FOLLOW_43_in_enquanto2174); if (state.failed) return enquanto;
+            match(input,43,FOLLOW_43_in_enquanto2141); if (state.failed) return enquanto;
 
-            pushFollow(FOLLOW_expressao_in_enquanto2180);
+            pushFollow(FOLLOW_expressao_in_enquanto2147);
             vExpressao=expressao();
 
             state._fsp--;
             if (state.failed) return enquanto;
 
-            match(input,44,FOLLOW_44_in_enquanto2182); if (state.failed) return enquanto;
+            match(input,44,FOLLOW_44_in_enquanto2149); if (state.failed) return enquanto;
 
-            pushFollow(FOLLOW_listaBlocos_in_enquanto2188);
+            pushFollow(FOLLOW_listaBlocos_in_enquanto2155);
             vListaBlocos=listaBlocos();
 
             state._fsp--;
@@ -2521,7 +2460,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "facaEnquanto"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:773:1: facaEnquanto returns [NoFacaEnquanto facaEnquanto] : PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:762:1: facaEnquanto returns [NoFacaEnquanto facaEnquanto] : PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' ;
     public final NoFacaEnquanto facaEnquanto() throws RecognitionException {
         NoFacaEnquanto facaEnquanto = null;
 
@@ -2535,28 +2474,28 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("facaEnquanto");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:776:2: ( PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:778:2: PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:765:2: ( PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:767:2: PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')'
             {
-            match(input,PR_FACA,FOLLOW_PR_FACA_in_facaEnquanto2214); if (state.failed) return facaEnquanto;
+            match(input,PR_FACA,FOLLOW_PR_FACA_in_facaEnquanto2181); if (state.failed) return facaEnquanto;
 
-            pushFollow(FOLLOW_listaBlocos_in_facaEnquanto2220);
+            pushFollow(FOLLOW_listaBlocos_in_facaEnquanto2187);
             vListaBlocos=listaBlocos();
 
             state._fsp--;
             if (state.failed) return facaEnquanto;
 
-            match(input,PR_ENQUANTO,FOLLOW_PR_ENQUANTO_in_facaEnquanto2222); if (state.failed) return facaEnquanto;
+            match(input,PR_ENQUANTO,FOLLOW_PR_ENQUANTO_in_facaEnquanto2189); if (state.failed) return facaEnquanto;
 
-            match(input,43,FOLLOW_43_in_facaEnquanto2224); if (state.failed) return facaEnquanto;
+            match(input,43,FOLLOW_43_in_facaEnquanto2191); if (state.failed) return facaEnquanto;
 
-            pushFollow(FOLLOW_expressao_in_facaEnquanto2230);
+            pushFollow(FOLLOW_expressao_in_facaEnquanto2197);
             vExpressao=expressao();
 
             state._fsp--;
             if (state.failed) return facaEnquanto;
 
-            match(input,44,FOLLOW_44_in_facaEnquanto2232); if (state.failed) return facaEnquanto;
+            match(input,44,FOLLOW_44_in_facaEnquanto2199); if (state.failed) return facaEnquanto;
 
             if ( state.backtracking==0 ) {
             		if (gerarArvore)
@@ -2587,7 +2526,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "se"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:794:1: se returns [NoSe se] : PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:783:1: se returns [NoSe se] : PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? ;
     public final NoSe se() throws RecognitionException {
         NoSe se = null;
 
@@ -2603,28 +2542,28 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("se");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:797:2: ( PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:799:2: PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:786:2: ( PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:788:2: PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )?
             {
-            match(input,PR_SE,FOLLOW_PR_SE_in_se2260); if (state.failed) return se;
+            match(input,PR_SE,FOLLOW_PR_SE_in_se2227); if (state.failed) return se;
 
-            match(input,43,FOLLOW_43_in_se2262); if (state.failed) return se;
+            match(input,43,FOLLOW_43_in_se2229); if (state.failed) return se;
 
-            pushFollow(FOLLOW_expressao_in_se2268);
+            pushFollow(FOLLOW_expressao_in_se2235);
             vExpressao=expressao();
 
             state._fsp--;
             if (state.failed) return se;
 
-            match(input,44,FOLLOW_44_in_se2270); if (state.failed) return se;
+            match(input,44,FOLLOW_44_in_se2237); if (state.failed) return se;
 
-            pushFollow(FOLLOW_listaBlocos_in_se2276);
+            pushFollow(FOLLOW_listaBlocos_in_se2243);
             vListaBlocos=listaBlocos();
 
             state._fsp--;
             if (state.failed) return se;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:799:66: ( PR_SENAO listaBlocosSenao= listaBlocos )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:788:66: ( PR_SENAO listaBlocosSenao= listaBlocos )?
             int alt26=2;
             int LA26_0 = input.LA(1);
 
@@ -2633,11 +2572,11 @@ public class PortugolParser extends Parser {
             }
             switch (alt26) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:799:67: PR_SENAO listaBlocosSenao= listaBlocos
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:788:67: PR_SENAO listaBlocosSenao= listaBlocos
                     {
-                    match(input,PR_SENAO,FOLLOW_PR_SENAO_in_se2279); if (state.failed) return se;
+                    match(input,PR_SENAO,FOLLOW_PR_SENAO_in_se2246); if (state.failed) return se;
 
-                    pushFollow(FOLLOW_listaBlocos_in_se2285);
+                    pushFollow(FOLLOW_listaBlocos_in_se2252);
                     listaBlocosSenao=listaBlocos();
 
                     state._fsp--;
@@ -2679,7 +2618,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "retorne"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:815:1: retorne returns [NoRetorne retorne] : PR_RETORNE vExpressao= expressao ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:804:1: retorne returns [NoRetorne retorne] : PR_RETORNE vExpressao= expressao ;
     public final NoRetorne retorne() throws RecognitionException {
         NoRetorne retorne = null;
 
@@ -2691,12 +2630,12 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("retorne");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:818:2: ( PR_RETORNE vExpressao= expressao )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:820:2: PR_RETORNE vExpressao= expressao
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:807:2: ( PR_RETORNE vExpressao= expressao )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:809:2: PR_RETORNE vExpressao= expressao
             {
-            match(input,PR_RETORNE,FOLLOW_PR_RETORNE_in_retorne2314); if (state.failed) return retorne;
+            match(input,PR_RETORNE,FOLLOW_PR_RETORNE_in_retorne2281); if (state.failed) return retorne;
 
-            pushFollow(FOLLOW_expressao_in_retorne2320);
+            pushFollow(FOLLOW_expressao_in_retorne2287);
             vExpressao=expressao();
 
             state._fsp--;
@@ -2730,14 +2669,14 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "pilha"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:834:1: pilha returns [Stack<Object> pilha] :;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:823:1: pilha returns [Stack<Object> pilha] :;
     public final Stack<Object> pilha() throws RecognitionException {
         Stack<Object> pilha = null;
 
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:834:35: ()
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:835:1: 
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:823:35: ()
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:824:1: 
             {
             if ( state.backtracking==0 ) {
             	pilha = new Stack<Object>();
@@ -2756,7 +2695,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:841:1: expressao returns [NoExpressao expressao] : operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:830:1: expressao returns [NoExpressao expressao] : operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )* ;
     public final NoExpressao expressao() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -2773,16 +2712,16 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:844:2: (operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:846:2: operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:833:2: (operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:835:2: operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )*
             {
-            pushFollow(FOLLOW_expressao2_in_expressao2364);
+            pushFollow(FOLLOW_expressao2_in_expressao2331);
             operandoEsquerdo=expressao2();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            pushFollow(FOLLOW_pilha_in_expressao2370);
+            pushFollow(FOLLOW_pilha_in_expressao2337);
             vPilha=pilha();
 
             state._fsp--;
@@ -2790,7 +2729,7 @@ public class PortugolParser extends Parser {
 
             if ( state.backtracking==0 ) { vPilha.push(operandoEsquerdo); }
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:847:2: ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:836:2: ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2 )*
             loop28:
             do {
                 int alt28=2;
@@ -2803,9 +2742,9 @@ public class PortugolParser extends Parser {
 
                 switch (alt28) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:3: (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:3: (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' ) operandoDireito= expressao2
             	    {
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:3: (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:3: (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' )
             	    int alt27=6;
             	    switch ( input.LA(1) ) {
             	    case 60:
@@ -2849,44 +2788,44 @@ public class PortugolParser extends Parser {
 
             	    switch (alt27) {
             	        case 1 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:4: operador= '='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:4: operador= '='
             	            {
-            	            operador=(Token)match(input,60,FOLLOW_60_in_expressao2384); if (state.failed) return expressao;
+            	            operador=(Token)match(input,60,FOLLOW_60_in_expressao2351); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 2 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:21: operador= '+='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:21: operador= '+='
             	            {
-            	            operador=(Token)match(input,49,FOLLOW_49_in_expressao2392); if (state.failed) return expressao;
+            	            operador=(Token)match(input,49,FOLLOW_49_in_expressao2359); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 3 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:39: operador= '-='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:39: operador= '-='
             	            {
-            	            operador=(Token)match(input,53,FOLLOW_53_in_expressao2400); if (state.failed) return expressao;
+            	            operador=(Token)match(input,53,FOLLOW_53_in_expressao2367); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 4 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:57: operador= '/='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:57: operador= '/='
             	            {
-            	            operador=(Token)match(input,55,FOLLOW_55_in_expressao2408); if (state.failed) return expressao;
+            	            operador=(Token)match(input,55,FOLLOW_55_in_expressao2375); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 5 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:75: operador= '*='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:75: operador= '*='
             	            {
-            	            operador=(Token)match(input,46,FOLLOW_46_in_expressao2416); if (state.failed) return expressao;
+            	            operador=(Token)match(input,46,FOLLOW_46_in_expressao2383); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 6 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:848:93: operador= '%='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:837:93: operador= '%='
             	            {
-            	            operador=(Token)match(input,41,FOLLOW_41_in_expressao2424); if (state.failed) return expressao;
+            	            operador=(Token)match(input,41,FOLLOW_41_in_expressao2391); if (state.failed) return expressao;
 
             	            }
             	            break;
@@ -2894,7 +2833,7 @@ public class PortugolParser extends Parser {
             	    }
 
 
-            	    pushFollow(FOLLOW_expressao2_in_expressao2436);
+            	    pushFollow(FOLLOW_expressao2_in_expressao2403);
             	    operandoDireito=expressao2();
 
             	    state._fsp--;
@@ -2960,7 +2899,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao2"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:887:1: expressao2 returns [NoExpressao expressao] : operandoEsquerdo= expressao3 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:876:1: expressao2 returns [NoExpressao expressao] : operandoEsquerdo= expressao3 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )* ;
     public final NoExpressao expressao2() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -2975,16 +2914,16 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao2");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:890:2: (operandoEsquerdo= expressao3 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:892:2: operandoEsquerdo= expressao3 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:879:2: (operandoEsquerdo= expressao3 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:881:2: operandoEsquerdo= expressao3 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )*
             {
-            pushFollow(FOLLOW_expressao3_in_expressao22475);
+            pushFollow(FOLLOW_expressao3_in_expressao22442);
             operandoEsquerdo=expressao3();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:893:2: ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:882:2: ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3 )*
             loop30:
             do {
                 int alt30=2;
@@ -2997,7 +2936,7 @@ public class PortugolParser extends Parser {
 
                 switch (alt30) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:894:3: (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:883:3: (operador= 'e' |operador= 'ou' ) operandoDireito= expressao3
             	    {
             	    if ( state.backtracking==0 ) { 
             	    		
@@ -3012,7 +2951,7 @@ public class PortugolParser extends Parser {
             	    			 }
             	    		}
 
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:907:3: (operador= 'e' |operador= 'ou' )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:896:3: (operador= 'e' |operador= 'ou' )
             	    int alt29=2;
             	    int LA29_0 = input.LA(1);
 
@@ -3032,16 +2971,16 @@ public class PortugolParser extends Parser {
             	    }
             	    switch (alt29) {
             	        case 1 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:907:4: operador= 'e'
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:896:4: operador= 'e'
             	            {
-            	            operador=(Token)match(input,66,FOLLOW_66_in_expressao22504); if (state.failed) return expressao;
+            	            operador=(Token)match(input,66,FOLLOW_66_in_expressao22471); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 2 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:907:21: operador= 'ou'
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:896:21: operador= 'ou'
             	            {
-            	            operador=(Token)match(input,67,FOLLOW_67_in_expressao22512); if (state.failed) return expressao;
+            	            operador=(Token)match(input,67,FOLLOW_67_in_expressao22479); if (state.failed) return expressao;
 
             	            }
             	            break;
@@ -3049,7 +2988,7 @@ public class PortugolParser extends Parser {
             	    }
 
 
-            	    pushFollow(FOLLOW_expressao3_in_expressao22524);
+            	    pushFollow(FOLLOW_expressao3_in_expressao22491);
             	    operandoDireito=expressao3();
 
             	    state._fsp--;
@@ -3092,7 +3031,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao3"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:924:1: expressao3 returns [NoExpressao expressao] : operandoEsquerdo= expressao4 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:913:1: expressao3 returns [NoExpressao expressao] : operandoEsquerdo= expressao4 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )* ;
     public final NoExpressao expressao3() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -3107,16 +3046,16 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao3");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:927:2: (operandoEsquerdo= expressao4 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:929:2: operandoEsquerdo= expressao4 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:916:2: (operandoEsquerdo= expressao4 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:918:2: operandoEsquerdo= expressao4 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )*
             {
-            pushFollow(FOLLOW_expressao4_in_expressao32558);
+            pushFollow(FOLLOW_expressao4_in_expressao32525);
             operandoEsquerdo=expressao4();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:930:2: ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:919:2: ( (operador= '==' |operador= '!=' ) operandoDireito= expressao4 )*
             loop32:
             do {
                 int alt32=2;
@@ -3129,7 +3068,7 @@ public class PortugolParser extends Parser {
 
                 switch (alt32) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:931:3: (operador= '==' |operador= '!=' ) operandoDireito= expressao4
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:920:3: (operador= '==' |operador= '!=' ) operandoDireito= expressao4
             	    {
             	    if ( state.backtracking==0 ) {
             	    			if (gerarArvore)
@@ -3144,7 +3083,7 @@ public class PortugolParser extends Parser {
             	    			 }
             	    		}
 
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:944:3: (operador= '==' |operador= '!=' )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:933:3: (operador= '==' |operador= '!=' )
             	    int alt31=2;
             	    int LA31_0 = input.LA(1);
 
@@ -3164,16 +3103,16 @@ public class PortugolParser extends Parser {
             	    }
             	    switch (alt31) {
             	        case 1 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:944:4: operador= '=='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:933:4: operador= '=='
             	            {
-            	            operador=(Token)match(input,61,FOLLOW_61_in_expressao32579); if (state.failed) return expressao;
+            	            operador=(Token)match(input,61,FOLLOW_61_in_expressao32546); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 2 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:944:22: operador= '!='
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:933:22: operador= '!='
             	            {
-            	            operador=(Token)match(input,39,FOLLOW_39_in_expressao32587); if (state.failed) return expressao;
+            	            operador=(Token)match(input,39,FOLLOW_39_in_expressao32554); if (state.failed) return expressao;
 
             	            }
             	            break;
@@ -3181,7 +3120,7 @@ public class PortugolParser extends Parser {
             	    }
 
 
-            	    pushFollow(FOLLOW_expressao4_in_expressao32600);
+            	    pushFollow(FOLLOW_expressao4_in_expressao32567);
             	    operandoDireito=expressao4();
 
             	    state._fsp--;
@@ -3224,7 +3163,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao4"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:961:1: expressao4 returns [NoExpressao expressao] : operandoEsquerdo= expressao5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )? ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:950:1: expressao4 returns [NoExpressao expressao] : operandoEsquerdo= expressao5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )? ;
     public final NoExpressao expressao4() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -3239,16 +3178,16 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao4");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:964:2: (operandoEsquerdo= expressao5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:2: operandoEsquerdo= expressao5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:953:2: (operandoEsquerdo= expressao5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:2: operandoEsquerdo= expressao5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )?
             {
-            pushFollow(FOLLOW_expressao5_in_expressao42634);
+            pushFollow(FOLLOW_expressao5_in_expressao42601);
             operandoEsquerdo=expressao5();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:32: ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:32: ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5 )?
             int alt34=2;
             int LA34_0 = input.LA(1);
 
@@ -3257,9 +3196,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt34) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:33: (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:33: (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao5
                     {
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:33: (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' )
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:33: (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' )
                     int alt33=4;
                     switch ( input.LA(1) ) {
                     case 63:
@@ -3293,30 +3232,30 @@ public class PortugolParser extends Parser {
 
                     switch (alt33) {
                         case 1 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:34: operador= '>='
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:34: operador= '>='
                             {
-                            operador=(Token)match(input,63,FOLLOW_63_in_expressao42642); if (state.failed) return expressao;
+                            operador=(Token)match(input,63,FOLLOW_63_in_expressao42609); if (state.failed) return expressao;
 
                             }
                             break;
                         case 2 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:52: operador= '<='
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:52: operador= '<='
                             {
-                            operador=(Token)match(input,59,FOLLOW_59_in_expressao42650); if (state.failed) return expressao;
+                            operador=(Token)match(input,59,FOLLOW_59_in_expressao42617); if (state.failed) return expressao;
 
                             }
                             break;
                         case 3 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:70: operador= '<'
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:70: operador= '<'
                             {
-                            operador=(Token)match(input,58,FOLLOW_58_in_expressao42658); if (state.failed) return expressao;
+                            operador=(Token)match(input,58,FOLLOW_58_in_expressao42625); if (state.failed) return expressao;
 
                             }
                             break;
                         case 4 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:966:87: operador= '>'
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:955:87: operador= '>'
                             {
-                            operador=(Token)match(input,62,FOLLOW_62_in_expressao42666); if (state.failed) return expressao;
+                            operador=(Token)match(input,62,FOLLOW_62_in_expressao42633); if (state.failed) return expressao;
 
                             }
                             break;
@@ -3324,7 +3263,7 @@ public class PortugolParser extends Parser {
                     }
 
 
-                    pushFollow(FOLLOW_expressao5_in_expressao42673);
+                    pushFollow(FOLLOW_expressao5_in_expressao42640);
                     operandoDireito=expressao5();
 
                     state._fsp--;
@@ -3364,7 +3303,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao5"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:980:1: expressao5 returns [NoExpressao expressao] : operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:969:1: expressao5 returns [NoExpressao expressao] : operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* ;
     public final NoExpressao expressao5() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -3379,23 +3318,23 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao5");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:983:2: (operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:985:2: operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:972:2: (operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:974:2: operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*
             {
-            pushFollow(FOLLOW_expressao6_in_expressao52705);
+            pushFollow(FOLLOW_expressao6_in_expressao52672);
             operandoEsquerdo=expressao6();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:986:2: ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:975:2: ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*
             loop35:
             do {
                 int alt35=3;
                 int LA35_0 = input.LA(1);
 
                 if ( (LA35_0==51) ) {
-                    int LA35_27 = input.LA(2);
+                    int LA35_26 = input.LA(2);
 
                     if ( (synpred3_Portugol()) ) {
                         alt35=2;
@@ -3410,10 +3349,10 @@ public class PortugolParser extends Parser {
 
                 switch (alt35) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:987:3: (operador= '+' operandoDireito= expressao6 )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:976:3: (operador= '+' operandoDireito= expressao6 )
             	    {
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:987:3: (operador= '+' operandoDireito= expressao6 )
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:989:4: operador= '+' operandoDireito= expressao6
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:976:3: (operador= '+' operandoDireito= expressao6 )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:978:4: operador= '+' operandoDireito= expressao6
             	    {
             	    if ( state.backtracking==0 ) {
             	    				if (gerarArvore)
@@ -3427,9 +3366,9 @@ public class PortugolParser extends Parser {
             	    				 }
             	    			}
 
-            	    operador=(Token)match(input,47,FOLLOW_47_in_expressao52736); if (state.failed) return expressao;
+            	    operador=(Token)match(input,47,FOLLOW_47_in_expressao52703); if (state.failed) return expressao;
 
-            	    pushFollow(FOLLOW_expressao6_in_expressao52742);
+            	    pushFollow(FOLLOW_expressao6_in_expressao52709);
             	    operandoDireito=expressao6();
 
             	    state._fsp--;
@@ -3441,10 +3380,10 @@ public class PortugolParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1006:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:995:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
             	    {
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1006:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1008:5: ( '-' )=>operador= '-' operandoDireito= expressao6
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:995:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:997:5: ( '-' )=>operador= '-' operandoDireito= expressao6
             	    {
             	    if ( state.backtracking==0 ) {
             	    				if (gerarArvore)
@@ -3458,9 +3397,9 @@ public class PortugolParser extends Parser {
             	    				 }
             	    			}
 
-            	    operador=(Token)match(input,51,FOLLOW_51_in_expressao52800); if (state.failed) return expressao;
+            	    operador=(Token)match(input,51,FOLLOW_51_in_expressao52767); if (state.failed) return expressao;
 
-            	    pushFollow(FOLLOW_expressao6_in_expressao52806);
+            	    pushFollow(FOLLOW_expressao6_in_expressao52773);
             	    operandoDireito=expressao6();
 
             	    state._fsp--;
@@ -3506,7 +3445,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao6"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1041:1: expressao6 returns [NoExpressao expressao] : operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1030:1: expressao6 returns [NoExpressao expressao] : operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* ;
     public final NoExpressao expressao6() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -3521,16 +3460,16 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao6");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1044:2: (operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1046:2: operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1033:2: (operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1035:2: operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )*
             {
-            pushFollow(FOLLOW_expressao7_in_expressao62855);
+            pushFollow(FOLLOW_expressao7_in_expressao62822);
             operandoEsquerdo=expressao7();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1047:2: ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1036:2: ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )*
             loop37:
             do {
                 int alt37=2;
@@ -3543,7 +3482,7 @@ public class PortugolParser extends Parser {
 
                 switch (alt37) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1048:3: (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1037:3: (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7
             	    {
             	    if ( state.backtracking==0 ) {
             	    			if (gerarArvore)
@@ -3557,7 +3496,7 @@ public class PortugolParser extends Parser {
             	    			 }
             	    		}
 
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1061:3: (operador= '*' |operador= '/' |operador= '%' )
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1050:3: (operador= '*' |operador= '/' |operador= '%' )
             	    int alt36=3;
             	    switch ( input.LA(1) ) {
             	    case 45:
@@ -3586,23 +3525,23 @@ public class PortugolParser extends Parser {
 
             	    switch (alt36) {
             	        case 1 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1061:4: operador= '*'
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1050:4: operador= '*'
             	            {
-            	            operador=(Token)match(input,45,FOLLOW_45_in_expressao62878); if (state.failed) return expressao;
+            	            operador=(Token)match(input,45,FOLLOW_45_in_expressao62845); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 2 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1061:21: operador= '/'
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1050:21: operador= '/'
             	            {
-            	            operador=(Token)match(input,54,FOLLOW_54_in_expressao62886); if (state.failed) return expressao;
+            	            operador=(Token)match(input,54,FOLLOW_54_in_expressao62853); if (state.failed) return expressao;
 
             	            }
             	            break;
             	        case 3 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1061:38: operador= '%'
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1050:38: operador= '%'
             	            {
-            	            operador=(Token)match(input,40,FOLLOW_40_in_expressao62894); if (state.failed) return expressao;
+            	            operador=(Token)match(input,40,FOLLOW_40_in_expressao62861); if (state.failed) return expressao;
 
             	            }
             	            break;
@@ -3610,7 +3549,7 @@ public class PortugolParser extends Parser {
             	    }
 
 
-            	    pushFollow(FOLLOW_expressao7_in_expressao62907);
+            	    pushFollow(FOLLOW_expressao7_in_expressao62874);
             	    operandoDireito=expressao7();
 
             	    state._fsp--;
@@ -3653,7 +3592,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao7"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1078:1: expressao7 returns [NoExpressao expressao] : ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* ) vExpressao= expressao8 ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1067:1: expressao7 returns [NoExpressao expressao] : ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* ) vExpressao= expressao8 ;
     public final NoExpressao expressao7() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -3669,10 +3608,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao7");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1081:2: ( ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* ) vExpressao= expressao8 )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* ) vExpressao= expressao8
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1070:2: ( ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* ) vExpressao= expressao8 )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* ) vExpressao= expressao8
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* )
             int alt40=2;
             int LA40_0 = input.LA(1);
 
@@ -3836,9 +3775,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt40) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:3: ( '-' )=> (listaTokenMenos+= '-' )?
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:3: ( '-' )=> (listaTokenMenos+= '-' )?
                     {
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:12: (listaTokenMenos+= '-' )?
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:12: (listaTokenMenos+= '-' )?
                     int alt38=2;
                     int LA38_0 = input.LA(1);
 
@@ -3847,9 +3786,9 @@ public class PortugolParser extends Parser {
                     }
                     switch (alt38) {
                         case 1 :
-                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:13: listaTokenMenos+= '-'
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:13: listaTokenMenos+= '-'
                             {
-                            listaTokenMenos=(Token)match(input,51,FOLLOW_51_in_expressao72949); if (state.failed) return expressao;
+                            listaTokenMenos=(Token)match(input,51,FOLLOW_51_in_expressao72916); if (state.failed) return expressao;
                             if (list_listaTokenMenos==null) list_listaTokenMenos=new ArrayList();
                             list_listaTokenMenos.add(listaTokenMenos);
 
@@ -3863,9 +3802,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:40: (listaTokenNao+= OPERADOR_NAO )*
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:40: (listaTokenNao+= OPERADOR_NAO )*
                     {
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:40: (listaTokenNao+= OPERADOR_NAO )*
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:40: (listaTokenNao+= OPERADOR_NAO )*
                     loop39:
                     do {
                         int alt39=2;
@@ -3878,9 +3817,9 @@ public class PortugolParser extends Parser {
 
                         switch (alt39) {
                     	case 1 :
-                    	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:41: listaTokenNao+= OPERADOR_NAO
+                    	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:41: listaTokenNao+= OPERADOR_NAO
                     	    {
-                    	    listaTokenNao=(Token)match(input,OPERADOR_NAO,FOLLOW_OPERADOR_NAO_in_expressao72960); if (state.failed) return expressao;
+                    	    listaTokenNao=(Token)match(input,OPERADOR_NAO,FOLLOW_OPERADOR_NAO_in_expressao72927); if (state.failed) return expressao;
                     	    if (list_listaTokenNao==null) list_listaTokenNao=new ArrayList();
                     	    list_listaTokenNao.add(listaTokenNao);
 
@@ -3900,7 +3839,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            pushFollow(FOLLOW_expressao8_in_expressao72970);
+            pushFollow(FOLLOW_expressao8_in_expressao72937);
             vExpressao=expressao8();
 
             state._fsp--;
@@ -3944,7 +3883,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "expressao8"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1107:1: expressao8 returns [NoExpressao expressao] : (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1096:1: expressao8 returns [NoExpressao expressao] : (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? ;
     public final NoExpressao expressao8() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -3958,10 +3897,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("expressao8");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1110:2: ( (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1112:2: (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1099:2: ( (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1101:2: (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )?
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1112:2: (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1101:2: (parentesis= '(' vExpressao= expressao ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor )
             int alt41=4;
             switch ( input.LA(1) ) {
             case 43:
@@ -3999,24 +3938,24 @@ public class PortugolParser extends Parser {
 
             switch (alt41) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1112:4: parentesis= '(' vExpressao= expressao ')'
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1101:4: parentesis= '(' vExpressao= expressao ')'
                     {
-                    parentesis=(Token)match(input,43,FOLLOW_43_in_expressao83004); if (state.failed) return expressao;
+                    parentesis=(Token)match(input,43,FOLLOW_43_in_expressao82971); if (state.failed) return expressao;
 
-                    pushFollow(FOLLOW_expressao_in_expressao83010);
+                    pushFollow(FOLLOW_expressao_in_expressao82977);
                     vExpressao=expressao();
 
                     state._fsp--;
                     if (state.failed) return expressao;
 
-                    match(input,44,FOLLOW_44_in_expressao83012); if (state.failed) return expressao;
+                    match(input,44,FOLLOW_44_in_expressao82979); if (state.failed) return expressao;
 
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1113:4: vExpressao= referencia
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1102:4: vExpressao= referencia
                     {
-                    pushFollow(FOLLOW_referencia_in_expressao83022);
+                    pushFollow(FOLLOW_referencia_in_expressao82989);
                     vExpressao=referencia();
 
                     state._fsp--;
@@ -4025,9 +3964,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1114:4: vExpressao= tipoPrimitivo
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1103:4: vExpressao= tipoPrimitivo
                     {
-                    pushFollow(FOLLOW_tipoPrimitivo_in_expressao83031);
+                    pushFollow(FOLLOW_tipoPrimitivo_in_expressao82998);
                     vExpressao=tipoPrimitivo();
 
                     state._fsp--;
@@ -4036,9 +3975,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1115:4: vExpressao= matrizVetor
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1104:4: vExpressao= matrizVetor
                     {
-                    pushFollow(FOLLOW_matrizVetor_in_expressao83041);
+                    pushFollow(FOLLOW_matrizVetor_in_expressao83008);
                     vExpressao=matrizVetor();
 
                     state._fsp--;
@@ -4050,7 +3989,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1117:3: (operador= '++' |operador= '--' )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1106:3: (operador= '++' |operador= '--' )?
             int alt42=3;
             int LA42_0 = input.LA(1);
 
@@ -4062,16 +4001,16 @@ public class PortugolParser extends Parser {
             }
             switch (alt42) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1117:4: operador= '++'
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1106:4: operador= '++'
                     {
-                    operador=(Token)match(input,48,FOLLOW_48_in_expressao83054); if (state.failed) return expressao;
+                    operador=(Token)match(input,48,FOLLOW_48_in_expressao83021); if (state.failed) return expressao;
 
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1117:22: operador= '--'
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1106:22: operador= '--'
                     {
-                    operador=(Token)match(input,52,FOLLOW_52_in_expressao83062); if (state.failed) return expressao;
+                    operador=(Token)match(input,52,FOLLOW_52_in_expressao83029); if (state.failed) return expressao;
 
                     }
                     break;
@@ -4120,7 +4059,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "tipoPrimitivo"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1145:1: tipoPrimitivo returns [NoExpressao expressao] : ( REAL | LOGICO | CADEIA | INTEIRO | CARACTER );
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1134:1: tipoPrimitivo returns [NoExpressao expressao] : ( REAL | LOGICO | CADEIA | INTEIRO | CARACTER );
     public final NoExpressao tipoPrimitivo() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -4135,7 +4074,7 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("tipoPrimitivo");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1148:2: ( REAL | LOGICO | CADEIA | INTEIRO | CARACTER )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1137:2: ( REAL | LOGICO | CADEIA | INTEIRO | CARACTER )
             int alt43=5;
             switch ( input.LA(1) ) {
             case REAL:
@@ -4174,9 +4113,9 @@ public class PortugolParser extends Parser {
 
             switch (alt43) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1150:2: REAL
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1139:2: REAL
                     {
-                    REAL5=(Token)match(input,REAL,FOLLOW_REAL_in_tipoPrimitivo3091); if (state.failed) return expressao;
+                    REAL5=(Token)match(input,REAL,FOLLOW_REAL_in_tipoPrimitivo3058); if (state.failed) return expressao;
 
                     if ( state.backtracking==0 ) { 
                     		if (gerarArvore)
@@ -4190,9 +4129,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1162:2: LOGICO
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1151:2: LOGICO
                     {
-                    LOGICO6=(Token)match(input,LOGICO,FOLLOW_LOGICO_in_tipoPrimitivo3111); if (state.failed) return expressao;
+                    LOGICO6=(Token)match(input,LOGICO,FOLLOW_LOGICO_in_tipoPrimitivo3078); if (state.failed) return expressao;
 
                     if ( state.backtracking==0 ) {
                     		if (gerarArvore)
@@ -4206,9 +4145,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1174:2: CADEIA
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1163:2: CADEIA
                     {
-                    CADEIA7=(Token)match(input,CADEIA,FOLLOW_CADEIA_in_tipoPrimitivo3125); if (state.failed) return expressao;
+                    CADEIA7=(Token)match(input,CADEIA,FOLLOW_CADEIA_in_tipoPrimitivo3092); if (state.failed) return expressao;
 
                     if ( state.backtracking==0 ) {
                     		if (gerarArvore)
@@ -4223,9 +4162,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1187:2: INTEIRO
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1176:2: INTEIRO
                     {
-                    INTEIRO8=(Token)match(input,INTEIRO,FOLLOW_INTEIRO_in_tipoPrimitivo3138); if (state.failed) return expressao;
+                    INTEIRO8=(Token)match(input,INTEIRO,FOLLOW_INTEIRO_in_tipoPrimitivo3105); if (state.failed) return expressao;
 
                     if ( state.backtracking==0 ) {
                     		try
@@ -4248,9 +4187,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1208:2: CARACTER
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1197:2: CARACTER
                     {
-                    CARACTER9=(Token)match(input,CARACTER,FOLLOW_CARACTER_in_tipoPrimitivo3153); if (state.failed) return expressao;
+                    CARACTER9=(Token)match(input,CARACTER,FOLLOW_CARACTER_in_tipoPrimitivo3120); if (state.failed) return expressao;
 
                     if ( state.backtracking==0 ) {
                     		if (gerarArvore)
@@ -4284,7 +4223,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "referencia"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1224:1: referencia returns [NoReferencia referencia] : ID ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1213:1: referencia returns [NoReferencia referencia] : ID ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] ) ;
     public final NoReferencia referencia() throws RecognitionException {
         NoReferencia referencia = null;
 
@@ -4297,12 +4236,12 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("referencia");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1227:2: ( ID ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1229:2: ID ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1216:2: ( ID ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1218:2: ID ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] )
             {
-            ID10=(Token)match(input,ID,FOLLOW_ID_in_referencia3182); if (state.failed) return referencia;
+            ID10=(Token)match(input,ID,FOLLOW_ID_in_referencia3149); if (state.failed) return referencia;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1230:2: ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1219:2: ( ( '(' )=>vExpressao= chamadaFuncao[$ID.text] | ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text] |vExpressao= referenciaId[$ID.text] )
             int alt44=3;
             int LA44_0 = input.LA(1);
 
@@ -4327,7 +4266,7 @@ public class PortugolParser extends Parser {
             else if ( (LA44_0==64) && (synpred6_Portugol())) {
                 alt44=2;
             }
-            else if ( ((LA44_0 >= CADEIA && LA44_0 <= CARACTER)||(LA44_0 >= ID && LA44_0 <= PR_FACA)||(LA44_0 >= PR_FUNCAO && LA44_0 <= PR_PARE)||(LA44_0 >= PR_REAL && LA44_0 <= PR_SENAO)||LA44_0==REAL||(LA44_0 >= 39 && LA44_0 <= 41)||(LA44_0 >= 44 && LA44_0 <= 63)||(LA44_0 >= 65 && LA44_0 <= 69)) ) {
+            else if ( ((LA44_0 >= CADEIA && LA44_0 <= CARACTER)||(LA44_0 >= ID && LA44_0 <= PR_CONST)||(LA44_0 >= PR_ENQUANTO && LA44_0 <= PR_FACA)||(LA44_0 >= PR_FUNCAO && LA44_0 <= PR_PARE)||(LA44_0 >= PR_REAL && LA44_0 <= PR_SENAO)||LA44_0==REAL||(LA44_0 >= 39 && LA44_0 <= 41)||(LA44_0 >= 44 && LA44_0 <= 63)||(LA44_0 >= 65 && LA44_0 <= 69)) ) {
                 alt44=3;
             }
             else {
@@ -4340,9 +4279,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt44) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1231:3: ( '(' )=>vExpressao= chamadaFuncao[$ID.text]
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1220:3: ( '(' )=>vExpressao= chamadaFuncao[$ID.text]
                     {
-                    pushFollow(FOLLOW_chamadaFuncao_in_referencia3199);
+                    pushFollow(FOLLOW_chamadaFuncao_in_referencia3166);
                     vExpressao=chamadaFuncao((ID10!=null?ID10.getText():null));
 
                     state._fsp--;
@@ -4351,9 +4290,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1232:3: ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text]
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1221:3: ( '[' )=>vExpressao= referenciaVetorMatriz[$ID.text]
                     {
-                    pushFollow(FOLLOW_referenciaVetorMatriz_in_referencia3216);
+                    pushFollow(FOLLOW_referenciaVetorMatriz_in_referencia3183);
                     vExpressao=referenciaVetorMatriz((ID10!=null?ID10.getText():null));
 
                     state._fsp--;
@@ -4362,9 +4301,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1233:5: vExpressao= referenciaId[$ID.text]
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1222:5: vExpressao= referenciaId[$ID.text]
                     {
-                    pushFollow(FOLLOW_referenciaId_in_referencia3229);
+                    pushFollow(FOLLOW_referenciaId_in_referencia3196);
                     vExpressao=referenciaId((ID10!=null?ID10.getText():null));
 
                     state._fsp--;
@@ -4405,7 +4344,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "referenciaId"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1250:1: referenciaId[String nome] returns [NoExpressao expressao] :;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1239:1: referenciaId[String nome] returns [NoExpressao expressao] :;
     public final NoExpressao referenciaId(String nome) throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -4414,8 +4353,8 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("referenciaId");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1253:2: ()
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1255:2: 
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1242:2: ()
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1244:2: 
             {
             if ( state.backtracking==0 ) {
             		if (gerarArvore)
@@ -4440,7 +4379,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "referenciaVetorMatriz"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1269:1: referenciaVetorMatriz[ String nome] returns [NoExpressao expressao] : '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1258:1: referenciaVetorMatriz[ String nome] returns [NoExpressao expressao] : '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? ;
     public final NoExpressao referenciaVetorMatriz(String nome) throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -4454,20 +4393,20 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("referenciaVetorMatriz");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1272:2: ( '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1274:2: '[' indice1= expressao ']' ( '[' indice2= expressao ']' )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1261:2: ( '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1263:2: '[' indice1= expressao ']' ( '[' indice2= expressao ']' )?
             {
-            match(input,64,FOLLOW_64_in_referenciaVetorMatriz3290); if (state.failed) return expressao;
+            match(input,64,FOLLOW_64_in_referenciaVetorMatriz3257); if (state.failed) return expressao;
 
-            pushFollow(FOLLOW_expressao_in_referenciaVetorMatriz3296);
+            pushFollow(FOLLOW_expressao_in_referenciaVetorMatriz3263);
             indice1=expressao();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            match(input,65,FOLLOW_65_in_referenciaVetorMatriz3298); if (state.failed) return expressao;
+            match(input,65,FOLLOW_65_in_referenciaVetorMatriz3265); if (state.failed) return expressao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1274:30: ( '[' indice2= expressao ']' )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1263:30: ( '[' indice2= expressao ']' )?
             int alt45=2;
             int LA45_0 = input.LA(1);
 
@@ -4476,17 +4415,17 @@ public class PortugolParser extends Parser {
             }
             switch (alt45) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1274:31: '[' indice2= expressao ']'
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1263:31: '[' indice2= expressao ']'
                     {
-                    match(input,64,FOLLOW_64_in_referenciaVetorMatriz3301); if (state.failed) return expressao;
+                    match(input,64,FOLLOW_64_in_referenciaVetorMatriz3268); if (state.failed) return expressao;
 
-                    pushFollow(FOLLOW_expressao_in_referenciaVetorMatriz3307);
+                    pushFollow(FOLLOW_expressao_in_referenciaVetorMatriz3274);
                     indice2=expressao();
 
                     state._fsp--;
                     if (state.failed) return expressao;
 
-                    match(input,65,FOLLOW_65_in_referenciaVetorMatriz3309); if (state.failed) return expressao;
+                    match(input,65,FOLLOW_65_in_referenciaVetorMatriz3276); if (state.failed) return expressao;
 
                     }
                     break;
@@ -4524,7 +4463,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "chamadaFuncao"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1290:1: chamadaFuncao[String nome] returns [NoExpressao expressao] : '(' (vListaParametros= listaParametros )? ')' ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1279:1: chamadaFuncao[String nome] returns [NoExpressao expressao] : '(' (vListaParametros= listaParametros )? ')' ;
     public final NoExpressao chamadaFuncao(String nome) throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -4536,12 +4475,12 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("chamadaFuncao");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1293:2: ( '(' (vListaParametros= listaParametros )? ')' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1295:2: '(' (vListaParametros= listaParametros )? ')'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1282:2: ( '(' (vListaParametros= listaParametros )? ')' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1284:2: '(' (vListaParametros= listaParametros )? ')'
             {
-            match(input,43,FOLLOW_43_in_chamadaFuncao3341); if (state.failed) return expressao;
+            match(input,43,FOLLOW_43_in_chamadaFuncao3308); if (state.failed) return expressao;
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1295:6: (vListaParametros= listaParametros )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1284:6: (vListaParametros= listaParametros )?
             int alt46=2;
             int LA46_0 = input.LA(1);
 
@@ -4550,9 +4489,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt46) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1295:7: vListaParametros= listaParametros
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1284:7: vListaParametros= listaParametros
                     {
-                    pushFollow(FOLLOW_listaParametros_in_chamadaFuncao3348);
+                    pushFollow(FOLLOW_listaParametros_in_chamadaFuncao3315);
                     vListaParametros=listaParametros();
 
                     state._fsp--;
@@ -4564,7 +4503,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            match(input,44,FOLLOW_44_in_chamadaFuncao3352); if (state.failed) return expressao;
+            match(input,44,FOLLOW_44_in_chamadaFuncao3319); if (state.failed) return expressao;
 
             if ( state.backtracking==0 ) {
              		if (gerarArvore)
@@ -4596,7 +4535,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "listaParametros"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1312:1: listaParametros returns [List<NoExpressao> listaParametros] : (vExpressao= expressao ) ( ',' vExpressao= expressao )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1301:1: listaParametros returns [List<NoExpressao> listaParametros] : (vExpressao= expressao ) ( ',' vExpressao= expressao )* ;
     public final List<NoExpressao> listaParametros() throws RecognitionException {
         List<NoExpressao> listaParametros = null;
 
@@ -4609,13 +4548,13 @@ public class PortugolParser extends Parser {
         	listaParametros = new ArrayList<NoExpressao>();
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1316:2: ( (vExpressao= expressao ) ( ',' vExpressao= expressao )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1317:2: (vExpressao= expressao ) ( ',' vExpressao= expressao )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1305:2: ( (vExpressao= expressao ) ( ',' vExpressao= expressao )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1306:2: (vExpressao= expressao ) ( ',' vExpressao= expressao )*
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1317:2: (vExpressao= expressao )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1317:6: vExpressao= expressao
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1306:2: (vExpressao= expressao )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1306:6: vExpressao= expressao
             {
-            pushFollow(FOLLOW_expressao_in_listaParametros3387);
+            pushFollow(FOLLOW_expressao_in_listaParametros3354);
             vExpressao=expressao();
 
             state._fsp--;
@@ -4631,7 +4570,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1326:2: ( ',' vExpressao= expressao )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1315:2: ( ',' vExpressao= expressao )*
             loop47:
             do {
                 int alt47=2;
@@ -4644,11 +4583,11 @@ public class PortugolParser extends Parser {
 
                 switch (alt47) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1326:3: ',' vExpressao= expressao
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1315:3: ',' vExpressao= expressao
             	    {
-            	    match(input,50,FOLLOW_50_in_listaParametros3403); if (state.failed) return listaParametros;
+            	    match(input,50,FOLLOW_50_in_listaParametros3370); if (state.failed) return listaParametros;
 
-            	    pushFollow(FOLLOW_expressao_in_listaParametros3409);
+            	    pushFollow(FOLLOW_expressao_in_listaParametros3376);
             	    vExpressao=expressao();
 
             	    state._fsp--;
@@ -4691,7 +4630,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "matrizVetor"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1342:1: matrizVetor returns [NoExpressao expressao] : ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1331:1: matrizVetor returns [NoExpressao expressao] : ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) ;
     public final NoExpressao matrizVetor() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -4703,10 +4642,10 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("matrizVetor");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1345:2: ( ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1347:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1334:2: ( ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1336:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1347:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1336:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
             int alt48=2;
             int LA48_0 = input.LA(1);
 
@@ -4738,9 +4677,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt48) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1347:3: ( '{' '{' )=>vExpressao= matriz
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1336:3: ( '{' '{' )=>vExpressao= matriz
                     {
-                    pushFollow(FOLLOW_matriz_in_matrizVetor3456);
+                    pushFollow(FOLLOW_matriz_in_matrizVetor3423);
                     vExpressao=matriz();
 
                     state._fsp--;
@@ -4749,9 +4688,9 @@ public class PortugolParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1347:37: vExpressao= vetor
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1336:37: vExpressao= vetor
                     {
-                    pushFollow(FOLLOW_vetor_in_matrizVetor3464);
+                    pushFollow(FOLLOW_vetor_in_matrizVetor3431);
                     vExpressao=vetor();
 
                     state._fsp--;
@@ -4791,7 +4730,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "vetor"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1362:1: vetor returns [NoExpressao expressao] : abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1351:1: vetor returns [NoExpressao expressao] : abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' ;
     public final NoExpressao vetor() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -4805,18 +4744,18 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("vetor");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1365:2: (abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1367:2: abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1354:2: (abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1356:2: abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}'
             {
-            abre_ch=(Token)match(input,68,FOLLOW_68_in_vetor3497); if (state.failed) return expressao;
+            abre_ch=(Token)match(input,68,FOLLOW_68_in_vetor3464); if (state.failed) return expressao;
 
-            pushFollow(FOLLOW_listaExpressoes_in_vetor3503);
+            pushFollow(FOLLOW_listaExpressoes_in_vetor3470);
             vListaExpressoes=listaExpressoes();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            fecha_ch=(Token)match(input,69,FOLLOW_69_in_vetor3509); if (state.failed) return expressao;
+            fecha_ch=(Token)match(input,69,FOLLOW_69_in_vetor3476); if (state.failed) return expressao;
 
             if ( state.backtracking==0 ) {
             		if (gerarArvore)
@@ -4849,7 +4788,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "matriz"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1384:1: matriz returns [NoExpressao expressao] : abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1373:1: matriz returns [NoExpressao expressao] : abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' ;
     public final NoExpressao matriz() throws RecognitionException {
         NoExpressao expressao = null;
 
@@ -4863,18 +4802,18 @@ public class PortugolParser extends Parser {
         	pilhaContexto.push("matriz");
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1387:2: (abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1389:2: abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1376:2: (abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1378:2: abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}'
             {
-            abre_ch=(Token)match(input,68,FOLLOW_68_in_matriz3542); if (state.failed) return expressao;
+            abre_ch=(Token)match(input,68,FOLLOW_68_in_matriz3509); if (state.failed) return expressao;
 
-            pushFollow(FOLLOW_listaListaExpressoes_in_matriz3550);
+            pushFollow(FOLLOW_listaListaExpressoes_in_matriz3517);
             vListaListaExpressoes=listaListaExpressoes();
 
             state._fsp--;
             if (state.failed) return expressao;
 
-            fecha_ch=(Token)match(input,69,FOLLOW_69_in_matriz3557); if (state.failed) return expressao;
+            fecha_ch=(Token)match(input,69,FOLLOW_69_in_matriz3524); if (state.failed) return expressao;
 
             if ( state.backtracking==0 ) {
             		if (gerarArvore)
@@ -4907,7 +4846,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "listaListaExpressoes"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1409:1: listaListaExpressoes returns [List<List<Object>> listaListaExpressoes] : ( '{' vListaExpressoes= listaExpressoes '}' ) ( ',' '{' vListaExpressoes= listaExpressoes '}' )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1398:1: listaListaExpressoes returns [List<List<Object>> listaListaExpressoes] : ( '{' vListaExpressoes= listaExpressoes '}' ) ( ',' '{' vListaExpressoes= listaExpressoes '}' )* ;
     public final List<List<Object>> listaListaExpressoes() throws RecognitionException {
         List<List<Object>> listaListaExpressoes = null;
 
@@ -4920,21 +4859,21 @@ public class PortugolParser extends Parser {
         	listaListaExpressoes = new ArrayList<List<Object>>();
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1413:2: ( ( '{' vListaExpressoes= listaExpressoes '}' ) ( ',' '{' vListaExpressoes= listaExpressoes '}' )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1414:2: ( '{' vListaExpressoes= listaExpressoes '}' ) ( ',' '{' vListaExpressoes= listaExpressoes '}' )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1402:2: ( ( '{' vListaExpressoes= listaExpressoes '}' ) ( ',' '{' vListaExpressoes= listaExpressoes '}' )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1403:2: ( '{' vListaExpressoes= listaExpressoes '}' ) ( ',' '{' vListaExpressoes= listaExpressoes '}' )*
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1414:2: ( '{' vListaExpressoes= listaExpressoes '}' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1414:4: '{' vListaExpressoes= listaExpressoes '}'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1403:2: ( '{' vListaExpressoes= listaExpressoes '}' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1403:4: '{' vListaExpressoes= listaExpressoes '}'
             {
-            match(input,68,FOLLOW_68_in_listaListaExpressoes3586); if (state.failed) return listaListaExpressoes;
+            match(input,68,FOLLOW_68_in_listaListaExpressoes3553); if (state.failed) return listaListaExpressoes;
 
-            pushFollow(FOLLOW_listaExpressoes_in_listaListaExpressoes3592);
+            pushFollow(FOLLOW_listaExpressoes_in_listaListaExpressoes3559);
             vListaExpressoes=listaExpressoes();
 
             state._fsp--;
             if (state.failed) return listaListaExpressoes;
 
-            match(input,69,FOLLOW_69_in_listaListaExpressoes3594); if (state.failed) return listaListaExpressoes;
+            match(input,69,FOLLOW_69_in_listaListaExpressoes3561); if (state.failed) return listaListaExpressoes;
 
             if ( state.backtracking==0 ) {
             			if (gerarArvore)
@@ -4946,7 +4885,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1422:2: ( ',' '{' vListaExpressoes= listaExpressoes '}' )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1411:2: ( ',' '{' vListaExpressoes= listaExpressoes '}' )*
             loop49:
             do {
                 int alt49=2;
@@ -4959,21 +4898,21 @@ public class PortugolParser extends Parser {
 
                 switch (alt49) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1422:4: ',' '{' vListaExpressoes= listaExpressoes '}'
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1411:4: ',' '{' vListaExpressoes= listaExpressoes '}'
             	    {
             	    if ( state.backtracking==0 ) { vListaExpressoes = null; }
 
-            	    match(input,50,FOLLOW_50_in_listaListaExpressoes3609); if (state.failed) return listaListaExpressoes;
+            	    match(input,50,FOLLOW_50_in_listaListaExpressoes3576); if (state.failed) return listaListaExpressoes;
 
-            	    match(input,68,FOLLOW_68_in_listaListaExpressoes3612); if (state.failed) return listaListaExpressoes;
+            	    match(input,68,FOLLOW_68_in_listaListaExpressoes3579); if (state.failed) return listaListaExpressoes;
 
-            	    pushFollow(FOLLOW_listaExpressoes_in_listaListaExpressoes3618);
+            	    pushFollow(FOLLOW_listaExpressoes_in_listaListaExpressoes3585);
             	    vListaExpressoes=listaExpressoes();
 
             	    state._fsp--;
             	    if (state.failed) return listaListaExpressoes;
 
-            	    match(input,69,FOLLOW_69_in_listaListaExpressoes3620); if (state.failed) return listaListaExpressoes;
+            	    match(input,69,FOLLOW_69_in_listaListaExpressoes3587); if (state.failed) return listaListaExpressoes;
 
             	    if ( state.backtracking==0 ) { 
             	    	   	if (gerarArvore)
@@ -5012,7 +4951,7 @@ public class PortugolParser extends Parser {
 
 
     // $ANTLR start "listaExpressoes"
-    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1438:1: listaExpressoes returns [List<Object> listaExpressoes] : ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao )? )* ;
+    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1427:1: listaExpressoes returns [List<Object> listaExpressoes] : ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao )? )* ;
     public final List<Object> listaExpressoes() throws RecognitionException {
         List<Object> listaExpressoes = null;
 
@@ -5025,15 +4964,15 @@ public class PortugolParser extends Parser {
         	listaExpressoes = new ArrayList<Object>();
 
         try {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1442:2: ( ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao )? )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1443:2: ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao )? )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1431:2: ( ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao )? )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1432:2: ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao )? )*
             {
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1443:2: ( (vExpressao= expressao )? )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1443:3: (vExpressao= expressao )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1432:2: ( (vExpressao= expressao )? )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1432:3: (vExpressao= expressao )?
             {
             if ( state.backtracking==0 ) { vExpressao = null; }
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1443:30: (vExpressao= expressao )?
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1432:30: (vExpressao= expressao )?
             int alt50=2;
             int LA50_0 = input.LA(1);
 
@@ -5042,9 +4981,9 @@ public class PortugolParser extends Parser {
             }
             switch (alt50) {
                 case 1 :
-                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1443:31: vExpressao= expressao
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1432:31: vExpressao= expressao
                     {
-                    pushFollow(FOLLOW_expressao_in_listaExpressoes3666);
+                    pushFollow(FOLLOW_expressao_in_listaExpressoes3633);
                     vExpressao=expressao();
 
                     state._fsp--;
@@ -5066,7 +5005,7 @@ public class PortugolParser extends Parser {
             }
 
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1450:2: ( ',' (vExpressao= expressao )? )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1439:2: ( ',' (vExpressao= expressao )? )*
             loop52:
             do {
                 int alt52=2;
@@ -5079,13 +5018,13 @@ public class PortugolParser extends Parser {
 
                 switch (alt52) {
             	case 1 :
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1450:3: ',' (vExpressao= expressao )?
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1439:3: ',' (vExpressao= expressao )?
             	    {
             	    if ( state.backtracking==0 ) { vExpressao = null; }
 
-            	    match(input,50,FOLLOW_50_in_listaExpressoes3680); if (state.failed) return listaExpressoes;
+            	    match(input,50,FOLLOW_50_in_listaExpressoes3647); if (state.failed) return listaExpressoes;
 
-            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1450:30: (vExpressao= expressao )?
+            	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1439:30: (vExpressao= expressao )?
             	    int alt51=2;
             	    int LA51_0 = input.LA(1);
 
@@ -5094,9 +5033,9 @@ public class PortugolParser extends Parser {
             	    }
             	    switch (alt51) {
             	        case 1 :
-            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1450:31: vExpressao= expressao
+            	            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1439:31: vExpressao= expressao
             	            {
-            	            pushFollow(FOLLOW_expressao_in_listaExpressoes3687);
+            	            pushFollow(FOLLOW_expressao_in_listaExpressoes3654);
             	            vExpressao=expressao();
 
             	            state._fsp--;
@@ -5144,10 +5083,10 @@ public class PortugolParser extends Parser {
 
     // $ANTLR start synpred1_Portugol
     public final void synpred1_Portugol_fragment() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:636:2: ( '{' )
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:636:3: '{'
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:637:2: ( '{' )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:637:3: '{'
         {
-        match(input,68,FOLLOW_68_in_synpred1_Portugol1908); if (state.failed) return ;
+        match(input,68,FOLLOW_68_in_synpred1_Portugol1896); if (state.failed) return ;
 
         }
 
@@ -5156,10 +5095,10 @@ public class PortugolParser extends Parser {
 
     // $ANTLR start synpred2_Portugol
     public final void synpred2_Portugol_fragment() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:4: ( '{' )
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:742:5: '{'
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:4: ( '{' )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:731:5: '{'
         {
-        match(input,68,FOLLOW_68_in_synpred2_Portugol2120); if (state.failed) return ;
+        match(input,68,FOLLOW_68_in_synpred2_Portugol2087); if (state.failed) return ;
 
         }
 
@@ -5168,10 +5107,10 @@ public class PortugolParser extends Parser {
 
     // $ANTLR start synpred3_Portugol
     public final void synpred3_Portugol_fragment() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1008:5: ( '-' )
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1008:6: '-'
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:997:5: ( '-' )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:997:6: '-'
         {
-        match(input,51,FOLLOW_51_in_synpred3_Portugol2772); if (state.failed) return ;
+        match(input,51,FOLLOW_51_in_synpred3_Portugol2739); if (state.failed) return ;
 
         }
 
@@ -5180,10 +5119,10 @@ public class PortugolParser extends Parser {
 
     // $ANTLR start synpred4_Portugol
     public final void synpred4_Portugol_fragment() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:3: ( '-' )
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1083:4: '-'
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:3: ( '-' )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1072:4: '-'
         {
-        match(input,51,FOLLOW_51_in_synpred4_Portugol2939); if (state.failed) return ;
+        match(input,51,FOLLOW_51_in_synpred4_Portugol2906); if (state.failed) return ;
 
         }
 
@@ -5192,10 +5131,10 @@ public class PortugolParser extends Parser {
 
     // $ANTLR start synpred5_Portugol
     public final void synpred5_Portugol_fragment() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1231:3: ( '(' )
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1231:4: '('
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1220:3: ( '(' )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1220:4: '('
         {
-        match(input,43,FOLLOW_43_in_synpred5_Portugol3190); if (state.failed) return ;
+        match(input,43,FOLLOW_43_in_synpred5_Portugol3157); if (state.failed) return ;
 
         }
 
@@ -5204,10 +5143,10 @@ public class PortugolParser extends Parser {
 
     // $ANTLR start synpred6_Portugol
     public final void synpred6_Portugol_fragment() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1232:3: ( '[' )
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1232:4: '['
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1221:3: ( '[' )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1221:4: '['
         {
-        match(input,64,FOLLOW_64_in_synpred6_Portugol3207); if (state.failed) return ;
+        match(input,64,FOLLOW_64_in_synpred6_Portugol3174); if (state.failed) return ;
 
         }
 
@@ -5216,12 +5155,12 @@ public class PortugolParser extends Parser {
 
     // $ANTLR start synpred7_Portugol
     public final void synpred7_Portugol_fragment() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1347:3: ( '{' '{' )
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1347:4: '{' '{'
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1336:3: ( '{' '{' )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1336:4: '{' '{'
         {
-        match(input,68,FOLLOW_68_in_synpred7_Portugol3446); if (state.failed) return ;
+        match(input,68,FOLLOW_68_in_synpred7_Portugol3413); if (state.failed) return ;
 
-        match(input,68,FOLLOW_68_in_synpred7_Portugol3448); if (state.failed) return ;
+        match(input,68,FOLLOW_68_in_synpred7_Portugol3415); if (state.failed) return ;
 
         }
 
@@ -5332,210 +5271,211 @@ public class PortugolParser extends Parser {
 
  
 
-    public static final BitSet FOLLOW_programa_in_parse875 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_PROGRAMA_in_programa897 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_68_in_programa900 = new BitSet(new long[]{0x000000008E130000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_declaracoesGlobais_in_programa912 = new BitSet(new long[]{0x000000008E130000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_declaracaoFuncao_in_programa917 = new BitSet(new long[]{0x000000008E130000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_programa923 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_listaDeclaracoes_in_declaracoesGlobais949 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_listaDeclaracoes_in_declaracoesLocais977 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_CONST_in_listaDeclaracoes1014 = new BitSet(new long[]{0x000000008C030000L});
-    public static final BitSet FOLLOW_declaracaoTipoDado_in_listaDeclaracoes1022 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_declaracao_in_listaDeclaracoes1033 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_50_in_listaDeclaracoes1055 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_declaracao_in_listaDeclaracoes1061 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_ID_in_declaracao1100 = new BitSet(new long[]{0x1000000000000002L,0x0000000000000001L});
-    public static final BitSet FOLLOW_64_in_declaracao1107 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000012L});
-    public static final BitSet FOLLOW_expressao_in_declaracao1114 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_declaracao1118 = new BitSet(new long[]{0x1000000000000002L,0x0000000000000001L});
-    public static final BitSet FOLLOW_64_in_declaracao1125 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000012L});
-    public static final BitSet FOLLOW_expressao_in_declaracao1132 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_declaracao1136 = new BitSet(new long[]{0x1000000000000002L});
-    public static final BitSet FOLLOW_60_in_declaracao1143 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_declaracao1149 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_INTEIRO_in_declaracaoTipoDado1184 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_REAL_in_declaracaoTipoDado1192 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_CARACTER_in_declaracaoTipoDado1200 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_CADEIA_in_declaracaoTipoDado1208 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_LOGICO_in_declaracaoTipoDado1216 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_VAZIO_in_declaracaoTipoDadoVazio1243 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_quantificador1275 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_quantificador1277 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000001L});
-    public static final BitSet FOLLOW_64_in_quantificador1284 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_quantificador1286 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_declaracaoTipoDado_in_tipoRetornoFuncao1322 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_declaracaoTipoDadoVazio_in_tipoRetornoFuncao1330 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_FUNCAO_in_declaracaoFuncao1357 = new BitSet(new long[]{0x000000088C031000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_tipoRetornoFuncao_in_declaracaoFuncao1367 = new BitSet(new long[]{0x0000000000001000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_quantificador_in_declaracaoFuncao1376 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_ID_in_declaracaoFuncao1383 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_declaracaoFuncao1385 = new BitSet(new long[]{0x000010008C030000L});
-    public static final BitSet FOLLOW_listaParametrosFuncao_in_declaracaoFuncao1391 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_declaracaoFuncao1393 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_68_in_declaracaoFuncao1413 = new BitSet(new long[]{0x00080823BCF3F030L,0x0000000000000030L});
-    public static final BitSet FOLLOW_blocos_in_declaracaoFuncao1421 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_declaracaoFuncao1431 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_declaracaoParametro_in_listaParametrosFuncao1486 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_50_in_listaParametrosFuncao1514 = new BitSet(new long[]{0x000000008C030000L});
-    public static final BitSet FOLLOW_declaracaoParametro_in_listaParametrosFuncao1520 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_declaracaoTipoDado_in_declaracaoParametro1567 = new BitSet(new long[]{0x0000040000001000L});
-    public static final BitSet FOLLOW_42_in_declaracaoParametro1574 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_ID_in_declaracaoParametro1578 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_quantificador_in_declaracaoParametro1584 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_bloco_in_blocos1616 = new BitSet(new long[]{0x00080823BCF3F032L,0x0000000000000010L});
-    public static final BitSet FOLLOW_declaracoesLocais_in_blocos1622 = new BitSet(new long[]{0x00080823BCF3F032L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_bloco1656 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_para_in_bloco1671 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_pare_in_bloco1689 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_retorne_in_bloco1706 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_se_in_bloco1722 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_enquanto_in_bloco1739 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_facaEnquanto_in_bloco1753 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_escolha_in_bloco1767 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_PARA_in_para1799 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_para1801 = new BitSet(new long[]{0x020808208C13F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_inicializacaoPara_in_para1808 = new BitSet(new long[]{0x0200000000000000L});
-    public static final BitSet FOLLOW_57_in_para1812 = new BitSet(new long[]{0x020808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_para1819 = new BitSet(new long[]{0x0200000000000000L});
-    public static final BitSet FOLLOW_57_in_para1823 = new BitSet(new long[]{0x000818200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_para1830 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_para1834 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_listaBlocos_in_para1840 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expressao_in_inicializacaoPara1871 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_listaDeclaracoes_in_inicializacaoPara1879 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_listaBlocos1912 = new BitSet(new long[]{0x00080823BCF3F030L,0x0000000000000030L});
-    public static final BitSet FOLLOW_blocos_in_listaBlocos1918 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_listaBlocos1922 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_bloco_in_listaBlocos1938 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_PARE_in_pare1966 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_ESCOLHA_in_escolha1993 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_escolha1995 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_escolha2001 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_escolha2003 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_68_in_escolha2006 = new BitSet(new long[]{0x00000000000C0000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_listaCasos_in_escolha2015 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_escolha2018 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_casoContrario_in_listaCasos2050 = new BitSet(new long[]{0x0100000000000000L});
-    public static final BitSet FOLLOW_PR_CASO_in_listaCasos2053 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_listaCasos2059 = new BitSet(new long[]{0x0100000000000000L});
-    public static final BitSet FOLLOW_56_in_listaCasos2062 = new BitSet(new long[]{0x00080823BCF3F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_blocosCaso_in_listaCasos2068 = new BitSet(new long[]{0x00000000000C0002L});
-    public static final BitSet FOLLOW_PR_CASO_CONTRARIO_in_casoContrario2094 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_blocosCaso2125 = new BitSet(new long[]{0x00080823BCF3F030L,0x0000000000000030L});
-    public static final BitSet FOLLOW_blocos_in_blocosCaso2131 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_blocosCaso2133 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_blocos_in_blocosCaso2143 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_ENQUANTO_in_enquanto2172 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_enquanto2174 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_enquanto2180 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_enquanto2182 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_listaBlocos_in_enquanto2188 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_FACA_in_facaEnquanto2214 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_listaBlocos_in_facaEnquanto2220 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_PR_ENQUANTO_in_facaEnquanto2222 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_facaEnquanto2224 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_facaEnquanto2230 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_facaEnquanto2232 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_SE_in_se2260 = new BitSet(new long[]{0x0000080000000000L});
-    public static final BitSet FOLLOW_43_in_se2262 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_se2268 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_se2270 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_listaBlocos_in_se2276 = new BitSet(new long[]{0x0000000400000002L});
-    public static final BitSet FOLLOW_PR_SENAO_in_se2279 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_listaBlocos_in_se2285 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PR_RETORNE_in_retorne2314 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_retorne2320 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expressao2_in_expressao2364 = new BitSet(new long[]{0x10A2420000000000L});
-    public static final BitSet FOLLOW_pilha_in_expressao2370 = new BitSet(new long[]{0x10A2420000000002L});
-    public static final BitSet FOLLOW_60_in_expressao2384 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_49_in_expressao2392 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_53_in_expressao2400 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_55_in_expressao2408 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_46_in_expressao2416 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_41_in_expressao2424 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao2_in_expressao2436 = new BitSet(new long[]{0x10A2420000000002L});
-    public static final BitSet FOLLOW_expressao3_in_expressao22475 = new BitSet(new long[]{0x0000000000000002L,0x000000000000000CL});
-    public static final BitSet FOLLOW_66_in_expressao22504 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_67_in_expressao22512 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao3_in_expressao22524 = new BitSet(new long[]{0x0000000000000002L,0x000000000000000CL});
-    public static final BitSet FOLLOW_expressao4_in_expressao32558 = new BitSet(new long[]{0x2000008000000002L});
-    public static final BitSet FOLLOW_61_in_expressao32579 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_39_in_expressao32587 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao4_in_expressao32600 = new BitSet(new long[]{0x2000008000000002L});
-    public static final BitSet FOLLOW_expressao5_in_expressao42634 = new BitSet(new long[]{0xCC00000000000002L});
-    public static final BitSet FOLLOW_63_in_expressao42642 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_59_in_expressao42650 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_58_in_expressao42658 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_62_in_expressao42666 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao5_in_expressao42673 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expressao6_in_expressao52705 = new BitSet(new long[]{0x0008800000000002L});
-    public static final BitSet FOLLOW_47_in_expressao52736 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao6_in_expressao52742 = new BitSet(new long[]{0x0008800000000002L});
-    public static final BitSet FOLLOW_51_in_expressao52800 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao6_in_expressao52806 = new BitSet(new long[]{0x0008800000000002L});
-    public static final BitSet FOLLOW_expressao7_in_expressao62855 = new BitSet(new long[]{0x0040210000000002L});
-    public static final BitSet FOLLOW_45_in_expressao62878 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_54_in_expressao62886 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_40_in_expressao62894 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao7_in_expressao62907 = new BitSet(new long[]{0x0040210000000002L});
-    public static final BitSet FOLLOW_51_in_expressao72949 = new BitSet(new long[]{0x0000082000007030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_OPERADOR_NAO_in_expressao72960 = new BitSet(new long[]{0x000008200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao8_in_expressao72970 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_expressao83004 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_expressao83010 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_expressao83012 = new BitSet(new long[]{0x0011000000000002L});
-    public static final BitSet FOLLOW_referencia_in_expressao83022 = new BitSet(new long[]{0x0011000000000002L});
-    public static final BitSet FOLLOW_tipoPrimitivo_in_expressao83031 = new BitSet(new long[]{0x0011000000000002L});
-    public static final BitSet FOLLOW_matrizVetor_in_expressao83041 = new BitSet(new long[]{0x0011000000000002L});
-    public static final BitSet FOLLOW_48_in_expressao83054 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_52_in_expressao83062 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_REAL_in_tipoPrimitivo3091 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LOGICO_in_tipoPrimitivo3111 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CADEIA_in_tipoPrimitivo3125 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INTEIRO_in_tipoPrimitivo3138 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CARACTER_in_tipoPrimitivo3153 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_referencia3182 = new BitSet(new long[]{0x0000080000000000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_chamadaFuncao_in_referencia3199 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_referenciaVetorMatriz_in_referencia3216 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_referenciaId_in_referencia3229 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_referenciaVetorMatriz3290 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_referenciaVetorMatriz3296 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_referenciaVetorMatriz3298 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000001L});
-    public static final BitSet FOLLOW_64_in_referenciaVetorMatriz3301 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_referenciaVetorMatriz3307 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_referenciaVetorMatriz3309 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_chamadaFuncao3341 = new BitSet(new long[]{0x000818200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_listaParametros_in_chamadaFuncao3348 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_44_in_chamadaFuncao3352 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expressao_in_listaParametros3387 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_50_in_listaParametros3403 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_listaParametros3409 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_matriz_in_matrizVetor3456 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_vetor_in_matrizVetor3464 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_vetor3497 = new BitSet(new long[]{0x000C08200000F030L,0x0000000000000030L});
-    public static final BitSet FOLLOW_listaExpressoes_in_vetor3503 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_vetor3509 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_matriz3542 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_listaListaExpressoes_in_matriz3550 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_matriz3557 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_listaListaExpressoes3586 = new BitSet(new long[]{0x000C08200000F030L,0x0000000000000030L});
-    public static final BitSet FOLLOW_listaExpressoes_in_listaListaExpressoes3592 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_listaListaExpressoes3594 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_50_in_listaListaExpressoes3609 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_68_in_listaListaExpressoes3612 = new BitSet(new long[]{0x000C08200000F030L,0x0000000000000030L});
-    public static final BitSet FOLLOW_listaExpressoes_in_listaListaExpressoes3618 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_69_in_listaListaExpressoes3620 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_expressao_in_listaExpressoes3666 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_50_in_listaExpressoes3680 = new BitSet(new long[]{0x000C08200000F032L,0x0000000000000010L});
-    public static final BitSet FOLLOW_expressao_in_listaExpressoes3687 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_68_in_synpred1_Portugol1908 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_synpred2_Portugol2120 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_51_in_synpred3_Portugol2772 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_51_in_synpred4_Portugol2939 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_synpred5_Portugol3190 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_synpred6_Portugol3207 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_68_in_synpred7_Portugol3446 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
-    public static final BitSet FOLLOW_68_in_synpred7_Portugol3448 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_programa_in_parse863 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_PROGRAMA_in_programa885 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_68_in_programa888 = new BitSet(new long[]{0x000000008E0B0000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_declaracoesGlobais_in_programa900 = new BitSet(new long[]{0x000000008E0B0000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_declaracaoFuncao_in_programa905 = new BitSet(new long[]{0x000000008E0B0000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_programa911 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_listaDeclaracoes_in_declaracoesGlobais937 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_listaDeclaracoes_in_declaracoesLocais965 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_CONST_in_listaDeclaracoes1002 = new BitSet(new long[]{0x000000008C030000L});
+    public static final BitSet FOLLOW_declaracaoTipoDado_in_listaDeclaracoes1010 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_declaracao_in_listaDeclaracoes1021 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_50_in_listaDeclaracoes1043 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_declaracao_in_listaDeclaracoes1049 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_ID_in_declaracao1088 = new BitSet(new long[]{0x1000000000000002L,0x0000000000000001L});
+    public static final BitSet FOLLOW_64_in_declaracao1095 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000012L});
+    public static final BitSet FOLLOW_expressao_in_declaracao1102 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_declaracao1106 = new BitSet(new long[]{0x1000000000000002L,0x0000000000000001L});
+    public static final BitSet FOLLOW_64_in_declaracao1113 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000012L});
+    public static final BitSet FOLLOW_expressao_in_declaracao1120 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_declaracao1124 = new BitSet(new long[]{0x1000000000000002L});
+    public static final BitSet FOLLOW_60_in_declaracao1131 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_declaracao1137 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_INTEIRO_in_declaracaoTipoDado1172 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_REAL_in_declaracaoTipoDado1180 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_CARACTER_in_declaracaoTipoDado1188 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_CADEIA_in_declaracaoTipoDado1196 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_LOGICO_in_declaracaoTipoDado1204 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_VAZIO_in_declaracaoTipoDadoVazio1231 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_quantificador1263 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_quantificador1265 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000001L});
+    public static final BitSet FOLLOW_64_in_quantificador1272 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_quantificador1274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_declaracaoTipoDado_in_tipoRetornoFuncao1310 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_declaracaoTipoDadoVazio_in_tipoRetornoFuncao1318 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_FUNCAO_in_declaracaoFuncao1345 = new BitSet(new long[]{0x000000088C031000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_tipoRetornoFuncao_in_declaracaoFuncao1355 = new BitSet(new long[]{0x0000000000001000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_quantificador_in_declaracaoFuncao1364 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_ID_in_declaracaoFuncao1371 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_declaracaoFuncao1373 = new BitSet(new long[]{0x000010008C030000L});
+    public static final BitSet FOLLOW_listaParametrosFuncao_in_declaracaoFuncao1379 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_declaracaoFuncao1381 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_68_in_declaracaoFuncao1401 = new BitSet(new long[]{0x00080823BCEBF030L,0x0000000000000030L});
+    public static final BitSet FOLLOW_blocos_in_declaracaoFuncao1409 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_declaracaoFuncao1419 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_declaracaoParametro_in_listaParametrosFuncao1474 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_50_in_listaParametrosFuncao1502 = new BitSet(new long[]{0x000000008C030000L});
+    public static final BitSet FOLLOW_declaracaoParametro_in_listaParametrosFuncao1508 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_declaracaoTipoDado_in_declaracaoParametro1555 = new BitSet(new long[]{0x0000040000001000L});
+    public static final BitSet FOLLOW_42_in_declaracaoParametro1562 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_ID_in_declaracaoParametro1566 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_quantificador_in_declaracaoParametro1572 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_bloco_in_blocos1604 = new BitSet(new long[]{0x00080823BCEBF032L,0x0000000000000010L});
+    public static final BitSet FOLLOW_declaracoesLocais_in_blocos1610 = new BitSet(new long[]{0x00080823BCEBF032L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_bloco1644 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_para_in_bloco1659 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_pare_in_bloco1677 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_retorne_in_bloco1694 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_se_in_bloco1710 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_enquanto_in_bloco1727 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_facaEnquanto_in_bloco1741 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_escolha_in_bloco1755 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_PARA_in_para1787 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_para1789 = new BitSet(new long[]{0x020808208C0BF030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_inicializacaoPara_in_para1796 = new BitSet(new long[]{0x0200000000000000L});
+    public static final BitSet FOLLOW_57_in_para1800 = new BitSet(new long[]{0x020808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_para1807 = new BitSet(new long[]{0x0200000000000000L});
+    public static final BitSet FOLLOW_57_in_para1811 = new BitSet(new long[]{0x000818200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_para1818 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_para1822 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_listaBlocos_in_para1828 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expressao_in_inicializacaoPara1859 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_listaDeclaracoes_in_inicializacaoPara1867 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_listaBlocos1900 = new BitSet(new long[]{0x00080823BCEBF030L,0x0000000000000030L});
+    public static final BitSet FOLLOW_blocos_in_listaBlocos1906 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_listaBlocos1910 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_bloco_in_listaBlocos1926 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_PARE_in_pare1954 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_ESCOLHA_in_escolha1981 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_escolha1983 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_escolha1989 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_escolha1991 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_68_in_escolha1994 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_PR_CASO_in_escolha2003 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_escolha2009 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_escolha2011 = new BitSet(new long[]{0x00080823BCEBF030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_blocosCaso_in_escolha2017 = new BitSet(new long[]{0x0000000000040000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_PR_CASO_in_escolha2032 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_PR_CONTRARIO_in_escolha2034 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_56_in_escolha2036 = new BitSet(new long[]{0x00080823BCEBF030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_blocosCaso_in_escolha2042 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_escolha2056 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_blocosCaso2092 = new BitSet(new long[]{0x00080823BCEBF030L,0x0000000000000030L});
+    public static final BitSet FOLLOW_blocos_in_blocosCaso2098 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_blocosCaso2100 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_blocos_in_blocosCaso2110 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_ENQUANTO_in_enquanto2139 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_enquanto2141 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_enquanto2147 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_enquanto2149 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_listaBlocos_in_enquanto2155 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_FACA_in_facaEnquanto2181 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_listaBlocos_in_facaEnquanto2187 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_PR_ENQUANTO_in_facaEnquanto2189 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_facaEnquanto2191 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_facaEnquanto2197 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_facaEnquanto2199 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_SE_in_se2227 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_43_in_se2229 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_se2235 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_se2237 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_listaBlocos_in_se2243 = new BitSet(new long[]{0x0000000400000002L});
+    public static final BitSet FOLLOW_PR_SENAO_in_se2246 = new BitSet(new long[]{0x0008082330E0F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_listaBlocos_in_se2252 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PR_RETORNE_in_retorne2281 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_retorne2287 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expressao2_in_expressao2331 = new BitSet(new long[]{0x10A2420000000000L});
+    public static final BitSet FOLLOW_pilha_in_expressao2337 = new BitSet(new long[]{0x10A2420000000002L});
+    public static final BitSet FOLLOW_60_in_expressao2351 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_49_in_expressao2359 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_53_in_expressao2367 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_55_in_expressao2375 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_46_in_expressao2383 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_41_in_expressao2391 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao2_in_expressao2403 = new BitSet(new long[]{0x10A2420000000002L});
+    public static final BitSet FOLLOW_expressao3_in_expressao22442 = new BitSet(new long[]{0x0000000000000002L,0x000000000000000CL});
+    public static final BitSet FOLLOW_66_in_expressao22471 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_67_in_expressao22479 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao3_in_expressao22491 = new BitSet(new long[]{0x0000000000000002L,0x000000000000000CL});
+    public static final BitSet FOLLOW_expressao4_in_expressao32525 = new BitSet(new long[]{0x2000008000000002L});
+    public static final BitSet FOLLOW_61_in_expressao32546 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_39_in_expressao32554 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao4_in_expressao32567 = new BitSet(new long[]{0x2000008000000002L});
+    public static final BitSet FOLLOW_expressao5_in_expressao42601 = new BitSet(new long[]{0xCC00000000000002L});
+    public static final BitSet FOLLOW_63_in_expressao42609 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_59_in_expressao42617 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_58_in_expressao42625 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_62_in_expressao42633 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao5_in_expressao42640 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expressao6_in_expressao52672 = new BitSet(new long[]{0x0008800000000002L});
+    public static final BitSet FOLLOW_47_in_expressao52703 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao6_in_expressao52709 = new BitSet(new long[]{0x0008800000000002L});
+    public static final BitSet FOLLOW_51_in_expressao52767 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao6_in_expressao52773 = new BitSet(new long[]{0x0008800000000002L});
+    public static final BitSet FOLLOW_expressao7_in_expressao62822 = new BitSet(new long[]{0x0040210000000002L});
+    public static final BitSet FOLLOW_45_in_expressao62845 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_54_in_expressao62853 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_40_in_expressao62861 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao7_in_expressao62874 = new BitSet(new long[]{0x0040210000000002L});
+    public static final BitSet FOLLOW_51_in_expressao72916 = new BitSet(new long[]{0x0000082000007030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_OPERADOR_NAO_in_expressao72927 = new BitSet(new long[]{0x000008200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao8_in_expressao72937 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_expressao82971 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_expressao82977 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_expressao82979 = new BitSet(new long[]{0x0011000000000002L});
+    public static final BitSet FOLLOW_referencia_in_expressao82989 = new BitSet(new long[]{0x0011000000000002L});
+    public static final BitSet FOLLOW_tipoPrimitivo_in_expressao82998 = new BitSet(new long[]{0x0011000000000002L});
+    public static final BitSet FOLLOW_matrizVetor_in_expressao83008 = new BitSet(new long[]{0x0011000000000002L});
+    public static final BitSet FOLLOW_48_in_expressao83021 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_52_in_expressao83029 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_REAL_in_tipoPrimitivo3058 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LOGICO_in_tipoPrimitivo3078 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CADEIA_in_tipoPrimitivo3092 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INTEIRO_in_tipoPrimitivo3105 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CARACTER_in_tipoPrimitivo3120 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_referencia3149 = new BitSet(new long[]{0x0000080000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_chamadaFuncao_in_referencia3166 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_referenciaVetorMatriz_in_referencia3183 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_referenciaId_in_referencia3196 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_referenciaVetorMatriz3257 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_referenciaVetorMatriz3263 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_referenciaVetorMatriz3265 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000001L});
+    public static final BitSet FOLLOW_64_in_referenciaVetorMatriz3268 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_referenciaVetorMatriz3274 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_referenciaVetorMatriz3276 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_chamadaFuncao3308 = new BitSet(new long[]{0x000818200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_listaParametros_in_chamadaFuncao3315 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_44_in_chamadaFuncao3319 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expressao_in_listaParametros3354 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_50_in_listaParametros3370 = new BitSet(new long[]{0x000808200000F030L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_listaParametros3376 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_matriz_in_matrizVetor3423 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_vetor_in_matrizVetor3431 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_vetor3464 = new BitSet(new long[]{0x000C08200000F030L,0x0000000000000030L});
+    public static final BitSet FOLLOW_listaExpressoes_in_vetor3470 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_vetor3476 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_matriz3509 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_listaListaExpressoes_in_matriz3517 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_matriz3524 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_listaListaExpressoes3553 = new BitSet(new long[]{0x000C08200000F030L,0x0000000000000030L});
+    public static final BitSet FOLLOW_listaExpressoes_in_listaListaExpressoes3559 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_listaListaExpressoes3561 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_50_in_listaListaExpressoes3576 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_68_in_listaListaExpressoes3579 = new BitSet(new long[]{0x000C08200000F030L,0x0000000000000030L});
+    public static final BitSet FOLLOW_listaExpressoes_in_listaListaExpressoes3585 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000020L});
+    public static final BitSet FOLLOW_69_in_listaListaExpressoes3587 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_expressao_in_listaExpressoes3633 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_50_in_listaExpressoes3647 = new BitSet(new long[]{0x000C08200000F032L,0x0000000000000010L});
+    public static final BitSet FOLLOW_expressao_in_listaExpressoes3654 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_68_in_synpred1_Portugol1896 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_synpred2_Portugol2087 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_51_in_synpred3_Portugol2739 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_51_in_synpred4_Portugol2906 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_synpred5_Portugol3157 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_synpred6_Portugol3174 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_68_in_synpred7_Portugol3413 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000010L});
+    public static final BitSet FOLLOW_68_in_synpred7_Portugol3415 = new BitSet(new long[]{0x0000000000000002L});
 
 }

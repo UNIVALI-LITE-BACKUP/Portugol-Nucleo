@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-03-15 13:36:45
+// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-03-27 15:15:10
  
 	package br.univali.portugol.nucleo.analise.sintatica;
 
@@ -57,8 +57,8 @@ public class PortugolLexer extends Lexer {
     public static final int PR_CADEIA=16;
     public static final int PR_CARACTER=17;
     public static final int PR_CASO=18;
-    public static final int PR_CASO_CONTRARIO=19;
-    public static final int PR_CONST=20;
+    public static final int PR_CONST=19;
+    public static final int PR_CONTRARIO=20;
     public static final int PR_ENQUANTO=21;
     public static final int PR_ESCOLHA=22;
     public static final int PR_FACA=23;
@@ -952,36 +952,13 @@ public class PortugolLexer extends Lexer {
     }
     // $ANTLR end "PR_ESCOLHA"
 
-    // $ANTLR start "PR_CASO_CONTRARIO"
-    public final void mPR_CASO_CONTRARIO() throws RecognitionException {
-        try {
-            int _type = PR_CASO_CONTRARIO;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:20: ( 'caso contrario' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:22: 'caso contrario'
-            {
-            match("caso contrario"); 
-
-
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        	// do for sure before leaving
-        }
-    }
-    // $ANTLR end "PR_CASO_CONTRARIO"
-
     // $ANTLR start "PR_CASO"
     public final void mPR_CASO() throws RecognitionException {
         try {
             int _type = PR_CASO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:148:12: ( 'caso' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:148:14: 'caso'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:12: ( 'caso' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:147:14: 'caso'
             {
             match("caso"); 
 
@@ -997,6 +974,29 @@ public class PortugolLexer extends Lexer {
         }
     }
     // $ANTLR end "PR_CASO"
+
+    // $ANTLR start "PR_CONTRARIO"
+    public final void mPR_CONTRARIO() throws RecognitionException {
+        try {
+            int _type = PR_CONTRARIO;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:148:16: ( 'contrario' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:148:18: 'contrario'
+            {
+            match("contrario"); 
+
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "PR_CONTRARIO"
 
     // $ANTLR start "PR_CONST"
     public final void mPR_CONST() throws RecognitionException {
@@ -1164,8 +1164,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = PR_SE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:11: ( 'se' )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:13: 'se'
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:10: ( 'se' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:156:12: 'se'
             {
             match("se"); 
 
@@ -1352,8 +1352,8 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:168:9: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:168:11: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:168:8: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:168:10: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
@@ -1365,7 +1365,7 @@ public class PortugolLexer extends Lexer {
             }
 
 
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:168:35: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:168:34: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
             loop2:
             do {
                 int alt2=2;
@@ -2194,7 +2194,7 @@ public class PortugolLexer extends Lexer {
     // $ANTLR end "COMENTARIO"
 
     public void mTokens() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:8: ( T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO_CONTRARIO | PR_CASO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO )
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:8: ( T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO )
         int alt14=60;
         alt14 = dfa14.predict(input);
         switch (alt14) {
@@ -2511,23 +2511,23 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 40 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:279: PR_CASO_CONTRARIO
-                {
-                mPR_CASO_CONTRARIO(); 
-
-
-                }
-                break;
-            case 41 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:297: PR_CASO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:279: PR_CASO
                 {
                 mPR_CASO(); 
 
 
                 }
                 break;
+            case 41 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:287: PR_CONTRARIO
+                {
+                mPR_CONTRARIO(); 
+
+
+                }
+                break;
             case 42 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:305: PR_CONST
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:300: PR_CONST
                 {
                 mPR_CONST(); 
 
@@ -2535,7 +2535,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 43 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:314: PR_FUNCAO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:309: PR_FUNCAO
                 {
                 mPR_FUNCAO(); 
 
@@ -2543,7 +2543,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 44 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:324: PR_RETORNE
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:319: PR_RETORNE
                 {
                 mPR_RETORNE(); 
 
@@ -2551,7 +2551,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 45 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:335: PR_PARA
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:330: PR_PARA
                 {
                 mPR_PARA(); 
 
@@ -2559,7 +2559,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 46 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:343: PR_PARE
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:338: PR_PARE
                 {
                 mPR_PARE(); 
 
@@ -2567,7 +2567,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 47 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:351: PR_FACA
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:346: PR_FACA
                 {
                 mPR_FACA(); 
 
@@ -2575,7 +2575,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 48 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:359: PR_ENQUANTO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:354: PR_ENQUANTO
                 {
                 mPR_ENQUANTO(); 
 
@@ -2583,7 +2583,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 49 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:371: PR_SE
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:366: PR_SE
                 {
                 mPR_SE(); 
 
@@ -2591,7 +2591,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 50 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:377: PR_SENAO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:372: PR_SENAO
                 {
                 mPR_SENAO(); 
 
@@ -2599,7 +2599,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 51 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:386: GAMBIARRA
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:381: GAMBIARRA
                 {
                 mGAMBIARRA(); 
 
@@ -2607,7 +2607,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 52 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:396: OPERADOR_NAO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:391: OPERADOR_NAO
                 {
                 mOPERADOR_NAO(); 
 
@@ -2615,7 +2615,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 53 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:409: LOGICO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:404: LOGICO
                 {
                 mLOGICO(); 
 
@@ -2623,7 +2623,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 54 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:416: ID
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:411: ID
                 {
                 mID(); 
 
@@ -2631,7 +2631,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 55 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:419: INTEIRO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:414: INTEIRO
                 {
                 mINTEIRO(); 
 
@@ -2639,7 +2639,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 56 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:427: REAL
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:422: REAL
                 {
                 mREAL(); 
 
@@ -2647,7 +2647,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 57 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:432: CADEIA
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:427: CADEIA
                 {
                 mCADEIA(); 
 
@@ -2655,7 +2655,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 58 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:439: CARACTER
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:434: CARACTER
                 {
                 mCARACTER(); 
 
@@ -2663,7 +2663,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 59 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:448: ESPACO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:443: ESPACO
                 {
                 mESPACO(); 
 
@@ -2671,7 +2671,7 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 60 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:455: COMENTARIO
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:450: COMENTARIO
                 {
                 mCOMENTARIO(); 
 
@@ -2689,14 +2689,15 @@ public class PortugolLexer extends Lexer {
         "\1\42\1\uffff\1\47\3\uffff\1\52\1\55\1\uffff\1\60\1\63\2\uffff\1"+
         "\65\1\67\1\71\2\uffff\1\74\1\40\2\uffff\10\40\1\44\1\40\1\uffff"+
         "\1\42\1\uffff\1\44\26\uffff\2\40\1\uffff\1\120\13\40\1\141\1\uffff"+
-        "\1\40\2\uffff\2\40\1\uffff\20\40\1\uffff\1\166\3\40\1\172\1\173"+
-        "\1\174\6\40\1\u0084\3\40\1\u0088\2\40\1\uffff\3\40\3\uffff\1\40"+
-        "\1\u008f\4\40\2\uffff\1\u0094\2\40\1\uffff\1\u0097\1\u0098\4\40"+
-        "\1\uffff\1\40\1\u009e\1\u009f\1\40\1\uffff\1\40\1\u00a2\2\uffff"+
-        "\1\u00a3\2\40\1\u00a6\1\40\2\uffff\1\40\1\u00a9\2\uffff\1\u00aa"+
-        "\1\u00ab\1\uffff\1\40\1\u00ad\3\uffff\1\40\1\uffff\1\u0097";
+        "\1\40\2\uffff\2\40\1\uffff\20\40\1\uffff\1\167\3\40\1\173\1\174"+
+        "\1\175\6\40\1\u0084\4\40\1\u0089\2\40\1\uffff\3\40\3\uffff\1\40"+
+        "\1\u0090\4\40\1\uffff\1\40\1\u0096\2\40\1\uffff\1\u0099\1\u009a"+
+        "\4\40\1\uffff\1\40\1\u00a0\1\u00a1\2\40\1\uffff\1\40\1\u00a5\2\uffff"+
+        "\1\u00a6\2\40\1\u00a9\1\40\2\uffff\2\40\1\u00ad\2\uffff\1\u00ae"+
+        "\1\u00af\1\uffff\1\40\1\u00b1\1\40\3\uffff\1\40\1\uffff\1\u00b4"+
+        "\1\u0099\1\uffff";
     static final String DFA14_eofS =
-        "\u00af\uffff";
+        "\u00b5\uffff";
     static final String DFA14_minS =
         "\1\11\1\uffff\1\75\3\uffff\1\75\1\53\1\uffff\1\55\1\52\2\uffff\3"+
         "\75\2\uffff\1\60\1\165\2\uffff\1\141\1\145\1\141\1\157\1\141\1\156"+
@@ -2705,37 +2706,40 @@ public class PortugolLexer extends Lexer {
         "\1\164\1\156\1\143\1\60\1\uffff\1\157\2\uffff\1\157\1\165\1\uffff"+
         "\1\147\1\141\1\154\1\157\1\151\1\144\1\151\1\145\1\141\1\157\1\163"+
         "\1\145\1\143\1\141\1\163\1\141\1\uffff\1\60\1\154\1\141\1\162\3"+
-        "\60\1\162\1\157\1\141\1\143\1\151\1\143\1\40\1\164\1\151\1\141\1"+
-        "\60\2\157\1\uffff\1\150\1\156\1\141\3\uffff\1\156\1\60\1\144\1\157"+
-        "\1\141\1\164\2\uffff\1\60\1\162\1\157\1\uffff\2\60\1\141\1\164\1"+
-        "\155\1\145\1\uffff\1\145\2\60\1\145\1\uffff\1\157\1\60\2\uffff\1"+
-        "\60\1\157\1\141\1\60\1\151\2\uffff\1\162\1\60\2\uffff\2\60\1\uffff"+
-        "\1\162\1\60\3\uffff\1\157\1\uffff\1\60";
+        "\60\1\162\1\157\1\141\1\143\1\151\1\143\1\60\1\162\1\164\1\151\1"+
+        "\141\1\60\2\157\1\uffff\1\150\1\156\1\141\3\uffff\1\156\1\60\1\144"+
+        "\1\157\1\141\1\164\1\uffff\1\141\1\60\1\162\1\157\1\uffff\2\60\1"+
+        "\141\1\164\1\155\1\145\1\uffff\1\145\2\60\1\145\1\162\1\uffff\1"+
+        "\157\1\60\2\uffff\1\60\1\157\1\141\1\60\1\151\2\uffff\1\162\1\151"+
+        "\1\60\2\uffff\2\60\1\uffff\1\162\1\60\1\157\3\uffff\1\157\1\uffff"+
+        "\2\60\1\uffff";
     static final String DFA14_maxS =
         "\1\u00fc\1\uffff\1\75\3\uffff\2\75\1\uffff\2\75\2\uffff\3\75\2\uffff"+
         "\1\172\1\165\2\uffff\1\162\2\145\2\157\1\156\1\165\1\145\1\uffff"+
         "\1\141\1\uffff\1\71\1\uffff\1\uffff\26\uffff\1\143\1\161\1\uffff"+
         "\1\172\1\157\1\162\1\164\1\172\1\162\1\147\1\163\1\156\1\164\1\156"+
         "\1\154\1\172\1\uffff\1\157\2\uffff\1\157\1\165\1\uffff\1\147\1\145"+
-        "\1\154\1\157\1\151\1\144\1\151\1\145\1\141\1\157\1\163\1\145\1\143"+
+        "\1\154\1\157\1\151\1\144\1\151\1\145\1\141\1\157\1\164\1\145\1\143"+
         "\1\141\1\163\1\141\1\uffff\1\172\1\154\1\141\1\162\3\172\1\162\1"+
-        "\157\1\141\1\143\1\151\1\143\1\172\1\164\1\151\1\141\1\172\2\157"+
-        "\1\uffff\1\150\1\156\1\141\3\uffff\1\156\1\172\1\144\1\157\1\141"+
-        "\1\164\2\uffff\1\172\1\162\1\157\1\uffff\2\172\1\141\1\164\1\155"+
-        "\1\145\1\uffff\1\145\2\172\1\145\1\uffff\1\157\1\172\2\uffff\1\172"+
-        "\1\157\1\141\1\172\1\151\2\uffff\1\162\1\172\2\uffff\2\172\1\uffff"+
-        "\1\162\1\172\3\uffff\1\157\1\uffff\1\172";
+        "\157\1\141\1\143\1\151\1\143\1\172\1\162\1\164\1\151\1\141\1\172"+
+        "\2\157\1\uffff\1\150\1\156\1\141\3\uffff\1\156\1\172\1\144\1\157"+
+        "\1\141\1\164\1\uffff\1\141\1\172\1\162\1\157\1\uffff\2\172\1\141"+
+        "\1\164\1\155\1\145\1\uffff\1\145\2\172\1\145\1\162\1\uffff\1\157"+
+        "\1\172\2\uffff\1\172\1\157\1\141\1\172\1\151\2\uffff\1\162\1\151"+
+        "\1\172\2\uffff\2\172\1\uffff\1\162\1\172\1\157\3\uffff\1\157\1\uffff"+
+        "\2\172\1\uffff";
     static final String DFA14_acceptS =
         "\1\uffff\1\1\1\uffff\1\4\1\5\1\6\2\uffff\1\14\2\uffff\1\22\1\23"+
         "\3\uffff\1\32\1\33\2\uffff\1\36\1\37\12\uffff\1\66\1\uffff\1\67"+
         "\1\uffff\1\63\1\73\1\3\1\2\1\4\1\10\1\7\1\12\1\13\1\11\1\16\1\17"+
         "\1\15\1\21\1\74\1\20\1\25\1\24\1\27\1\26\1\31\1\30\2\uffff\1\34"+
-        "\15\uffff\1\71\1\uffff\1\70\1\72\2\uffff\1\35\20\uffff\1\61\24\uffff"+
-        "\1\64\3\uffff\1\55\1\56\1\41\6\uffff\1\50\1\51\3\uffff\1\57\6\uffff"+
-        "\1\42\4\uffff\1\52\2\uffff\1\65\1\62\5\uffff\1\43\1\44\2\uffff\1"+
-        "\53\1\47\2\uffff\1\54\2\uffff\1\45\1\60\1\40\1\uffff\1\46\1\uffff";
+        "\15\uffff\1\71\1\uffff\1\70\1\72\2\uffff\1\35\20\uffff\1\61\25\uffff"+
+        "\1\64\3\uffff\1\55\1\56\1\41\6\uffff\1\50\4\uffff\1\57\6\uffff\1"+
+        "\42\5\uffff\1\52\2\uffff\1\65\1\62\5\uffff\1\43\1\44\3\uffff\1\53"+
+        "\1\47\2\uffff\1\54\3\uffff\1\45\1\60\1\40\1\uffff\1\46\2\uffff\1"+
+        "\51";
     static final String DFA14_specialS =
-        "\36\uffff\1\1\4\uffff\1\0\u008b\uffff}>";
+        "\36\uffff\1\0\4\uffff\1\1\u0091\uffff}>";
     static final String[] DFA14_transitionS = {
             "\2\45\2\uffff\1\45\22\uffff\1\45\1\1\1\36\2\44\1\2\1\3\1\43"+
             "\1\4\1\5\1\6\1\7\1\10\1\11\1\44\1\12\12\41\1\13\1\14\1\15\1"+
@@ -2838,91 +2842,96 @@ public class PortugolLexer extends Lexer {
             "\1\155",
             "\1\156",
             "\1\157",
-            "\1\160",
-            "\1\161",
+            "\1\161\1\160",
             "\1\162",
             "\1\163",
             "\1\164",
             "\1\165",
+            "\1\166",
             "",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\1\167",
             "\1\170",
             "\1\171",
+            "\1\172",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\1\175",
             "\1\176",
             "\1\177",
             "\1\u0080",
             "\1\u0081",
             "\1\u0082",
-            "\1\u0083\17\uffff\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff"+
-            "\32\40",
+            "\1\u0083",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "\1\u0085",
             "\1\u0086",
             "\1\u0087",
+            "\1\u0088",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\1\u0089",
             "\1\u008a",
-            "",
             "\1\u008b",
+            "",
             "\1\u008c",
             "\1\u008d",
-            "",
-            "",
-            "",
             "\1\u008e",
+            "",
+            "",
+            "",
+            "\1\u008f",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\1\u0090",
             "\1\u0091",
             "\1\u0092",
             "\1\u0093",
+            "\1\u0094",
             "",
-            "",
-            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "\1\u0095",
-            "\1\u0096",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            "\1\u0097",
+            "\1\u0098",
             "",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\1\u0099",
-            "\1\u009a",
             "\1\u009b",
             "\1\u009c",
-            "",
             "\1\u009d",
-            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\1\u00a0",
+            "\1\u009e",
             "",
-            "\1\u00a1",
+            "\1\u009f",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "",
-            "",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            "\1\u00a2",
+            "\1\u00a3",
+            "",
             "\1\u00a4",
-            "\1\u00a5",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            "",
+            "",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "\1\u00a7",
-            "",
-            "",
             "\1\u00a8",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            "\1\u00aa",
             "",
             "",
-            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
-            "",
+            "\1\u00ab",
             "\1\u00ac",
             "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "",
             "",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
             "",
-            "\1\u00ae",
+            "\1\u00b0",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            "\1\u00b2",
             "",
-            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40"
+            "",
+            "",
+            "\1\u00b3",
+            "",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            "\12\40\7\uffff\32\40\4\uffff\1\40\1\uffff\32\40",
+            ""
     };
 
     static final short[] DFA14_eot = DFA.unpackEncodedString(DFA14_eotS);
@@ -2955,17 +2964,17 @@ public class PortugolLexer extends Lexer {
             this.transition = DFA14_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO_CONTRARIO | PR_CASO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO );";
+            return "1:1: Tokens : ( T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA14_35 = input.LA(1);
+                        int LA14_30 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA14_35 >= '\u0000' && LA14_35 <= '&')||(LA14_35 >= '(' && LA14_35 <= '\uFFFF')) ) {s = 77;}
+                        if ( ((LA14_30 >= '\u0000' && LA14_30 <= '\uFFFF')) ) {s = 74;}
 
                         else s = 36;
 
@@ -2973,10 +2982,10 @@ public class PortugolLexer extends Lexer {
                         break;
 
                     case 1 : 
-                        int LA14_30 = input.LA(1);
+                        int LA14_35 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA14_30 >= '\u0000' && LA14_30 <= '\uFFFF')) ) {s = 74;}
+                        if ( ((LA14_35 >= '\u0000' && LA14_35 <= '&')||(LA14_35 >= '(' && LA14_35 <= '\uFFFF')) ) {s = 77;}
 
                         else s = 36;
 

@@ -5,6 +5,7 @@ import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.execucao.erros.ErroDivisaoPorZero;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
+import br.univali.portugol.nucleo.execucao.erros.ErroIndiceMatrizInvalido;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceVetorInvalido;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -50,13 +51,31 @@ public class Interpretador implements VisitanteASA
                 Funcao funcaoPrincipal = (Funcao) tabelaSimbolosGlobal.obter(funcaoInicial);
                 TabelaSimbolos tabelaSimbolosFuncaoPrincipal = new TabelaSimbolos();
                 tabelaSimbolosLocal.push(tabelaSimbolosFuncaoPrincipal);
-                if (funcaoPrincipal.getParametros().size() > 0)
-                {
-                    List<Object> listaParametros = converterVetorEmLista(parametros);
-                    tabelaSimbolosFuncaoPrincipal.adicionar(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, listaParametros.size(), listaParametros));
+                
+                if ( funcaoPrincipal.getParametros().isEmpty() || (funcaoPrincipal.getParametros().size() == 1 && 
+                        funcaoPrincipal.getParametros().get(0).getQuantificador() == Quantificador.VETOR && funcaoPrincipal.getParametros().get(0).getTipoDado() == TipoDado.CADEIA)){
+                
+                
+                
+                    if (funcaoPrincipal.getParametros().size() == 1)
+                    {
+                        List<Object> listaParametros = converterVetorEmLista(parametros);
+                        tabelaSimbolosFuncaoPrincipal.adicionar(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, listaParametros.size(), listaParametros));
+                    }
+
+                    interpretarListaBlocos(funcaoPrincipal.getBlocos());
+                    tabelaSimbolosLocal.pop();                
                 }
-                interpretarListaBlocos(funcaoPrincipal.getBlocos());
-                tabelaSimbolosLocal.pop();
+                else {
+                    throw new ErroExecucao() 
+                    {
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return "A função principal \"" + funcaoInicial + "\" não deve possuir parâmetros ou o parâmetro deve ser um vetor do tipo CADEIA.";
+                        }
+                    };
+                }
             }
             else
             {
@@ -131,7 +150,7 @@ public class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA
     {
-        return noCaso.getExpressao().aceitar(this);
+        return noCaso.getExpressao() != null ? noCaso.getExpressao().aceitar(this) : null;
     }
 
     @Override
@@ -1305,8 +1324,12 @@ public class Interpretador implements VisitanteASA
     {
         int linha = (Integer) referenciaMatriz.getLinha().aceitar(this);
         int coluna = (Integer) referenciaMatriz.getColuna().aceitar(this);
-        matriz.setValor(linha, coluna, valor);
-
+        try {
+            matriz.setValor(linha, coluna, valor);
+        } catch (IndexOutOfBoundsException ie)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz,linha,coluna), asa, referenciaMatriz);
+        }
         return valor;
     }
 
@@ -1412,9 +1435,15 @@ public class Interpretador implements VisitanteASA
         int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
         String nome = noReferenciaMatriz.getNome();
         Matriz matriz = (Matriz) extrairSimbolo(obterSimbolo(nome));
-
-        Object valor = matriz.getValor(linha, coluna);
-
+        
+        Object valor;
+        try {
+            valor = matriz.getValor(linha, coluna);
+        } catch (IndexOutOfBoundsException ie)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz,linha,coluna), asa, noReferenciaMatriz);
+        }
+        
         while (valor instanceof NoExpressao)
         {
             valor = ((NoExpressao) valor).aceitar(this);
@@ -1461,8 +1490,15 @@ public class Interpretador implements VisitanteASA
         {
             throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, noReferenciaVetor);
         }
-
-        Object valor = vetor.getValor(indice);
+        
+        Object valor;
+        try { 
+            valor = vetor.getValor(indice);
+        }
+        catch (ArrayIndexOutOfBoundsException aioobe)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, ultimaReferenciaAcessada), null, noReferenciaVetor);
+        }
 
         while (valor instanceof NoExpressao)
         {
@@ -1519,7 +1555,8 @@ public class Interpretador implements VisitanteASA
             {
                 try
                 {
-                    valores.add(((NoExpressao) valoresVetor.get(i)).aceitar(this));
+                    final NoExpressao expr = (NoExpressao) valoresVetor.get(i);
+                    valores.add(expr != null ? expr.aceitar(this) : null);
                 }
                 catch (ArrayIndexOutOfBoundsException aioobe)
                 {

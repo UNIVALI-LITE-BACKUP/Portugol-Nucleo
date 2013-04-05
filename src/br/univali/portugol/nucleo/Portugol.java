@@ -28,7 +28,8 @@ public final class Portugol
 
         Programa programa = new Programa();
         programa.setCodigo(codigo);
-        programa.setArvoreSintaticaAbstrataPrograma((ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata());
+        final ArvoreSintaticaAbstrataPrograma asa = (ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata();
+        programa.setArvoreSintaticaAbstrataPrograma(asa);
 
         return programa;
     }

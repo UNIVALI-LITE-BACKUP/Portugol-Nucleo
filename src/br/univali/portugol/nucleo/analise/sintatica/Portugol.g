@@ -137,35 +137,35 @@ grammar Portugol;
 
 
 PR_PROGRAMA			:	'programa'		;
-PR_REAL				:	'real'			;
-PR_VAZIO				:	'vazio'			;
-PR_LOGICO				:	'logico'			;
+PR_REAL				:	'real'		;
+PR_VAZIO				:	'vazio'		;
+PR_LOGICO				:	'logico'		;
 PR_CADEIA				:	'cadeia'		;
 PR_INTEIRO				:	'inteiro'		;
 PR_CARACTER			:	'caracter'		;    
 PR_ESCOLHA			:	'escolha'		;
-PR_CASO_CONTRARIO		:	'caso contrario'	;
-PR_CASO				:	'caso'			;
-PR_CONST				:	'const'			;
+PR_CASO				:	'caso'		;
+PR_CONTRARIO			:	'contrario'	;
+PR_CONST				:	'const'		;
 PR_FUNCAO				:	'funcao'		;
 PR_RETORNE			:	'retorne'		;  
-PR_PARA				:	'para'			;
-PR_PARE				:	'pare'			;
-PR_FACA				:	'faca'			;
+PR_PARA				:	'para'		;
+PR_PARE				:	'pare'		;
+PR_FACA				:	'faca'		;
 PR_ENQUANTO			:	'enquanto'		;
-PR_SE					:	'se'			;
-PR_SENAO				:	'senao'			;
+PR_SE				:	'se'		;
+PR_SENAO				:	'senao'		;
 
 GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'^'|'\''|'`'|'|'|'&'|'\\'|'@';
  
-fragment PR_FALSO			:	'falso'			;
+fragment PR_FALSO			:	'falso'		;
 fragment PR_VERDADEIRO		:	'verdadeiro'		;
 
-OPERADOR_NAO			:	'nao'			;
+OPERADOR_NAO			:	'nao'		;
 
 LOGICO				: 	PR_VERDADEIRO | PR_FALSO  ;
 
-ID 					:	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*  ;
+ID 				:	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*  ;
 
 INTEIRO 				:	'0'..'9'* ;
 
@@ -192,7 +192,7 @@ COMENTARIO			:
 	
 	 '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;}
  ;
- 
+
 
 parse returns[ArvoreSintaticaAbstrata asa]:
 
@@ -677,57 +677,45 @@ finally
 escolha returns[NoEscolha escolha] @init
 {
 	pilhaContexto.push("escolha");
+	List<NoCaso> casos =  new ArrayList<NoCaso>();
 }:
 
-	PR_ESCOLHA '(' vExpressao = expressao ')'
+	PR_ESCOLHA '(' vExpressaoEscolha = expressao ')'
 	'{' 
-		vListaCasos = listaCasos
+		
+		(PR_CASO vExpressao = expressao ':' vBlocos = blocosCaso
+		{			
+			if (gerarArvore)
+			{
+				NoCaso caso = new NoCaso(vExpressao);
+				caso.setBlocos(vBlocos);
+				casos.add(caso);
+				
+				vExpressao = null;
+			}
+		})+
+		
+		 (PR_CASO PR_CONTRARIO ':' vBlocos = blocosCaso
+		{			
+			if (gerarArvore)
+			{
+				NoCaso caso = new NoCaso(vExpressao);
+				caso.setBlocos(vBlocos);
+				casos.add(caso);
+				
+				vExpressao = null;
+			}
+		})?		
+		
 	'}'
 	 {
 	 	if (gerarArvore)
 	 	{
-			escolha = new NoEscolha(vExpressao);
-			escolha.setCasos(vListaCasos);
+			escolha = new NoEscolha(vExpressaoEscolha);
+			escolha.setCasos(casos);
 		}
 	 }
 
-;
-finally
-{
-	pilhaContexto.pop();
-}
-
-
-listaCasos returns[List<NoCaso> casos] @init
-{
-	pilhaContexto.push("listaCasos");
-	casos = new ArrayList<NoCaso>();
-}:
-(
-	 ( casoContrario |PR_CASO vExpressao = expressao) ':' vBlocos = blocosCaso
-	{
-		if (gerarArvore)
-		{
-			NoCaso caso = new NoCaso(vExpressao);
-			caso.setBlocos(vBlocos);
-			casos.add(caso);
-			
-			vExpressao = null;
-		}
-	}
-)*
-;
-finally
-{
-	pilhaContexto.pop();
-}
-
-
-casoContrario @init
-{
-	pilhaContexto.push("casoContrario");
-}: 
-	PR_CASO_CONTRARIO
 ;
 finally
 {
@@ -1460,5 +1448,7 @@ finally
 {
 	pilhaContexto.pop();
 }
+
+
 
 
