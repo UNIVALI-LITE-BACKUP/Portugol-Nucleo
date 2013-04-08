@@ -98,11 +98,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
     {
         try
         {
-            byte[] buffer = codigo.getBytes();
-            ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-            
-            ANTLRInputStream antlrStringStream = new ANTLRInputStream(bais,"UTF-8");
-            
+            ANTLRStringStream antlrStringStream = new ANTLRStringStream(codigo);
             PortugolLexer portugolLexer = new PortugolLexer(antlrStringStream);
             CommonTokenStream commonTokenStream = new CommonTokenStream(portugolLexer);
             PortugolParser portugolParser = new PortugolParser(commonTokenStream);
@@ -160,10 +156,6 @@ public final class AnalisadorSintatico implements ObservadorParsing
         {
             excecao.printStackTrace();
             return null;
-        }
-        catch (IOException ex)
-        {
-            throw new RuntimeException(ex);
         }
     }
 

@@ -4,6 +4,7 @@ import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.analise.sintatica.PortugolLexer;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroAbreFechaParentesis;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopoNaoFoiFechadoCorretamente;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroFaltaDoisPontos;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroNomeSimboloEstaFaltando;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroPalavraReservadaEstaFaltando;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParsingNaoTratado;
@@ -47,21 +48,28 @@ public final class TradutorMismatchedTokenException
         }
         else
         {
-            if (erro.expecting == PortugolLexer.T__68)
+            if (erro.expecting == PortugolLexer.T__69)
             {  
                 return new ErroEscopoNaoFoiFechadoCorretamente(linha, coluna, contextoAtual);
             }
             else
             {
-                if (erro.expecting == PortugolLexer.T__42)
+                if (erro.expecting == PortugolLexer.T__43)
                 {
                     return new ErroAbreFechaParentesis(linha, coluna, "(");
                 }
                 else
                 {
-                    if (erro.expecting == PortugolLexer.T__43)
+                    if (erro.expecting == PortugolLexer.T__44)
                     {
                         return new ErroAbreFechaParentesis(linha, coluna, ")");
+                    }
+                    else
+                    {
+                        if (erro.expecting == PortugolLexer.T__56)
+                        {
+                            return new ErroFaltaDoisPontos(linha, coluna);
+                        }
                     }
                 }
             }
