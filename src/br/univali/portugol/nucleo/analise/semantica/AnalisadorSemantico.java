@@ -100,16 +100,15 @@ public final class AnalisadorSemantico
 
     private void analisarBlocoEscolha(NoEscolha escolha, TabelaSimbolos tabelaSimbolos)
     {
-        
+        TipoDado tipoDadoEscolha = TipoDado.VAZIO;
         try
         {
-            NoExpressao expressao = escolha.getExpressao();
-            TipoDado tipoDado = TipoDado.VAZIO;
-            
+            NoExpressao expressao = escolha.getExpressao();            
             try
             {            
-                if ((tipoDado = obterTipoDadoExpressao(expressao, tabelaSimbolos)) != TipoDado.INTEIRO)
-                    throw new ErroTiposIncompativeis(escolha, TipoDado.INTEIRO, tipoDado);
+                if (((tipoDadoEscolha = obterTipoDadoExpressao(expressao, tabelaSimbolos)) != TipoDado.INTEIRO)
+                        && ((tipoDadoEscolha = obterTipoDadoExpressao(expressao, tabelaSimbolos)) != TipoDado.CARACTER))
+                    throw new ErroTipoEscolha(escolha, tipoDadoEscolha);
             }
             catch (ExcecaoImpossivelDeterminarTipoDado ex) { }
         }
@@ -129,8 +128,9 @@ public final class AnalisadorSemantico
             {
                 try
                 {            
-                    if ((tipoDado = obterTipoDadoExpressao(expressao, tabelaSimbolos)) != TipoDado.INTEIRO)
-                        throw new ErroTiposIncompativeis(escolha, TipoDado.INTEIRO, tipoDado);
+                    if ((tipoDado = obterTipoDadoExpressao(expressao, tabelaSimbolos)) != tipoDadoEscolha)
+                        throw new ErroTiposIncompativeis(expressao.getTrechoCodigoFonte().getLinha(),
+                                expressao.getTrechoCodigoFonte().getColuna(),caso, tipoDadoEscolha, tipoDado);
                 }
                 catch (ExcecaoImpossivelDeterminarTipoDado ex) { }
                 catch (ErroSemantico ex) 

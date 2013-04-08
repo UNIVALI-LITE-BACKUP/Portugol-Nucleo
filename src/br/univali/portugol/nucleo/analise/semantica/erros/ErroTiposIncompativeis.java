@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.asa.NoCaso;
 import br.univali.portugol.nucleo.asa.NoEscolha;
 import br.univali.portugol.nucleo.asa.Operacao;
 import br.univali.portugol.nucleo.asa.TipoDado;
@@ -66,20 +67,20 @@ public final class ErroTiposIncompativeis extends ErroSemantico
     
     /**
      * 
-     * @param escolha                     a operação que estava sendo realizada entre as duas expressões.
-     * @param tipoDadoOperandoEsquerdo     o tipo de dado da expressão à esquerda do operador.
-     * @param tipoDadoOperandoDireito      o tipo de dado da expressão á direita do operador.
+     * @param bloco                        o bloco que possui expressao.
+     * @param tipoDadoOperandoEsquerdo     o tipo de dado da expressão esperado.
+     * @param tipoDadoOperandoDireito      o tipo de dado da expressão encontrado.
      * @since 1.0
      */
-    public ErroTiposIncompativeis(NoEscolha escolha, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito)
+    public ErroTiposIncompativeis(int linha, int coluna, NoBloco bloco, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito)
     {
         super
         (
-            escolha.getExpressao().getTrechoCodigoFonte().getLinha(),
-            escolha.getExpressao().getTrechoCodigoFonte().getColuna()
+            linha,
+            coluna
         );
 
-        this.bloco = escolha;
+        this.bloco = bloco;
         this.tipoDadoOperandoEsquerdo = tipoDadoOperandoEsquerdo;
         this.tipoDadoOperandoDireito = tipoDadoOperandoDireito;
     }
@@ -126,8 +127,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
     {
         if (bloco != null)
         {
-            if (bloco instanceof NoEscolha)
-                return construirMensagemEscolha();
+            if (bloco instanceof NoCaso) 
+                return construirMensagemCaso();
         }        
         
         else
@@ -558,16 +559,16 @@ public final class ErroTiposIncompativeis extends ErroSemantico
         return construtorString.toString();
     }
 
-    private String construirMensagemEscolha()
+    private String construirMensagemCaso()
     {
         StringBuilder construtorString = new StringBuilder();
 
-        construtorString.append("Tipos incompatíveis! O bloco \"escolha\" espera uma expressão do tipo \"");
+        construtorString.append("Tipos incompatíveis! O bloco \"caso\" espera uma expressão do tipo \"");
         construtorString.append(tipoDadoOperandoEsquerdo);
         construtorString.append("\" mas foi passada uma expressão do tipo \"");
         construtorString.append(tipoDadoOperandoDireito);
         construtorString.append("\".");
 
-        return construtorString.toString();        
+        return construtorString.toString(); 
     }
 }
