@@ -95,6 +95,11 @@ public final class TabelaSimbolos implements Iterable<Simbolo>
         return false;
     }
 
+    public int getNumeroEscopos()
+    {
+        return escopos.size();
+    }
+    
     /**
      * {@inheritDoc }
      */
