@@ -1,12 +1,17 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroExpressaoTipoLogicoEsperada;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSemanticoNaoTratado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloRedeclarado;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
+import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -28,7 +33,14 @@ public final class AnalisadorSemantico implements VisitanteASA
     
     private TabelaSimbolos tabelaSimbolos;
     private List<ObservadorAnaliseSemantica> observadores;
-
+    
+    private static final List<String> funcoesReservadas = getLista();
+    
+    private TabelaCompatibilidadeTipos compatibilidadeTipos = TabelaCompatibilidadeTiposPortugol.INSTANCE;
+    private ArvoreSintaticaAbstrata asa;
+    
+    private Funcao funcaoAtual;
+    
     public AnalisadorSemantico()
     {
         tabelaSimbolos = new TabelaSimbolos();
@@ -89,6 +101,7 @@ public final class AnalisadorSemantico implements VisitanteASA
      */
     public void analisar(ArvoreSintaticaAbstrata asa)
     {
+        this.asa = asa;
         if (asa != null)
         {
             try
@@ -108,7 +121,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         // Executa a primeira vez para declarar as funções na tabela de símbolos
         
         declarandoSimbolosGlobais = true;
-        
+                
         for (NoDeclaracao declaracao : asap.getListaDeclaracoesGlobais())
         {
             declaracao.aceitar(this);
@@ -129,13 +142,13 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return TipoDado.CADEIA;
     }
 
     @Override
     public Object visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return TipoDado.CARACTER;
     }
 
     @Override
@@ -172,18 +185,14 @@ public final class AnalisadorSemantico implements VisitanteASA
             tabelaSimbolos.adicionar(funcao);
         }
         else
-        {    
-            if (declaracaoFuncao.getBlocos() != null)
+        {   
+            funcaoAtual = (Funcao) tabelaSimbolos.obter(declaracaoFuncao.getNome());
+            List<NoDeclaracaoParametro> parametros = declaracaoFuncao.getParametros();
+            for (NoDeclaracaoParametro noDeclaracaoParametro : parametros)
             {
-                tabelaSimbolos.empilharEscopo();
-                    
-                for (NoBloco bloco : declaracaoFuncao.getBlocos())
-                {
-                    bloco.aceitar(this);
-                }
-                
-                tabelaSimbolos.desempilharEscopo();
+                noDeclaracaoParametro.aceitar(this);
             }
+            analisarListaBlocos(declaracaoFuncao.getBlocos());
         }
         
         return null;
@@ -212,13 +221,13 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 variavel.setRedeclarado(true);
                 notificarErroSemantico(new ErroSimboloRedeclarado(variavel, tabelaSimbolos.obter(nome)));
-            } /*
+            } 
             else if (funcoesReservadas.contains(nome))
             {
                 variavel.setRedeclarado(true);
                 Funcao funcaoSistam = new Funcao(nome, tipoDados.VAZIO, Quantificador.VETOR, null, null);
                 notificarErroSemantico(new ErroSimboloRedeclarado(variavel, funcaoSistam));
-            }*/
+            }
 
             tabelaSimbolos.adicionar(variavel);
     
@@ -260,7 +269,14 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TipoDado tipoCondicao = (TipoDado) noEnquanto.getCondicao().aceitar(this);
+        if (tipoCondicao != TipoDado.LOGICO) {
+            notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(noEnquanto, noEnquanto.getCondicao()));
+        }
+        
+        analisarListaBlocos(noEnquanto.getBlocos());
+        
+        return null;
     }
 
     @Override
@@ -284,14 +300,13 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
     {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        return null;
+        return TipoDado.INTEIRO;
     }
 
     @Override
     public Object visitar(NoLogico noLogico) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return TipoDado.LOGICO;
     }
 
     @Override
@@ -311,26 +326,113 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-/*
+
     @Override
-    public Object visitar(NoOperacao noOperacao) throws ExcecaoVisitaASA
-    {
-        noOperacao.getOperandoEsquerdo().aceitar(this);
-        noOperacao.getOperandoDireito().aceitar(this);
-        
-        return null;
+    public Object visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA
+    {        
+        return recuperaTipoNoOperacao(noOperacao);
     }
-*/
+
+    @Override
+    public Object visitar(NoOperacaoLogicaDiferenca noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaE noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaOU noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMenor noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMenorIgual noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoSoma noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoMultiplicacao noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoModulo noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao); 
+    }
+    
     @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        tabelaSimbolos.empilharEscopo();
+         
+        noPara.getInicializacao().aceitar(this);
+        TipoDado tipoDadoCondicao = (TipoDado) noPara.getCondicao().aceitar(this);
+        if (tipoDadoCondicao != TipoDado.LOGICO)
+            notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(noPara, noPara.getCondicao()));
+        noPara.getIncremento().aceitar(this);
+        
+        analisarListaBlocos(noPara.getBlocos());
+        
+        tabelaSimbolos.desempilharEscopo();
+        
+        return null;
     }
 
     @Override
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     @Override
@@ -342,7 +444,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoReal noReal) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return TipoDado.REAL;
     }
 
     @Override
@@ -380,113 +482,155 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TipoDado tipoDadoRetorno = TipoDado.VAZIO;
+        if (noRetorne.getExpressao() != null) 
+             tipoDadoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
+        
+        if (funcaoAtual.getTipoDado() != tipoDadoRetorno){
+            notificarErroSemantico(new ErroSemantico(0, 0) {
+
+                @Override
+                protected String construirMensagem()
+                {
+                   return "Tipo incompativel no retorno da funcao";
+                }
+
+            });
+        }
+        
+        return null;
     }
 
     @Override
     public Object visitar(NoSe noSe) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TipoDado condicao = (TipoDado) noSe.getCondicao().aceitar(this);
+        
+        if (condicao != TipoDado.LOGICO)
+            notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(noSe, noSe.getCondicao()));
+        
+        analisarListaBlocos(noSe.getBlocosVerdadeiros());
+        analisarListaBlocos(noSe.getBlocosFalsos());
+        
+        return null;
     }
 
     @Override
     public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<NoExpressao> valores = (List) noVetor.getValores();
+        
+        if (valores != null && !valores.isEmpty())
+        {        
+            TipoDado tipoDadoVetor = (TipoDado) ((NoExpressao) valores.get(0)).aceitar(this);
+            for (int i = 1; i < valores.size(); i++)
+            {
+                                    
+                TipoDado tipo = (TipoDado) ((NoExpressao) valores.get(i)).aceitar(this);
+
+                if (tipo != tipoDadoVetor) {
+                    notificarErroSemantico(new ErroSemantico(0, 0)
+                    {
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return "A inicialização do vetor possui mais de um tipo de dado";
+                        }
+                    });
+                    return TipoDado.VAZIO;
+                }
+            }          
+            return tipoDadoVetor;   
+        }
+        else
+        {
+            //TODO Fazer essa verificaçao no Sintatico (Portugol.g)
+            notificarErroSemantico(new ErroSemantico(0, 0)
+            {
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return "A inicialização do vetor não possui elementos";
+                    }
+            });
+            
+            return TipoDado.VAZIO;
+        }
     }
 
     @Override
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String nome = noDeclaracaoParametro.getNome();
+        TipoDado tipoDado = noDeclaracaoParametro.getTipoDado();
+        Quantificador quantificador = noDeclaracaoParametro.getQuantificador();
+        Simbolo simbolo = null;
+
+        if (quantificador == Quantificador.VALOR)
+            simbolo = new Variavel(nome, tipoDado);
+
+        else
+
+        if (quantificador == Quantificador.VETOR)
+            simbolo = new Vetor(nome, tipoDado, 0, new ArrayList<Object>());
+
+        else
+
+        if (quantificador == Quantificador.MATRIZ)
+            simbolo = new Matriz(nome, tipoDado, 0, 0, new ArrayList<List<Object>>());
+
+        if (tabelaSimbolos.contem(nome))
+            notificarErroSemantico(new ErroParametroRedeclarado(noDeclaracaoParametro, funcaoAtual));
+
+        tabelaSimbolos.adicionar(simbolo);
+        
+        return null;
     }
     
     private boolean analisandoEscopoGlobal()
     {
         return tabelaSimbolos.getNumeroEscopos() == 1;
     }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA
+    
+    private static List<String> getLista()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<String> funcoes = new ArrayList<String>();
+        
+        funcoes.add("leia");
+        funcoes.add("escreva");
+        
+        return funcoes;
     }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaDiferenca noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private TipoDado recuperaTipoNoOperacao(NoOperacao noOperacao) throws ExcecaoVisitaASA{
+        TipoDado opEsq = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this);
+        TipoDado opDir = (TipoDado) noOperacao.getOperandoDireito().aceitar(this);
+        TipoDado tipo = TipoDado.VAZIO;
+        try
+        {
+            tipo = compatibilidadeTipos.getRetorno(noOperacao.getClass(), opEsq, opDir);
+        }
+        catch (ExcecaoImpossivelDeterminarTipoDado ex)
+        {
+            if (opEsq == TipoDado.VAZIO && opDir == TipoDado.VAZIO ) {
+                throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+            }
+            notificarErroSemantico(new ErroTiposIncompativeis(noOperacao, opEsq, opDir));
+        }
+        return tipo;
     }
-
-    @Override
-    public Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaE noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaOU noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenor noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenorIgual noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoSoma noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoMultiplicacao noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitar(NoOperacaoModulo noOperacao) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
+    private void analisarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
+    {    
+        if (blocos == null)
+        {
+            return;
+        }
+        tabelaSimbolos.empilharEscopo();        
+        for (NoBloco noBloco : blocos)
+        {
+            noBloco.aceitar(this);
+        }
+        tabelaSimbolos.desempilharEscopo();        
+    } 
 }

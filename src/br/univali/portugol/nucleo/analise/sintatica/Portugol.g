@@ -854,21 +854,7 @@ expressao returns[NoExpressao expressao] @init
 				operador = ((Token) vPilha.pop());
 				operandoEsquerdo = (NoExpressao) vPilha.pop();
 				
-				if("+=".equals(operador.getText()))
-				    operandoDireito = FabricaNoOperacao.novoNo("+", operandoEsquerdo, operandoDireito);			
-				else
-				if ("-=".equals(operador.getText()))
-				    operandoDireito = FabricaNoOperacao.novoNo("-", operandoEsquerdo, operandoDireito);
-				else
-				if ("*=".equals(operador.getText()))
-				   operandoDireito = FabricaNoOperacao.novoNo("*", operandoEsquerdo, operandoDireito);
-				else
-				if ("/=".equals(operador.getText()))
-				   operandoDireito = FabricaNoOperacao.novoNo("/", operandoEsquerdo, operandoDireito);
-				else
-				if ("\%=".equals(operador.getText()))
-				   operandoDireito = FabricaNoOperacao.novoNo("\%", operandoEsquerdo, operandoDireito);
-				   
+				operandoDireito = FabricaNoOperacao.novoNo(operador.getText().substring(0, 1), operandoEsquerdo, operandoDireito);				   
 				NoOperacao operacao = FabricaNoOperacao.novoNo("=", operandoEsquerdo, operandoDireito);			
 				operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				

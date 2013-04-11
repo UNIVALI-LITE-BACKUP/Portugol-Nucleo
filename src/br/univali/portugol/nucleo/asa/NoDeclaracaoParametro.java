@@ -7,8 +7,10 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see NoDeclaracaoFuncao
  */
-public final class NoDeclaracaoParametro extends NoDeclaracao
+public final class NoDeclaracaoParametro extends No
 {
+    private String nome;
+    private TipoDado tipoDado;
     private int indice;
     private ModoAcesso modoAcesso;
     private Quantificador quantificador;
@@ -22,10 +24,35 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
      */
     public NoDeclaracaoParametro(String nome, TipoDado tipoDado, Quantificador quantificador, ModoAcesso modoAcesso)
     {
-        super(nome, tipoDado, true);
+        this.nome = nome;
+        this.tipoDado = tipoDado;
         this.quantificador = quantificador;
         this.modoAcesso = modoAcesso;
     }
+
+    /**
+     * Obtém o nome do símbolo que está sendo declarado. O nome definido na declaração do símbolo será
+     * o mesmo nome utilizado para acessá-lo em outros locais do código fonte.
+     * 
+     * @return     o nome do símbolo sendo declarado.
+     * @since 1.13
+     */    
+    public String getNome()
+    {
+        return nome;
+    }
+
+    /**
+     * Obtém o tipo de dado do símbolo que está sendo declarado. 
+     * 
+     * @return     o tipo de dado
+     * @since 1.13
+     */
+    public TipoDado getTipoDado()
+    {
+        return tipoDado;
+    }
+    
 
     /**
      * Obtém o índice do parâmetro na declaração da função iniciando em 0. Isto significa que, para uma função que espera 4 parâmetros, 

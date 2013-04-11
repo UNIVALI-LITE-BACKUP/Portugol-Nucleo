@@ -23,4 +23,12 @@ public class Maior extends Operacao
         return a > b;
     }  
     
+       boolean executar(String a, String b){
+        return a.compareTo(b) > 0;
+    }
+    
+    boolean executar(Character a, Character b){
+        return a.compareTo(b) > 0;
+    }
+    
 }

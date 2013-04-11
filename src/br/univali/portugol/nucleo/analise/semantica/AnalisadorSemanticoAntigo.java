@@ -1093,7 +1093,7 @@ public final class AnalisadorSemanticoAntigo
             
             analisarBloco(para.getCondicao(), tabelaSimbolos); 
             TipoDado tipo = obterTipoDadoExpressao(para.getCondicao(), tabelaSimbolos);
-            NoOperacao o = (NoOperacao) para.getCondicao();
+           
             if (tipo != TipoDado.LOGICO)
                 throw new ErroExpressaoTipoLogicoEsperada(para, para.getCondicao());
         
