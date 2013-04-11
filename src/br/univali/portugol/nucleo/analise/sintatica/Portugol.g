@@ -124,7 +124,7 @@ grammar Portugol;
 	{
 		if (operandoDireito != null) 
 		{
-			NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);			
+			NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);			
 			operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 			
 			return operacao;
@@ -854,9 +854,22 @@ expressao returns[NoExpressao expressao] @init
 				operador = ((Token) vPilha.pop());
 				operandoEsquerdo = (NoExpressao) vPilha.pop();
 				
-				Operacao tipoOperacao = Operacao.obterOperacaoPeloOperador(operador.getText());
-				
-				NoOperacao operacao = new NoOperacao(tipoOperacao, operandoEsquerdo, operandoDireito);			
+				if("+=".equals(operador.getText()))
+				    operandoDireito = FabricaNoOperacao.novoNo("+", operandoEsquerdo, operandoDireito);			
+				else
+				if ("-=".equals(operador.getText()))
+				    operandoDireito = FabricaNoOperacao.novoNo("-", operandoEsquerdo, operandoDireito);
+				else
+				if ("*=".equals(operador.getText()))
+				   operandoDireito = FabricaNoOperacao.novoNo("*", operandoEsquerdo, operandoDireito);
+				else
+				if ("/=".equals(operador.getText()))
+				   operandoDireito = FabricaNoOperacao.novoNo("/", operandoEsquerdo, operandoDireito);
+				else
+				if ("\%=".equals(operador.getText()))
+				   operandoDireito = FabricaNoOperacao.novoNo("\%", operandoEsquerdo, operandoDireito);
+				   
+				NoOperacao operacao = FabricaNoOperacao.novoNo("=", operandoEsquerdo, operandoDireito);			
 				operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				
 				vPilha.push(operacao);
@@ -886,7 +899,7 @@ expressao2 returns[NoExpressao expressao] @init
 			{
 				if (operandoDireito != null)
 				{
-					NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				 	operandoEsquerdo = operacao; 
 				 }
@@ -923,7 +936,7 @@ expressao3 returns[NoExpressao expressao] @init
 		
 				if (operandoDireito != null)
 				{
-					NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				 	operandoEsquerdo = operacao; 
 				 }
@@ -980,7 +993,7 @@ expressao5 returns[NoExpressao expressao] @init
 				{
 					if (operandoDireito != null)
 					{
-						NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+						NoOperacao operacao =  FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 						operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 					 	operandoEsquerdo = operacao; 
 					 }
@@ -1001,7 +1014,7 @@ expressao5 returns[NoExpressao expressao] @init
 				{
 					if (operandoDireito != null)
 					{
-						NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+						NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 						operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 					 	operandoEsquerdo = operacao; 
 					 }
@@ -1039,7 +1052,7 @@ expressao6 returns[NoExpressao expressao] @init
 			{
 				if (operandoDireito != null)
 				{
-					NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				 	operandoEsquerdo = operacao; 
 				 }

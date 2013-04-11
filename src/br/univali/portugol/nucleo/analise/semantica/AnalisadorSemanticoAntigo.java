@@ -213,7 +213,7 @@ public final class AnalisadorSemanticoAntigo
                 NoExpressao inicializacao = declaracaoVariavel.getInicializacao();
                 NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
                 referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
-                NoOperacao operacao = new NoOperacao(Operacao.ATRIBUICAO, referencia, inicializacao);
+                NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
 
                 try { obterTipoDadoExpressao(operacao, tabelaSimbolos); }
                 catch (ErroSemantico erro) { notificarErroSemantico(erro); }
@@ -363,12 +363,12 @@ public final class AnalisadorSemanticoAntigo
         if (expressao instanceof NoOperacao)
         {
             NoOperacao operacao = (NoOperacao) expressao;
-            
+            /*
             if (operacao.getOperacao() == Operacao.ATRIBUICAO)
             {
                 try { obterTipoDadoOperacao((NoOperacao) expressao, tabelaSimbolos); }
                 catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
-            }
+            }*/
         }
 
         else
@@ -521,7 +521,7 @@ public final class AnalisadorSemanticoAntigo
         {
             verificaErroReferencia(operandoEsquerdo, tabelaSimbolos);
             verificaErroReferencia(operandoDireito, tabelaSimbolos);
-       
+       /*
             switch (operacao.getOperacao())
             {
                 case ATRIBUICAO:                    return obterTipoDadoOperacaoAtribuicao                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
@@ -543,7 +543,7 @@ public final class AnalisadorSemanticoAntigo
                 case SOMA_ACUMULATIVA:              return obterTipoDadoOperacaoSomaAtribuitiva             (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
                 case SUBTRACAO:                     return obterTipoDadoOperacaoSubtracao                   (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
                 case SUBTRACAO_ACUMULATIVA:         return obterTipoDadoOperacaoSubtracaoAtribuitiva        (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-            }
+            }*/
         }
 
         throw new ExcecaoImpossivelDeterminarTipoDado();
@@ -1333,7 +1333,7 @@ public final class AnalisadorSemanticoAntigo
 
                     NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
                     referencia.setTrechoCodigoFonteNome(declaracaoVetor.getTrechoCodigoFonteNome());
-                    NoOperacao operacao = new NoOperacao(Operacao.ATRIBUICAO, referencia, inicializacao);
+                    NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
                     
                     if (tipoDadoOperandoDireito != null)
                     {

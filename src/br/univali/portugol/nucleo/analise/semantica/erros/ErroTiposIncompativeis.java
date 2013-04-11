@@ -40,7 +40,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 public final class ErroTiposIncompativeis extends ErroSemantico
 {
     private NoBloco bloco;
-    private Operacao operacao;
+    private Class operacao;
     private TipoDado tipoDadoOperandoDireito;
     private TipoDado tipoDadoOperandoEsquerdo;
 
@@ -59,7 +59,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             operacao.getTrechoCodigoFonte().getColuna()
         );
 
-        this.operacao = operacao.getOperacao();
+        this.operacao = operacao.getClass();
         this.tipoDadoOperandoDireito = tipoDadoOperandoDireito;
         this.tipoDadoOperandoEsquerdo = tipoDadoOperandoEsquerdo;
     }
@@ -91,7 +91,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
      * @return      a operação que estava sendo realizada entre as duas expressões.
      * @since 1.0
      */
-    public Operacao getOperacao()
+    public Class getOperacao()
     {
         return operacao;
     }
@@ -132,9 +132,9 @@ public final class ErroTiposIncompativeis extends ErroSemantico
         
         else
         {
-            switch (operacao)
+            /*switch (operacao)
             {
-                case ATRIBUICAO: return construirMensagemAtribuicao();
+                case Operacao: return construirMensagemAtribuicao();
                 case DIFERENCA: return construirMensagemDiferenca();
                 case DIVISAO: return construirMensagemDivisao();
                 case DIVISAO_ACUMULATIVA: return construirMensagemDivisaoAcumulativa();
@@ -153,7 +153,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
                 case SOMA_ACUMULATIVA: return construirMensagemSomaAcumulativa();
                 case SUBTRACAO: return construirMensagemSubtracao();
                 case SUBTRACAO_ACUMULATIVA: return construirMensagemSubtracaoAcumulativa();
-            }
+            }*/
         }
 
         return null;

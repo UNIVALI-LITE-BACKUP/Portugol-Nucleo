@@ -231,7 +231,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     NoExpressao inicializacao = declaracaoVariavel.getInicializacao();
                     NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
                     referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
-                    NoOperacao operacao = new NoOperacao(Operacao.ATRIBUICAO, referencia, inicializacao);
+                    NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
 
                     operacao.aceitar(this);
                 }
@@ -311,7 +311,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+/*
     @Override
     public Object visitar(NoOperacao noOperacao) throws ExcecaoVisitaASA
     {
@@ -320,7 +320,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         return null;
     }
-
+*/
     @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
@@ -404,5 +404,89 @@ public final class AnalisadorSemantico implements VisitanteASA
     private boolean analisandoEscopoGlobal()
     {
         return tabelaSimbolos.getNumeroEscopos() == 1;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaDiferenca noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaE noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaOU noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMenor noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoLogicaMenorIgual noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoSoma noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoMultiplicacao noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoOperacaoModulo noOperacao) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
