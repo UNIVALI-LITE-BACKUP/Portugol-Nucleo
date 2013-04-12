@@ -1,16 +1,35 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
+import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.asa.NoEnquanto;
 import br.univali.portugol.nucleo.asa.NoEscolha;
-import br.univali.portugol.nucleo.asa.Operacao;
+import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
+import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaE;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaIgualdade;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMaior;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMaiorIgual;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMenor;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMenorIgual;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaOU;
+import br.univali.portugol.nucleo.asa.NoOperacaoModulo;
+import br.univali.portugol.nucleo.asa.NoOperacaoMultiplicacao;
+import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
+import br.univali.portugol.nucleo.asa.NoOperacaoSubtracao;
+import br.univali.portugol.nucleo.asa.NoPara;
+import br.univali.portugol.nucleo.asa.NoRetorne;
+import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.TipoDado;
-import br.univali.portugol.nucleo.asa.NoOperacao;
+import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
- * Erro gerado pelo analisador semântico quando uma operação entre duas expressões com
- * tipos de dado incompatíveis é encontrada.
+ * Erro gerado pelo analisador semântico quando um comando utiliza dois ou mais 
+ * tipos de dados incompatíveis entre si
  * <p>
  * Exemplo:
  * <code><pre>
@@ -24,6 +43,11 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  *           valor3 = valor1 + valor2       // Gera erro, pois a operação de soma não é suportada entre um inteiro e um lógico
  *           valor2 = valor3                // Gera erro, pois a operação de atribuição não é suportada entre um lógico e um real
  *           valor3 = valor1                // Não gera erro pois a operação de atribuição entre um real e um inteiro é suportada
+ * 
+ *           enquanto(5.46)                 // Gera erro, pois o comando enquanto espera uma expressão do tipo lógico, mas
+ *           {                              // foi passada uma expressão do tipo real
+ * 
+ *           }
  *      }
  * 
  * </pre></code>
@@ -36,538 +60,539 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  * 
  * @see AnalisadorSemantico
  */
-
 public final class ErroTiposIncompativeis extends ErroSemantico
 {
     private NoBloco bloco;
-    private Class operacao;
-    private TipoDado tipoDadoOperandoDireito;
-    private TipoDado tipoDadoOperandoEsquerdo;
-
-    /**
-     * 
-     * @param operacao                     a operação que estava sendo realizada entre as duas expressões.
-     * @param tipoDadoOperandoEsquerdo     o tipo de dado da expressão à esquerda do operador.
-     * @param tipoDadoOperandoDireito      o tipo de dado da expressão á direita do operador.
-     * @since 1.0
-     */
-    public ErroTiposIncompativeis(NoOperacao operacao, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito)
-    {
-        super
-        (
-            operacao.getTrechoCodigoFonte().getLinha(),
-            operacao.getTrechoCodigoFonte().getColuna()
-        );
-
-        this.operacao = operacao.getClass();
-        this.tipoDadoOperandoDireito = tipoDadoOperandoDireito;
-        this.tipoDadoOperandoEsquerdo = tipoDadoOperandoEsquerdo;
-    }
+    private TipoDado[] tiposDado;
+    private String[] detalhes;
     
     /**
      * 
-     * @param escolha                     a operação que estava sendo realizada entre as duas expressões.
-     * @param tipoDadoOperandoEsquerdo     o tipo de dado da expressão à esquerda do operador.
-     * @param tipoDadoOperandoDireito      o tipo de dado da expressão á direita do operador.
+     * @param bloco                        o bloco que gerou o erro
      * @since 1.0
      */
-    public ErroTiposIncompativeis(NoEscolha escolha, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito)
+    public ErroTiposIncompativeis(NoBloco bloco, TipoDado...tiposDado)
     {
-        super
-        (
-            escolha.getExpressao().getTrechoCodigoFonte().getLinha(),
-            escolha.getExpressao().getTrechoCodigoFonte().getColuna()
-        );
+        this.bloco = bloco;
+        this.tiposDado = tiposDado;
+    }
 
-        this.bloco = escolha;
-        this.tipoDadoOperandoEsquerdo = tipoDadoOperandoEsquerdo;
-        this.tipoDadoOperandoDireito = tipoDadoOperandoDireito;
+    /**
+     * Obtém o bloco onde ocorreu o erro.
+     * 
+     * @return      o bloco onde ocorreu o erro.
+     * @since 1.0
+     */
+    public NoBloco getBloco()
+    {
+        return bloco;
     }
     
+    /**
+     * Obtém os tipos de dados envolvidos no erro.
+     * 
+     * @return      os tipos de dado envolvidos no erro.
+     * @since 1.0
+     */
+    public TipoDado[] getTiposDado()
+    {
+        return tiposDado;
+    }
+
+    /**
+     * Método utilitário que permite incluir informações sobre o erro que não 
+     * puderam ser obtidas apenas a partir do nó da árvore
+     * 
+     * @return      a própria instancia do erro.
+     * @since 1.0
+     */
+    public ErroTiposIncompativeis incluirDetalhes(String...detalhes)
+    {
+        this.detalhes = detalhes;
+        
+        return this;
+    }
     
-    /**
-     * Obtém  a operação que estava sendo realizada entre as duas expressões.
-     * 
-     * @return      a operação que estava sendo realizada entre as duas expressões.
-     * @since 1.0
-     */
-    public Class getOperacao()
-    {
-        return operacao;
-    }
-
-    /**
-     * Obtém o tipo de dado da expressão à direita do operador.
-     * 
-     * @return     o tipo de dado da expressão à direita do operador.
-     * @since 1.0
-     */
-    public TipoDado getTipoDadoOperandoDireito()
-    {
-        return tipoDadoOperandoDireito;
-    }
-
-    /**
-     * Obtém o tipo de dado da expressão à esquerda do operador.
-     * 
-     * @return     o tipo de dado da expressão à esquerda do operador.
-     * @since 1.0
-     */
-    public TipoDado getTipoDadoOperandoEsquerdo()
-    {
-        return tipoDadoOperandoEsquerdo;
-    }
-
     /**
      * {@inheritDoc }
      */
     @Override
     protected String construirMensagem()
+    {        
+        return new ConstrutorMensagem().construirMensagem();
+    }
+    
+    private class ConstrutorMensagem extends VisitanteASABasico
     {
-        if (bloco != null)
+        public ConstrutorMensagem()
         {
-            if (bloco instanceof NoEscolha)
-                return construirMensagemEscolha();
+            
         }        
         
-        else
+        public String construirMensagem()
         {
-            /*switch (operacao)
+            try
             {
-                case Operacao: return construirMensagemAtribuicao();
-                case DIFERENCA: return construirMensagemDiferenca();
-                case DIVISAO: return construirMensagemDivisao();
-                case DIVISAO_ACUMULATIVA: return construirMensagemDivisaoAcumulativa();
-                case E: return construirMensagemE();
-                case IGUALDADE: return construirMensagemIgualdade();
-                case MAIOR: return construirMensagemMaior();
-                case MAIOR_IGUAL: return construirMensagemMaiorIgual();
-                case MENOR: return construirMensagemMenor();
-                case MENOR_IGUAL: return construirMensagemMenorIgual();
-                case MODULO: return construirMensagemModulo();
-                case MODULO_ACUMULATIVO: return construirMensagemModuloAcumulativo();
-                case MULTIPLICACAO: return construirMensagemMultiplicacao();
-                case MULTIPLICACAO_ACUMULATIVA: return construirMensagemMultiplicacaoAcumulativa();
-                case OU: return construirMensagemOu();
-                case SOMA: return construirMensagemSoma();
-                case SOMA_ACUMULATIVA: return construirMensagemSomaAcumulativa();
-                case SUBTRACAO: return construirMensagemSubtracao();
-                case SUBTRACAO_ACUMULATIVA: return construirMensagemSubtracaoAcumulativa();
-            }*/
-        }
-
-        return null;
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#ATRIBUICAO}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemAtribuicao()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível atribuir uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\" à uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#DIFERENCA}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */
-    private String construirMensagemDiferenca()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#DIVISAO}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */    
-    private String construirMensagemDivisao()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível dividir uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" por uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#DIVISAO_ACUMULATIVA}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */            
-    private String construirMensagemDivisaoAcumulativa()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível executar uma operação de divisão acumulativa entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressao do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-    
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#E}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemE()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível executar a operação lógica E entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-    
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#IGUALDADE}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemIgualdade()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MAIOR}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemMaior()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MAIOR_IGUAL}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemMaiorIgual()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MENOR}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemMenor()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MENOR_IGUAL}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */            
-    private String construirMensagemMenorIgual()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MODULO}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */            
-    private String construirMensagemModulo()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível obter o módulo entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MODULO_ACUMULATIVO}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */            
-    private String construirMensagemModuloAcumulativo()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível executar uma operação de módulo acumulativo entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MULTIPLICACAO}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */            
-    private String construirMensagemMultiplicacao()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível multiplicar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#MULTIPLICACAO_ACUMULATIVA}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */            
-    private String construirMensagemMultiplicacaoAcumulativa()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível executar uma operação de multiplicação acumulativa entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#OU}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemOu()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível executar a operação lógica OU entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#SOMA}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemSoma()
-    {
-        StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! Não é possível somar uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" com uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
-
-        return construtorString.toString();
-    }
+                return (String) bloco.aceitar(this);
+            }
+            catch (ExcecaoVisitaASA e)
+            {
+                return e.getMessage();
+            }
+        }        
 
         /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#SOMA_ACUMULATIVA}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemSomaAcumulativa()
-    {
-        StringBuilder construtorString = new StringBuilder();
+         * Constrói uma mensagem de erro personalizada para a operação de atribuição (=).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoAtribuicao
+         */        
+        @Override
+        public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-        construtorString.append("Tipos incompatíveis! Não é possível executar uma operação de soma acumulativa entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
+            construtorString.append("Tipos incompatíveis! Não é possível atribuir uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\" à uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+            
+            setLinha(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
 
-        return construtorString.toString();
-    }
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação de diferença (!=).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoLogicaDiferenca
+         */
+        @Override
+        public Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#SUBTRACAO}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemSubtracao()
-    {
-        StringBuilder construtorString = new StringBuilder();
+            construtorString.append("Tipos incompatíveis! Não é possível comparar a diferença entre uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" e uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+            
+            setLinha(noOperacaoLogicaDiferenca.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaDiferenca.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
 
-        construtorString.append("Tipos incompatíveis! Não é possível subtrair uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\" de uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\".");
+            return construtorString.toString();
+        }        
 
-        return construtorString.toString();
-    }
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação de divisão (/).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoDivisao
+         */
+        @Override
+        public Object visitar(NoOperacaoDivisao noOperacaoDivisao) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação {@link Operacao#SUBTRACAO_ACUMULATIVA}.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoOperacao
-     */        
-    private String construirMensagemSubtracaoAcumulativa()
-    {
-        StringBuilder construtorString = new StringBuilder();
+            construtorString.append("Tipos incompatíveis! Não é possível dividir uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" por uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+            
+            setLinha(noOperacaoDivisao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoDivisao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
 
-        construtorString.append("Tipos incompatíveis! Não é possível executar uma operação de subtração acumulativa entre uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" e uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
+            return construtorString.toString();
+        }
 
-        return construtorString.toString();
-    }
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação lógica E (e).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoLogicaE
+         */
+        @Override
+        public Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-    private String construirMensagemEscolha()
-    {
-        StringBuilder construtorString = new StringBuilder();
+            construtorString.append("Tipos incompatíveis! Não é possível executar a operação lógica E entre uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" e uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+            
+            setLinha(noOperacaoLogicaE.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaE.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
 
-        construtorString.append("Tipos incompatíveis! O bloco \"escolha\" espera uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoEsquerdo);
-        construtorString.append("\" mas foi passada uma expressão do tipo \"");
-        construtorString.append(tipoDadoOperandoDireito);
-        construtorString.append("\".");
+            return construtorString.toString();
+        }
+        
+        /**
+         * Constrói uma mensagem de erro personalizada para a comparação de igualdade (==).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoLogicaIgualdade
+         */
+        @Override
+        public Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-        return construtorString.toString();        
+            construtorString.append("Tipos incompatíveis! Não é possível comparar a igualdade entre uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" e uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoLogicaIgualdade.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaIgualdade.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+        
+        /**
+        * Constrói uma mensagem de erro personalizada para a comparação lógica MAIOR (&gt;).
+        * 
+        * @return     a mensagem de erro personalizada.
+        * @since 1.0
+        * 
+        * @see NoOperacaoLogicaMaior
+        */ 
+        @Override
+        public Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" com uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoLogicaMaior.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaMaior.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        /**
+         * Constrói uma mensagem de erro personalizada para a comparação lógica MAIOR OU IGUAL (&gt;=).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoLogicaMaiorIgual
+         */        
+        @Override
+        public Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" com uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoLogicaMaiorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaMaiorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação lógica MENOR (&lt;).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoLogicaMenor
+         */
+        @Override
+        public Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" com uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoLogicaMenor.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaMenor.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        /**
+         * Constrói uma mensagem de erro personalizada para a comparação lógica MENOR OU IGUAL (&lt;=).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoLogicaMenorIgual
+         */
+        @Override
+        public Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível comparar uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" com uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoLogicaMenorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaMenorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+        
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação de módulo (%).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoModulo
+         */
+        @Override
+        public Object visitar(NoOperacaoModulo noOperacaoModulo) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível obter o módulo entre uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" e uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+            
+            setLinha(noOperacaoModulo.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoModulo.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação de multiplicação (*).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoMultiplicacao
+         */
+        @Override
+        public Object visitar(NoOperacaoMultiplicacao noOperacaoMultiplicacao) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível multiplicar uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" por uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoMultiplicacao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoMultiplicacao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação lógica OU (ou).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoLogicaOU
+         */ 
+        @Override
+        public Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível executar a operação lógica OU entre uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" e uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoLogicaOU.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoLogicaOU.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação de soma (+).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoSoma
+         */ 
+        @Override
+        public Object visitar(NoOperacaoSoma noOperacaoSoma) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível somar uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\" à uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoSoma.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoSoma.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+        
+        /**
+         * Constrói uma mensagem de erro personalizada para a operação de subtração (-).
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoOperacaoSubtracao
+         */
+        @Override
+        public Object visitar(NoOperacaoSubtracao noOperacaoSubtracao) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! Não é possível subtrair uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\" de uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+
+            setLinha(noOperacaoSubtracao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+            setColuna(noOperacaoSubtracao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        @Override
+        public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! O comando \"escolha\" espera uma expressão do tipo \"");
+            construtorString.append(TipoDado.LOGICO);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+
+            setLinha(noEscolha.getExpressao().getTrechoCodigoFonte().getLinha());
+            setColuna(noEscolha.getExpressao().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        @Override
+        public Object visitar(NoSe noSe) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! O comando \"se\" espera uma expressão do tipo \"");
+            construtorString.append(TipoDado.LOGICO);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+            
+            setLinha(noSe.getCondicao().getTrechoCodigoFonte().getLinha());
+            setColuna(noSe.getCondicao().getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+
+        @Override
+        public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! O comando \"enquanto\" espera uma expressão do tipo \"");
+            construtorString.append(TipoDado.LOGICO);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+            
+            setLinha(noEnquanto.getCondicao().getTrechoCodigoFonte().getLinha());
+            setColuna(noEnquanto.getCondicao().getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+        
+        @Override
+        public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! A condição do comando \"faca enquanto\" espera uma expressão do tipo \"");
+            construtorString.append(TipoDado.LOGICO);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+            
+            setLinha(noFacaEnquanto.getCondicao().getTrechoCodigoFonte().getLinha());
+            setColuna(noFacaEnquanto.getCondicao().getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+
+        @Override
+        public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! A expressão utilizada na condição do comando \"para\" espera uma expressão do tipo \"");
+            construtorString.append(TipoDado.LOGICO);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+            
+            setLinha(noPara.getCondicao().getTrechoCodigoFonte().getLinha());
+            setColuna(noPara.getCondicao().getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+
+        @Override
+        public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! O retorno da função \"");
+            construtorString.append(detalhes[0]);
+            construtorString.append("\" é do tipo \"");            
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" mas foi retornada uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\".");
+            
+            setLinha(noRetorne.getExpressao().getTrechoCodigoFonte().getLinha());
+            setColuna(noRetorne.getExpressao().getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
     }
 }

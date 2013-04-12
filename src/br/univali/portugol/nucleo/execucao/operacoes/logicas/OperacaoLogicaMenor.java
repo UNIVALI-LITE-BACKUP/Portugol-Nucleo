@@ -1,6 +1,8 @@
-package br.univali.portugol.nucleo.execucao.calc;
+package br.univali.portugol.nucleo.execucao.operacoes.logicas;
 
-public class Menor extends Operacao
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+
+public class OperacaoLogicaMenor extends Operacao
 {
     
      boolean executar(Integer a, Integer b)

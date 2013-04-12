@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroExpressaoTipoLogicoEsperada;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
@@ -11,7 +10,6 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -58,7 +56,9 @@ public final class AnalisadorSemantico implements VisitanteASA
     public void adicionarObservador(ObservadorAnaliseSemantica observadorAnaliseSemantica)
     {
         if (!observadores.contains(observadorAnaliseSemantica))
+        {
             observadores.add(observadorAnaliseSemantica);
+        }
     }
     
     /**
@@ -269,9 +269,11 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
-        TipoDado tipoCondicao = (TipoDado) noEnquanto.getCondicao().aceitar(this);
-        if (tipoCondicao != TipoDado.LOGICO) {
-            notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(noEnquanto, noEnquanto.getCondicao()));
+        TipoDado tipoDadoCondicao = (TipoDado) noEnquanto.getCondicao().aceitar(this);
+        
+        if (tipoDadoCondicao != TipoDado.LOGICO) 
+        {
+            notificarErroSemantico(new ErroTiposIncompativeis(noEnquanto, tipoDadoCondicao));
         }
         
         analisarListaBlocos(noEnquanto.getBlocos());
@@ -282,13 +284,25 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
     {
+        //TipoDado tipoDado = (TipoDado) noEscolha.getExpressao().aceitar(this);
+        //notificarErroSemantico(new ErroTiposIncompativeis(noEscolha, tipoDado));
+        
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        analisarListaBlocos(noFacaEnquanto.getBlocos());
+        
+        TipoDado tipoDadoCondicao = (TipoDado) noFacaEnquanto.getCondicao().aceitar(this);
+        
+        if (tipoDadoCondicao != TipoDado.LOGICO) 
+        {
+            notificarErroSemantico(new ErroTiposIncompativeis(noFacaEnquanto, tipoDadoCondicao));
+        }
+        
+        return null;
     }
 
     @Override
@@ -417,9 +431,14 @@ public final class AnalisadorSemantico implements VisitanteASA
         tabelaSimbolos.empilharEscopo();
          
         noPara.getInicializacao().aceitar(this);
+        
         TipoDado tipoDadoCondicao = (TipoDado) noPara.getCondicao().aceitar(this);
+        
         if (tipoDadoCondicao != TipoDado.LOGICO)
-            notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(noPara, noPara.getCondicao()));
+        {
+            notificarErroSemantico(new ErroTiposIncompativeis(noPara, tipoDadoCondicao));
+        }
+        
         noPara.getIncremento().aceitar(this);
         
         analisarListaBlocos(noPara.getBlocos());
@@ -468,9 +487,10 @@ public final class AnalisadorSemantico implements VisitanteASA
         else 
         {
             notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaVariavel));
+            return TipoDado.VAZIO;
         }
 
-        return null;
+        return simbolo.getTipoDado();
     }
 
     @Override
@@ -483,19 +503,15 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
         TipoDado tipoDadoRetorno = TipoDado.VAZIO;
-        if (noRetorne.getExpressao() != null) 
-             tipoDadoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
         
-        if (funcaoAtual.getTipoDado() != tipoDadoRetorno){
-            notificarErroSemantico(new ErroSemantico(0, 0) {
-
-                @Override
-                protected String construirMensagem()
-                {
-                   return "Tipo incompativel no retorno da funcao";
-                }
-
-            });
+        if (noRetorne.getExpressao() != null) 
+        {
+             tipoDadoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
+        }
+        
+        if (funcaoAtual.getTipoDado() != tipoDadoRetorno)
+        {
+            notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, funcaoAtual.getTipoDado(), tipoDadoRetorno).incluirDetalhes(funcaoAtual.getNome()));
         }
         
         return null;
@@ -504,10 +520,12 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoSe noSe) throws ExcecaoVisitaASA
     {
-        TipoDado condicao = (TipoDado) noSe.getCondicao().aceitar(this);
+        TipoDado tipoDadoCondicao = (TipoDado) noSe.getCondicao().aceitar(this);
         
-        if (condicao != TipoDado.LOGICO)
-            notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(noSe, noSe.getCondicao()));
+        if (tipoDadoCondicao != TipoDado.LOGICO)
+        {
+            notificarErroSemantico(new ErroTiposIncompativeis(noSe, tipoDadoCondicao));
+        }
         
         analisarListaBlocos(noSe.getBlocosVerdadeiros());
         analisarListaBlocos(noSe.getBlocosFalsos());
@@ -523,12 +541,13 @@ public final class AnalisadorSemantico implements VisitanteASA
         if (valores != null && !valores.isEmpty())
         {        
             TipoDado tipoDadoVetor = (TipoDado) ((NoExpressao) valores.get(0)).aceitar(this);
+            
             for (int i = 1; i < valores.size(); i++)
-            {
-                                    
-                TipoDado tipo = (TipoDado) ((NoExpressao) valores.get(i)).aceitar(this);
+            {                                    
+                TipoDado tipoDadoElemento = (TipoDado) ((NoExpressao) valores.get(i)).aceitar(this);
 
-                if (tipo != tipoDadoVetor) {
+                if (tipoDadoElemento != tipoDadoVetor) 
+                {
                     notificarErroSemantico(new ErroSemantico(0, 0)
                     {
                         @Override

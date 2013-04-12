@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao.calc;
+package br.univali.portugol.nucleo.execucao.operacoes;
 
 import java.lang.reflect.Method;
 

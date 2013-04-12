@@ -49,33 +49,33 @@ public interface VisitanteASA
 
     Object visitar(NoNao noNao) throws ExcecaoVisitaASA;
 
-    Object visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA;
 
-    Object visitar(NoOperacaoLogicaDiferenca noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoLogicaE noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoLogicaOU noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoLogicaMaiorIgual noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoLogicaMenor noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoLogicaMenorIgual noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoSoma noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoSoma noOperacaoSoma) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoSubtracao noOperacaoSubtracao) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoDivisao noOperacaoDivisao) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoMultiplicacao noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoMultiplicacao noOperacaoMultiplicacao) throws ExcecaoVisitaASA;
     
-    Object visitar(NoOperacaoModulo noOperacao) throws ExcecaoVisitaASA;
+    Object visitar(NoOperacaoModulo noOperacaoModulo) throws ExcecaoVisitaASA;
     
     Object visitar(NoPara noPara) throws ExcecaoVisitaASA;
 
@@ -85,7 +85,7 @@ public interface VisitanteASA
      * @param noPercorra           nó da ASA.
      * @return                     um objeto qualquer. 
      * @throws ExcecaoVisitaASA
-     * @deprecated                 a classe NoPercoraa será removida nas versões futuras.
+     * @deprecated                 a classe NoPercora será removida nas versões futuras.
      */
     @Deprecated
     Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA;

@@ -9,6 +9,11 @@ package br.univali.portugol.nucleo.mensagens;
  */
 public abstract class ErroSemantico extends ErroAnalise
 {
+    public ErroSemantico()
+    {
+        
+    }
+    
     /**
      * 
      * @param linha      a linha onde o erro ocorreu.

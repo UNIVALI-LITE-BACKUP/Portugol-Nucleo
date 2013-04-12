@@ -1,22 +1,21 @@
 package br.univali.portugol.nucleo.execucao;
 
-import br.univali.portugol.nucleo.execucao.calc.Somador;
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.execucao.calc.Comparador;
-import br.univali.portugol.nucleo.execucao.calc.Divisor;
-import br.univali.portugol.nucleo.execucao.calc.Maior;
-import br.univali.portugol.nucleo.execucao.calc.MaiorIgual;
-import br.univali.portugol.nucleo.execucao.calc.Menor;
-import br.univali.portugol.nucleo.execucao.calc.MenorIgual;
-import br.univali.portugol.nucleo.execucao.calc.Modulador;
-import br.univali.portugol.nucleo.execucao.calc.Multiplicador;
-import br.univali.portugol.nucleo.execucao.calc.Subtrator;
-import br.univali.portugol.nucleo.execucao.erros.ErroDivisaoPorZero;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceMatrizInvalido;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceVetorInvalido;
+import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoDivisao;
+import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoModulo;
+import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoMultiplicacao;
+import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoSoma;
+import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoSubtracao;
+import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaIgualdade;
+import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaMaior;
+import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaMaiorIgual;
+import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaMenor;
+import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaMenorIgual;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.*;
@@ -25,12 +24,30 @@ import java.util.logging.Logger;
 
 public class Interpretador implements VisitanteASA
 {
-    Random random = new Random(System.currentTimeMillis());
     public static final String funcaoInicialPadrao = "inicio";
+    
     private Saida saida;
     private Entrada entrada;
+    
     private boolean referencia = false;
     private ArvoreSintaticaAbstrata asa;
+    private Random random = new Random(System.currentTimeMillis());
+    
+    private String funcaoInicial = funcaoInicialPadrao;
+    private String ultimaReferenciaAcessada;
+    private TabelaSimbolos tabelaSimbolosGlobal;
+    private Stack<TabelaSimbolos> tabelaSimbolosLocal = new Stack<TabelaSimbolos>();
+    
+    private OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
+    private OperacaoLogicaIgualdade operacaoLogicaIgualdade = new OperacaoLogicaIgualdade();
+    private OperacaoLogicaMaior operacaoLogicaMaior = new OperacaoLogicaMaior();
+    private OperacaoLogicaMaiorIgual operacaoLogicaMaiorIgual = new OperacaoLogicaMaiorIgual();
+    private OperacaoLogicaMenor operacaoLogicaMenor = new OperacaoLogicaMenor();
+    private OperacaoLogicaMenorIgual operacaoLogicaMenorIgual = new OperacaoLogicaMenorIgual();
+    private OperacaoModulo operacaoModulo = new OperacaoModulo();
+    private OperacaoMultiplicacao operacaoMultiplicacao = new OperacaoMultiplicacao();
+    private OperacaoSoma operacaoSoma = new OperacaoSoma();
+    private OperacaoSubtracao operacaoSubtracao = new OperacaoSubtracao();    
 
     public void setEntrada(Entrada entrada)
     {
@@ -41,10 +58,6 @@ public class Interpretador implements VisitanteASA
     {
         this.saida = saida;
     }
-    private String funcaoInicial = funcaoInicialPadrao;
-    private String ultimaReferenciaAcessada;
-    private TabelaSimbolos tabelaSimbolosGlobal;
-    Stack<TabelaSimbolos> tabelaSimbolosLocal = new Stack<TabelaSimbolos>();
 
     public void interpretar(Programa programa, String[] parametros) throws ErroExecucao
     {
@@ -765,7 +778,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Comparador().executar(opEsq, opDir);
+        return operacaoLogicaIgualdade.executar(opEsq, opDir);
     }
 
     @Override
@@ -773,8 +786,8 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        final Comparador comparador = new Comparador();    
-        return ! (Boolean) comparador.executar(opEsq, opDir);    
+        
+        return ! (Boolean) operacaoLogicaIgualdade.executar(opEsq, opDir);
     }
 
     @Override
@@ -824,7 +837,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Maior().executar(opEsq, opDir);
+        return operacaoLogicaMaior.executar(opEsq, opDir);
     }
 
     @Override
@@ -832,7 +845,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new MaiorIgual().executar(opEsq, opDir);
+        return operacaoLogicaMaiorIgual.executar(opEsq, opDir);
     }
 
     @Override
@@ -840,7 +853,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Menor().executar(opEsq, opDir);
+        return operacaoLogicaMenor.executar(opEsq, opDir);
     }
 
     @Override
@@ -848,7 +861,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new MenorIgual().executar(opEsq, opDir);
+        return operacaoLogicaMenorIgual.executar(opEsq, opDir);
     }
 
     @Override
@@ -856,7 +869,7 @@ public class Interpretador implements VisitanteASA
     {
         Object valorOpEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object valorOpDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Somador().executar(valorOpEsq, valorOpDir);
+        return operacaoSoma.executar(valorOpEsq, valorOpDir);
     }
 
     @Override
@@ -864,7 +877,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Subtrator().executar(opEsq, opDir);
+        return operacaoSubtracao.executar(opEsq, opDir);
     }
 
     @Override
@@ -872,7 +885,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Divisor().executar(opEsq, opDir);
+        return operacaoDivisao.executar(opEsq, opDir);
     }
 
     @Override
@@ -880,7 +893,7 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Multiplicador().executar(opEsq, opDir);
+        return operacaoMultiplicacao.executar(opEsq, opDir);
     }
 
     @Override
@@ -888,11 +901,12 @@ public class Interpretador implements VisitanteASA
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        return new Modulador().executar(opEsq, opDir);
+        return operacaoModulo.executar(opEsq, opDir);
     }
 
     private class PareException extends RuntimeException
     {
+        
     }
 
     @Override

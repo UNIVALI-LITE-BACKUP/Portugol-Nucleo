@@ -14,6 +14,8 @@ public final class NoDeclaracaoParametro extends No
     private int indice;
     private ModoAcesso modoAcesso;
     private Quantificador quantificador;
+    private TrechoCodigoFonte trechoCodigoFonteNome;
+    private TrechoCodigoFonte trechoCodigoFonteTipoDado;
 
     /**
      * @param nome              o nome deste parãmetro.
@@ -98,6 +100,49 @@ public final class NoDeclaracaoParametro extends No
     public void setIndice(int indice)
     {
         this.indice = indice;
+    }
+    
+        /**
+     * Obtém o trecho do código fonte no qual o nome do símbolo se encontra.
+     * 
+     * @return     o trecho do código fonte
+     * @since 1.0
+     */
+    public TrechoCodigoFonte getTrechoCodigoFonteNome()
+    {
+        return trechoCodigoFonteNome;
+    }
+
+    /**
+     * Define o trecho do código fonte no qual o nome do símbolo se encontra.
+     * 
+     * @param trechoCodigoFonteNome     Define o trecho do código fonte no qual o nome do símbolo se encontra.
+     * @since 1.0
+     */
+    public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
+    {
+        this.trechoCodigoFonteNome = trechoCodigoFonteNome;
+    }
+
+    /**
+     * Define o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
+     * 
+     * @param trechoCodigoFonteTipoDado    Define o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
+     * @since 1.0
+     */
+    public void setTrechoCodigoFonteTipoDado(TrechoCodigoFonte trechoCodigoFonteTipoDado)
+    {
+        this.trechoCodigoFonteTipoDado = trechoCodigoFonteTipoDado;
+    }
+
+    /**
+     * Obtém o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
+     * 
+     * @return     Obtém o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
+     */
+    public TrechoCodigoFonte getTrechoCodigoFonteTipoDado()
+    {
+        return trechoCodigoFonteTipoDado;
     }
 
     /**

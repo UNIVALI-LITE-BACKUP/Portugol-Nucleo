@@ -56,7 +56,7 @@ public final class AnalisadorAlgoritmo
         
         ArvoreSintaticaAbstrata asa = analisadorSintatico.analisar(codigo);
         arvoreSintaticaAbstrata = asa;
- //       analisadorSemantico.analisar(asa);
+        analisadorSemantico.analisar(asa);
         
         return observadorAnaliseAlgoritmo.getResultadoAnalise();
     }

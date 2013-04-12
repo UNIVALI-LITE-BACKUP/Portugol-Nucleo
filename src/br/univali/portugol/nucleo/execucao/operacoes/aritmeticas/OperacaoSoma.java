@@ -1,6 +1,8 @@
-package br.univali.portugol.nucleo.execucao.calc;
+package br.univali.portugol.nucleo.execucao.operacoes.aritmeticas;
 
-public class Somador extends Operacao
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+
+public class OperacaoSoma extends Operacao
 {
         
     public String executar(String operandoEsquerdo, Integer operandoDireito){

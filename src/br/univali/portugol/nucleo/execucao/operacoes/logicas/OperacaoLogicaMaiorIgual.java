@@ -1,6 +1,8 @@
-package br.univali.portugol.nucleo.execucao.calc;
+package br.univali.portugol.nucleo.execucao.operacoes.logicas;
 
-public class MaiorIgual extends Operacao
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+
+public class OperacaoLogicaMaiorIgual extends Operacao
 {
     
      boolean executar(Integer a, Integer b)

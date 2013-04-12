@@ -1,34 +1,36 @@
-package br.univali.portugol.nucleo.execucao.calc;
+package br.univali.portugol.nucleo.execucao.operacoes.logicas;
 
-public class Maior extends Operacao
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+
+public class OperacaoLogicaMaior extends Operacao
 {
-    
-     boolean executar(Integer a, Integer b)
+    boolean executar(Integer a, Integer b)
     {
         return a > b;
     }
-    
+
     boolean executar(Integer a, Double b)
     {
         return a > b;
     }
-    
+
     boolean executar(Double a, Double b)
     {
         return a > b;
     }
-    
+
     boolean executar(Double a, Integer b)
     {
         return a > b;
-    }  
-    
-       boolean executar(String a, String b){
+    }
+
+    boolean executar(String a, String b)
+    {
         return a.compareTo(b) > 0;
     }
-    
-    boolean executar(Character a, Character b){
+
+    boolean executar(Character a, Character b)
+    {
         return a.compareTo(b) > 0;
     }
-    
 }

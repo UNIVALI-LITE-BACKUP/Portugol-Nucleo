@@ -12,8 +12,6 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
@@ -1094,8 +1092,8 @@ public final class AnalisadorSemanticoAntigo
             analisarBloco(para.getCondicao(), tabelaSimbolos); 
             TipoDado tipo = obterTipoDadoExpressao(para.getCondicao(), tabelaSimbolos);
            
-            if (tipo != TipoDado.LOGICO)
-                throw new ErroExpressaoTipoLogicoEsperada(para, para.getCondicao());
+            //if (tipo != TipoDado.LOGICO)
+//                throw new ErroExpressaoTipoLogicoEsperada(para, para.getCondicao());
         
         }
         catch(ErroSemantico erro) { notificarErroSemantico(erro); }        
@@ -1207,7 +1205,7 @@ public final class AnalisadorSemanticoAntigo
         {
             NoExpressao condicao = blocoSe.getCondicao();
             TipoDado tipoDado = obterTipoDadoExpressao(condicao, tabelaSimbolos);
-            if (tipoDado != TipoDado.LOGICO) throw new ErroExpressaoTipoLogicoEsperada(blocoSe, condicao);
+            //if (tipoDado != TipoDado.LOGICO) throw new ErroExpressaoTipoLogicoEsperada(blocoSe, condicao);
         }
         catch (ErroSemantico erro) { notificarErroSemantico(erro); }
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
@@ -1227,7 +1225,7 @@ public final class AnalisadorSemanticoAntigo
         {
             NoExpressao condicao = enquanto.getCondicao();
             TipoDado tipoDado = obterTipoDadoExpressao(condicao, tabelaSimbolos);
-            if (tipoDado != TipoDado.LOGICO) notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(enquanto, condicao));
+            //if (tipoDado != TipoDado.LOGICO) notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(enquanto, condicao));
         }
         catch (ErroSemantico erro) { notificarErroSemantico(erro); }
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
@@ -1247,7 +1245,7 @@ public final class AnalisadorSemanticoAntigo
         {
             NoExpressao condicao = facaEnquanto.getCondicao();
             TipoDado tipoDado = obterTipoDadoExpressao(condicao, tabelaSimbolos);
-            if (tipoDado != TipoDado.LOGICO) notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(facaEnquanto, condicao));
+//            if (tipoDado != TipoDado.LOGICO) notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(facaEnquanto, condicao));
         }
         catch (ErroSemantico erro) { notificarErroSemantico(erro); }
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
