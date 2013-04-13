@@ -271,4 +271,10 @@ public abstract class VisitanteASABasico implements VisitanteASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
     }
+
+    @Override
+    public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
 }

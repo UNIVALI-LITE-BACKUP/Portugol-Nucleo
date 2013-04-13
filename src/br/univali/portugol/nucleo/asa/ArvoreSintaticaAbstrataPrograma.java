@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
+import java.util.List;
+
 /**
  * Representa a ASA de um programa.
  * 
@@ -9,9 +11,21 @@ package br.univali.portugol.nucleo.asa;
  */
 public final class ArvoreSintaticaAbstrataPrograma extends ArvoreSintaticaAbstrata
 {
+    private List<NoInclusaoBiblioteca> listaInclusoesBibliotecas;
+    
     public ArvoreSintaticaAbstrataPrograma()
     {
         
+    }
+
+    public List<NoInclusaoBiblioteca> getListaInclusoesBibliotecas()
+    {
+        return listaInclusoesBibliotecas;
+    }
+
+    public void setListaInclusoesBibliotecas(List<NoInclusaoBiblioteca> listaInclusoesBibliotecas)
+    {
+        this.listaInclusoesBibliotecas = listaInclusoesBibliotecas;
     }
 
     /**

@@ -143,18 +143,21 @@ PR_LOGICO				:	'logico'		;
 PR_CADEIA				:	'cadeia'		;
 PR_INTEIRO				:	'inteiro'		;
 PR_CARACTER			:	'caracter'		;    
-PR_ESCOLHA			:	'escolha'		;
+PR_ESCOLHA				:	'escolha'		;
 PR_CASO				:	'caso'		;
 PR_CONTRARIO			:	'contrario'	;
 PR_CONST				:	'const'		;
 PR_FUNCAO				:	'funcao'		;
-PR_RETORNE			:	'retorne'		;  
+PR_RETORNE				:	'retorne'		;  
 PR_PARA				:	'para'		;
 PR_PARE				:	'pare'		;
 PR_FACA				:	'faca'		;
 PR_ENQUANTO			:	'enquanto'		;
 PR_SE				:	'se'		;
 PR_SENAO				:	'senao'		;
+PR_INCLUA				:	'inclua'		;
+PR_BIBLIOTECA			:	'biblioteca'		;
+
 
 GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'^'|'\''|'`'|'|'|'&'|'\\'|'@';
  
@@ -166,6 +169,8 @@ OPERADOR_NAO			:	'nao'		;
 LOGICO				: 	PR_VERDADEIRO | PR_FALSO  ;
 
 ID 				:	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*  ;
+
+ID_BIBLIOTECA			:	ID '.' ID;
 
 INTEIRO 				:	'0'..'9'* ;
 
@@ -215,8 +220,11 @@ programa returns[ArvoreSintaticaAbstrata asa] @init
 			{
 		 		asa = new ArvoreSintaticaAbstrataPrograma();
 				asa.setListaDeclaracoesGlobais(new ArrayList<NoDeclaracao>());
+				((ArvoreSintaticaAbstrataPrograma) asa).setListaInclusoesBibliotecas(new ArrayList<NoInclusaoBiblioteca>());
 			}
 		 }
+		 
+		 inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa]*
 
 		(declaracoesGlobais[asa] | declaracaoFuncao[asa])*
 	'}'
@@ -226,6 +234,46 @@ finally
 	pilhaContexto.pop();
 }
 
+inclusaoBiblioteca[ArvoreSintaticaAbstrataPrograma asa] @init
+{
+	pilhaContexto.push("inclusaoBiblioteca");
+}:
+	incl = PR_INCLUA PR_BIBLIOTECA nome = ID ('-->'  alias = ID) ?
+	{
+		if (gerarArvore)
+		{
+			NoInclusaoBiblioteca noInclusaoBiblioteca = new NoInclusaoBiblioteca();
+
+			noInclusaoBiblioteca.setNome($nome.getText());
+			noInclusaoBiblioteca.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($nome));
+			
+			if ($alias != null)
+			{
+				noInclusaoBiblioteca.setAlias($alias.getText());
+				noInclusaoBiblioteca.setTrechoCodigoFonteAlias(criarTrechoCodigoFonte($alias));
+			}
+			
+			int linha = $incl.getLine();
+			int coluna = $incl.getCharPositionInLine();
+			int tamanho = coluna;
+			
+			if ($alias != null)
+			{
+				tamanho = tamanho - $alias.getCharPositionInLine() + $alias.getText().length();
+			}
+			
+			else tamanho = tamanho - $nome.getCharPositionInLine() + $nome.getText().length();
+			
+			noInclusaoBiblioteca.setTrechoCodigoFonte(new TrechoCodigoFonte(linha, coluna, tamanho));
+			
+			asa.getListaInclusoesBibliotecas().add(noInclusaoBiblioteca);
+		}
+	}
+;
+finally
+{
+	pilhaContexto.pop();
+}
 
 declaracoesGlobais [ArvoreSintaticaAbstrata asa] @init
 {
@@ -1214,17 +1262,17 @@ referencia returns[NoReferencia referencia] @init
 	pilhaContexto.push("referencia");
 }:	
 
-	ID
+	(id = ID | id = ID_BIBLIOTECA)
 	(
-		('(') => vExpressao = chamadaFuncao[$ID.text] |
-		('[') => vExpressao = referenciaVetorMatriz[$ID.text] |
-			 vExpressao = referenciaId[$ID.text]
+		('(') => vExpressao = chamadaFuncao[$id.getText()] |
+		('[') => vExpressao = referenciaVetorMatriz[$id.getText()] |
+			 vExpressao = referenciaId[$id.getText()]
 	)
 	{
 		if (gerarArvore)
 		{
 			referencia = (NoReferencia) vExpressao;
-			referencia.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($ID));
+			referencia.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($id));
 		}
 	}
 ;
@@ -1447,7 +1495,6 @@ finally
 {
 	pilhaContexto.pop();
 }
-
 
 
 

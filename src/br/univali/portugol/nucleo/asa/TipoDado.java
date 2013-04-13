@@ -31,7 +31,7 @@ public enum TipoDado
      *
      * @since 1.0
      */
-    INTEIRO("inteiro", "inteiro", 0),
+    INTEIRO("inteiro", "inteiro", 0, Integer.class),
     
     /**
      * Representa os valores reais no Portugol. Os valores reais são todos os números fracionários positivos
@@ -52,7 +52,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    REAL("real", "real", 0.0),
+    REAL("real", "real", 0.0, Double.class),
     
     /**
      * Representa os valores lógicos (verdadeiro ou falso) no Portugol. 
@@ -70,7 +70,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    LOGICO("logico", "lógico", false),
+    LOGICO("logico", "lógico", false, Boolean.class),
     
     /**
      * Representa as cadeias de carcateres, ou seja, os valores textuais, no Portugol.
@@ -90,7 +90,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    CADEIA("cadeia", "cadeia", null),
+    CADEIA("cadeia", "cadeia", null, String.class),
     
     /**
      * Representa um único caracter no Portugol. Os caracteres são declarados entre aspas simples ''.
@@ -112,7 +112,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    CARACTER("caracter", "caracter", '\0'),
+    CARACTER("caracter", "caracter", '\0', Character.class),
     
     /**
      * Este é um tipo de dados especial utilizado apenas nas declarações de função para indicar
@@ -137,11 +137,12 @@ public enum TipoDado
      * @since 1.0
      * 
      */
-    VAZIO("vazio", "vazio", null);
+    VAZIO("vazio", "vazio", null, Void.class);
     
     private String nome;
     private String descricao;
     private Object valorPadrao;
+    private Class tipoJava;
 
     /**
      * 
@@ -149,11 +150,12 @@ public enum TipoDado
      * @param descricao   
      * @param valorPadrao
      */    
-    private TipoDado(String nome, String descricao, Object valorPadrao)
+    private TipoDado(String nome, String descricao, Object valorPadrao, Class tipoJava)
     {
         this.nome = nome;
         this.descricao = descricao;
         this.valorPadrao = valorPadrao;
+        this.tipoJava = tipoJava;
     }
 
     /**
@@ -184,6 +186,11 @@ public enum TipoDado
         return valorPadrao;
     }
 
+    public Class getTipoJava()
+    {
+        return tipoJava;
+    }
+    
     @Override
     public String toString()
     {

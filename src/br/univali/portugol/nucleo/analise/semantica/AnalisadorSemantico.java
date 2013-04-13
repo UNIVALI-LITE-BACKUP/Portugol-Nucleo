@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
@@ -118,6 +119,11 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
     {
+        for (NoInclusaoBiblioteca inclusao : asap.getListaInclusoesBibliotecas())
+        {
+            inclusao.aceitar(this);
+        }
+        
         // Executa a primeira vez para declarar as funções na tabela de símbolos
         
         declarandoSimbolosGlobais = true;
@@ -652,4 +658,10 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
         tabelaSimbolos.desempilharEscopo();        
     } 
+
+    @Override
+    public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
