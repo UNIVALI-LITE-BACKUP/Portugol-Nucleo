@@ -965,6 +965,40 @@ public class Interpretador implements VisitanteASA
         }
     }
 
+    private Object analizarReferenciavariavelPrograma(NoReferenciaVariavel noReferenciaVariavel)
+    {
+        Simbolo simbolo = obterSimbolo(noReferenciaVariavel.getNome());
+
+        if (referencia)
+        {
+            return simbolo;
+        }
+        else if (simbolo instanceof Vetor)
+        {
+            return ((Vetor) simbolo).obterValores();
+        }
+        else if (simbolo instanceof Matriz)
+        {
+            return ((Matriz) simbolo).obterValores();
+        }
+
+        return ((Variavel) simbolo).getValor();        
+    }
+
+    private Object analizarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
+    {
+        try
+        {
+            Biblioteca biblioteca = bibliotecas.get(noReferenciaVariavel.getEscopo());
+
+            return biblioteca.getValorVariavel(noReferenciaVariavel.getNome());
+        }
+        catch (Exception excecao)
+        {
+            throw new ExcecaoVisitaASA(new ErroExecucaoNaoTratado(excecao), asa, noReferenciaVariavel);
+        }
+    }
+
     private class PareException extends RuntimeException
     {
         
@@ -1009,46 +1043,13 @@ public class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
-        if (!noReferenciaVariavel.getNome().contains("."))
+        if (noReferenciaVariavel.getEscopo() == null)
         {
-            Simbolo simbolo = obterSimbolo(noReferenciaVariavel.getNome());
-
-            if (referencia)
-            {
-                return simbolo;
-            }
-            else
-            {
-
-                if (simbolo instanceof Vetor)
-                {
-                    return ((Vetor) simbolo).obterValores();
-                }
-                else
-                {
-                    if (simbolo instanceof Matriz)
-                    {
-                        return ((Matriz) simbolo).obterValores();
-                    }
-                }
-
-
-                return ((Variavel) simbolo).getValor();
-            }
-        }
+            return analizarReferenciavariavelPrograma(noReferenciaVariavel);
+        }        
         else
         {
-            try
-            {
-                String[] ref = noReferenciaVariavel.getNome().split("\\.");
-                Biblioteca biblioteca = bibliotecas.get(ref[0]);
-
-                return biblioteca.getValorVariavel(ref[1]);
-            }
-            catch (Exception excecao)
-            {
-                throw new ExcecaoVisitaASA(new ErroExecucaoNaoTratado(excecao), asa, noReferenciaVariavel);
-            }
+            return analizarReferenciaVariavelBiblioteca(noReferenciaVariavel);
         }
     }
 

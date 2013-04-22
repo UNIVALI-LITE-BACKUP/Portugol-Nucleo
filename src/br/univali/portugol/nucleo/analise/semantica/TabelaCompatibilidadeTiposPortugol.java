@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.univali.portugol.nucleo.analise.semantica;
 
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
@@ -26,7 +22,7 @@ import java.util.Map;
 
 /**
  *
- * @author fillipi
+ * @author Fillipi Domingos Pelz
  */
 public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibilidadeTipos
 {
@@ -60,8 +56,12 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
     {
         TipoDado[][] tabelaCompatibilidade = tabelas.get(operacao);
         TipoDado tipoEsperado = tabelaCompatibilidade[tipoDadoOperandoEsquerdo.ordinal()][tipoDadoOperandoDireito.ordinal()];
+        
         if (tipoEsperado == null)
+        {
             throw new ExcecaoImpossivelDeterminarTipoDado();
+        }
+        
         return tipoEsperado;
     }
 

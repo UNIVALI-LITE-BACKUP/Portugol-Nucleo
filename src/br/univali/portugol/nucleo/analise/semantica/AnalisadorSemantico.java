@@ -1,21 +1,32 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroLeiaNecessitaReferencia;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosPassadosFuncao;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSemanticoNaoTratado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloRedeclarado;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroTipoParametroIncompativel;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.CarregadorBibliotecas;
+import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
@@ -35,14 +46,16 @@ public final class AnalisadorSemantico implements VisitanteASA
     
     private static final List<String> funcoesReservadas = getLista();
     
-    private TabelaCompatibilidadeTipos compatibilidadeTipos = TabelaCompatibilidadeTiposPortugol.INSTANCE;
+    private TabelaCompatibilidadeTipos tabelaCompatibilidadeTipos = TabelaCompatibilidadeTiposPortugol.INSTANCE;
     private ArvoreSintaticaAbstrata asa;
+    private Map<String, Biblioteca> bibliotecas;
     
     private Funcao funcaoAtual;
     
     public AnalisadorSemantico()
     {
         tabelaSimbolos = new TabelaSimbolos();
+        bibliotecas = new TreeMap<String, Biblioteca> ();
         observadores = new ArrayList<ObservadorAnaliseSemantica>();
     }
     
@@ -166,7 +179,14 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            return analisarChamadaFuncaoPrograma(chamadaFuncao);
+        }
+        else
+        {
+            return analisarChamadaFuncaoBiblioteca(chamadaFuncao);
+        }        
     }
 
     @Override
@@ -231,7 +251,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             else if (funcoesReservadas.contains(nome))
             {
                 variavel.setRedeclarado(true);
-                Funcao funcaoSistam = new Funcao(nome, tipoDados.VAZIO, Quantificador.VETOR, null, null);
+                Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, Quantificador.VETOR, null, null);
                 notificarErroSemantico(new ErroSimboloRedeclarado(variavel, funcaoSistam));
             }
 
@@ -244,11 +264,21 @@ public final class AnalisadorSemantico implements VisitanteASA
                 if (!(declaracaoVariavel.getInicializacao() instanceof NoVetor) && !(declaracaoVariavel.getInicializacao() instanceof NoMatriz))
                 {
                     NoExpressao inicializacao = declaracaoVariavel.getInicializacao();
-                    NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
+                    NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                     referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
                     NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
 
-                    operacao.aceitar(this);
+                    try 
+                    {
+                        operacao.aceitar(this);
+                    }
+                    catch (ExcecaoVisitaASA excecao)
+                    {
+                        if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                        {
+                            throw excecao;
+                        }
+                    }
                 }
                 else
                 {
@@ -481,22 +511,14 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
-        Simbolo simbolo = tabelaSimbolos.obter(noReferenciaVariavel.getNome());
-
-        if (simbolo != null)
+        if (noReferenciaVariavel.getEscopo() == null)
         {
-            if (!(simbolo instanceof Variavel))
-            {
-                notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
-            }
-        }        
-        else 
-        {
-            notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaVariavel));
-            return TipoDado.VAZIO;
+            return analisarReferenciaVariavelPrograma(noReferenciaVariavel);
         }
-
-        return simbolo.getTipoDado();
+        else
+        {
+            return analisarReferenciaVariavelBiblioteca(noReferenciaVariavel);
+        }
     }
 
     @Override
@@ -592,21 +614,29 @@ public final class AnalisadorSemantico implements VisitanteASA
         Simbolo simbolo = null;
 
         if (quantificador == Quantificador.VALOR)
+        {
             simbolo = new Variavel(nome, tipoDado);
-
-        else
-
+        }
+        
+        else 
+        
         if (quantificador == Quantificador.VETOR)
+        {
             simbolo = new Vetor(nome, tipoDado, 0, new ArrayList<Object>());
-
-        else
-
+        }
+        
+        else 
+            
         if (quantificador == Quantificador.MATRIZ)
+        {
             simbolo = new Matriz(nome, tipoDado, 0, 0, new ArrayList<List<Object>>());
-
+        }
+        
         if (tabelaSimbolos.contem(nome))
+        {
             notificarErroSemantico(new ErroParametroRedeclarado(noDeclaracaoParametro, funcaoAtual));
-
+        }
+        
         tabelaSimbolos.adicionar(simbolo);
         
         return null;
@@ -627,22 +657,46 @@ public final class AnalisadorSemantico implements VisitanteASA
         return funcoes;
     }
     
-    private TipoDado recuperaTipoNoOperacao(NoOperacao noOperacao) throws ExcecaoVisitaASA{
-        TipoDado opEsq = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this);
-        TipoDado opDir = (TipoDado) noOperacao.getOperandoDireito().aceitar(this);
-        TipoDado tipo = TipoDado.VAZIO;
-        try
-        {
-            tipo = compatibilidadeTipos.getRetorno(noOperacao.getClass(), opEsq, opDir);
-        }
-        catch (ExcecaoImpossivelDeterminarTipoDado ex)
-        {
-            if (opEsq == TipoDado.VAZIO && opDir == TipoDado.VAZIO ) {
-                throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+    private TipoDado recuperaTipoNoOperacao(NoOperacao noOperacao) throws ExcecaoVisitaASA
+    {
+        TipoDado operandoEsquerdo = null;
+        TipoDado operandoDireito = null;
+        
+        try { operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this); }
+        catch (ExcecaoVisitaASA excecao) 
+        { 
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
+            {
+                throw excecao;
             }
-            notificarErroSemantico(new ErroTiposIncompativeis(noOperacao, opEsq, opDir));
         }
-        return tipo;
+        
+        try { operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this); }
+        catch (ExcecaoVisitaASA excecao) 
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
+            {
+                throw excecao;
+            }
+        }
+        
+        if (operandoEsquerdo != null && operandoDireito != null)
+        {
+            try
+            {
+                return tabelaCompatibilidadeTipos.getRetorno(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
+            }
+            catch (ExcecaoImpossivelDeterminarTipoDado excecao)
+            {
+                notificarErroSemantico(new ErroTiposIncompativeis(noOperacao, operandoEsquerdo, operandoDireito));
+
+                throw new ExcecaoVisitaASA(excecao, asa, noOperacao);
+            }
+        }
+        else
+        {
+            throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noOperacao);
+        }
     }
     
     private void analisarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
@@ -651,17 +705,324 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             return;
         }
+        
         tabelaSimbolos.empilharEscopo();        
+        
         for (NoBloco noBloco : blocos)
         {
-            noBloco.aceitar(this);
+            try
+            {
+                noBloco.aceitar(this);
+            }
+            catch (ExcecaoVisitaASA excecao)
+            {
+                if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                {
+                    throw excecao;
+                }
+            }
         }
+        
         tabelaSimbolos.desempilharEscopo();        
     } 
 
     @Override
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String nome = noInclusaoBiblioteca.getNome();
+        String alias = noInclusaoBiblioteca.getAlias();
+        
+        int linha = noInclusaoBiblioteca.getTrechoCodigoFonteNome().getLinha();
+        int coluna = noInclusaoBiblioteca.getTrechoCodigoFonteNome().getColuna();
+        
+        try
+        {
+            Biblioteca biblioteca = CarregadorBibliotecas.carregarBiblioteca(nome);
+            
+            if (bibliotecas.containsKey(nome))
+            {
+                notificarErroSemantico(new ErroInclusaoBiblioteca(linha, coluna, new Exception(String.format("A biblioteca \"%s\" já foi incluída", nome))));
+            }
+            else
+            {
+                bibliotecas.put(nome, biblioteca);
+            }
+
+            if (alias != null)
+            {
+                if (bibliotecas.containsKey(alias))
+                {
+                    linha = noInclusaoBiblioteca.getTrechoCodigoFonteAlias().getLinha();
+                    coluna = noInclusaoBiblioteca.getTrechoCodigoFonteAlias().getColuna();
+
+                    notificarErroSemantico(new ErroInclusaoBiblioteca(linha, coluna, new Exception(String.format("O alias \"%s\" já está sendo utilizado pela biblioteca \"%s\"", alias, bibliotecas.get(alias).getNome()))));
+                }
+                else
+                {
+                    bibliotecas.put(alias, biblioteca);
+                }
+            }            
+        }
+        catch (ErroCarregamentoBiblioteca erro)
+        {
+            notificarErroSemantico(new ErroInclusaoBiblioteca(linha, coluna, erro));
+        }
+        
+        return null;
     }
+
+    private TipoDado analisarReferenciaVariavelPrograma(NoReferenciaVariavel noReferenciaVariavel)
+    {
+        Simbolo simbolo = tabelaSimbolos.obter(noReferenciaVariavel.getNome());
+
+        if (simbolo != null)
+        {
+            if (!(simbolo instanceof Variavel))
+            {
+                notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
+            }
+            
+            return simbolo.getTipoDado();
+        }
+        else 
+        {
+            notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaVariavel));
+        }
+        
+        return TipoDado.VAZIO;
+    }
+
+    private TipoDado analisarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel)
+    {
+        final String escopo = noReferenciaVariavel.getEscopo();
+        final String nome = noReferenciaVariavel.getNome();
+        
+        final int linha = noReferenciaVariavel.getTrechoCodigoFonteNome().getLinha();
+        final int coluna = noReferenciaVariavel.getTrechoCodigoFonteNome().getColuna();
+        
+        final Biblioteca biblioteca = bibliotecas.get(escopo);        
+        
+        if (biblioteca != null)
+        {
+            for (Field variavel : biblioteca.getVariaveis())
+            {
+                if (variavel.getName().equals(nome))
+                {
+                    return TipoDado.obterTipoDadoPeloTipoJava(variavel.getType());
+                }
+            }
+
+            notificarErroSemantico(new ErroSemantico(linha, coluna) 
+            {
+                @Override
+                protected String construirMensagem()
+                {
+                    return String.format("A variável \"%s\" não existe na biblioteca \"%s\"", nome, biblioteca.getNome());
+                }
+            });
+        }            
+        else 
+        {
+            notificarErroSemantico(new ErroSemantico(linha, coluna)
+            {
+                @Override
+                protected String construirMensagem()
+                {
+                    return String.format("A biblioteca \"%s\" não foi incluída no programa", escopo);
+                }
+            });
+        }
+        
+        return TipoDado.VAZIO;
+    }
+
+    private Object analisarChamadaFuncaoPrograma(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+    {
+        String nome = chamadaFuncao.getNome();
+        
+        if (!funcoesReservadas.contains(nome))
+        {
+            if (tabelaSimbolos.contem((nome)))
+            {
+                Simbolo simbolo = tabelaSimbolos.obter(nome); 
+
+                if (simbolo instanceof Funcao) 
+                {
+                    Funcao funcao = (Funcao) simbolo;
+                    
+                    analisarChamadaFuncao(chamadaFuncao, funcao);
+                } 
+                else 
+                {
+                    notificarErroSemantico(new ErroReferenciaInvalida(chamadaFuncao, simbolo));
+                }
+            }
+            else
+            {
+                notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
+            }
+        }
+        else
+        {
+            analisarChamadaFuncaoEspecial(chamadaFuncao);
+        }
+        
+        return null;
+    }
+    
+    private void analisarChamadaFuncaoEspecial(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+    {
+    	List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
+    	
+        if (parametrosPassados == null || chamadaFuncao.getParametros().isEmpty())
+        {
+            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, "leia".equals(chamadaFuncao.getNome())? -2 : -1, null, chamadaFuncao));
+        }
+        else if (parametrosPassados != null)
+        {        
+            for (NoExpressao expressao: parametrosPassados)
+            {
+                if ("leia".equals(chamadaFuncao.getNome()))
+                {
+                    if (!(expressao instanceof NoReferenciaVariavel || expressao instanceof NoReferenciaVetor || expressao instanceof NoReferenciaMatriz))
+                    {
+                        notificarErroSemantico(new ErroLeiaNecessitaReferencia(chamadaFuncao,expressao));
+                    } 
+                }
+
+                expressao.aceitar(this);
+            }
+        }
+    }
+        
+    private void analisarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao) throws ExcecaoVisitaASA
+    {
+        int cont = 0;
+        
+        List<NoDeclaracaoParametro> parametrosEsperados = funcao.getParametros();
+        List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
+        
+        if (parametrosPassados == null &&  parametrosEsperados.size() > 0)
+        {
+            cont = 0;
+            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, parametrosEsperados.size(), funcao, chamadaFuncao));
+        }
+        
+        else if (parametrosPassados != null)
+        {            
+            if ( parametrosEsperados.size() > parametrosPassados.size())
+            {
+                cont = chamadaFuncao.getParametros().size();
+                notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
+            }
+            else if (parametrosPassados.size() > funcao.getParametros().size())
+            {
+                cont = chamadaFuncao.getParametros().size();
+                notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
+            }
+            else 
+            {
+                cont = parametrosPassados.size();
+            }
+        }
+        
+        for (int i = 0; i < cont; i++)
+        {
+            TipoDado tipoDadoParametroEsperado = parametrosEsperados.get(i).getTipoDado();
+            TipoDado tipoDadoParametroPassado = null;
+
+            try { tipoDadoParametroPassado = (TipoDado) parametrosPassados.get(i).aceitar(this); }
+            catch (ExcecaoVisitaASA excecao)
+            { 
+                if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                {
+                    throw excecao;
+                }
+            }
+
+            if (tipoDadoParametroPassado != null)
+            {
+                if (tipoDadoParametroEsperado != tipoDadoParametroPassado)
+                {
+                    if (!(tipoDadoParametroPassado == TipoDado.INTEIRO && tipoDadoParametroEsperado == TipoDado.REAL))
+                    {
+                        notificarErroSemantico(new ErroTipoParametroIncompativel(tipoDadoParametroEsperado, tipoDadoParametroPassado, parametrosEsperados.get(i), parametrosPassados.get(i), funcao));
+                    }
+                }
+            }
+        }
+    }
+    
+
+    private Object analisarChamadaFuncaoBiblioteca(final NoChamadaFuncao chamadaFuncao)
+    {
+        final String escopo = chamadaFuncao.getEscopo();
+        final String nome = chamadaFuncao.getNome();
+        
+        final int linha = chamadaFuncao.getTrechoCodigoFonteNome().getLinha();
+        final int coluna = chamadaFuncao.getTrechoCodigoFonteNome().getColuna();
+        
+        final Biblioteca biblioteca = bibliotecas.get(escopo);
+        
+        if (biblioteca != null)
+        {
+            for (Method funcao : biblioteca.getFuncoes())
+            {
+                if (funcao.getName().equals(nome))
+                {
+                    final Class[] tiposParametrosEsperados = funcao.getParameterTypes();                    
+                    
+                    for (int i = 0; i < chamadaFuncao.getParametros().size(); i++)
+                    {
+                        final int indice = i;
+                        
+                        try
+                        {
+                            final TipoDado tipoParametroPassado = (TipoDado) chamadaFuncao.getParametros().get(i).aceitar(this);
+                            
+                            if (tipoParametroPassado.getTipoJava() != tiposParametrosEsperados[i])
+                            {
+                                notificarErroSemantico(new ErroSemantico(linha, coluna)
+                                {
+                                    @Override
+                                    protected String construirMensagem()
+                                    {
+                                        return String.format("Tipos incompatíveis! O parâmetro \"%s\" da função \"%s\" esperava uma expressão do tipo \"%s\" mas foi passada uma expressão do tipo \"%s\".", indice+1, chamadaFuncao.getNome(), TipoDado.obterTipoDadoPeloTipoJava(tiposParametrosEsperados[indice]), tipoParametroPassado);
+                                    }
+                                });
+                            }
+                        }
+                        catch (ExcecaoVisitaASA excecao)
+                        {
+                            excecao.printStackTrace(System.out);
+                        }
+                    }
+                    
+                    return TipoDado.obterTipoDadoPeloTipoJava(funcao.getReturnType());
+                }
+            }
+
+            notificarErroSemantico(new ErroSemantico(linha, coluna) 
+            {
+                @Override
+                protected String construirMensagem()
+                {
+                    return String.format("A função \"%s\" não existe na biblioteca \"%s\"", chamadaFuncao.getNome(), biblioteca.getNome());
+                }
+            });
+        }            
+        else 
+        {
+            notificarErroSemantico(new ErroSemantico(linha, coluna)
+            {
+                @Override
+                protected String construirMensagem()
+                {
+                    return String.format("A biblioteca \"%s\" não foi incluída no programa", escopo);
+                }
+            });
+        }
+        
+        return TipoDado.VAZIO;        
+    }    
 }

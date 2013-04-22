@@ -209,7 +209,7 @@ public final class AnalisadorSemanticoAntigo
             if (!(declaracaoVariavel.getInicializacao() instanceof NoVetor) && !(declaracaoVariavel.getInicializacao() instanceof NoMatriz))
             {
                 NoExpressao inicializacao = declaracaoVariavel.getInicializacao();
-                NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
+                NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                 referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
                 NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
 
@@ -1329,7 +1329,7 @@ public final class AnalisadorSemanticoAntigo
                     try { tipoDadoOperandoDireito = obterTipoDadoExpressao(inicializacao, tabelaSimbolos); }
                     catch (ExcecaoImpossivelDeterminarTipoDado excecao) {}
 
-                    NoReferenciaVariavel referencia = new NoReferenciaVariavel(nome);
+                    NoReferenciaVariavel referencia = new NoReferenciaVariavel(null,nome);
                     referencia.setTrechoCodigoFonteNome(declaracaoVetor.getTrechoCodigoFonteNome());
                     NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
                     

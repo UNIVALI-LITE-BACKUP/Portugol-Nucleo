@@ -20,7 +20,14 @@ public final class CarregadorBibliotecas
                 Class classeBiblioteca = Class.forName("br.univali.portugol.nucleo.bibliotecas.".concat(nome));
                 Biblioteca biblioteca = (Biblioteca) classeBiblioteca.newInstance();
                 
-                bibliotecasCarregadas.put(nome, biblioteca);
+                if (biblioteca.getNome().equals(nome))
+                {
+                    bibliotecasCarregadas.put(nome, biblioteca);
+                }                
+                else
+                {
+                    throw new ErroCarregamentoBiblioteca(nome, "o nome da biblioteca não corresponde ao nome do arquivo");
+                }
             }
             catch (ClassNotFoundException excecao)
             {
@@ -28,7 +35,7 @@ public final class CarregadorBibliotecas
             }
             catch (ClassCastException excecao)
             {
-                throw new ErroCarregamentoBiblioteca(nome, "a biblioteca não  estende a classe base");
+                throw new ErroCarregamentoBiblioteca(nome, "a biblioteca não estende a classe base");
             }
             catch (Exception excecao)
             {

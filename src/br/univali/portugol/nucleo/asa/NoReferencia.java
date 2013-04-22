@@ -20,14 +20,16 @@ package br.univali.portugol.nucleo.asa;
 public abstract class NoReferencia extends NoExpressao
 {
     private String nome;
+    private String escopo;
     private TrechoCodigoFonte trechoCodigoFonteNome;
 
     /**
      * @param nome     o nome do símbolo referenciado.
      * @since 1.0
      */
-    public NoReferencia(String nome)
+    public NoReferencia(String escopo, String nome)
     {
+        this.escopo = escopo;
         this.nome = nome;
     }
 
@@ -40,6 +42,17 @@ public abstract class NoReferencia extends NoExpressao
     public String getNome()
     {
         return nome;
+    }
+    /**
+     * Obtém o escopo do símbolo referenciado. É utilizado apenas para acessar
+     * símbolos que estão em bibliotecas
+     * 
+     * @return      o escopo do símbolo referenciado.
+     * 
+     */
+    public String getEscopo()
+    {
+        return escopo;
     }
 
     /**

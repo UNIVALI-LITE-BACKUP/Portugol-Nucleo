@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
-import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
@@ -9,17 +8,18 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  */
 public final class ErroInclusaoBiblioteca extends ErroSemantico
 {
-    private ErroCarregamentoBiblioteca erroCarregamentoBiblioteca;
+    private Exception causa;
 
-    public ErroInclusaoBiblioteca(int linha, int coluna, ErroCarregamentoBiblioteca erroCarregamentoBiblioteca)
+    public ErroInclusaoBiblioteca(int linha, int coluna, Exception causa)
     {
         super(linha, coluna);
+        this.causa = causa;
     }
-    
+
     @Override
     protected String construirMensagem()
     {
-        return erroCarregamentoBiblioteca.getMessage();
+        return causa.getMessage();
     }
     
 }

@@ -1283,7 +1283,7 @@ finally
 
 
 
-referenciaId [String nome] returns[NoExpressao expressao] @init
+referenciaId [String id] returns[NoExpressao expressao] @init
 {
 	pilhaContexto.push("referenciaId");
 }:	
@@ -1291,7 +1291,17 @@ referenciaId [String nome] returns[NoExpressao expressao] @init
 	{
 		if (gerarArvore)
 		{
-			expressao = new NoReferenciaVariavel(nome);
+			String nome = id;
+			String escopo = null;
+			
+			if (id.contains("."))
+			{
+				String[] ref = id.split("\\.");
+				escopo = ref[0];
+				nome = ref[1];
+			}
+			
+			expressao = new NoReferenciaVariavel(escopo, nome);
 		}
 	}
 
@@ -1302,7 +1312,7 @@ finally
 }
 
 
-referenciaVetorMatriz [ String nome] returns[NoExpressao expressao] @init
+referenciaVetorMatriz [ String id] returns[NoExpressao expressao] @init
 {
 	pilhaContexto.push("referenciaVetorMatriz");
 }:
@@ -1311,9 +1321,19 @@ referenciaVetorMatriz [ String nome] returns[NoExpressao expressao] @init
 	 {
 		if (gerarArvore)
 		{
-		 	if ((indice1 != null) && (indice2 == null)) expressao = new NoReferenciaVetor(nome, indice1);
+			String nome = id;
+			String escopo = null;
+			
+			if (id.contains("."))
+			{
+				String[] ref = id.split("\\.");
+				escopo = ref[0];
+				nome = ref[1];
+			}
+		
+		 	if ((indice1 != null) && (indice2 == null)) expressao = new NoReferenciaVetor(escopo, nome, indice1);
 			else		
-			if ((indice1 != null) && (indice2 != null)) expressao = new NoReferenciaMatriz(nome, indice1, indice2);		
+			if ((indice1 != null) && (indice2 != null)) expressao = new NoReferenciaMatriz(escopo, nome, indice1, indice2);		
 		}
 	 }
 ;
@@ -1323,7 +1343,7 @@ finally
 }
 
 
-chamadaFuncao [String nome] returns[NoExpressao expressao] @init
+chamadaFuncao [String id] returns[NoExpressao expressao] @init
 {
 	pilhaContexto.push("chamadaFuncao");
 }:
@@ -1332,7 +1352,18 @@ chamadaFuncao [String nome] returns[NoExpressao expressao] @init
 	 {
  		if (gerarArvore)
  		{
-			NoChamadaFuncao chamadaFuncao = new NoChamadaFuncao(nome);
+ 		
+ 			String nome = id;
+			String escopo = null;
+			
+			if (id.contains("."))
+			{
+				String[] ref = id.split("\\.");
+				escopo = ref[0];
+				nome = ref[1];
+			}
+			
+			NoChamadaFuncao chamadaFuncao = new NoChamadaFuncao(escopo, nome);
 			chamadaFuncao.setParametros(vListaParametros);
 			expressao = chamadaFuncao;
 		}
@@ -1495,6 +1526,4 @@ finally
 {
 	pilhaContexto.pop();
 }
-
-
 

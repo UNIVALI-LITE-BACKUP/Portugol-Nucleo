@@ -29,9 +29,9 @@ public final class NoReferenciaVariavel extends NoReferencia
      * @param nome     o nome da variável que está sendo referenciada.
      * @since 1.0
      */
-    public NoReferenciaVariavel(String nome)
+    public NoReferenciaVariavel(String escopo, String nome)
     {
-        super(nome);
+        super(escopo, nome);
     }
 
     /**

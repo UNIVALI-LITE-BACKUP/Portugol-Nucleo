@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class Biblioteca
 {
     private List<Field> variaveis;
-    private List<Method> funcoes;
+    private List<Method> funcoes;    
     
     public Biblioteca() throws Exception
     {
@@ -29,6 +29,8 @@ public abstract class Biblioteca
             throw new Exception("A biblioteca não está exportando nenhuma função ou variável");
         }
     }
+
+    public abstract String getNome();
 
     private void validarFuncoes(List<Method> funcoes) throws Exception
     {

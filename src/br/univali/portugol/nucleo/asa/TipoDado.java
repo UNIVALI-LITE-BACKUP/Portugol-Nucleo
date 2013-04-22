@@ -220,4 +220,19 @@ public enum TipoDado
 
         return TipoDado.VAZIO;
     }
+    
+    public static TipoDado obterTipoDadoPeloTipoJava(Class tipoJava)
+    {
+        TipoDado[] tiposDado = values();
+ 
+        for (TipoDado tipoDado : tiposDado)
+        {
+            if (tipoDado.getTipoJava().equals(tipoJava))
+            {
+                return tipoDado;
+            }
+        }
+
+        return TipoDado.VAZIO;
+    }
 }

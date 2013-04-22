@@ -33,9 +33,9 @@ public final class NoReferenciaVetor extends NoReferencia
      * @param indice     a expressão que define qual posição do vetor está sendo acessada.
      * @since 1.0
      */
-    public NoReferenciaVetor(String nome, NoExpressao indice)
+    public NoReferenciaVetor(String escopo, String nome, NoExpressao indice)
     {
-        super(nome);
+        super(escopo, nome);
         this.noIndice = indice;
     }
 

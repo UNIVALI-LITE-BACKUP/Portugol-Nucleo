@@ -11,7 +11,13 @@ public final class Matematica extends Biblioteca
 {
     public Matematica() throws Exception
     {
-        
+        super();        
+    }
+
+    @Override
+    public String getNome()
+    {
+        return "Matematica";
     }
     
     @Exportar

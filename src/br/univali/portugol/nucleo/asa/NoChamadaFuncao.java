@@ -30,9 +30,9 @@ public final class NoChamadaFuncao extends NoReferencia
      * @param nome     o nome da função que está sendo chamada
      * @since 1.0
      */
-    public NoChamadaFuncao(String nome)
+    public NoChamadaFuncao(String escopo, String nome)
     {
-        super(nome);
+        super(escopo, nome);
     }
 
     /**
