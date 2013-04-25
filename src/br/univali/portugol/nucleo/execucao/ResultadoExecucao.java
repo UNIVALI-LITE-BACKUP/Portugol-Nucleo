@@ -13,6 +13,7 @@ public final class ResultadoExecucao
     private Long tempoExecucao = 0L;
     private ModoEncerramento modoEncerramento = ModoEncerramento.NORMAL;
     private ErroExecucao erro;
+    private Object retorno;
 
     /**
      * Obtém o tempo (em milissegundos) que o programa permaneceu rodando.
@@ -82,4 +83,29 @@ public final class ResultadoExecucao
     {
         this.erro = erro;
     }
+
+    /**
+     * Obtém o valor que foi retornado pela função principal. Caso a função não 
+     * retorne nenhum valor, este método irá retornar null.
+     * 
+     * @return          o valor retornado pela função principal.
+     */
+    public Object getRetorno()
+    {
+        return retorno;
+    }
+
+    /**
+     * Define o valor que foi retornado pela função principal.
+     * 
+     * @param retorno       o valor que foi retornado pela função principal.
+     */
+    public void setRetorno(Object retorno)
+    {
+        this.retorno = retorno;
+    }
+    
+    
+    
+    
 }

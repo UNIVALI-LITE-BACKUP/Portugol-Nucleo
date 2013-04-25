@@ -36,9 +36,8 @@ public class Interpretador implements VisitanteASA
     private TabelaSimbolos tabelaSimbolosGlobal;
     Stack<TabelaSimbolos> tabelaSimbolosLocal = new Stack<TabelaSimbolos>();
 
-    public void interpretar(Programa programa, String[] parametros) throws ErroExecucao
+    public Object interpretar(Programa programa, String[] parametros) throws ErroExecucao
     {
-
         try
         {
             asa = programa.getArvoreSintaticaAbstrata();
@@ -63,8 +62,18 @@ public class Interpretador implements VisitanteASA
                         tabelaSimbolosFuncaoPrincipal.adicionar(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, listaParametros.size(), listaParametros));
                     }
 
-                    interpretarListaBlocos(funcaoPrincipal.getBlocos());
-                    tabelaSimbolosLocal.pop();                
+                    try 
+                    {
+                        interpretarListaBlocos(funcaoPrincipal.getBlocos());
+                    }
+                    catch (RetorneException re)
+                    {
+                        return re.getValor();
+                    }
+                    finally
+                    {                    
+                        tabelaSimbolosLocal.pop();                
+                    }
                 }
                 else {
                     throw new ErroExecucao() 
@@ -81,7 +90,6 @@ public class Interpretador implements VisitanteASA
             {
                 throw new ErroFuncaoInicialNaoDeclarada(funcaoInicial);
             }
-
         }
         catch (Exception e)
         {
@@ -95,7 +103,8 @@ public class Interpretador implements VisitanteASA
             }
             throw new ErroExecucaoNaoTratado(e);
         }
-
+        
+        return null;
     }
 
     private Simbolo obterSimbolo(String nome)
@@ -1518,9 +1527,14 @@ public class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
-        throw new RetorneException(noRetorne.getExpressao().aceitar(this));
-
-
+        if (noRetorne.getExpressao() != null)
+        {        
+            throw new RetorneException(noRetorne.getExpressao().aceitar(this));
+        }
+        else
+        {
+            throw new RetorneException(null);
+        }
     }
 
     private class RetorneException extends RuntimeException

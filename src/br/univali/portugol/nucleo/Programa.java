@@ -112,7 +112,7 @@ public final class Programa
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
                         
-                        interpretador.interpretar(Programa.this, parametros);
+                        resultadoExecucao.setRetorno(interpretador.interpretar(Programa.this, parametros));
                         
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);

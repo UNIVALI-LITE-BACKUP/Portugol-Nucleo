@@ -354,7 +354,7 @@ public final class AnalisadorSemantico
             tipoRetornado = TipoDado.VAZIO;
         }
 
-        if (tipoRetornado != funcaoAtual.getTipoDado())
+        if (tipoRetornado != null && tipoRetornado != funcaoAtual.getTipoDado())
         {
             final TipoDado tipo = tipoRetornado;
             final TipoDado tipoFuncao = funcaoAtual.getTipoDado();
@@ -465,15 +465,25 @@ public final class AnalisadorSemantico
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
             }
-            
-            if (expressao instanceof NoReferenciaVetor && !(simbolo instanceof Vetor))
+            else if (expressao instanceof NoReferenciaVetor)                
             {
-                notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
-            }
-            
-            if (expressao instanceof NoReferenciaMatriz && !(simbolo instanceof Matriz))
+                if (!(simbolo instanceof Vetor))
+                {
+                    notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
+                }
+                
+                analisarExpressao(((NoReferenciaVetor) expressao).getIndice(), tabelaSimbolos);
+                
+            } 
+            else if (expressao instanceof NoReferenciaMatriz)
             {
-                notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
+                if (!(simbolo instanceof Matriz))
+                {                
+                    notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
+                }
+                
+                analisarExpressao(((NoReferenciaMatriz) expressao).getLinha(), tabelaSimbolos);
+                analisarExpressao(((NoReferenciaMatriz) expressao).getColuna(), tabelaSimbolos);
             }
         }
     }
@@ -494,8 +504,8 @@ public final class AnalisadorSemantico
         
         if (tipoDadoOperandoEsquerdo != null && tipoDadoOperandoDireito != null)
         {
-            verificaErroReferencia(operandoEsquerdo, tabelaSimbolos);
-            verificaErroReferencia(operandoDireito, tabelaSimbolos);
+            //verificaErroReferencia(operandoEsquerdo, tabelaSimbolos);
+            //verificaErroReferencia(operandoDireito, tabelaSimbolos);
        
             try
             {
@@ -1033,7 +1043,7 @@ public final class AnalisadorSemantico
         String nome = referencia.getNome();        
            	
     	if (!(referencia instanceof NoChamadaFuncao))
-        {    	
+        {   
             Simbolo simbolo = tabelaSimbolos.obter(nome);
             
             if (simbolo != null)
