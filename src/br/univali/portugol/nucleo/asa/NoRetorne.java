@@ -54,6 +54,7 @@ package br.univali.portugol.nucleo.asa;
 public final class NoRetorne extends NoBloco
 {
     private NoExpressao expressao;
+    private TrechoCodigoFonte trechoCodigoFonte;
 
     /**
      * 
@@ -72,6 +73,27 @@ public final class NoRetorne extends NoBloco
     public NoExpressao getExpressao()
     {
         return expressao;
+    }
+
+    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
+    {
+        this.trechoCodigoFonte = trechoCodigoFonte;
+    }
+
+    public TrechoCodigoFonte getTrechoCodigoFonte()
+    {
+        if (expressao != null)
+        {
+            int linha = trechoCodigoFonte.getLinha();
+            int coluna = trechoCodigoFonte.getColuna();
+            int tamanhoTexto = "retorne".length() + (expressao.getTrechoCodigoFonte().getColuna() - (coluna + "retorne".length())) + expressao.getTrechoCodigoFonte().getTamanhoTexto();
+            
+            return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
+        }
+        else
+        {
+            return trechoCodigoFonte;
+        }
     }
 
     /**

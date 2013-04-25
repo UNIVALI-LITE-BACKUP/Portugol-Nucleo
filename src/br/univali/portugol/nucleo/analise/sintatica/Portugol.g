@@ -806,11 +806,11 @@ retorne returns[NoRetorne retorne] @init
 	pilhaContexto.push("retorne");
 }:
 	
-	PR_RETORNE vExpressao = expressao
+	ret = PR_RETORNE (vExpressao = expressao)?
 	{
 		if (gerarArvore)
 		{
-			retorne = new NoRetorne(vExpressao);
+			retorne = new NoRetorne(criarTrechoCodigoFonte(ret), vExpressao);
 		}
 	}
 ;
@@ -1452,3 +1452,4 @@ finally
 
 
 
+                                    

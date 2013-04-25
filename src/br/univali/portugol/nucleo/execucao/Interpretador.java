@@ -264,9 +264,19 @@ public class Interpretador implements VisitanteASA
                                             }                                            
                                         }
                                         tabelaSimbolosLocal.push(tabelaSimbolos);
-                                        Object retorno = interpretarListaBlocos(funcao.getBlocos());
-                                        tabelaSimbolosLocal.pop();
-                                        return retorno;
+                                        
+                                        try
+                                        {
+                                            interpretarListaBlocos(funcao.getBlocos());
+                                        }
+                                        catch (RetorneException re)
+                                        {
+                                            return re.getValor();
+                                        }
+                                        finally
+                                        {
+                                            tabelaSimbolosLocal.pop();
+                                        }
                                     }
                                 }
                             }
@@ -478,17 +488,14 @@ public class Interpretador implements VisitanteASA
         }
 
         tabelaSimbolosLocal.peek().empilharEscopo();
+        
         try
         {
             for (NoBloco noBloco : blocos)
             {
                 noBloco.aceitar(this);
             }
-        }
-        catch (RetorneException re)
-        {
-            return re.getValor();
-        }
+        }  
         finally
         {
             tabelaSimbolosLocal.peek().desempilharEscopo();

@@ -28,6 +28,7 @@ public final class AnalisadorSemantico
 {
     private TabelaSimbolos tabelaSimbolosGlobal;
     private List<ObservadorAnaliseSemantica> observadores;
+    private Funcao funcaoAtual;
 
     public AnalisadorSemantico()
     {
@@ -90,7 +91,8 @@ public final class AnalisadorSemantico
             {
                 if (simbolo instanceof Funcao)
                 {
-                	tabelaSimbolosGlobal.empilharEscopo();
+                    tabelaSimbolosGlobal.empilharEscopo();
+                    funcaoAtual = (Funcao) simbolo;
                     analisarBlocosFuncao((Funcao) simbolo, tabelaSimbolosGlobal);
                     tabelaSimbolosGlobal.desempilharEscopo();
                 }
@@ -145,14 +147,7 @@ public final class AnalisadorSemantico
                 
                 for (NoBloco bloco : caso.getBlocos())
                 {
-                    try
-                    {
-                        analisarBloco(bloco, tabelaSimbolos);
-                    }
-                    catch (ErroSemantico erroSemantico)
-                    {
-                        notificarErroSemantico(erroSemantico);
-                    }
+                    analisarBloco(bloco, tabelaSimbolos);
                 }
                 
                 tabelaSimbolos.desempilharEscopo();
@@ -215,9 +210,7 @@ public final class AnalisadorSemantico
                 referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
                 NoOperacao operacao = new NoOperacao(Operacao.ATRIBUICAO, referencia, inicializacao);
 
-                try { obterTipoDadoExpressao(operacao, tabelaSimbolos); }
-                catch (ErroSemantico erro) { notificarErroSemantico(erro); }
-                catch (Exception e) { e.printStackTrace(System.err); }
+                analisarBloco(operacao, tabelaSimbolos);
             }
             else
             {
@@ -252,8 +245,7 @@ public final class AnalisadorSemantico
         {
             for (NoBloco bloco: listaBlocos)
             {
-                try { analisarBloco(bloco, tabelaSimbolos); }
-                catch (ErroSemantico erro) { notificarErroSemantico(erro); }
+                analisarBloco(bloco, tabelaSimbolos);
             }
         }
     }
@@ -288,10 +280,7 @@ public final class AnalisadorSemantico
             tabelaSimbolosFuncao.adicionar(simbolo);
         }
         
-        analisarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);
-
-    
-    
+        analisarListaBlocos(funcao.getBlocos(), tabelaSimbolosFuncao);  
     }
     
    /* 
@@ -303,7 +292,7 @@ public final class AnalisadorSemantico
         }
     }*/
 
-    private void analisarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida, ErroOperacaoComExpressaoConstante
+    private void analisarBloco(NoBloco bloco, TabelaSimbolos tabelaSimbolos)
     {
         if (bloco instanceof NoPara)
             analisarBlocoPara((NoPara) bloco, tabelaSimbolos);
@@ -345,21 +334,45 @@ public final class AnalisadorSemantico
             
     }
 
-    private void analisarNoRetorne(NoRetorne noRetorne, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida, ErroOperacaoComExpressaoConstante
+    private void analisarNoRetorne(NoRetorne noRetorne, TabelaSimbolos tabelaSimbolos)
     {
-        NoExpressao expressao = noRetorne.getExpressao();
+        TipoDado tipoRetornado = null;
+        int linha = 0;
+        int coluna = 0;
         
-        if (expressao instanceof NoOperacao)
+        if (noRetorne.getExpressao() != null)
         {
-            try { obterTipoDadoOperacao((NoOperacao) expressao, tabelaSimbolos); }
-            catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
+            TrechoCodigoFonte trecho = noRetorne.getExpressao().getTrechoCodigoFonte();
+            linha = trecho.getLinha();
+            coluna = trecho.getColuna();
+            
+            try { tipoRetornado = obterTipoDadoExpressao(noRetorne.getExpressao(), tabelaSimbolos); }
+            catch (ExcecaoImpossivelDeterminarTipoDado ex) { }
         }
-        
-        else analisarExpressao(expressao, tabelaSimbolos);            
+        else
+        {
+            tipoRetornado = TipoDado.VAZIO;
+        }
+
+        if (tipoRetornado != funcaoAtual.getTipoDado())
+        {
+            final TipoDado tipo = tipoRetornado;
+            final TipoDado tipoFuncao = funcaoAtual.getTipoDado();
+            final String nomeFuncao = funcaoAtual.getNome();
+            
+            notificarErroSemantico(new ErroSemantico(linha, coluna)
+            {
+                @Override
+                protected String construirMensagem()
+                {
+                    return String.format("Tipos incompatíveis! O retorno da função \"%s\" é do tipo \"%s\", mas foi retornada uma expressão do tipo \"%s\"", nomeFuncao, tipoFuncao, tipo);
+                }
+            });
+        }
     }
     
-    private void analisarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ErroReferenciaInvalida, ErroOperacaoComExpressaoConstante
-    {
+    private void analisarExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos)
+    {/*
         if (expressao instanceof NoOperacao)
         {
             NoOperacao operacao = (NoOperacao) expressao;
@@ -374,58 +387,27 @@ public final class AnalisadorSemantico
         else
 
         if (expressao instanceof NoIncremento)
-            analisarIncremento((NoIncremento) expressao);
-        
+        {
+            try { analisarIncremento((NoIncremento) expressao, tabelaSimbolos); }
+            catch (ExcecaoImpossivelDeterminarTipoDado ex) { ex.printStackTrace(System.out); }
+        }
         else
         	
         if (expressao instanceof NoReferencia)
-            analisarReferencia((NoReferencia) expressao, tabelaSimbolos);
+            analisarReferencia((NoReferencia) expressao, tabelaSimbolos);*/
+        try
+        {
+            obterTipoDadoExpressao(expressao, tabelaSimbolos);
+        }
+        catch (ExcecaoImpossivelDeterminarTipoDado ex)
+        {
+            
+        }
     }
     
     private void analisarReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos)
     {    	
-    	String nome = referencia.getNome();
     	
-    	if (referencia instanceof NoChamadaFuncao)
-        {	
-    		if (!funcoesReservadas.contains(nome))
-                {
-	    		if (tabelaSimbolos.contem((referencia.getNome())))
-		        {
-	    			Simbolo simbolo = tabelaSimbolos.obter(referencia.getNome()); 
-                                if (simbolo instanceof Funcao) {
-                                    Funcao funcao = (Funcao) simbolo;
-                                    analisarChamadaFuncao((NoChamadaFuncao) referencia, funcao, tabelaSimbolos);
-                                } else {
-                                    notificarErroSemantico(new ErroReferenciaInvalida(referencia, simbolo));
-                                }
-                        }
-	        
-	    		else notificarErroSemantico(new ErroSimboloNaoDeclarado((NoReferencia) referencia));
-    		}
-    		else
-    		{
-    			analisarChamadaFuncaoEspecial((NoChamadaFuncao) referencia, tabelaSimbolos);
-    		}
-        }
-    	
-    	else
-    		
-    	if (referencia instanceof NoReferenciaVariavel 
-            || referencia instanceof NoReferenciaVetor 
-            || referencia instanceof NoReferenciaMatriz)
-    	{
-                try
-                {
-                    if (!tabelaSimbolos.contem(nome))
-                            throw new ErroSimboloNaoDeclarado(referencia);                
-                    verificaErroReferencia(referencia, tabelaSimbolos);
-                }
-                catch (ErroSemantico ex)
-                {
-                   notificarErroSemantico(ex);
-                }
-    	}
     }
 
 
@@ -445,7 +427,7 @@ public final class AnalisadorSemantico
             analisarDeclaracaoMatriz((NoDeclaracaoMatriz) declaracao, tabelaSimbolos);
     }
 
-    private TipoDado obterTipoDadoExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ExcecaoImpossivelDeterminarTipoDado, ErroReferenciaInvalida
+    private TipoDado obterTipoDadoExpressao(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ExcecaoImpossivelDeterminarTipoDado
     {
         if (expressao instanceof NoInteiro)     return TipoDado.INTEIRO;
         if (expressao instanceof NoReal)        return TipoDado.REAL;
@@ -460,10 +442,7 @@ public final class AnalisadorSemantico
         if (expressao instanceof NoMatriz)      return obterTipoDadoMatriz(((NoMatriz) expressao),tabelaSimbolos);
         if (expressao instanceof NoMenosUnario) return obterTipoDadoExpressao(((NoMenosUnario)expressao).getExpressao(), tabelaSimbolos);
         
-        try {
-            if (expressao instanceof NoIncremento) return obterTipoDadoIncremento((NoIncremento) expressao, tabelaSimbolos);
-        } catch (ErroSemantico e) {notificarErroSemantico(e);}
-        
+        if (expressao instanceof NoIncremento) return obterTipoDadoIncremento((NoIncremento) expressao, tabelaSimbolos);
         
         notificarErroSemantico(new ErroSemantico(expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna())
         {
@@ -476,7 +455,7 @@ public final class AnalisadorSemantico
         throw new ExcecaoImpossivelDeterminarTipoDado();
     }
 
-    private void verificaErroReferencia(NoExpressao expressao, TabelaSimbolos tabelaSimbolos) throws ErroReferenciaInvalida
+    private void verificaErroReferencia(NoExpressao expressao, TabelaSimbolos tabelaSimbolos)
     {
         if (expressao instanceof NoReferencia)
         {
@@ -484,65 +463,70 @@ public final class AnalisadorSemantico
             
             if (expressao instanceof NoReferenciaVariavel && !(simbolo instanceof Variavel))
             {
-                throw new ErroReferenciaInvalida(expressao, simbolo);
+                notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
             }
             
             if (expressao instanceof NoReferenciaVetor && !(simbolo instanceof Vetor))
             {
-                throw new ErroReferenciaInvalida(expressao, simbolo);
+                notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
             }
             
             if (expressao instanceof NoReferenciaMatriz && !(simbolo instanceof Matriz))
             {
-                throw new ErroReferenciaInvalida(expressao, simbolo);
+                notificarErroSemantico(new ErroReferenciaInvalida(expressao, simbolo));
             }
         }
     }
     
-    private TipoDado obterTipoDadoOperacao(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws ErroTiposIncompativeis, ExcecaoImpossivelDeterminarTipoDado, ErroReferenciaInvalida
+    private TipoDado obterTipoDadoOperacao(NoOperacao operacao, TabelaSimbolos tabelaSimbolos) throws ExcecaoImpossivelDeterminarTipoDado
     {
-        boolean erro = false;
-
         NoExpressao operandoEsquerdo = operacao.getOperandoEsquerdo();
         NoExpressao operandoDireito = operacao.getOperandoDireito();
 
-        TipoDado tipoDadoOperandoEsquerdo = TipoDado.VAZIO;
-        TipoDado tipoDadoOperandoDireito = TipoDado.VAZIO;
+        TipoDado tipoDadoOperandoEsquerdo = null;
+        TipoDado tipoDadoOperandoDireito = null;
 
         try { tipoDadoOperandoEsquerdo = obterTipoDadoExpressao(operandoEsquerdo, tabelaSimbolos); }
-        catch (ErroTiposIncompativeis e) { notificarErroSemantico(e); erro = true; }
-        catch (ExcecaoImpossivelDeterminarTipoDado e) { erro = true; }
+        catch (ExcecaoImpossivelDeterminarTipoDado e) {  }
 
         try { tipoDadoOperandoDireito = obterTipoDadoExpressao(operandoDireito, tabelaSimbolos); }
-        catch (ErroTiposIncompativeis e) { notificarErroSemantico(e); erro = true; }
-        catch (ExcecaoImpossivelDeterminarTipoDado e) { erro = true; }
+        catch (ExcecaoImpossivelDeterminarTipoDado e) {  }
         
-        if (!erro)
+        if (tipoDadoOperandoEsquerdo != null && tipoDadoOperandoDireito != null)
         {
             verificaErroReferencia(operandoEsquerdo, tabelaSimbolos);
             verificaErroReferencia(operandoDireito, tabelaSimbolos);
        
-            switch (operacao.getOperacao())
+            try
             {
-                case ATRIBUICAO:                    return obterTipoDadoOperacaoAtribuicao                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case DIFERENCA:                     return obterTipoDadoOperacaoDiferenca                   (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case DIVISAO:                       return obterTipoDadoOperacaoDivisao                     (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case DIVISAO_ACUMULATIVA:           return obterTipoDadoOperacaoDivisaoAtribuitiva          (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case E:                             return obterTipoDadoOperacaoE                           (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case IGUALDADE:                     return obterTipoDadoOperacaoIgualdade                   (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MAIOR:                         return obterTipoDadoOperacaoMaior                       (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MAIOR_IGUAL:                   return obterTipoDadoOperacaoMaiorIgual                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MENOR:                         return obterTipoDadoOperacaoMenor                       (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MENOR_IGUAL:                   return obterTipoDadoOperacaoMenorIgual                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MODULO:                        return obterTipoDadoOperacaoModulo                      (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MODULO_ACUMULATIVO:            return obterTipoDadoOperacaoModuloAtribuitivo           (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MULTIPLICACAO:                 return obterTipoDadoOperacaoMultiplicacao               (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case MULTIPLICACAO_ACUMULATIVA:     return obterTipoDadoOperacaoMultiplicacaoAtribuitiva    (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case OU:                            return obterTipoDadoOperacaoOu                          (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case SOMA:                          return obterTipoDadoOperacaoSoma                        (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case SOMA_ACUMULATIVA:              return obterTipoDadoOperacaoSomaAtribuitiva             (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case SUBTRACAO:                     return obterTipoDadoOperacaoSubtracao                   (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
-                case SUBTRACAO_ACUMULATIVA:         return obterTipoDadoOperacaoSubtracaoAtribuitiva        (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                switch (operacao.getOperacao())
+                {
+                    case ATRIBUICAO:                    return obterTipoDadoOperacaoAtribuicao                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case DIFERENCA:                     return obterTipoDadoOperacaoDiferenca                   (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case DIVISAO:                       return obterTipoDadoOperacaoDivisao                     (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case DIVISAO_ACUMULATIVA:           return obterTipoDadoOperacaoDivisaoAtribuitiva          (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case E:                             return obterTipoDadoOperacaoE                           (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case IGUALDADE:                     return obterTipoDadoOperacaoIgualdade                   (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MAIOR:                         return obterTipoDadoOperacaoMaior                       (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MAIOR_IGUAL:                   return obterTipoDadoOperacaoMaiorIgual                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MENOR:                         return obterTipoDadoOperacaoMenor                       (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MENOR_IGUAL:                   return obterTipoDadoOperacaoMenorIgual                  (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MODULO:                        return obterTipoDadoOperacaoModulo                      (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MODULO_ACUMULATIVO:            return obterTipoDadoOperacaoModuloAtribuitivo           (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MULTIPLICACAO:                 return obterTipoDadoOperacaoMultiplicacao               (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case MULTIPLICACAO_ACUMULATIVA:     return obterTipoDadoOperacaoMultiplicacaoAtribuitiva    (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case OU:                            return obterTipoDadoOperacaoOu                          (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case SOMA:                          return obterTipoDadoOperacaoSoma                        (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case SOMA_ACUMULATIVA:              return obterTipoDadoOperacaoSomaAtribuitiva             (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case SUBTRACAO:                     return obterTipoDadoOperacaoSubtracao                   (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                    case SUBTRACAO_ACUMULATIVA:         return obterTipoDadoOperacaoSubtracaoAtribuitiva        (operacao, tipoDadoOperandoEsquerdo, tipoDadoOperandoDireito);
+                }
+            }
+            catch (ErroTiposIncompativeis e)
+            {
+                notificarErroSemantico(e);
+                
+                throw new ExcecaoImpossivelDeterminarTipoDado();
             }
         }
 
@@ -1046,30 +1030,57 @@ public final class AnalisadorSemantico
 
     private TipoDado obterTipoDadoReferencia(NoReferencia referencia, TabelaSimbolos tabelaSimbolos) throws ExcecaoImpossivelDeterminarTipoDado
     {
-        String nome = referencia.getNome();
-        Simbolo simbolo = obterSimbolo(nome, tabelaSimbolos);
-
-        if (referencia instanceof NoChamadaFuncao)
-        {
-            if (funcoesReservadas.contains(nome))
-                return TipoDado.VAZIO;
+        String nome = referencia.getNome();        
+           	
+    	if (!(referencia instanceof NoChamadaFuncao))
+        {    	
+            Simbolo simbolo = tabelaSimbolos.obter(nome);
+            
+            if (simbolo != null)
+            {
+                verificaErroReferencia(referencia, tabelaSimbolos);
+                
+                return simbolo.getTipoDado();
+            }
+            else
+            {
+                notificarErroSemantico(new ErroSimboloNaoDeclarado(referencia));
+                
+                throw new ExcecaoImpossivelDeterminarTipoDado();
+            }
         }
-        
-        if (simbolo == null)
-        {
-            notificarErroSemantico(new ErroSimboloNaoDeclarado(referencia));
-            throw new ExcecaoImpossivelDeterminarTipoDado();
-        }
-
         else
+        {	
+            if (!funcoesReservadas.contains(nome))
+            {
+                if (tabelaSimbolos.contem((nome)))
+                {
+                    Simbolo simbolo = tabelaSimbolos.obter(nome);
 
-        if (simbolo.redeclarado())
-            throw new ExcecaoImpossivelDeterminarTipoDado();
-
-        if (referencia instanceof NoChamadaFuncao)
-            analisarChamadaFuncao((NoChamadaFuncao) referencia, (Funcao) simbolo, tabelaSimbolos);
-
-        return simbolo.getTipoDado();
+                    if (simbolo instanceof Funcao) 
+                    {
+                        analisarChamadaFuncao((NoChamadaFuncao) referencia, (Funcao) simbolo, tabelaSimbolos);
+                    }
+                    else 
+                    {
+                        notificarErroSemantico(new ErroReferenciaInvalida(referencia, simbolo));
+                    }
+                    
+                    return simbolo.getTipoDado();
+                }
+                else 
+                {
+                    notificarErroSemantico(new ErroSimboloNaoDeclarado((NoReferencia) referencia));
+                    
+                    throw new ExcecaoImpossivelDeterminarTipoDado();
+                }
+            }
+            else
+            {
+                analisarChamadaFuncaoEspecial((NoChamadaFuncao) referencia, tabelaSimbolos);
+                return TipoDado.VAZIO;
+            }
+        } 
     }
 
     private Simbolo obterSimbolo(String nome, TabelaSimbolos tabelaSimbolos)
@@ -1086,23 +1097,18 @@ public final class AnalisadorSemantico
     {
         tabelaSimbolos.empilharEscopo();
 
-        try { analisarBloco(para.getInicializacao(), tabelaSimbolos);}
-        catch(ErroSemantico erro) { notificarErroSemantico(erro); }
-
-        try { 
-            
-            analisarBloco(para.getCondicao(), tabelaSimbolos); 
-            TipoDado tipo = obterTipoDadoExpressao(para.getCondicao(), tabelaSimbolos);
-            NoOperacao o = (NoOperacao) para.getCondicao();
-            if (tipo != TipoDado.LOGICO)
-                throw new ErroExpressaoTipoLogicoEsperada(para, para.getCondicao());
-        
+        analisarBloco(para.getInicializacao(), tabelaSimbolos);
+                
+        try
+        {
+            if (obterTipoDadoExpressao(para.getCondicao(), tabelaSimbolos) != TipoDado.LOGICO)
+            {
+                notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(para, para.getCondicao()));
+            }        
         }
-        catch(ErroSemantico erro) { notificarErroSemantico(erro); }        
-        catch (ExcecaoImpossivelDeterminarTipoDado ex) { ex.printStackTrace(System.err); }
+        catch (ExcecaoImpossivelDeterminarTipoDado ex) {  }
 
-        try { analisarBloco(para.getIncremento(), tabelaSimbolos); }
-        catch(ErroSemantico erro) { notificarErroSemantico(erro); }
+        analisarBloco(para.getIncremento(), tabelaSimbolos);
 
         analisarListaBlocos(para.getBlocos(), tabelaSimbolos);
 
@@ -1113,41 +1119,23 @@ public final class AnalisadorSemantico
     {
     	List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
     	
-        if (parametrosPassados == null || chamadaFuncao.getParametros().isEmpty())
+        if (parametrosPassados == null || parametrosPassados.isEmpty())
         {
-            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, "leia".equals(chamadaFuncao.getNome())? -2 : -1, null, chamadaFuncao));
+            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, chamadaFuncao.getNome().equals("leia")? -2 : -1, null, chamadaFuncao));
         }
         else
-        
-        if (parametrosPassados != null)
         {        
             for (NoExpressao expressao: parametrosPassados)
             {
+                analisarExpressao(expressao, tabelaSimbolos);
 
-                    try
+                if (chamadaFuncao.getNome().equals("leia"))
+                {
+                    if (!(expressao instanceof NoReferencia) || (expressao instanceof NoChamadaFuncao))
                     {
-                        obterTipoDadoExpressao(expressao, tabelaSimbolos);
-                    }
-                    catch (ExcecaoImpossivelDeterminarTipoDado ex) { }
-                    catch (ErroSemantico erroSemantico) { notificarErroSemantico(erroSemantico); }
-
-                    if ("leia".equals(chamadaFuncao.getNome()))
-                    {
-                        if (!(expressao instanceof NoReferenciaVariavel 
-                                || expressao instanceof NoReferenciaVetor 
-                                || expressao instanceof NoReferenciaMatriz)){
-                            notificarErroSemantico(new ErroLeiaNecessitaReferencia(chamadaFuncao,expressao));
-                        } 
-                    }
-
-                    try
-                    {
-                        analisarExpressao(expressao, tabelaSimbolos);
-                    }
-                    catch (ErroSemantico erro) 
-                    {
-                         notificarErroSemantico(erro);
-                    }
+                        notificarErroSemantico(new ErroLeiaNecessitaReferencia(chamadaFuncao,expressao));
+                    } 
+                }                
             }
         }
     }
@@ -1158,44 +1146,46 @@ public final class AnalisadorSemantico
         List<NoDeclaracaoParametro> parametrosEsperados = funcao.getParametros();
         List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
         
-        if (parametrosPassados == null &&  parametrosEsperados.size() > 0){
+        if ((parametrosPassados == null || parametrosPassados.isEmpty()) && parametrosEsperados.size() > 0)
+        {
             cont = 0;
             notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, parametrosEsperados.size(), funcao, chamadaFuncao));
         }
         
-        else if (parametrosPassados != null){
-            
+        else if ((parametrosPassados != null && !parametrosPassados.isEmpty()))
+        {            
             if (  parametrosEsperados.size() > parametrosPassados.size())
             {
                 cont = chamadaFuncao.getParametros().size();
                 notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
             }
-
-            else 
-
-            if (parametrosPassados.size() > funcao.getParametros().size())
+            else if (parametrosPassados.size() > funcao.getParametros().size())
             {
                 cont = chamadaFuncao.getParametros().size();
                 notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
             }
-            else cont = parametrosPassados.size();
+            else
+            {
+                cont = parametrosPassados.size();
+            }
         }
+        
         for (int i = 0; i < cont; i++)
         {
-            TipoDado tipoDadoParametroEsperado = TipoDado.VAZIO;
-            TipoDado tipoDadoParametroPassado = TipoDado.VAZIO;
-
-            try { tipoDadoParametroEsperado = parametrosEsperados.get(i).getTipoDado(); }
-            catch (Exception ex) {}
+            TipoDado tipoDadoParametroEsperado = parametrosEsperados.get(i).getTipoDado();
+            TipoDado tipoDadoParametroPassado = null;
 
             try { tipoDadoParametroPassado = obterTipoDadoExpressao(parametrosPassados.get(i), tabelaSimbolos); }
-            catch (Exception ex) {}
+            catch (ExcecaoImpossivelDeterminarTipoDado ex) { }
 
-            if (tipoDadoParametroEsperado != TipoDado.VAZIO && tipoDadoParametroPassado != TipoDado.VAZIO)
+            if (tipoDadoParametroPassado != null)
             {
-                if (tipoDadoParametroEsperado != tipoDadoParametroPassado){
+                if (tipoDadoParametroEsperado != tipoDadoParametroPassado)
+                {
                     if (!(tipoDadoParametroPassado == TipoDado.INTEIRO && tipoDadoParametroEsperado == TipoDado.REAL))
+                    {
                         notificarErroSemantico(new ErroTipoParametroIncompativel(tipoDadoParametroEsperado, tipoDadoParametroPassado, parametrosEsperados.get(i), parametrosPassados.get(i), funcao));
+                    }
                 }
             }
         }
@@ -1229,7 +1219,6 @@ public final class AnalisadorSemantico
             TipoDado tipoDado = obterTipoDadoExpressao(condicao, tabelaSimbolos);
             if (tipoDado != TipoDado.LOGICO) notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(enquanto, condicao));
         }
-        catch (ErroSemantico erro) { notificarErroSemantico(erro); }
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
 
         tabelaSimbolos.empilharEscopo();
@@ -1249,16 +1238,7 @@ public final class AnalisadorSemantico
             TipoDado tipoDado = obterTipoDadoExpressao(condicao, tabelaSimbolos);
             if (tipoDado != TipoDado.LOGICO) notificarErroSemantico(new ErroExpressaoTipoLogicoEsperada(facaEnquanto, condicao));
         }
-        catch (ErroSemantico erro) { notificarErroSemantico(erro); }
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
-    }
-
-    private void analisarIncremento(NoIncremento incremento) throws ErroOperacaoComExpressaoConstante
-    {
-        NoExpressao expressao = incremento.getExpressao();
-
-        if (!(expressao instanceof NoReferenciaVariavel) && !(expressao instanceof NoReferenciaVetor) && !(expressao instanceof NoReferenciaMatriz))
-            throw new ErroOperacaoComExpressaoConstante(incremento, expressao);        
     }
 
     private void notificarAviso(AvisoAnalise aviso)
@@ -1293,7 +1273,6 @@ public final class AnalisadorSemantico
                     notificarErroSemantico(new ErroTipoIndiceIncompativel(0, 0, tipoDadoTamanho));
             }
         }
-        catch (ErroSemantico e){ notificarErroSemantico(e); }
         catch (ExcecaoImpossivelDeterminarTipoDado e2){  }
             
         Vetor vetor = new Vetor(nome, tipoDado, 0);
@@ -1364,7 +1343,6 @@ public final class AnalisadorSemantico
                     notificarErroSemantico(new ErroTipoIndiceIncompativel(0, 0, tipoDadoLinha));
             }
         }
-        catch (ErroSemantico e){ notificarErroSemantico(e); }
         catch (ExcecaoImpossivelDeterminarTipoDado e2){  }
         
         try
@@ -1377,7 +1355,6 @@ public final class AnalisadorSemantico
                     notificarErroSemantico(new ErroTipoIndiceIncompativel(0, 0, tipoDadoColuna));
             }
         }
-        catch (ErroSemantico e){ notificarErroSemantico(e); }
         catch (ExcecaoImpossivelDeterminarTipoDado e2){  }
         
         Matriz matriz = new Matriz(nome, tipoDado, 0, 0);
@@ -1434,21 +1411,41 @@ public final class AnalisadorSemantico
         return funcoes;
     }
 
-    private TipoDado obterTipoDadoIncremento(NoIncremento noIncremento, TabelaSimbolos tabelaSimbolos) throws ErroSemantico, ErroTiposIncompativeis, ExcecaoImpossivelDeterminarTipoDado
+    private TipoDado obterTipoDadoIncremento(NoIncremento noIncremento, TabelaSimbolos tabelaSimbolos) throws ExcecaoImpossivelDeterminarTipoDado
     {
-        TipoDado tipo = obterTipoDadoExpressao(noIncremento.getExpressao(), tabelaSimbolos);
+        TipoDado tipo = null;
+        NoExpressao expressao = noIncremento.getExpressao();
         
-        if (tipo != TipoDado.INTEIRO || tipo != TipoDado.REAL)
-            throw new ErroSemantico(noIncremento.getTrechoCodigoFonte().getLinha(), noIncremento.getTrechoCodigoFonte().getColuna()) 
+        if (!(expressao instanceof NoReferencia))
+        {
+           notificarErroSemantico(new ErroOperacaoComExpressaoConstante(noIncremento, expressao));
+        }
+        
+        try { tipo = obterTipoDadoExpressao(noIncremento.getExpressao(), tabelaSimbolos); }
+        catch (ExcecaoImpossivelDeterminarTipoDado ex) { }
+        
+        final TipoDado fTipo = tipo;    
+        
+        if (tipo != null)
+        {        
+            if (tipo != TipoDado.INTEIRO && tipo != TipoDado.REAL)
             {
-                @Override
-                protected String construirMensagem()
+                notificarErroSemantico(new ErroSemantico(noIncremento.getTrechoCodigoFonte().getLinha(), noIncremento.getTrechoCodigoFonte().getColuna()) 
                 {
-                    return "Um incremento só pode ser realizado com variáveis do tipo inteiro ou real"; 
-                }
-            };
-    
-        return tipo;
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return String.format("Tipos incompatíveis. O incremento espera uma expressão do tipo \"%s\" ou \"%s\", mas foi encontrada uma expressão do tipo \"%s\".", TipoDado.INTEIRO, TipoDado.REAL, fTipo); 
+                    }
+                });
+            }
+
+            return tipo;
+        }
+        else
+        {
+            throw new ExcecaoImpossivelDeterminarTipoDado();
+        }
     }
 
     private TipoDado obterTipoDadoMatriz(NoMatriz noMatriz, TabelaSimbolos tabelaSimbolos) throws ExcecaoImpossivelDeterminarTipoDado
@@ -1464,20 +1461,12 @@ public final class AnalisadorSemantico
             {
                 for (Object elemento : valList)
                 {
-                    if (elemento != null){
-                        try
-                         {
-                            TipoDado tipo = obterTipoDadoExpressao((NoExpressao) elemento, tabelaSimbolos);
+                    if (elemento != null)
+                    {
+                        TipoDado tipo = obterTipoDadoExpressao((NoExpressao) elemento, tabelaSimbolos);
 
-                            if (tipo != TipoDado.VAZIO)
-                                tipos.add(tipo);
-
-                         }
-                         catch (ErroSemantico erro)
-                         {
-                             notificarErroSemantico(erro);
-                             throw new ExcecaoImpossivelDeterminarTipoDado();
-                         }     
+                        if (tipo != TipoDado.VAZIO)
+                            tipos.add(tipo);
                     }
                 }
             }
@@ -1534,19 +1523,10 @@ public final class AnalisadorSemantico
             {
                  if (elemento != null)
                  {
-                     try
-                     {
-                        TipoDado tipo = obterTipoDadoExpressao((NoExpressao) elemento, tabelaSimbolos);
-                        
-                        if (tipo != TipoDado.VAZIO)
-                            tipos.add(tipo);
-                        
-                     }
-                     catch (ErroSemantico erro)
-                     {
-                         notificarErroSemantico(erro);
-                         throw new ExcecaoImpossivelDeterminarTipoDado();
-                     }                     
+                    TipoDado tipo = obterTipoDadoExpressao((NoExpressao) elemento, tabelaSimbolos);
+
+                    if (tipo != TipoDado.VAZIO)
+                        tipos.add(tipo);
                  } 
             }
             
