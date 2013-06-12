@@ -35,6 +35,24 @@ public class AnalisadorSemanticoTest
     public void setUp()
     {
     }
+    
+    /*@Test
+    public void variavelNaoInicializada(){
+        programa
+{
+	funcao inicio()
+	{
+		inteiro a, b
+		escreva(a)
+		b = a + 2
+		a = a + b
+		escreva(b)
+		a = 1
+		escreva(a)
+	}
+}
+
+    }*/
 
     @Test
     public void testTipoIncompativelExpressaoSOMAInteiroLogico() {

@@ -110,8 +110,4 @@ public final class TabelaSimbolos implements Iterable<Simbolo>
         return escopos.peek().values().iterator();
     }
 
-    public Object obter(NoReferencia noReferencia)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

@@ -10,6 +10,7 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclara
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSemanticoNaoTratado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoInicializado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTipoParametroIncompativel;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
@@ -272,9 +273,12 @@ public final class AnalisadorSemantico implements VisitanteASA
                 Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, Quantificador.VETOR, null, null);
                 notificarErroSemantico(new ErroSimboloRedeclarado(variavel, funcaoSistam));
             }
-
-            tabelaSimbolos.adicionar(variavel);
-    
+            
+            if (!tabelaSimbolos.contem(nome))
+            {
+                tabelaSimbolos.adicionar(variavel);
+            }
+            
             if (declaracaoVariavel.getInicializacao() != null)
             {
                 // Posteriormente restringir na gramática para não permitir atribuir vetor ou matriz a uma variável comum
@@ -297,6 +301,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                             throw excecao;
                         }
                     }
+                
                 }
                 else
                 {
@@ -406,13 +411,67 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
     {
-        TipoDado tipoDado = recuperaTipoNoOperacao(noOperacao);
+        TipoDado tipoDadoRetorno;
         
+        TipoDado operandoEsquerdo = null;
+        TipoDado operandoDireito = null;
+        
+        Simbolo simbolo = null;
+        boolean inicializadoAnterior = false;
         if (!(noOperacao.getOperandoEsquerdo() instanceof NoReferencia)){
             notificarErroSemantico(new ErroOperacaoComExpressaoConstante(noOperacao, noOperacao.getOperandoEsquerdo()));
-        } 
+        }  else {
+            simbolo = tabelaSimbolos.obter(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
+            inicializadoAnterior = simbolo.inicializado();
+            simbolo.setInicializado(true);
+        }
         
-        return tipoDado;
+        try { operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this); }
+        catch (ExcecaoVisitaASA excecao) 
+        { 
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
+            {
+                throw excecao;
+            }
+        }
+        
+        if (simbolo != null) {
+            simbolo.setInicializado(inicializadoAnterior);
+        }
+        
+        try { operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this); }
+        catch (ExcecaoVisitaASA excecao) 
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
+            {
+                throw excecao;
+            }
+        }
+        
+        if (operandoEsquerdo != null && operandoDireito != null)
+        {
+            try
+            {
+                 tipoDadoRetorno = tabelaCompatibilidadeTipos.getRetorno(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
+            }
+            catch (ExcecaoImpossivelDeterminarTipoDado excecao)
+            {
+                notificarErroSemantico(new ErroTiposIncompativeis(noOperacao, operandoEsquerdo, operandoDireito));
+
+                throw new ExcecaoVisitaASA(excecao, asa, noOperacao);
+            }
+        }
+        else
+        {
+            throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noOperacao);
+        }       
+        
+        
+        if (simbolo != null) {
+            simbolo.setInicializado(true);
+        }
+        
+        return tipoDadoRetorno;
     }
 
     @Override
@@ -804,6 +863,10 @@ public final class AnalisadorSemantico implements VisitanteASA
 
         if (simbolo != null)
         {
+            if (!simbolo.inicializado()){
+                notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel,simbolo));
+            }      
+            
             if (!(simbolo instanceof Variavel))
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));

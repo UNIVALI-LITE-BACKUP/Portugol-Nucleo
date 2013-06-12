@@ -22,7 +22,7 @@ public final class Variavel extends Simbolo
     public Variavel(String nome, TipoDado tipoDado)
     {
         super(nome, tipoDado);
-        setValor(tipoDado.getValorPadrao());
+        //setValor(tipoDado.getValorPadrao());
     }
 
     /**
