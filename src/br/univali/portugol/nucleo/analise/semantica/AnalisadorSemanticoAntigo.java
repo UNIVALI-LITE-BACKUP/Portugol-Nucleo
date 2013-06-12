@@ -370,11 +370,7 @@ public final class AnalisadorSemanticoAntigo
         }
 
         else
-
-        if (expressao instanceof NoIncremento)
-            analisarIncremento((NoIncremento) expressao);
         
-        else
         	
         if (expressao instanceof NoReferencia)
             analisarReferencia((NoReferencia) expressao, tabelaSimbolos);
@@ -458,9 +454,9 @@ public final class AnalisadorSemanticoAntigo
         if (expressao instanceof NoMatriz)      return obterTipoDadoMatriz(((NoMatriz) expressao),tabelaSimbolos);
         if (expressao instanceof NoMenosUnario) return obterTipoDadoExpressao(((NoMenosUnario)expressao).getExpressao(), tabelaSimbolos);
         
-        try {
-            if (expressao instanceof NoIncremento) return obterTipoDadoIncremento((NoIncremento) expressao, tabelaSimbolos);
-        } catch (ErroSemantico e) {notificarErroSemantico(e);}
+      //  try {
+//            if (expressao instanceof NoIncremento) return obterTipoDadoIncremento((NoIncremento) expressao, tabelaSimbolos);
+        //} catch (ErroSemantico e) {notificarErroSemantico(e);}
         
         
         notificarErroSemantico(new ErroSemantico(expressao.getTrechoCodigoFonte().getLinha(), expressao.getTrechoCodigoFonte().getColuna())
@@ -1251,13 +1247,7 @@ public final class AnalisadorSemanticoAntigo
         catch (ExcecaoImpossivelDeterminarTipoDado ex) {}
     }
 
-    private void analisarIncremento(NoIncremento incremento) throws ErroOperacaoComExpressaoConstante
-    {
-        NoExpressao expressao = incremento.getExpressao();
-
-        if (!(expressao instanceof NoReferenciaVariavel) && !(expressao instanceof NoReferenciaVetor) && !(expressao instanceof NoReferenciaMatriz))
-            throw new ErroOperacaoComExpressaoConstante(incremento, expressao);        
-    }
+   
 
     private void notificarAviso(AvisoAnalise aviso)
     {
@@ -1432,22 +1422,6 @@ public final class AnalisadorSemanticoAntigo
         return funcoes;
     }
 
-    private TipoDado obterTipoDadoIncremento(NoIncremento noIncremento, TabelaSimbolos tabelaSimbolos) throws ErroSemantico, ErroTiposIncompativeis, ExcecaoImpossivelDeterminarTipoDado
-    {
-        TipoDado tipo = obterTipoDadoExpressao(noIncremento.getExpressao(), tabelaSimbolos);
-        
-        if (tipo != TipoDado.INTEIRO || tipo != TipoDado.REAL)
-            throw new ErroSemantico(noIncremento.getTrechoCodigoFonte().getLinha(), noIncremento.getTrechoCodigoFonte().getColuna()) 
-            {
-                @Override
-                protected String construirMensagem()
-                {
-                    return "Um incremento só pode ser realizado com variáveis do tipo inteiro ou real"; 
-                }
-            };
-    
-        return tipo;
-    }
 
     private TipoDado obterTipoDadoMatriz(NoMatriz noMatriz, TabelaSimbolos tabelaSimbolos) throws ExcecaoImpossivelDeterminarTipoDado
     {

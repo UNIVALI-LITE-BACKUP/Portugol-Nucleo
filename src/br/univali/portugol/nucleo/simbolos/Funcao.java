@@ -31,11 +31,17 @@ public final class Funcao extends Simbolo
     public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, List<NoBloco> blocos)
     {
         super(nome, tipoDado);
-
         this.blocos = blocos;
         this.parametros = parametros;
         this.quantificador = quantificador;
     }
+
+    @Override
+    public boolean constante()
+    {
+        return true; 
+    }
+    
 
     /**
      * Obtém a lista de blocas desta função. Estes blocos serão executados toda vez que uma 

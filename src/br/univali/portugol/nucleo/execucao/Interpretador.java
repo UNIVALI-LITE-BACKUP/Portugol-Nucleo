@@ -497,14 +497,7 @@ public class Interpretador implements VisitanteASA
 
         return null;
     }
-
-    @Override
-    public Object visitar(NoDecremento noDecremento) throws ExcecaoVisitaASA
-    {
-        NoOperacao expressao = new NoOperacaoSubtracao(noDecremento.getExpressao(), new NoInteiro(1));
-        return new NoOperacaoAtribuicao(noDecremento.getExpressao(), expressao).aceitar(this);
-    }
-
+    
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
@@ -625,13 +618,6 @@ public class Interpretador implements VisitanteASA
         {
         }
         return null;
-    }
-
-    @Override
-    public Object visitar(NoIncremento noIncremento) throws ExcecaoVisitaASA
-    {
-        NoOperacaoSoma soma = new NoOperacaoSoma(noIncremento.getExpressao(), new NoInteiro(1));
-        return new NoOperacaoAtribuicao(noIncremento.getExpressao(), soma).aceitar(this);
     }
 
     @Override

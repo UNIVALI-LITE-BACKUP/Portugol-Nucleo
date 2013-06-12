@@ -61,13 +61,7 @@ public abstract class VisitanteASABasico implements VisitanteASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
     }
-
-    @Override
-    public Object visitar(NoDecremento noDecremento) throws ExcecaoVisitaASA
-    {
-        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
-    }
-
+ 
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
@@ -85,13 +79,7 @@ public abstract class VisitanteASABasico implements VisitanteASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
     }
-
-    @Override
-    public Object visitar(NoIncremento noIncremento) throws ExcecaoVisitaASA
-    {
-        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
-    }
-
+    
     @Override
     public Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
     {

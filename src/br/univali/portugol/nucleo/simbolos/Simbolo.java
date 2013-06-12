@@ -110,7 +110,7 @@ public abstract class Simbolo
      *                  nas versões futuras este método será removido da classe base
      *                  e utilizado somente nas classes em que for necessário.
      */
-    public final boolean constante()
+    public boolean constante()
     {
         return constante;
     }

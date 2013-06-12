@@ -28,17 +28,13 @@ public interface VisitanteASA
     public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA;
 
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA;
-
-    public Object visitar(NoDecremento noDecremento) throws ExcecaoVisitaASA;
-
+    
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA;
 
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA;
 
     public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA;
-
-    public Object visitar(NoIncremento noIncremento) throws ExcecaoVisitaASA;
-
+    
     public Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA;
 
     public Object visitar(NoLogico noLogico) throws ExcecaoVisitaASA;

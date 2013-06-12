@@ -5,6 +5,7 @@ import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroLeiaNecessitaReferencia;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosPassadosFuncao;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroOperacaoComExpressaoConstante;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSemanticoNaoTratado;
@@ -51,6 +52,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     private Map<String, Biblioteca> bibliotecas;
     
     private Funcao funcaoAtual;
+    private TipoDado tipoDadoEscolha;
     
     public AnalisadorSemantico()
     {
@@ -173,7 +175,23 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (noCaso.getExpressao() != null) {
+            TipoDado tipoDado = (TipoDado) noCaso.getExpressao().aceitar(this);
+
+            if ((tipoDadoEscolha == TipoDado.INTEIRO) || (tipoDadoEscolha == TipoDado.CARACTER)){
+               if (tipoDado != tipoDadoEscolha){
+                   notificarErroSemantico(new ErroTiposIncompativeis(noCaso, tipoDado, tipoDadoEscolha));
+               } 
+            } else {
+                if ((tipoDado != TipoDado.INTEIRO) && (tipoDado != TipoDado.CARACTER)){
+                    notificarErroSemantico(new ErroTiposIncompativeis(noCaso, tipoDado, TipoDado.INTEIRO, TipoDado.CARACTER));
+                }
+            }
+        }
+        
+        analisarListaBlocos(noCaso.getBlocos());
+        
+        return null;
     }
 
     @Override
@@ -232,7 +250,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
     @Override
     public Object visitar(NoDeclaracaoVariavel declaracaoVariavel) throws ExcecaoVisitaASA
-    {
+    {        
         if (declarandoSimbolosGlobais == analisandoEscopoGlobal())
         {
             String nome = declaracaoVariavel.getNome();
@@ -285,19 +303,13 @@ public final class AnalisadorSemantico implements VisitanteASA
                     notificarErroSemantico(new ErroInicializacaoInvalida(declaracaoVariavel,declaracaoVariavel.getInicializacao(),declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getLinha() , declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getColuna()));
                 }
             }
+            
         }
-    
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Object visitar(NoDecremento noDecremento) throws ExcecaoVisitaASA
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -320,10 +332,17 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
     {
-        //TipoDado tipoDado = (TipoDado) noEscolha.getExpressao().aceitar(this);
-        //notificarErroSemantico(new ErroTiposIncompativeis(noEscolha, tipoDado));
+        tipoDadoEscolha = (TipoDado) noEscolha.getExpressao().aceitar(this);
         
-        throw new UnsupportedOperationException("Not supported yet.");
+        if ((tipoDadoEscolha != TipoDado.INTEIRO) && (tipoDadoEscolha != TipoDado.CARACTER)){
+            notificarErroSemantico(new ErroTiposIncompativeis(noEscolha, tipoDadoEscolha,TipoDado.INTEIRO,TipoDado.CARACTER));
+        }
+        List<NoCaso> casos = noEscolha.getCasos();
+        for (NoCaso noCaso : casos)
+        {
+            noCaso.aceitar(this);
+        }
+        return null;
     }
 
     @Override
@@ -341,12 +360,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         return null;
     }
 
-    @Override
-    public Object visitar(NoIncremento noIncremento) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+   
     @Override
     public Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
     {
@@ -392,7 +406,13 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
     {
-        return recuperaTipoNoOperacao(noOperacao);
+        TipoDado tipoDado = recuperaTipoNoOperacao(noOperacao);
+        
+        if (!(noOperacao.getOperandoEsquerdo() instanceof NoReferencia)){
+            notificarErroSemantico(new ErroOperacaoComExpressaoConstante(noOperacao, noOperacao.getOperandoEsquerdo()));
+        } 
+        
+        return tipoDado;
     }
 
     @Override
@@ -513,7 +533,14 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         if (noReferenciaVariavel.getEscopo() == null)
         {
-            return analisarReferenciaVariavelPrograma(noReferenciaVariavel);
+            try
+            {
+                return analisarReferenciaVariavelPrograma(noReferenciaVariavel);
+            }
+            catch (ExcecaoImpossivelDeterminarTipoDado ex)
+            {
+                throw new ExcecaoVisitaASA(ex, asa, noReferenciaVariavel);
+            }
         }
         else
         {
@@ -771,7 +798,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         return null;
     }
 
-    private TipoDado analisarReferenciaVariavelPrograma(NoReferenciaVariavel noReferenciaVariavel)
+    private TipoDado analisarReferenciaVariavelPrograma(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoImpossivelDeterminarTipoDado
     {
         Simbolo simbolo = tabelaSimbolos.obter(noReferenciaVariavel.getNome());
 
@@ -789,7 +816,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaVariavel));
         }
         
-        return TipoDado.VAZIO;
+        throw new ExcecaoImpossivelDeterminarTipoDado();
     }
 
     private TipoDado analisarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel)

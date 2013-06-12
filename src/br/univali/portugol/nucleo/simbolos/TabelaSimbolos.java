@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.NoReferencia;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -107,5 +108,10 @@ public final class TabelaSimbolos implements Iterable<Simbolo>
     public Iterator<Simbolo> iterator()
     {
         return escopos.peek().values().iterator();
+    }
+
+    public Object obter(NoReferencia noReferencia)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

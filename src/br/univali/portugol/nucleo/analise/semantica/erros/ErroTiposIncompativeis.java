@@ -3,6 +3,7 @@ package br.univali.portugol.nucleo.analise.semantica.erros;
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.asa.NoCaso;
 import br.univali.portugol.nucleo.asa.NoEnquanto;
 import br.univali.portugol.nucleo.asa.NoEscolha;
 import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
@@ -490,14 +491,16 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             
             return construtorString.toString();
         }
-
+        
         @Override
         public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
 
             construtorString.append("Tipos incompatíveis! O comando \"escolha\" espera uma expressão do tipo \"");
-            construtorString.append(TipoDado.LOGICO);
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\" ou \"");
+            construtorString.append(tiposDado[2]);
             construtorString.append("\" mas foi passada uma expressão do tipo \"");
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
@@ -508,6 +511,31 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             return construtorString.toString();
         }
 
+        @Override
+        public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! A expressão esperada para esse caso deveria ser do tipo \"");
+            if (tiposDado.length == 3){
+                construtorString.append(tiposDado[1]);
+                construtorString.append("\" ou \"");
+                construtorString.append(tiposDado[2]);
+            } else {
+                construtorString.append(tiposDado[1]);
+            }
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+
+            setLinha(noCaso.getExpressao().getTrechoCodigoFonte().getLinha());
+            setColuna(noCaso.getExpressao().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        
+        
         @Override
         public Object visitar(NoSe noSe) throws ExcecaoVisitaASA
         {
