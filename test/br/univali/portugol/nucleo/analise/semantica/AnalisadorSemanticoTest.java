@@ -4,6 +4,7 @@ package br.univali.portugol.nucleo.analise.semantica;
 import br.univali.portugol.nucleo.Portugol;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoInicializado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTipoIndiceIncompativel;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
 import br.univali.portugol.nucleo.asa.TipoDado;
@@ -36,32 +37,36 @@ public class AnalisadorSemanticoTest
     {
     }
     
-    /*@Test
-    public void variavelNaoInicializada(){
-        programa
-{
-	funcao inicio()
-	{
-		inteiro a, b
-		escreva(a)
-		b = a + 2
-		a = a + b
-		escreva(b)
-		a = 1
-		escreva(a)
-	}
-}
+    @Test
+    public void testVariavelNaoInicializada(){
+        ResultadoAnalise resultado = Portugol.analisar(
+                                                "programa"
+                                                +"{"
+                                                +" funcao inicio(){"
+                                                +"   inteiro a, b"
+                                                +"   escreva(a)"
+                                                +"   b = a + 2"
+                                                +"   a = a + b"
+                                                +"   escreva(b)"
+                                                +"   a = 1"
+                                                +"   escreva(a)"
+                                                +" }"
+                                                +"}");
+        
+        assertEquals("Era esperado tres erros semanticos",3, resultado.getErros().size());
+        assertEquals("Era esperado uma instancia de "+ ErroSimboloNaoInicializado.class.getName(),ErroSimboloNaoInicializado.class, 
+                resultado.getErros().get(0).getClass());
 
-    }*/
+    }
 
     @Test
     public void testTipoIncompativelExpressaoSOMAInteiroLogico() {
         ResultadoAnalise resultado = Portugol.analisar(
                                               "programa {"
                                             + " funcao inicio() {"
-                                            + "  inteiro a"
-                                            + "  logico b"
-                                            + "  a + b"
+                                            + "  inteiro a = 1"
+                                            + "  logico b = verdadeiro"
+                                            + "  b = a + b"
                                             + " }"
                                             + "}");
         assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
@@ -73,8 +78,7 @@ public class AnalisadorSemanticoTest
         ResultadoAnalise resultado = Portugol.analisar(
                                               "programa {"
                                             + " funcao inicio() {"
-                                            + "  inteiro a"
-                                            + "  inteiro b"
+                                            + "  inteiro a = 0, b = 1"
                                             + "  a = a + c"
                                             + " }"
                                             + "}");
@@ -91,7 +95,7 @@ public class AnalisadorSemanticoTest
         ResultadoAnalise resultado = Portugol.analisar(
                                               "programa {"
                                             + " funcao inicio() {"
-                                            + "  cadeia a"
+                                            + "  cadeia a = \"a\""
                                             + "  escolha (a) {"
                                             + "     caso 1:"
                                             + "         pare"
@@ -112,7 +116,7 @@ public class AnalisadorSemanticoTest
         resultado = Portugol.analisar(
                                               "programa {"
                                             + " funcao inicio() {"
-                                            + "  caracter a"
+                                            + "  caracter a = 'a'"
                                             + "  escolha (a) {"
                                             + "     caso 1:"
                                             + "         pare"
@@ -132,7 +136,7 @@ public class AnalisadorSemanticoTest
         resultado = Portugol.analisar(
                                               "programa {"
                                             + " funcao inicio() {"
-                                            + "  logico a"
+                                            + "  logico a = verdadeiro"
                                             + "  escolha (a) {"
                                             + "     caso 2.0:"
                                             + "         pare"
@@ -155,7 +159,7 @@ public class AnalisadorSemanticoTest
         resultado = Portugol.analisar(
                                               "programa {"
                                             + " funcao inicio() {"
-                                            + "  inteiro a"
+                                            + "  inteiro a = 1"
                                             + "  escolha (a) {"
                                             + "     caso 2:"
                                             + "         pare"
