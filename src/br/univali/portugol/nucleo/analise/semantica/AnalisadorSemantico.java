@@ -387,13 +387,24 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TipoDado tipo = (TipoDado) noMenosUnario.getExpressao().aceitar(this);
+        if (!tipo.equals(TipoDado.INTEIRO) && !tipo.equals(TipoDado.REAL)){
+            notificarErroSemantico(new ErroTiposIncompativeis(noMenosUnario, tipo, TipoDado.INTEIRO, TipoDado.REAL));
+            throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noMenosUnario);
+        }
+        
+        return tipo;
     }
 
     @Override
     public Object visitar(NoNao noNao) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TipoDado tipo = (TipoDado) noNao.getExpressao().aceitar(this);
+        if (tipo != TipoDado.LOGICO){
+            notificarErroSemantico(new ErroTiposIncompativeis(noNao, tipo, TipoDado.LOGICO));
+            throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noNao);
+        }        
+        return tipo;
     }
 
     @Override

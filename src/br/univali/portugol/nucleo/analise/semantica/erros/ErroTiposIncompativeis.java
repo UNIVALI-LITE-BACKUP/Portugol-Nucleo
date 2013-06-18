@@ -7,6 +7,8 @@ import br.univali.portugol.nucleo.asa.NoCaso;
 import br.univali.portugol.nucleo.asa.NoEnquanto;
 import br.univali.portugol.nucleo.asa.NoEscolha;
 import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
+import br.univali.portugol.nucleo.asa.NoMenosUnario;
+import br.univali.portugol.nucleo.asa.NoNao;
 import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
 import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
@@ -167,6 +169,45 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             return construtorString.toString();
         }
 
+        @Override
+        public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA
+        {
+           StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! A operação \"menos unário\" espera uma expressão do tipo \"");
+            if (tiposDado.length == 3){
+                construtorString.append(tiposDado[1]);
+                construtorString.append("\" ou \"");
+                construtorString.append(tiposDado[2]);
+            }
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+
+            setLinha(noMenosUnario.getExpressao().getTrechoCodigoFonte().getLinha());
+            setColuna(noMenosUnario.getExpressao().getTrechoCodigoFonte().getColuna());
+            
+            return construtorString.toString();
+        }
+
+        @Override
+        public Object visitar(NoNao noNao) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! A operação de negação espera uma expressão do tipo \"");
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+            
+            setLinha(noNao.getTrechoCodigoFonte().getLinha());
+            setColuna(noNao.getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+
+        
         /**
          * Constrói uma mensagem de erro personalizada para a operação de diferença (!=).
          * 

@@ -58,7 +58,7 @@ public final class NoNao extends NoExpressao
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
-        return null;
+        return expressao.getTrechoCodigoFonte();
     }
 
     /**

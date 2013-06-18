@@ -38,6 +38,40 @@ public class AnalisadorSemanticoTest
     }
     
     @Test
+    public void testMenosUnario(){
+        ResultadoAnalise resultado = Portugol.analisar(
+                                            "programa"
+                                            +"{"
+                                            +" funcao inicio(){"
+                                            +"   cadeia a = \"teste\""
+                                            +"   escreva(-a)        "
+                                            +" }"
+                                            +"}");
+        assertEquals("Era esperado um erro semanticos",1, resultado.getErros().size());
+        assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+        assertEquals("Tipos incompatíveis! A operação \"menos unário\" espera uma expressão do tipo \""+ TipoDado.INTEIRO+"\" ou \""+TipoDado.REAL+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".",
+                resultado.getErros().get(0).getMensagem());
+    }
+    
+    @Test
+    public void testNoNao(){
+        ResultadoAnalise resultado = Portugol.analisar(
+                                            "programa"
+                                            +"{"
+                                            +" funcao inicio(){"
+                                            +"   cadeia a = \"teste\""
+                                            +"   se (nao a){"
+                                            +"     escreva(\"nao a\")"
+                                            +"   }        "
+                                            +" }"
+                                            +"}");
+        assertEquals("Era esperado um erro semanticos",1, resultado.getErros().size());
+        assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+        assertEquals("Tipos incompatíveis! A operação de negação espera uma expressão do tipo \""+ TipoDado.LOGICO+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".",
+                resultado.getErros().get(0).getMensagem());
+    }
+    
+    @Test
     public void testVariavelNaoInicializada(){
         ResultadoAnalise resultado = Portugol.analisar(
                                                 "programa"
