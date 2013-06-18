@@ -38,6 +38,23 @@ public class AnalisadorSemanticoTest
     }
     
     @Test
+    public void testReferenciaVetor()
+    {
+        ResultadoAnalise resultado = Portugol.analisar(
+                                            "programa"
+                                            +"{"
+                                            +" funcao inicio(){"
+                                            +"   inteiro a[] = {1, 2, 3}"
+                                            +"   escreva(a[\"1\"])       "
+                                            +" }"
+                                            +"}");
+        assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
+        assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+        assertEquals("Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo \""+ TipoDado.INTEIRO+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".",
+                resultado.getErros().get(0).getMensagem());
+    }
+    
+    @Test
     public void testMenosUnario(){
         ResultadoAnalise resultado = Portugol.analisar(
                                             "programa"
@@ -47,7 +64,7 @@ public class AnalisadorSemanticoTest
                                             +"   escreva(-a)        "
                                             +" }"
                                             +"}");
-        assertEquals("Era esperado um erro semanticos",1, resultado.getErros().size());
+        assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
         assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
         assertEquals("Tipos incompatíveis! A operação \"menos unário\" espera uma expressão do tipo \""+ TipoDado.INTEIRO+"\" ou \""+TipoDado.REAL+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".",
                 resultado.getErros().get(0).getMensagem());
@@ -65,7 +82,7 @@ public class AnalisadorSemanticoTest
                                             +"   }        "
                                             +" }"
                                             +"}");
-        assertEquals("Era esperado um erro semanticos",1, resultado.getErros().size());
+        assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
         assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
         assertEquals("Tipos incompatíveis! A operação de negação espera uma expressão do tipo \""+ TipoDado.LOGICO+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".",
                 resultado.getErros().get(0).getMensagem());

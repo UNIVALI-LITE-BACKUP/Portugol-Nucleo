@@ -315,8 +315,93 @@ public final class AnalisadorSemantico implements VisitanteASA
 
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
+    {     
+        if (declarandoSimbolosGlobais == analisandoEscopoGlobal())
+        {
+            String nome = noDeclaracaoVetor.getNome();
+            TipoDado tipoDados = noDeclaracaoVetor.getTipoDado();
+            Integer tamanho = null;
+            
+            if (!(noDeclaracaoVetor.getTamanho() instanceof NoInteiro)){
+                notificarErroSemantico(new ErroSemantico() {
+
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return "O tamanho do vetor deve ser um valor inteiro constante.";
+                    }
+                });
+            } else {
+                 tamanho = ((NoInteiro)noDeclaracaoVetor.getTamanho()).getValor();
+            }
+                  
+            Vetor vetor = new Vetor(nome, tipoDados,1);
+            vetor.setConstante(noDeclaracaoVetor.constante());
+            vetor.setTrechoCodigoFonteNome(noDeclaracaoVetor.getTrechoCodigoFonteNome());
+            vetor.setTrechoCodigoFonteTipoDado(noDeclaracaoVetor.getTrechoCodigoFonteTipoDado());
+
+            if (tabelaSimbolos.contem(nome))
+            {
+                vetor.setRedeclarado(true);
+                notificarErroSemantico(new ErroSimboloRedeclarado(vetor, tabelaSimbolos.obter(nome)));
+            } 
+            else if (funcoesReservadas.contains(nome))
+            {
+                vetor.setRedeclarado(true);
+                Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, Quantificador.VETOR, null, null);
+                notificarErroSemantico(new ErroSimboloRedeclarado(vetor, funcaoSistam));
+            }
+            
+            if (!tabelaSimbolos.contem(nome))
+            {
+                tabelaSimbolos.adicionar(vetor);
+            }
+            
+            if (noDeclaracaoVetor.getInicializacao() != null)
+            {
+                
+                if (noDeclaracaoVetor.getInicializacao() instanceof NoVetor)
+                {
+                    NoExpressao inicializacao = noDeclaracaoVetor.getInicializacao();
+                    NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
+                    referencia.setTrechoCodigoFonteNome(noDeclaracaoVetor.getTrechoCodigoFonteNome());
+                    NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
+                           
+                    if (tamanho != null){
+                        if (tamanho < ((NoVetor)inicializacao).getValores().size()){
+                            notificarErroSemantico(new ErroSemantico(noDeclaracaoVetor.getTamanho().getTrechoCodigoFonte().getLinha(),noDeclaracaoVetor.getTamanho().getTrechoCodigoFonte().getColuna())
+                            {
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "A inicializaçao do vetor possui mais elementos do que o tamanho informado";
+                                }
+                            });
+                        }
+                    }
+                    
+                    try 
+                    {
+                        operacao.aceitar(this);
+                    }
+                    catch (ExcecaoVisitaASA excecao)
+                    {
+                        if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                        {
+                            throw excecao;
+                        }
+                    }
+                
+                    
+                }
+                else
+                {
+                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoVetor,noDeclaracaoVetor.getInicializacao(),noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte().getLinha() , noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte().getColuna()));
+                }
+            }
+        }
+        return null;
+        
     }
 
     @Override
@@ -435,6 +520,42 @@ public final class AnalisadorSemantico implements VisitanteASA
             simbolo = tabelaSimbolos.obter(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
             inicializadoAnterior = simbolo.inicializado();
             simbolo.setInicializado(true);
+            int linha = noOperacao.getOperandoDireito().getTrechoCodigoFonte().getLinha();
+            int coluna = noOperacao.getOperandoDireito().getTrechoCodigoFonte().getColuna();
+            if (simbolo instanceof Variavel){
+                if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
+                        (noOperacao.getOperandoDireito() instanceof NoVetor))
+                    notificarErroSemantico(new ErroSemantico(linha,coluna) {
+
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return "nao e possivel atribuir uma matriz ou um vetor a uma variavel";
+                    }
+                });
+            } else if (simbolo instanceof Vetor) {
+                if (!(noOperacao.getOperandoDireito() instanceof NoVetor)){
+                    notificarErroSemantico(new ErroSemantico(linha,coluna) {
+
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return "uma referencia a vetor deve ser inicializada com um vetor literal";
+                        }
+                    });
+                }
+            } else if (simbolo instanceof Matriz) {
+                if (!(noOperacao.getOperandoDireito() instanceof NoMatriz)){
+                    notificarErroSemantico(new ErroSemantico(linha, coluna)
+                    {
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return "uma refencia de matriz deve ser inicializada com uma matriz";
+                        }
+                    });
+                }
+            }
         }
         
         try { operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this); }
@@ -621,7 +742,40 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Simbolo simbolo = tabelaSimbolos.obter(noReferenciaVetor.getNome());
+
+        try 
+        { 
+            TipoDado tipoIndice = (TipoDado) noReferenciaVetor.getIndice().aceitar(this); 
+            
+            if (tipoIndice != TipoDado.INTEIRO)
+            {
+                notificarErroSemantico(new ErroTiposIncompativeis(noReferenciaVetor, tipoIndice, TipoDado.INTEIRO));
+            }
+        }
+        catch (ExcecaoVisitaASA excecao) 
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+            {
+                throw excecao;
+            }
+        }        
+        
+        if (simbolo != null)
+        {
+            if (!(simbolo instanceof Vetor))
+            {
+                notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVetor, simbolo));
+            }
+            
+            return simbolo.getTipoDado();
+        }
+        else 
+        {
+            notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaVetor));
+        }
+        
+        throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaVetor);
     }
 
     @Override
