@@ -24,6 +24,8 @@ import br.univali.portugol.nucleo.asa.NoOperacaoMultiplicacao;
 import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
 import br.univali.portugol.nucleo.asa.NoOperacaoSubtracao;
 import br.univali.portugol.nucleo.asa.NoPara;
+import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
+import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
 import br.univali.portugol.nucleo.asa.NoRetorne;
 import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.TipoDado;
@@ -644,6 +646,48 @@ public final class ErroTiposIncompativeis extends ErroSemantico
 
             return construtorString.toString();
         }
+
+        @Override
+        public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! A linha e coluna da matriz devem ser uma expressão do tipo \"");          
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\" e \"");
+            construtorString.append(tiposDado[3]);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\" e \"");
+            construtorString.append(tiposDado[2]);
+            construtorString.append("\".");
+            
+            setLinha(noReferenciaMatriz.getTrechoCodigoFonte().getLinha());
+            setColuna(noReferenciaMatriz.getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+
+        
+        
+        @Override
+        public Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+
+            construtorString.append("Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo \"");          
+            construtorString.append(tiposDado[1]);
+            construtorString.append("\" mas foi passada uma expressão do tipo \"");
+            construtorString.append(tiposDado[0]);
+            construtorString.append("\".");
+            
+            setLinha(noReferenciaVetor.getTrechoCodigoFonte().getLinha());
+            setColuna(noReferenciaVetor.getTrechoCodigoFonte().getColuna());
+
+            return construtorString.toString();
+        }
+        
+        
 
         @Override
         public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA

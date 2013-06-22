@@ -55,6 +55,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     private Funcao funcaoAtual;
     private TipoDado tipoDadoEscolha;
     private boolean declarandoVetor;
+    private boolean declarandoMatriz;
     
     public AnalisadorSemantico()
     {
@@ -247,7 +248,98 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (declarandoSimbolosGlobais == analisandoEscopoGlobal())
+        {
+            String nome = noDeclaracaoMatriz.getNome();
+            TipoDado tipoDados = noDeclaracaoMatriz.getTipoDado();
+            Integer linhas = null;
+            Integer colunas = null;
+            
+            if ((noDeclaracaoMatriz.getNumeroLinhas() != null && !(noDeclaracaoMatriz.getNumeroLinhas()instanceof NoInteiro))
+                    && (noDeclaracaoMatriz.getNumeroColunas()) != null && !(noDeclaracaoMatriz.getNumeroColunas()instanceof NoInteiro)){
+                                
+                notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getLinha(),noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getColuna()) {
+
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return "A linha e coluna da matriz deve ser um valor inteiro constante.";
+                    }
+                });
+            } else {
+                if (noDeclaracaoMatriz.getNumeroLinhas()!= null)
+                    linhas = ((NoInteiro)noDeclaracaoMatriz.getNumeroLinhas()).getValor();
+                if (noDeclaracaoMatriz.getNumeroColunas() != null)
+                    colunas = ((NoInteiro)noDeclaracaoMatriz.getNumeroColunas()).getValor();
+            }
+                  
+            Matriz matriz = new Matriz(nome, tipoDados,1,1);
+            matriz.setConstante(noDeclaracaoMatriz.constante());
+            matriz.setTrechoCodigoFonteNome(noDeclaracaoMatriz.getTrechoCodigoFonteNome());
+            matriz.setTrechoCodigoFonteTipoDado(noDeclaracaoMatriz.getTrechoCodigoFonteTipoDado());
+
+            if (tabelaSimbolos.contem(nome))
+            {
+                matriz.setRedeclarado(true);
+                notificarErroSemantico(new ErroSimboloRedeclarado(matriz, tabelaSimbolos.obter(nome)));
+            } 
+            else if (funcoesReservadas.contains(nome))
+            {
+                matriz.setRedeclarado(true);
+                Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, Quantificador.VETOR, null, null);
+                notificarErroSemantico(new ErroSimboloRedeclarado(matriz, funcaoSistam));
+            }
+            
+            if (!tabelaSimbolos.contem(nome))
+            {
+                tabelaSimbolos.adicionar(matriz);
+            }
+            
+            if (noDeclaracaoMatriz.getInicializacao() != null)
+            {
+                
+                if (noDeclaracaoMatriz.getInicializacao() instanceof NoMatriz)
+                {
+                    NoExpressao inicializacao = noDeclaracaoMatriz.getInicializacao();
+                    NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
+                    referencia.setTrechoCodigoFonteNome(noDeclaracaoMatriz.getTrechoCodigoFonteNome());
+                    NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
+                           
+                    if (linhas != null && colunas != null){
+                        if (linhas < ((NoMatriz)inicializacao).getValores().size() && colunas < ((NoMatriz)inicializacao).getValores().get(0).size()){
+                            notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getLinha(),noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getColuna())
+                            {
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "A inicializaçao do vetor possui mais elementos do que o tamanho informado";
+                                }
+                            });
+                        }
+                    }
+                    
+                    try 
+                    {
+                        this.declarandoMatriz = true;
+                        operacao.aceitar(this);
+                        this.declarandoMatriz = false;
+                    }
+                    catch (ExcecaoVisitaASA excecao)
+                    {
+                        if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                        {
+                            throw excecao;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoMatriz,noDeclaracaoMatriz.getInicializacao(),noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte().getLinha() , noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte().getColuna()));
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -471,7 +563,46 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<List<Object>> valores = noMatriz.getValores();
+        
+        if (valores != null && !valores.isEmpty()){
+            
+                TipoDado tipoMatriz = (TipoDado) ((NoExpressao) valores.get(0).get(0)).aceitar(this);
+                for (List<Object> valList : valores)
+                {
+                    for (int i = 0; i < valList.size(); i++)
+                    {
+                        TipoDado tipoDadoElemento = (TipoDado) ((NoExpressao) valList.get(i)).aceitar(this);
+
+                        if (tipoMatriz != tipoDadoElemento)
+                        {
+                            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte().getLinha(), noMatriz.getTrechoCodigoFonte().getColuna())
+                            {
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "A inicialização da matriz possui mais de um tipo de dado";
+                                }
+                            });                        
+                            return TipoDado.VAZIO;
+                        }
+                    }
+                }
+                return tipoMatriz;    
+            
+        } else {
+            
+            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte().getLinha(), noMatriz.getTrechoCodigoFonte().getColuna())
+            {
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return "A inicialização da matriz não possui elementos";
+                    }
+            });
+            
+            return TipoDado.VAZIO;
+        }
     }
 
     @Override
@@ -720,8 +851,43 @@ public final class AnalisadorSemantico implements VisitanteASA
 
     @Override
     public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
+    {        
+        Simbolo simbolo = tabelaSimbolos.obter(noReferenciaMatriz.getNome());
+
+        try 
+        { 
+            TipoDado tipoLinha = (TipoDado) noReferenciaMatriz.getLinha().aceitar(this); 
+            TipoDado tipoColuna = (TipoDado) noReferenciaMatriz.getColuna().aceitar(this); 
+            
+            
+            if (tipoLinha != TipoDado.INTEIRO && tipoColuna != TipoDado.INTEIRO)
+            {
+                notificarErroSemantico(new ErroTiposIncompativeis(noReferenciaMatriz, tipoLinha, TipoDado.INTEIRO, tipoColuna, TipoDado.INTEIRO));
+            }
+        }
+        catch (ExcecaoVisitaASA excecao) 
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+            {
+                throw excecao;
+            }
+        }        
+        
+        if (simbolo != null)
+        {
+            if (!(simbolo instanceof Matriz))
+            {
+                notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaMatriz, simbolo));
+            }
+            
+            return simbolo.getTipoDado();
+        }
+        else 
+        {
+            notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaMatriz));
+        }
+        
+        throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaMatriz);
     }
 
     @Override
@@ -832,7 +998,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                 if (tipoDadoElemento != tipoDadoVetor) 
                 {
-                    notificarErroSemantico(new ErroSemantico(0, 0)
+                    notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte().getLinha(), noVetor.getTrechoCodigoFonte().getColuna())
                     {
                         @Override
                         protected String construirMensagem()
@@ -848,7 +1014,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         else
         {
             //TODO Fazer essa verificaçao no Sintatico (Portugol.g)
-            notificarErroSemantico(new ErroSemantico(0, 0)
+            notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte().getLinha(), noVetor.getTrechoCodigoFonte().getColuna())
             {
                     @Override
                     protected String construirMensagem()
@@ -1037,7 +1203,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel,simbolo));
             }      
             
-            if (!(simbolo instanceof Variavel) && !declarandoVetor)
+            if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz)
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
             }
