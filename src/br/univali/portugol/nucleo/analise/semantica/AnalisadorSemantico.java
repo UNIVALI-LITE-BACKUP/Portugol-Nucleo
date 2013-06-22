@@ -54,6 +54,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     
     private Funcao funcaoAtual;
     private TipoDado tipoDadoEscolha;
+    private boolean declarandoVetor;
     
     public AnalisadorSemantico()
     {
@@ -322,7 +323,8 @@ public final class AnalisadorSemantico implements VisitanteASA
             TipoDado tipoDados = noDeclaracaoVetor.getTipoDado();
             Integer tamanho = null;
             
-            if (!(noDeclaracaoVetor.getTamanho() instanceof NoInteiro)){
+            if (noDeclaracaoVetor.getTamanho() != null && !(noDeclaracaoVetor.getTamanho() instanceof NoInteiro)){
+                                
                 notificarErroSemantico(new ErroSemantico() {
 
                     @Override
@@ -332,7 +334,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                     }
                 });
             } else {
-                 tamanho = ((NoInteiro)noDeclaracaoVetor.getTamanho()).getValor();
+                if (noDeclaracaoVetor.getTamanho() != null)
+                    tamanho = ((NoInteiro)noDeclaracaoVetor.getTamanho()).getValor();
             }
                   
             Vetor vetor = new Vetor(nome, tipoDados,1);
@@ -382,7 +385,9 @@ public final class AnalisadorSemantico implements VisitanteASA
                     
                     try 
                     {
+                        this.declarandoVetor = true;
                         operacao.aceitar(this);
+                        this.declarandoVetor = false;
                     }
                     catch (ExcecaoVisitaASA excecao)
                     {
@@ -1032,7 +1037,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel,simbolo));
             }      
             
-            if (!(simbolo instanceof Variavel))
+            if (!(simbolo instanceof Variavel) && !declarandoVetor)
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
             }
