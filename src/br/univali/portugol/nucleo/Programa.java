@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.depuracao.Depurador;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.Entrada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
@@ -84,6 +85,15 @@ public final class Programa
         observadoresInter.add(o);
     }
     
+    Depurador depurador;
+
+    public Depurador getDepurador()
+    {
+        return depurador;
+    }
+    
+    
+    
     /**
      * Executa este programa com os parâmetros especificados. Se o programa já estiver
      * executando não faz nada.
@@ -103,16 +113,16 @@ public final class Programa
                 {
                     try
                     {
-                        Interpretador interpretador = new Interpretador();
-                        interpretador.setEntrada(entrada);
-                        interpretador.setSaida(saida);
+                        depurador = new Depurador();
+                        depurador.setEntrada(entrada);
+                        depurador.setSaida(saida);
                         
                         notificarInicioExecucao();
                         
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
                         
-                        interpretador.interpretar(Programa.this, parametros);
+                        depurador.interpretar(Programa.this, parametros);
                         
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
