@@ -13,16 +13,17 @@ public final class ErroInicializacaoInvalida extends ErroSemantico
     private final NoDeclaracao declaracao;
     private Simbolo simbolo;
 
-    public ErroInicializacaoInvalida(NoDeclaracao declaracao, NoExpressao inicializacao, int linha, int coluna)
+    public ErroInicializacaoInvalida(NoDeclaracao declaracao)
     {
-        super(linha, coluna);
+       
+        super(declaracao.getInicializacao().getTrechoCodigoFonte());
         this.declaracao = declaracao;
-        this.inicializacao = inicializacao;
+        this.inicializacao = declaracao.getInicializacao();
     }
 
-    public ErroInicializacaoInvalida(Simbolo simbolo, NoDeclaracao declaracao, NoExpressao inicializacao, int linha, int coluna)
+    public ErroInicializacaoInvalida(Simbolo simbolo, NoDeclaracao declaracao)
     {
-        this(declaracao,inicializacao,linha, coluna);
+        this(declaracao);
         this.simbolo = simbolo;
     }
     

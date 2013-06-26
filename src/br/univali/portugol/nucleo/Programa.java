@@ -1,7 +1,9 @@
 package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.depuracao.Depurador;
+import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.Entrada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
@@ -113,7 +115,9 @@ public final class Programa
                 {
                     try
                     {
-                        depurador = new Depurador();
+                        List<NoBloco> nosParada = new DetectaNosParada().executar(Programa.this, parametros);
+                        
+                        depurador = new Depurador(nosParada);
                         depurador.setEntrada(entrada);
                         depurador.setSaida(saida);
                         

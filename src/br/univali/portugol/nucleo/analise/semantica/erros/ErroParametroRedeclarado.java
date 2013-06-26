@@ -37,11 +37,7 @@ public final class ErroParametroRedeclarado extends ErroSemantico
      */
     public ErroParametroRedeclarado(NoDeclaracaoParametro parametro, Funcao funcao)
     {
-        super
-        (
-            parametro.getTrechoCodigoFonteNome().getLinha(),
-            parametro.getTrechoCodigoFonteNome().getColuna()
-        );
+        super(parametro.getTrechoCodigoFonteNome());
 
         this.funcao = funcao;
         this.parametro = parametro;

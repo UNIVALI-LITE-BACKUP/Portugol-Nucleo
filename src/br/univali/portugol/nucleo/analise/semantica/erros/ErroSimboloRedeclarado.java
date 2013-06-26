@@ -51,11 +51,7 @@ public final class ErroSimboloRedeclarado extends ErroSemantico
      */
     public ErroSimboloRedeclarado(Simbolo simboloRedeclarado, Simbolo simboloExistente)
     {
-        super
-        (
-            simboloRedeclarado.getTrechoCodigoFonteNome().getLinha(),
-            simboloRedeclarado.getTrechoCodigoFonteNome().getColuna()
-        );
+        super(simboloRedeclarado.getTrechoCodigoFonteNome());
 
         this.simboloRedeclarado = simboloRedeclarado;
         this.simboloExistente = simboloExistente;

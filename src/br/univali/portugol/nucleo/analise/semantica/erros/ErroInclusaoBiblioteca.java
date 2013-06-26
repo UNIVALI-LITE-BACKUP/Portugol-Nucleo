@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
@@ -10,9 +11,9 @@ public final class ErroInclusaoBiblioteca extends ErroSemantico
 {
     private Exception causa;
 
-    public ErroInclusaoBiblioteca(int linha, int coluna, Exception causa)
+    public ErroInclusaoBiblioteca(TrechoCodigoFonte trechoCodigoFonte, Exception causa)
     {
-        super(linha, coluna);
+        super(trechoCodigoFonte);
         this.causa = causa;
     }
 

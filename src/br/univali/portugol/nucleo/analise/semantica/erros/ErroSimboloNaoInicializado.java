@@ -19,8 +19,7 @@ public class ErroSimboloNaoInicializado extends ErroSemantico
 
     public ErroSimboloNaoInicializado(NoReferencia noReferenciaVariavel, Simbolo simbolo)
     {
-        super(noReferenciaVariavel.getTrechoCodigoFonteNome().getLinha(),
-                noReferenciaVariavel.getTrechoCodigoFonteNome().getColuna());
+        super(noReferenciaVariavel.getTrechoCodigoFonteNome());
         this.noReferenciaVariavel = noReferenciaVariavel;
         this.simbolo = simbolo;
         

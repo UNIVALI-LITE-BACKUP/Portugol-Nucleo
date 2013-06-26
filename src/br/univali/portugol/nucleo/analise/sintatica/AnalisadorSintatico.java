@@ -142,12 +142,19 @@ public final class AnalisadorSintatico implements ObservadorParsing
                 raiz.setParametros(parametrosRaiz);
                 asa.getListaDeclaracoesGlobais().add(raiz);
 
-                NoDeclaracaoFuncao tamanho = new NoDeclaracaoFuncao("tamanho", TipoDado.INTEIRO, Quantificador.VALOR);
-                List<NoDeclaracaoParametro> parametrosTamanho = new ArrayList<NoDeclaracaoParametro>();
+                NoDeclaracaoFuncao tamanho_vet = new NoDeclaracaoFuncao("tamanho_vetor", TipoDado.INTEIRO, Quantificador.VALOR);
+                List<NoDeclaracaoParametro> parametrosTamanho_vet = new ArrayList<NoDeclaracaoParametro>();
                 NoDeclaracaoParametro vetor = new NoDeclaracaoParametro("vetor", TipoDado.VAZIO, Quantificador.VETOR, ModoAcesso.POR_REFERENCIA);
-                parametrosTamanho.add(vetor);
-                tamanho.setParametros(parametrosTamanho);
-                asa.getListaDeclaracoesGlobais().add(tamanho);
+                parametrosTamanho_vet.add(vetor);
+                tamanho_vet.setParametros(parametrosTamanho_vet);
+                asa.getListaDeclaracoesGlobais().add(tamanho_vet);
+                
+                NoDeclaracaoFuncao tamanho_mat = new NoDeclaracaoFuncao("tamanho_matriz", TipoDado.INTEIRO, Quantificador.VALOR);
+                List<NoDeclaracaoParametro> parametrosTamanho_mat = new ArrayList<NoDeclaracaoParametro>();
+                NoDeclaracaoParametro matriz = new NoDeclaracaoParametro("matriz", TipoDado.VAZIO, Quantificador.MATRIZ, ModoAcesso.POR_REFERENCIA);
+                parametrosTamanho_mat.add(matriz);
+                tamanho_mat.setParametros(parametrosTamanho_mat);
+                asa.getListaDeclaracoesGlobais().add(tamanho_mat);
 
             }
             return asa;

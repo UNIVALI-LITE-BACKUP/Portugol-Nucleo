@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,7 +25,7 @@ public final class ErroSemanticoNaoTratado extends ErroSemantico
      */
     public ErroSemanticoNaoTratado(Exception causa) 
     {
-        super(0, 0);
+        super(new TrechoCodigoFonte(0, 0, 0));
         this.causa = causa;
     }
 

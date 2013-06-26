@@ -2,11 +2,11 @@ package br.univali.portugol.nucleo.depuracao;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
+import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoCadeia;
 import br.univali.portugol.nucleo.asa.NoCaracter;
 import br.univali.portugol.nucleo.asa.NoCaso;
 import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
@@ -45,31 +45,35 @@ import br.univali.portugol.nucleo.asa.NoRetorne;
 import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.execucao.Interpretador;
-
+import java.util.List;
 
 public class Depurador extends Interpretador
 {
-    
+    List<NoBloco> visitar;
     DepuradorListener listener;
 
-    public Depurador()
+    public Depurador(List<NoBloco> nosParada)
     {
-           
+        visitar = nosParada;
     }
 
+    
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -78,16 +82,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoCadeia no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -96,16 +103,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoCaracter no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -114,16 +124,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoCaso no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -132,52 +145,40 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
     }
 
     @Override
-    public Object visitar(NoDeclaracaoFuncao no) throws ExcecaoVisitaASA
-    {
-        System.out.println(no.getClass());
-        /*synchronized (this)
-        {
-            try
-            {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
-            }
-        }*/
-        return super.visitar(no);
-    }
-
-    @Override
     public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -186,16 +187,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -204,16 +208,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -222,16 +229,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoEnquanto no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -240,16 +250,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoEscolha no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -258,16 +271,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -276,17 +292,20 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoInteiro no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
-            {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
-            }
+            System.out.println(no.getClass());
+            /*synchronized (this)
+             {
+             try
+             {
+             wait();
+             }
+             catch (InterruptedException ex)
+             {
+             System.out.println(ex);
+             }
+             }*/
         }
         return super.visitar(no);
     }
@@ -294,16 +313,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoLogico no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -312,16 +334,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoMatriz no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -330,16 +355,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoMenosUnario no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -348,36 +376,40 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoNao no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
     }
 
-   
-
     @Override
     public Object visitar(NoPara no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -386,16 +418,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoPare no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -404,16 +439,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoPercorra no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -422,16 +460,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoReal no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -440,16 +481,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -458,17 +502,20 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
-            {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
-            }
+            System.out.println(no.getClass());
+            /*synchronized (this)
+             {
+             try
+             {
+             wait();
+             }
+             catch (InterruptedException ex)
+             {
+             System.out.println(ex);
+             }
+             }*/
         }
         return super.visitar(no);
     }
@@ -494,16 +541,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoRetorne no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -512,16 +562,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoSe no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -530,16 +583,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoVetor no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -548,40 +604,45 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoDeclaracaoParametro no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
     }
 
-    
-    public synchronized void proximo()         
+    public synchronized void proximo()
     {
         notifyAll();
-    } 
+    }
 
     @Override
     public Object visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
     {
-       System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -590,16 +651,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoLogicaDiferenca no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -608,16 +672,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -626,16 +693,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoLogicaE no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -644,16 +714,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoLogicaOU no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -662,16 +735,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -680,16 +756,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -698,16 +777,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoLogicaMenor no) throws ExcecaoVisitaASA
     {
-       System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -716,16 +798,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoLogicaMenorIgual no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -734,16 +819,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -752,16 +840,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -770,16 +861,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -788,16 +882,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -806,16 +903,19 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
-        synchronized (this)
+        if (visitar.contains(no))
         {
-            try
+            System.out.println(no.getClass());
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                System.out.println(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    System.out.println(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -838,5 +938,4 @@ public class Depurador extends Interpretador
         }
         return super.visitar(no);
     }
-    
 }

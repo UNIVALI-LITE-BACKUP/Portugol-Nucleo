@@ -54,11 +54,7 @@ public final class ErroSimboloNaoDeclarado extends ErroSemantico
      */
     public ErroSimboloNaoDeclarado(NoReferencia referencia)
     {
-        super
-        (
-            referencia.getTrechoCodigoFonteNome().getLinha(),
-            referencia.getTrechoCodigoFonteNome().getColuna()
-        );
+        super(referencia.getTrechoCodigoFonteNome());
 
         this.referencia = referencia;
     }

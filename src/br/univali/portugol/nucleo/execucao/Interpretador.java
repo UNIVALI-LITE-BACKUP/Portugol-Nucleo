@@ -520,7 +520,7 @@ public class Interpretador implements VisitanteASA
         return null;
     }
 
-    private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
+    protected Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {
         if (Thread.currentThread().isInterrupted())
         {

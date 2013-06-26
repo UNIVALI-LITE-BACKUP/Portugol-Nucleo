@@ -258,7 +258,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             if ((noDeclaracaoMatriz.getNumeroLinhas() != null && !(noDeclaracaoMatriz.getNumeroLinhas()instanceof NoInteiro))
                     && (noDeclaracaoMatriz.getNumeroColunas()) != null && !(noDeclaracaoMatriz.getNumeroColunas()instanceof NoInteiro)){
                                 
-                notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getLinha(),noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getColuna()) {
+                    notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte()) {
 
                     @Override
                     protected String construirMensagem()
@@ -307,7 +307,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                            
                     if (linhas != null && colunas != null){
                         if (linhas < ((NoMatriz)inicializacao).getValores().size() && colunas < ((NoMatriz)inicializacao).getValores().get(0).size()){
-                            notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getLinha(),noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte().getColuna())
+                            notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte())
                             {
                                 @Override
                                 protected String construirMensagem()
@@ -335,7 +335,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
                 else
                 {
-                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoMatriz,noDeclaracaoMatriz.getInicializacao(),noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte().getLinha() , noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte().getColuna()));
+                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoMatriz));
                 }
             }
         }
@@ -382,7 +382,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                     referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
                     NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
-
+                    
                     try 
                     {
                         operacao.aceitar(this);
@@ -398,7 +398,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
                 else
                 {
-                    notificarErroSemantico(new ErroInicializacaoInvalida(declaracaoVariavel,declaracaoVariavel.getInicializacao(),declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getLinha() , declaracaoVariavel.getInicializacao().getTrechoCodigoFonte().getColuna()));
+                    notificarErroSemantico(new ErroInicializacaoInvalida(declaracaoVariavel));
                 }
             }
             
@@ -464,7 +464,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                            
                     if (tamanho != null){
                         if (tamanho < ((NoVetor)inicializacao).getValores().size()){
-                            notificarErroSemantico(new ErroSemantico(noDeclaracaoVetor.getTamanho().getTrechoCodigoFonte().getLinha(),noDeclaracaoVetor.getTamanho().getTrechoCodigoFonte().getColuna())
+                            notificarErroSemantico(new ErroSemantico(noDeclaracaoVetor.getTamanho().getTrechoCodigoFonte())
                             {
                                 @Override
                                 protected String construirMensagem()
@@ -493,7 +493,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
                 else
                 {
-                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoVetor,noDeclaracaoVetor.getInicializacao(),noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte().getLinha() , noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte().getColuna()));
+                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoVetor));
                 }
             }
         }
@@ -576,7 +576,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                         if (tipoMatriz != tipoDadoElemento)
                         {
-                            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte().getLinha(), noMatriz.getTrechoCodigoFonte().getColuna())
+                            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte())
                             {
                                 @Override
                                 protected String construirMensagem()
@@ -592,7 +592,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             
         } else {
             
-            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte().getLinha(), noMatriz.getTrechoCodigoFonte().getColuna())
+            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte())
             {
                     @Override
                     protected String construirMensagem()
@@ -655,13 +655,11 @@ public final class AnalisadorSemantico implements VisitanteASA
         }  else {
             simbolo = tabelaSimbolos.obter(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
             inicializadoAnterior = simbolo.inicializado();
-            simbolo.setInicializado(true);
-            int linha = noOperacao.getOperandoDireito().getTrechoCodigoFonte().getLinha();
-            int coluna = noOperacao.getOperandoDireito().getTrechoCodigoFonte().getColuna();
+            simbolo.setInicializado(true);            
             if (simbolo instanceof Variavel){
                 if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
                         (noOperacao.getOperandoDireito() instanceof NoVetor))
-                    notificarErroSemantico(new ErroSemantico(linha,coluna) {
+                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
 
                     @Override
                     protected String construirMensagem()
@@ -671,7 +669,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 });
             } else if (simbolo instanceof Vetor) {
                 if (!(noOperacao.getOperandoDireito() instanceof NoVetor)){
-                    notificarErroSemantico(new ErroSemantico(linha,coluna) {
+                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
 
                         @Override
                         protected String construirMensagem()
@@ -682,7 +680,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             } else if (simbolo instanceof Matriz) {
                 if (!(noOperacao.getOperandoDireito() instanceof NoMatriz)){
-                    notificarErroSemantico(new ErroSemantico(linha, coluna)
+                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
                     {
                         @Override
                         protected String construirMensagem()
@@ -998,7 +996,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                 if (tipoDadoElemento != tipoDadoVetor) 
                 {
-                    notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte().getLinha(), noVetor.getTrechoCodigoFonte().getColuna())
+                    notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte())
                     {
                         @Override
                         protected String construirMensagem()
@@ -1014,7 +1012,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         else
         {
             //TODO Fazer essa verificaçao no Sintatico (Portugol.g)
-            notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte().getLinha(), noVetor.getTrechoCodigoFonte().getColuna())
+            notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte())
             {
                     @Override
                     protected String construirMensagem()
@@ -1154,8 +1152,6 @@ public final class AnalisadorSemantico implements VisitanteASA
         String nome = noInclusaoBiblioteca.getNome();
         String alias = noInclusaoBiblioteca.getAlias();
         
-        int linha = noInclusaoBiblioteca.getTrechoCodigoFonteNome().getLinha();
-        int coluna = noInclusaoBiblioteca.getTrechoCodigoFonteNome().getColuna();
         
         try
         {
@@ -1163,7 +1159,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             
             if (bibliotecas.containsKey(nome))
             {
-                notificarErroSemantico(new ErroInclusaoBiblioteca(linha, coluna, new Exception(String.format("A biblioteca \"%s\" já foi incluída", nome))));
+                notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteNome(), new Exception(String.format("A biblioteca \"%s\" já foi incluída", nome))));
             }
             else
             {
@@ -1174,10 +1170,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 if (bibliotecas.containsKey(alias))
                 {
-                    linha = noInclusaoBiblioteca.getTrechoCodigoFonteAlias().getLinha();
-                    coluna = noInclusaoBiblioteca.getTrechoCodigoFonteAlias().getColuna();
-
-                    notificarErroSemantico(new ErroInclusaoBiblioteca(linha, coluna, new Exception(String.format("O alias \"%s\" já está sendo utilizado pela biblioteca \"%s\"", alias, bibliotecas.get(alias).getNome()))));
+                    notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteAlias(), new Exception(String.format("O alias \"%s\" já está sendo utilizado pela biblioteca \"%s\"", alias, bibliotecas.get(alias).getNome()))));
                 }
                 else
                 {
@@ -1187,7 +1180,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
         catch (ErroCarregamentoBiblioteca erro)
         {
-            notificarErroSemantico(new ErroInclusaoBiblioteca(linha, coluna, erro));
+            notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteNome(), erro));
         }
         
         return null;
@@ -1223,9 +1216,6 @@ public final class AnalisadorSemantico implements VisitanteASA
         final String escopo = noReferenciaVariavel.getEscopo();
         final String nome = noReferenciaVariavel.getNome();
         
-        final int linha = noReferenciaVariavel.getTrechoCodigoFonteNome().getLinha();
-        final int coluna = noReferenciaVariavel.getTrechoCodigoFonteNome().getColuna();
-        
         final Biblioteca biblioteca = bibliotecas.get(escopo);        
         
         if (biblioteca != null)
@@ -1238,7 +1228,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             }
 
-            notificarErroSemantico(new ErroSemantico(linha, coluna) 
+            notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome()) 
             {
                 @Override
                 protected String construirMensagem()
@@ -1249,7 +1239,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         }            
         else 
         {
-            notificarErroSemantico(new ErroSemantico(linha, coluna)
+            notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome())
             {
                 @Override
                 protected String construirMensagem()
@@ -1385,8 +1375,6 @@ public final class AnalisadorSemantico implements VisitanteASA
         final String escopo = chamadaFuncao.getEscopo();
         final String nome = chamadaFuncao.getNome();
         
-        final int linha = chamadaFuncao.getTrechoCodigoFonteNome().getLinha();
-        final int coluna = chamadaFuncao.getTrechoCodigoFonteNome().getColuna();
         
         final Biblioteca biblioteca = bibliotecas.get(escopo);
         
@@ -1408,7 +1396,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                             
                             if (tipoParametroPassado.getTipoJava() != tiposParametrosEsperados[i])
                             {
-                                notificarErroSemantico(new ErroSemantico(linha, coluna)
+                                notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome())
                                 {
                                     @Override
                                     protected String construirMensagem()
@@ -1428,7 +1416,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             }
 
-            notificarErroSemantico(new ErroSemantico(linha, coluna) 
+            notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome()) 
             {
                 @Override
                 protected String construirMensagem()
@@ -1439,7 +1427,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         }            
         else 
         {
-            notificarErroSemantico(new ErroSemantico(linha, coluna)
+            notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome())
             {
                 @Override
                 protected String construirMensagem()

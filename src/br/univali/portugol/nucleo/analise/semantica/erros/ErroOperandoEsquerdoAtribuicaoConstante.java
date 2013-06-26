@@ -28,11 +28,7 @@ public final class ErroOperandoEsquerdoAtribuicaoConstante extends ErroSemantico
      */
     public ErroOperandoEsquerdoAtribuicaoConstante(NoOperacao atribuicao)
     {
-        super
-        (
-            atribuicao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha(),
-            atribuicao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna()
-        );
+        super(atribuicao.getOperandoEsquerdo().getTrechoCodigoFonte());
 
         this.atribuicao = atribuicao;
     }

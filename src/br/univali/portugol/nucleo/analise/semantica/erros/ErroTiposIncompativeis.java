@@ -80,6 +80,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
     {
         this.bloco = bloco;
         this.tiposDado = tiposDado;
+        getMensagem();
     }
 
     /**
@@ -167,7 +168,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             
             setLinha(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte().getColuna());
-            
+            setTrechoCodigoFonte(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -188,7 +189,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
 
             setLinha(noMenosUnario.getExpressao().getTrechoCodigoFonte().getLinha());
             setColuna(noMenosUnario.getExpressao().getTrechoCodigoFonte().getColuna());
-            
+            setTrechoCodigoFonte(noMenosUnario.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -205,7 +206,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             
             setLinha(noNao.getTrechoCodigoFonte().getLinha());
             setColuna(noNao.getTrechoCodigoFonte().getColuna());
-
+            setTrechoCodigoFonte(noNao.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -231,7 +232,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             
             setLinha(noOperacaoLogicaDiferenca.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaDiferenca.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
-
+            setTrechoCodigoFonte(noOperacaoLogicaDiferenca.getTrechoCodigoFonte());
             return construtorString.toString();
         }        
 
@@ -256,7 +257,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             
             setLinha(noOperacaoDivisao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoDivisao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
-
+            setTrechoCodigoFonte(noOperacaoDivisao.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -281,7 +282,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             
             setLinha(noOperacaoLogicaE.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaE.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
-
+            setTrechoCodigoFonte(noOperacaoLogicaE.getTrechoCodigoFonte());
             return construtorString.toString();
         }
         
@@ -306,7 +307,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
 
             setLinha(noOperacaoLogicaIgualdade.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaIgualdade.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
-            
+            setTrechoCodigoFonte(noOperacaoLogicaIgualdade.getTrechoCodigoFonte());
             return construtorString.toString();
         }
         
@@ -331,7 +332,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
 
             setLinha(noOperacaoLogicaMaior.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMaior.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
-            
+            setTrechoCodigoFonte(noOperacaoLogicaMaior.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -356,7 +357,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
 
             setLinha(noOperacaoLogicaMaiorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMaiorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
-            
+            setTrechoCodigoFonte(noOperacaoLogicaMaiorIgual.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -382,6 +383,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noOperacaoLogicaMenor.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMenor.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noOperacaoLogicaMenor.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -407,6 +409,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noOperacaoLogicaMenorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMenorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noOperacaoLogicaMenorIgual.getTrechoCodigoFonte());
             return construtorString.toString();
         }
         
@@ -432,6 +435,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noOperacaoModulo.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoModulo.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noOperacaoModulo.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -457,6 +461,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noOperacaoMultiplicacao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoMultiplicacao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noOperacaoMultiplicacao.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -482,6 +487,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noOperacaoLogicaOU.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaOU.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noOperacaoLogicaOU.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -507,6 +513,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noOperacaoSoma.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoSoma.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noOperacaoSoma.getTrechoCodigoFonte());
             return construtorString.toString();
         }
         
@@ -532,6 +539,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noOperacaoSubtracao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoSubtracao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noOperacaoSubtracao.getTrechoCodigoFonte());
             return construtorString.toString();
         }
         
@@ -551,6 +559,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noEscolha.getExpressao().getTrechoCodigoFonte().getLinha());
             setColuna(noEscolha.getExpressao().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noEscolha.getExpressao().getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -574,6 +583,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noCaso.getExpressao().getTrechoCodigoFonte().getLinha());
             setColuna(noCaso.getExpressao().getTrechoCodigoFonte().getColuna());
             
+            setTrechoCodigoFonte(noCaso.getExpressao().getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -593,6 +603,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noSe.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noSe.getCondicao().getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noSe.getCondicao().getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -610,6 +621,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noEnquanto.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noEnquanto.getCondicao().getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noEnquanto.getCondicao().getTrechoCodigoFonte());
             return construtorString.toString();
         }
         
@@ -627,6 +639,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noFacaEnquanto.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noFacaEnquanto.getCondicao().getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noFacaEnquanto.getCondicao().getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -644,6 +657,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noPara.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noPara.getCondicao().getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noPara.getCondicao().getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -665,6 +679,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noReferenciaMatriz.getTrechoCodigoFonte().getLinha());
             setColuna(noReferenciaMatriz.getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noReferenciaMatriz.getTrechoCodigoFonte());
             return construtorString.toString();
         }
 
@@ -684,6 +699,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noReferenciaVetor.getTrechoCodigoFonte().getLinha());
             setColuna(noReferenciaVetor.getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noReferenciaVetor.getTrechoCodigoFonte());
             return construtorString.toString();
         }
         
@@ -705,6 +721,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setLinha(noRetorne.getExpressao().getTrechoCodigoFonte().getLinha());
             setColuna(noRetorne.getExpressao().getTrechoCodigoFonte().getColuna());
 
+            setTrechoCodigoFonte(noRetorne.getExpressao().getTrechoCodigoFonte());
             return construtorString.toString();
         }
     }
