@@ -3,6 +3,7 @@ package br.univali.portugol.nucleo;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.depuracao.Depurador;
+import br.univali.portugol.nucleo.depuracao.DepuradorListener;
 import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.Entrada;
@@ -94,6 +95,13 @@ public final class Programa
         return depurador;
     }
     
+    private DepuradorListener listener;
+
+    public void setDepuradorListener(DepuradorListener listener)
+    {
+        this.listener = listener;
+    }
+    
     
     
     /**
@@ -118,6 +126,7 @@ public final class Programa
                         List<NoBloco> nosParada = new DetectaNosParada().executar(Programa.this, parametros);
                         
                         depurador = new Depurador(nosParada);
+                        depurador.addListener(listener);
                         depurador.setEntrada(entrada);
                         depurador.setSaida(saida);
                         

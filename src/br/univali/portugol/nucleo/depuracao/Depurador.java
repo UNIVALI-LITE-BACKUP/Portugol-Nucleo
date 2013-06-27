@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.depuracao;
 
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoCadeia;
@@ -45,38 +44,30 @@ import br.univali.portugol.nucleo.asa.NoRetorne;
 import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.execucao.Interpretador;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Depurador extends Interpretador
 {
     List<NoBloco> visitar;
-    DepuradorListener listener;
+    List<DepuradorListener> listeners = new ArrayList<DepuradorListener>();
 
+    public void disparaDestacarLinha(int linha)
+    {
+        for(DepuradorListener l : listeners){
+            l.linhaAtual(linha);
+        }
+    }
+    
+    public void addListener(DepuradorListener listener){
+        if (!listeners.contains(listener)){
+            listeners.add(listener);
+        }
+    }
+    
     public Depurador(List<NoBloco> nosParada)
     {
         visitar = nosParada;
-    }
-
-    
-    @Override
-    public Object visitar(ArvoreSintaticaAbstrataPrograma no) throws ExcecaoVisitaASA
-    {
-        if (visitar.contains(no))
-        {
-            System.out.println(no.getClass());
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    System.out.println(ex);
-                }
-            }
-        }
-        return super.visitar(no);
     }
 
     @Override
@@ -84,7 +75,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -105,7 +96,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -126,7 +117,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getExpressao().getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -147,7 +138,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -168,7 +159,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
             synchronized (this)
             {
                 try
@@ -189,7 +180,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
             synchronized (this)
             {
                 try
@@ -210,7 +201,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
             synchronized (this)
             {
                 try
@@ -231,7 +222,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -252,7 +243,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getExpressao().getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -273,7 +264,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -294,7 +285,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             /*synchronized (this)
              {
              try
@@ -315,7 +306,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -336,7 +327,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -357,7 +348,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -378,7 +369,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -399,7 +390,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -420,28 +411,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    System.out.println(ex);
-                }
-            }
-        }
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoPercorra no) throws ExcecaoVisitaASA
-    {
-        if (visitar.contains(no))
-        {
-            System.out.println(no.getClass());
+            //disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -462,7 +432,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -483,7 +453,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -504,7 +474,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             /*synchronized (this)
              {
              try
@@ -523,7 +493,7 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
+        disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
         synchronized (this)
         {
             try
@@ -543,7 +513,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getExpressao().getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -564,7 +534,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -585,7 +555,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -606,7 +576,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
             synchronized (this)
             {
                 try
@@ -632,7 +602,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -653,7 +623,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -674,7 +644,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -695,7 +665,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -716,7 +686,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -737,7 +707,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -758,7 +728,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -779,7 +749,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -800,7 +770,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -821,7 +791,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -842,7 +812,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -863,7 +833,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -884,7 +854,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -905,7 +875,7 @@ public class Depurador extends Interpretador
     {
         if (visitar.contains(no))
         {
-            System.out.println(no.getClass());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try
@@ -924,7 +894,7 @@ public class Depurador extends Interpretador
     @Override
     public Object visitar(NoInclusaoBiblioteca no) throws ExcecaoVisitaASA
     {
-        System.out.println(no.getClass());
+        disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
         synchronized (this)
         {
             try
