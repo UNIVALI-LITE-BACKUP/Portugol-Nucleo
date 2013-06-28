@@ -654,40 +654,44 @@ public final class AnalisadorSemantico implements VisitanteASA
             notificarErroSemantico(new ErroOperacaoComExpressaoConstante(noOperacao, noOperacao.getOperandoEsquerdo()));
         }  else {
             simbolo = tabelaSimbolos.obter(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
-            inicializadoAnterior = simbolo.inicializado();
-            simbolo.setInicializado(true);            
-            if (simbolo instanceof Variavel){
-                if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
-                        (noOperacao.getOperandoDireito() instanceof NoVetor))
-                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
+            
+            if (simbolo != null)
+            {
+                inicializadoAnterior = simbolo.inicializado();
+                simbolo.setInicializado(true);            
+                if (simbolo instanceof Variavel){
+                    if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
+                            (noOperacao.getOperandoDireito() instanceof NoVetor))
+                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
 
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return "nao e possivel atribuir uma matriz ou um vetor a uma variavel";
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return "nao e possivel atribuir uma matriz ou um vetor a uma variavel";
+                        }
+                    });
+                } else if (simbolo instanceof Vetor) {
+                    if (!(noOperacao.getOperandoDireito() instanceof NoVetor)){
+                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
+
+                            @Override
+                            protected String construirMensagem()
+                            {
+                                return "uma referencia a vetor deve ser inicializada com um vetor literal";
+                            }
+                        });
                     }
-                });
-            } else if (simbolo instanceof Vetor) {
-                if (!(noOperacao.getOperandoDireito() instanceof NoVetor)){
-                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
-
-                        @Override
-                        protected String construirMensagem()
+                } else if (simbolo instanceof Matriz) {
+                    if (!(noOperacao.getOperandoDireito() instanceof NoMatriz)){
+                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
                         {
-                            return "uma referencia a vetor deve ser inicializada com um vetor literal";
-                        }
-                    });
-                }
-            } else if (simbolo instanceof Matriz) {
-                if (!(noOperacao.getOperandoDireito() instanceof NoMatriz)){
-                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                    {
-                        @Override
-                        protected String construirMensagem()
-                        {
-                            return "uma refencia de matriz deve ser inicializada com uma matriz";
-                        }
-                    });
+                            @Override
+                            protected String construirMensagem()
+                            {
+                                return "uma refencia de matriz deve ser inicializada com uma matriz";
+                            }
+                        });
+                    }
                 }
             }
         }
