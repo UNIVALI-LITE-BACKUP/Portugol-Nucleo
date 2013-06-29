@@ -1316,6 +1316,13 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         notificarErroSemantico(new ErroLeiaNecessitaReferencia(chamadaFuncao,expressao));
                     } 
+                    
+                    if (expressao instanceof NoReferenciaVariavel) {
+                        String nome = ((NoReferenciaVariavel) expressao).getNome();
+                        Simbolo variavel = tabelaSimbolos.obter(nome);
+                        if (variavel != null)
+                            variavel.setInicializado(true);
+                    }
                 }
 
                 expressao.aceitar(this);
