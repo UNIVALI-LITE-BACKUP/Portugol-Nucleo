@@ -7,6 +7,7 @@ import br.univali.portugol.nucleo.mensagens.Erro;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
+import br.univali.portugol.nucleo.simbolos.TabelaSimbolos;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public final class ResultadoAnalise
     
     private List<AvisoAnalise> avisos = null;
     
+    private TabelaSimbolos tabelaSimbolos;
+    
     public ResultadoAnalise()
     {
         erros = new ArrayList<ErroAnalise>();
@@ -38,6 +41,18 @@ public final class ResultadoAnalise
         
         avisos = new ArrayList<AvisoAnalise>();
     }
+
+    public TabelaSimbolos getTabelaSimbolos()
+    {
+        return tabelaSimbolos;
+    }
+
+    public void setTabelaSimbolos(TabelaSimbolos tabelaSimbolos)
+    {
+        this.tabelaSimbolos = tabelaSimbolos;
+    }
+    
+    
     
     /**
      * Permite adicionar um aviso ao resultado da análise

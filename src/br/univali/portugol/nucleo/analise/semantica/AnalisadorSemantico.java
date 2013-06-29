@@ -33,8 +33,8 @@ import java.util.TreeMap;
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
  * 
- * @author Luiz Fernando Noschang
- * @version 1.0
+ * 
+ * @version 2.0
  * 
  * @see AnalisadorSintatico
  * @see ObservadorAnaliseSemantica
@@ -64,6 +64,12 @@ public final class AnalisadorSemantico implements VisitanteASA
         observadores = new ArrayList<ObservadorAnaliseSemantica>();
     }
     
+    public void disparaAnaliseFinalizada(){
+        for (ObservadorAnaliseSemantica oas : observadores){
+            oas.analiseFinalizada(tabelaSimbolos);
+        }
+    }
+        
     /** 
      * Permite adicionar um observador à análise semântica. Os observadores serão notificados sobre cada
      * erro semântico encontrado no código fonte e deverão tratá-los apropriadamente, exibindo-os em uma 
@@ -132,6 +138,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 notificarErroSemantico(new ErroSemanticoNaoTratado(excecao));
             }
         }
+        disparaAnaliseFinalizada();
     }
 
     @Override
@@ -1062,6 +1069,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
         
         tabelaSimbolos.adicionar(simbolo);
+        simbolo.setInicializado(true);
         
         return null;
     }

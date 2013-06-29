@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.analise.semantica;
 
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
+import br.univali.portugol.nucleo.simbolos.TabelaSimbolos;
 
 /**
  * Observa a análise semântica de um código fonte e trata os erros e avisos semânticos 
@@ -31,4 +32,8 @@ public interface ObservadorAnaliseSemantica
      * @since 1.0
      */
     public void tratarAviso(AvisoAnalise aviso);
+    
+    
+    public void analiseFinalizada(TabelaSimbolos tabelaSimbolos);
+    
 }

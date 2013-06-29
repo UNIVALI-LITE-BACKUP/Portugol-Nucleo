@@ -5,6 +5,7 @@ import br.univali.portugol.nucleo.analise.sintatica.ObservadorAnaliseSintatica;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
+import br.univali.portugol.nucleo.simbolos.TabelaSimbolos;
 
 /**
  * Observa a análise de um código fonte e adiciona todos os erros encontrados durante esta análise a um objeto
@@ -60,5 +61,11 @@ public final class ObservadorAnaliseAlgoritmo implements ObservadorAnaliseSintat
     public void tratarAviso(AvisoAnalise aviso)
     {
         resultadoAnalise.adicionarAviso(aviso);
+    }
+
+    @Override
+    public void analiseFinalizada(TabelaSimbolos tabelaSimbolos)
+    {
+        resultadoAnalise.setTabelaSimbolos(tabelaSimbolos);
     }
 }
