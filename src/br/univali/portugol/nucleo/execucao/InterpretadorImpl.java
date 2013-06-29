@@ -29,21 +29,16 @@ import java.util.logging.Logger;
 public class InterpretadorImpl implements VisitanteASA, Interpretador
 {
     public static final String funcaoInicialPadrao = "inicio";
-    
     private Saida saida;
     private Entrada entrada;
-    
     private boolean referencia = false;
     private ArvoreSintaticaAbstrata asa;
     private Random random = new Random(System.currentTimeMillis());
-    
     private String funcaoInicial = funcaoInicialPadrao;
     private String ultimaReferenciaAcessada;
     private TabelaSimbolos tabelaSimbolosGlobal;
     private Stack<TabelaSimbolos> tabelaSimbolosLocal = new Stack<TabelaSimbolos>();
     private Map<String, Biblioteca> bibliotecas = new TreeMap<String, Biblioteca>();
-    
-    
     private OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
     private OperacaoLogicaIgualdade operacaoLogicaIgualdade = new OperacaoLogicaIgualdade();
     private OperacaoLogicaMaior operacaoLogicaMaior = new OperacaoLogicaMaior();
@@ -53,7 +48,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private OperacaoModulo operacaoModulo = new OperacaoModulo();
     private OperacaoMultiplicacao operacaoMultiplicacao = new OperacaoMultiplicacao();
     private OperacaoSoma operacaoSoma = new OperacaoSoma();
-    private OperacaoSubtracao operacaoSubtracao = new OperacaoSubtracao();    
+    private OperacaoSubtracao operacaoSubtracao = new OperacaoSubtracao();
 
     @Override
     public void setEntrada(Entrada entrada)
@@ -75,7 +70,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         {
             asa = programa.getArvoreSintaticaAbstrata();
             visitar(programa.getArvoreSintaticaAbstrata());
-            
+
             // Porque não usou asa.aceitar(this)??
 
             if (tabelaSimbolosGlobal.contem(funcaoInicial))
@@ -84,12 +79,13 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 Funcao funcaoPrincipal = (Funcao) tabelaSimbolosGlobal.obter(funcaoInicial);
                 TabelaSimbolos tabelaSimbolosFuncaoPrincipal = new TabelaSimbolos();
                 tabelaSimbolosLocal.push(tabelaSimbolosFuncaoPrincipal);
-                
-                if ( funcaoPrincipal.getParametros().isEmpty() || (funcaoPrincipal.getParametros().size() == 1 && 
-                        funcaoPrincipal.getParametros().get(0).getQuantificador() == Quantificador.VETOR && funcaoPrincipal.getParametros().get(0).getTipoDado() == TipoDado.CADEIA)){
-                
-                
-                
+
+                if (funcaoPrincipal.getParametros().isEmpty() || (funcaoPrincipal.getParametros().size() == 1
+                        && funcaoPrincipal.getParametros().get(0).getQuantificador() == Quantificador.VETOR && funcaoPrincipal.getParametros().get(0).getTipoDado() == TipoDado.CADEIA))
+                {
+
+
+
                     if (funcaoPrincipal.getParametros().size() == 1)
                     {
                         List<Object> listaParametros = converterVetorEmLista(parametros);
@@ -97,10 +93,11 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     }
 
                     interpretarListaBlocos(funcaoPrincipal.getBlocos());
-                    tabelaSimbolosLocal.pop();                
+                    tabelaSimbolosLocal.pop();
                 }
-                else {
-                    throw new ErroExecucao() 
+                else
+                {
+                    throw new ErroExecucao()
                     {
                         @Override
                         protected String construirMensagem()
@@ -119,7 +116,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         catch (Exception e)
         {
             if (e instanceof ExcecaoVisitaASA)
-            {                
+            {
                 throw (ErroExecucao) e.getCause();
             }
             if (e instanceof ErroExecucao)
@@ -160,12 +157,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         tabelaSimbolosGlobal = new TabelaSimbolos();
         tabelaSimbolosLocal.push(tabelaSimbolosGlobal);
-        
+
         for (NoInclusaoBiblioteca inclusao : asap.getListaInclusoesBibliotecas())
         {
             inclusao.aceitar(this);
         }
-        
+
         List<NoDeclaracao> listaDeclaracoesGlobais = asap.getListaDeclaracoesGlobais();
         for (NoDeclaracao noDeclaracao : listaDeclaracoesGlobais)
         {
@@ -196,7 +193,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     public Object visitar(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
     {
         if (!noChamadaFuncao.getNome().contains("."))
-        {        
+        {
             if (noChamadaFuncao.getNome().equals("escreva"))
             {
                 escreva(noChamadaFuncao);
@@ -234,80 +231,87 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                         }
                         else
                         {
-                            if (noChamadaFuncao.getNome().equals("tamanho"))
+                            if (noChamadaFuncao.getNome().equals("tamanho_vetor"))
                             {
-                                return tamanho(noChamadaFuncao);
+                                return tamanho_vetor(noChamadaFuncao);
                             }
                             else
                             {
-                                if (noChamadaFuncao.getNome().equals("potencia"))
+                                if (noChamadaFuncao.getNome().equals("tamanho_matriz"))
                                 {
-                                    return potencia(noChamadaFuncao);
+                                    return tamanho_matriz(noChamadaFuncao);
                                 }
                                 else
                                 {
-                                    if (noChamadaFuncao.getNome().equals("raiz"))
+                                    if (noChamadaFuncao.getNome().equals("potencia"))
                                     {
-                                        return raiz(noChamadaFuncao);
+                                        return potencia(noChamadaFuncao);
                                     }
                                     else
                                     {
-                                        if (noChamadaFuncao.getNome().equals("sorteia"))
+                                        if (noChamadaFuncao.getNome().equals("raiz"))
                                         {
-                                            return sorteia(noChamadaFuncao);
+                                            return raiz(noChamadaFuncao);
                                         }
                                         else
                                         {
-
-                                            Funcao funcao = (Funcao) obterSimbolo(noChamadaFuncao.getNome());
-                                            TabelaSimbolos tabelaSimbolos = new TabelaSimbolos();
-
-                                            List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
-                                            List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
-
-                                            for (int i = 0; i < listaParametrosEsperados.size(); i++)
+                                            if (noChamadaFuncao.getNome().equals("sorteia"))
                                             {
-                                                tabelaSimbolosLocal.push(tabelaSimbolos);
-                                                NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                                                Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
-                                                tabelaSimbolosLocal.pop();
+                                                return sorteia(noChamadaFuncao);
+                                            }
+                                            else
+                                            {
 
-                                                if (simbolo instanceof Variavel)
+                                                Funcao funcao = (Funcao) obterSimbolo(noChamadaFuncao.getNome());
+                                                TabelaSimbolos tabelaSimbolos = new TabelaSimbolos();
+
+                                                List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
+                                                List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
+
+                                                for (int i = 0; i < listaParametrosEsperados.size(); i++)
                                                 {
-                                                    Object valor = listaParametrosPassados.get(i).aceitar(this);
-                                                    ((Variavel) simbolo).setValor(valor);
-                                                }
-                                                else
-                                                {
-                                                    if (simbolo instanceof Ponteiro)
+                                                    tabelaSimbolosLocal.push(tabelaSimbolos);
+                                                    NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+                                                    Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
+                                                    tabelaSimbolosLocal.pop();
+
+                                                    if (simbolo instanceof Variavel)
                                                     {
-                                                        referencia = true;
                                                         Object valor = listaParametrosPassados.get(i).aceitar(this);
-                                                        referencia = false;
-                                                        ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
+                                                        ((Variavel) simbolo).setValor(valor);
                                                     }
                                                     else
                                                     {
-                                                        if (simbolo instanceof Vetor)
+                                                        if (simbolo instanceof Ponteiro)
                                                         {
-                                                            List<Object> valores = (List<Object>) listaParametrosPassados.get(i).aceitar(this);
-                                                            ((Vetor) simbolo).inicializarComValores(valores);
+                                                            referencia = true;
+                                                            Object valor = listaParametrosPassados.get(i).aceitar(this);
+                                                            referencia = false;
+                                                            ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
                                                         }
                                                         else
                                                         {
-                                                            if (simbolo instanceof Matriz)
+                                                            if (simbolo instanceof Vetor)
                                                             {
-                                                                List<List<Object>> valores = (List<List<Object>>) listaParametrosPassados.get(i).aceitar(this);
-                                                                ((Matriz) simbolo).inicializarComValores(valores);
+                                                                List<Object> valores = (List<Object>) listaParametrosPassados.get(i).aceitar(this);
+                                                                ((Vetor) simbolo).inicializarComValores(valores);
+                                                            }
+                                                            else
+                                                            {
+                                                                if (simbolo instanceof Matriz)
+                                                                {
+                                                                    List<List<Object>> valores = (List<List<Object>>) listaParametrosPassados.get(i).aceitar(this);
+                                                                    ((Matriz) simbolo).inicializarComValores(valores);
+                                                                }
                                                             }
                                                         }
                                                     }
-                                                }                                            
+                                                }
+                                                tabelaSimbolosLocal.push(tabelaSimbolos);
+                                                Object retorno = interpretarListaBlocos(funcao.getBlocos());
+                                                tabelaSimbolosLocal.pop();
+                                                return retorno;
                                             }
-                                            tabelaSimbolosLocal.push(tabelaSimbolos);
-                                            Object retorno = interpretarListaBlocos(funcao.getBlocos());
-                                            tabelaSimbolosLocal.pop();
-                                            return retorno;
                                         }
                                     }
                                 }
@@ -324,15 +328,15 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
             {
                 String[] ref = noChamadaFuncao.getNome().split("\\.");
                 Biblioteca biblioteca = bibliotecas.get(ref[0]);
-                
+
                 List<NoExpressao> param = noChamadaFuncao.getParametros();
                 Object[] parametros = new Object[param.size()];
-                
+
                 for (int i = 0; i < parametros.length; i++)
                 {
                     parametros[i] = param.get(i).aceitar(this);
                 }
-                
+
                 return biblioteca.chamarFuncao(ref[1], parametros);
             }
             catch (Exception excecao)
@@ -366,7 +370,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
     }
 
-    private int tamanho(NoChamadaFuncao chamadaFuncao)
+    private int tamanho_vetor(NoChamadaFuncao chamadaFuncao)
     {
         NoReferencia noReferencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
         String nome = noReferencia.getNome();
@@ -375,6 +379,17 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         Vetor vetor = (Vetor) simbolo;
 
         return vetor.getTamanho();
+    }
+    
+    private int tamanho_matriz(NoChamadaFuncao chamadaFuncao)
+    {
+        NoReferencia noReferencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
+        String nome = noReferencia.getNome();
+        ultimaReferenciaAcessada = nome;
+        Simbolo simbolo = extrairSimbolo(obterSimbolo(nome));
+        Matriz matriz = (Matriz) simbolo;
+        
+        return matriz.getNumeroColunas() * matriz.getNumeroLinhas();
     }
 
     private Simbolo extrairSimbolo(Simbolo simbolo)
@@ -500,7 +515,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
         return null;
     }
-    
+
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
@@ -687,7 +702,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         return !((Boolean) noNao.getExpressao().aceitar(this));
     }
-    
+
     private Object atribuirValorVariavel(Variavel variavel, Object valor)
     {
         Variavel variable = (Variavel) variavel;
@@ -699,9 +714,11 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private Object atribuirValorVetor(Vetor vetor, Object valor, NoReferenciaVetor referenciaVetor) throws ExcecaoVisitaASA
     {
         int indice = (Integer) referenciaVetor.getIndice().aceitar(this);
-        try {
+        try
+        {
             vetor.setValor(indice, valor);
-        } catch (IndexOutOfBoundsException ie)
+        }
+        catch (IndexOutOfBoundsException ie)
         {
             throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, referenciaVetor);
         }
@@ -712,11 +729,13 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         int linha = (Integer) referenciaMatriz.getLinha().aceitar(this);
         int coluna = (Integer) referenciaMatriz.getColuna().aceitar(this);
-        try {
-            matriz.setValor(linha, coluna, valor);
-        } catch (IndexOutOfBoundsException ie)
+        try
         {
-            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz,linha,coluna), asa, referenciaMatriz);
+            matriz.setValor(linha, coluna, valor);
+        }
+        catch (IndexOutOfBoundsException ie)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz, linha, coluna), asa, referenciaMatriz);
         }
         return valor;
     }
@@ -763,16 +782,29 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         List<NoExpressao> parametros = noChamadaFuncao.getParametros();
         Double base = null;
         Object b = parametros.get(0).aceitar(this);
-        if (b instanceof Double) {
+        if (b instanceof Double)
+        {
             base = (Double) b;
-        } else if (b instanceof Integer)
-            base = ((Integer)b).doubleValue();
+        }
+        else
+        {
+            if (b instanceof Integer)
+            {
+                base = ((Integer) b).doubleValue();
+            }
+        }
         Double expoente = null;
         Object e = parametros.get(1).aceitar(this);
-        if (e instanceof Double) {
+        if (e instanceof Double)
+        {
             expoente = (Double) e;
-        } else if (e instanceof Integer) {
-            expoente = ((Integer)e).doubleValue();
+        }
+        else
+        {
+            if (e instanceof Integer)
+            {
+                expoente = ((Integer) e).doubleValue();
+            }
         }
         Double potencia = Math.pow(base, expoente);
         return potencia;
@@ -783,13 +815,19 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         List<NoExpressao> parametros = noChamadaFuncao.getParametros();
         Double valor = null;
         Object v = parametros.get(0).aceitar(this);
-        
-        if (v instanceof Double) {
+
+        if (v instanceof Double)
+        {
             valor = (Double) v;
-        } else if (v instanceof Integer) {
-            valor = ((Integer)v).doubleValue();
         }
-        
+        else
+        {
+            if (v instanceof Integer)
+            {
+                valor = ((Integer) v).doubleValue();
+            }
+        }
+
         return Math.sqrt(valor);
     }
 
@@ -813,14 +851,14 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-        
-        return ! (Boolean) operacaoLogicaIgualdade.executar(opEsq, opDir);
+
+        return !(Boolean) operacaoLogicaIgualdade.executar(opEsq, opDir);
     }
 
     @Override
     public Object visitar(NoOperacaoAtribuicao atribuicao) throws ExcecaoVisitaASA
     {
-         NoReferencia noReferencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
+        NoReferencia noReferencia = (NoReferencia) atribuicao.getOperandoEsquerdo();
 
         String nome = noReferencia.getNome();
         Simbolo simbolo = extrairSimbolo(obterSimbolo(nome));
@@ -857,7 +895,8 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         Boolean opEsq = (Boolean) noOperacao.getOperandoEsquerdo().aceitar(this);
         Boolean opDir = (Boolean) noOperacao.getOperandoDireito().aceitar(this);
-        return opEsq || opDir;}
+        return opEsq || opDir;
+    }
 
     @Override
     public Object visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA
@@ -945,7 +984,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
             {
                 bibliotecas.put(noInclusaoBiblioteca.getAlias(), biblioteca);
             }
-            
+
             return null;
         }
         catch (ErroCarregamentoBiblioteca erro)
@@ -962,16 +1001,22 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         {
             return simbolo;
         }
-        else if (simbolo instanceof Vetor)
+        else
         {
-            return ((Vetor) simbolo).obterValores();
-        }
-        else if (simbolo instanceof Matriz)
-        {
-            return ((Matriz) simbolo).obterValores();
+            if (simbolo instanceof Vetor)
+            {
+                return ((Vetor) simbolo).obterValores();
+            }
+            else
+            {
+                if (simbolo instanceof Matriz)
+                {
+                    return ((Matriz) simbolo).obterValores();
+                }
+            }
         }
 
-        return ((Variavel) simbolo).getValor();        
+        return ((Variavel) simbolo).getValor();
     }
 
     private Object analizarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
@@ -990,7 +1035,6 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
     private class PareException extends RuntimeException
     {
-        
     }
 
     @Override
@@ -1012,15 +1056,17 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
         String nome = noReferenciaMatriz.getNome();
         Matriz matriz = (Matriz) extrairSimbolo(obterSimbolo(nome));
-        
+
         Object valor;
-        try {
-            valor = matriz.getValor(linha, coluna);
-        } catch (IndexOutOfBoundsException ie)
+        try
         {
-            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz,linha,coluna), asa, noReferenciaMatriz);
+            valor = matriz.getValor(linha, coluna);
         }
-        
+        catch (IndexOutOfBoundsException ie)
+        {
+            throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz, linha, coluna), asa, noReferenciaMatriz);
+        }
+
         while (valor instanceof NoExpressao)
         {
             valor = ((NoExpressao) valor).aceitar(this);
@@ -1035,7 +1081,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         if (noReferenciaVariavel.getEscopo() == null)
         {
             return analizarReferenciavariavelPrograma(noReferenciaVariavel);
-        }        
+        }
         else
         {
             return analizarReferenciaVariavelBiblioteca(noReferenciaVariavel);
@@ -1052,9 +1098,10 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         {
             throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, noReferenciaVetor);
         }
-        
+
         Object valor;
-        try { 
+        try
+        {
             valor = vetor.getValor(indice);
         }
         catch (ArrayIndexOutOfBoundsException aioobe)
