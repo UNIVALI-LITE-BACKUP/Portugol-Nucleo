@@ -12,9 +12,9 @@ import br.univali.portugol.nucleo.asa.TipoDado;
  */
 public interface DepuradorListener
 {
+    public void depuracaoInicializada(InterfaceDepurador depurador);
     public void linhaAtual(int linha);
     public void simboloDeclarado(String nome, TipoDado tipoDado);
     public void valorSimboloAlterado(String nome, Object valor);
-    public void novaTabelaSimbolos();
     
 }

@@ -3,11 +3,13 @@ package br.univali.portugol.nucleo;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.depuracao.Depurador;
+import br.univali.portugol.nucleo.depuracao.DepuradorImpl;
 import br.univali.portugol.nucleo.depuracao.DepuradorListener;
 import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
-import br.univali.portugol.nucleo.execucao.Interpretador;
+import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
 import br.univali.portugol.nucleo.execucao.Entrada;
 import br.univali.portugol.nucleo.execucao.Interpretador;
+import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ObservadorInterpretacao;
@@ -40,7 +42,7 @@ public final class Programa
     private RelatorErros relatorErros;
     private Saida saida;
     private Entrada entrada;
-    private String funcaoInicial = Interpretador.funcaoInicialPadrao;
+    private String funcaoInicial = InterpretadorImpl.funcaoInicialPadrao;
     private Thread threadExecucao = null;
     private long horaInicialExecucao = 0L;
     private ResultadoExecucao resultadoExecucao = null;
@@ -88,22 +90,6 @@ public final class Programa
         observadoresInter.add(o);
     }
     
-    Depurador depurador;
-
-    public Depurador getDepurador()
-    {
-        return depurador;
-    }
-    
-    private DepuradorListener listener;
-
-    public void setDepuradorListener(DepuradorListener listener)
-    {
-        this.listener = listener;
-    }
-    
-    
-    
     /**
      * Executa este programa com os parâmetros especificados. Se o programa já estiver
      * executando não faz nada.
@@ -112,7 +98,12 @@ public final class Programa
      *                       momento da execução.
      * @since 1.0
      */
-    public void executar(final String[] parametros)
+    public void interpretar(final String[] parametros){
+        executar(parametros, false);
+    }
+    
+    
+    private void executar(final String[] parametros, final boolean depurar)
     {
         if (!isExecutando())
         {
@@ -123,25 +114,34 @@ public final class Programa
                 {
                     try
                     {
-                        List<NoBloco> nosParada = new DetectaNosParada().executar(Programa.this, parametros);
+                        Interpretador interpretador;
                         
-                        depurador = new Depurador(nosParada);
-                        depurador.addListener(listener);
-                        depurador.setEntrada(entrada);
-                        depurador.setSaida(saida);
+                        if (depurar) {
+                             List<NoBloco> nosParada = new DetectaNosParada().executar(Programa.this, parametros);
+                        
+                            interpretador = new DepuradorImpl(nosParada);
+                            if (listener == null) {
+                                throw new RuntimeException("A depuraçao depende de um ouvite.");
+                            }   
+                            ((Depurador)interpretador).addListener(listener);
+                        } else {                            
+                            interpretador = new InterpretadorImpl();
+                        }
+                        
+                        interpretador.setEntrada(entrada);
+                        interpretador.setSaida(saida);
                         
                         notificarInicioExecucao();
                         
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
                         
-                        depurador.interpretar(Programa.this, parametros);
+                        interpretador.executar(Programa.this, parametros);
                         
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
                         
-                        notificarEncerramentoExecucao(resultadoExecucao);
-                        
+                        notificarEncerramentoExecucao(resultadoExecucao);                        
                     }
                     catch (ErroExecucao erroExecucao)
                     {                  
@@ -189,12 +189,18 @@ public final class Programa
         }
     }
 
-    /*
-    public void depurar() throws Exception
+    private DepuradorListener listener = null;
+
+    public void setDepuradorListener(DepuradorListener listener)
     {
-    
+        this.listener = listener;
     }
-     */
+    
+    public void depurar(final String[] parametros) 
+    {
+        executar(parametros, true);
+    }
+    
     /**
      * Interrompe a execução deste programa. Não tem nenhum efeito se o programa
      * não estiver executando.
