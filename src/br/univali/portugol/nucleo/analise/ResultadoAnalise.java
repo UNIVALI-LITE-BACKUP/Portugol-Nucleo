@@ -1,6 +1,7 @@
 
 package br.univali.portugol.nucleo.analise;
 
+import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
 import br.univali.portugol.nucleo.mensagens.Aviso;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.Erro;
@@ -32,6 +33,17 @@ public final class ResultadoAnalise
     private List<AvisoAnalise> avisos = null;
     
     private TabelaSimbolos tabelaSimbolos;
+    private ArvoreSintaticaAbstrata asa;
+
+    public ArvoreSintaticaAbstrata getAsa()
+    {
+        return asa;
+    }
+
+    public void setAsa(ArvoreSintaticaAbstrata asa)
+    {
+        this.asa = asa;
+    }
     
     public ResultadoAnalise()
     {

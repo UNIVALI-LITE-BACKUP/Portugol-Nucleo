@@ -15,7 +15,11 @@ public final class Portugol
 { 
     public static ResultadoAnalise analisar(String codigo)
     {
-        return new AnalisadorAlgoritmo().analisar(codigo);
+        final AnalisadorAlgoritmo analizador = new AnalisadorAlgoritmo();
+        final ResultadoAnalise resultado = analizador.analisar(codigo);
+        if (resultado.getNumeroTotalErros() <= 0)
+            resultado.setAsa(analizador.getArvoreSintaticaAbstrata());
+        return resultado;
     }
     
     public static Programa compilar(String codigo) throws ErroCompilacao
