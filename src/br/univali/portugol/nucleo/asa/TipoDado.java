@@ -186,6 +186,13 @@ public enum TipoDado
         return valorPadrao;
     }
 
+    public String getNome()
+    {
+        return nome;
+    }
+
+    
+    
     public Class getTipoJava()
     {
         return tipoJava;
