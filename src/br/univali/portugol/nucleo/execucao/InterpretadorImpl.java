@@ -249,7 +249,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                                     }
                                     else
                                     {
-                                        if (noChamadaFuncao.getNome().equals("raiz"))
+                                        if (noChamadaFuncao.getNome().equals("raiz_quadrada"))
                                         {
                                             return raiz(noChamadaFuncao);
                                         }

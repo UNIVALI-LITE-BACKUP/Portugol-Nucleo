@@ -135,7 +135,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
                 potencia.setParametros(parametrosPotencia);
                 asa.getListaDeclaracoesGlobais().add(potencia);
 
-                NoDeclaracaoFuncao raiz = new NoDeclaracaoFuncao("raiz", TipoDado.REAL, Quantificador.VALOR);
+                NoDeclaracaoFuncao raiz = new NoDeclaracaoFuncao("raiz_quadrada", TipoDado.REAL, Quantificador.VALOR);
                 List<NoDeclaracaoParametro> parametrosRaiz = new ArrayList<NoDeclaracaoParametro>();
                 NoDeclaracaoParametro valor = new NoDeclaracaoParametro("valor", TipoDado.REAL, Quantificador.VALOR, ModoAcesso.POR_VALOR);
                 parametrosRaiz.add(valor);
