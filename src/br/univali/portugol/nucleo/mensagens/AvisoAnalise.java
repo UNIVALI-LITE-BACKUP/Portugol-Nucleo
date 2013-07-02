@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.mensagens;
 
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
+
 /**
  * Classe base para todos os tipos de aviso gerados durante a análise de código fonte.
  * 
@@ -11,38 +13,40 @@ public abstract class AvisoAnalise extends Aviso
 {
     private int linha;
     private int coluna;
-
+    
+    private TrechoCodigoFonte trechoCodigoFonte;
+    
     /**
      * 
-     * @param linha      a linha onde o aviso ocorreu.
-     * @param coluna     a coluna onde o aviso ocorreu.
-     * @since 1.0
+     * @param linha      a linha onde o erro ocorreu.
+     * @param coluna     a coluna onde o erro ocorreu.
      */
-    public AvisoAnalise(int linha, int coluna)
+    public AvisoAnalise(TrechoCodigoFonte trechoCodigoFonte)
     {
-        this.linha = linha;
-        this.coluna = coluna;
+        super();
+        
+        this.linha = trechoCodigoFonte.getLinha();
+        this.coluna = trechoCodigoFonte.getColuna();        
+        this.trechoCodigoFonte = trechoCodigoFonte;
     }
 
-    /**
-     * Obtém a linha onde o aviso ocorreu.
-     * 
-     * @return     a linha onde o aviso ocorreu.
-     * @since 1.0
-     */    
-    public final int getLinha()
+    public int getLinha()
     {
         return linha;
     }
 
-    /**
-     * Obtém a coluna onde o aviso ocorreu.
-     * 
-     * @return     a coluna onde o aviso ocorreu.
-     * @since 1.0
-     */    
-    public final int getColuna()
+    public int getColuna()
     {
         return coluna;
+    }
+    
+    public TrechoCodigoFonte getTrechoCodigoFonte()
+    {
+        return this.trechoCodigoFonte;
+    }
+    
+    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte1)
+    {
+        this.trechoCodigoFonte = trechoCodigoFonte1;
     }
 }

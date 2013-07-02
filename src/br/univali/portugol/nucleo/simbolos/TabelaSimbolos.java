@@ -12,7 +12,7 @@ import java.util.Stack;
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class TabelaSimbolos implements Iterable<Simbolo>
+public final class TabelaSimbolos
 {
     private Stack<Map<String, Simbolo>> escopos;
 
@@ -61,7 +61,7 @@ public final class TabelaSimbolos implements Iterable<Simbolo>
      * @return         o símbolo com o nome específicado, ou null caso não seja encontrado.
      * @since 1.0
      */
-    public Simbolo obter(String nome)
+    public Simbolo obter(String nome) throws ExcecaoSimboloNaoDeclarado
     {
         Simbolo simbolo = null;
 
@@ -72,42 +72,7 @@ public final class TabelaSimbolos implements Iterable<Simbolo>
                 return simbolo;
             }
         }
-
-        return null;
-    }
-
-    /**
-     * Verifica se existe um símbolo com o nome especificado, nesta tabela de símbolos.
-     * 
-     * @param nome     o nome do símbolo que está sendo procurado.
-     * @return         <code>true</code> se o símbolo for encontrado, caso contrário retorna <code>false</code>.
-     * @since 1.0
-     */
-    public boolean contem(String nome)
-    {
-        for (Map<String, Simbolo> escopo : escopos)
-        {
-            if (escopo.containsKey(nome))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public int getNumeroEscopos()
-    {
-        return escopos.size();
+        throw new ExcecaoSimboloNaoDeclarado(nome);
     }
     
-    /**
-     * {@inheritDoc }
-     */
-    @Override    
-    public Iterator<Simbolo> iterator()
-    {
-        return escopos.peek().values().iterator();
-    }
-
 }

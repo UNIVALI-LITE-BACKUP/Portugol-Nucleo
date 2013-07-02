@@ -62,10 +62,4 @@ public final class ObservadorAnaliseAlgoritmo implements ObservadorAnaliseSintat
     {
         resultadoAnalise.adicionarAviso(aviso);
     }
-
-    @Override
-    public void analiseFinalizada(TabelaSimbolos tabelaSimbolos)
-    {
-        resultadoAnalise.setTabelaSimbolos(tabelaSimbolos);
-    }
 }
