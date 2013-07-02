@@ -34,8 +34,6 @@ public abstract class Biblioteca
 
     private void validarFuncoes(List<Method> funcoes) throws Exception
     {
-        int sobrecargas = -1;
-        
         for (Method funcao : funcoes)
         {
             if (!tipoSuportado(funcao.getReturnType()))
@@ -56,19 +54,6 @@ public abstract class Biblioteca
                 {
                     throw new Exception(String.format("O tipo do %dº parâmetro da função \"%s\" deve ser um dos tipos suportados: %s", (i + 1), funcao.getName(), listarTiposSuportados()));
                 }
-            }
-            
-            for (Method funcao2 : this.getClass().getDeclaredMethods())
-            {
-                if (funcao2.getName().equals(funcao.getName()))
-                {
-                    sobrecargas = sobrecargas + 1;
-                }
-            }
-            
-            if (sobrecargas > 0)
-            {
-                throw new Exception(String.format("A função \"%s\" não pode ter sobrecargas", funcao.getName()));
             }
         }
     }
