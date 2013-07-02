@@ -83,6 +83,26 @@ public final class ErroTiposIncompativeis extends ErroSemantico
         getMensagem();
     }
 
+    
+    /**
+     * Construtor alternativo que permite incluir informações adicionais sobre o 
+     * erro que não puderam ser obtidas apenas a partir do nó da árvore
+     * 
+     * @param bloco                         o nó que gerou o erro
+     * @param detalhes                      as informações adicionais sobre o erro
+     * @param tiposDado                     os tipos de dados que são imcompatíveis entre si
+     * 
+     * @return      a própria instancia do erro.
+     * @since 1.0
+     */
+    public ErroTiposIncompativeis(NoBloco bloco, String detalhes[], TipoDado...tiposDado)
+    {
+        this.bloco = bloco;
+        this.tiposDado = tiposDado;
+        this.detalhes = detalhes;
+        getMensagem();
+    }    
+    
     /**
      * Obtém o bloco onde ocorreu o erro.
      * 
@@ -105,20 +125,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
         return tiposDado;
     }
 
-    /**
-     * Método utilitário que permite incluir informações sobre o erro que não 
-     * puderam ser obtidas apenas a partir do nó da árvore
-     * 
-     * @return      a própria instancia do erro.
-     * @since 1.0
-     */
-    public ErroTiposIncompativeis incluirDetalhes(String...detalhes)
-    {
-        this.detalhes = detalhes;
-        
-        return this;
-    }
-    
     /**
      * {@inheritDoc }
      */

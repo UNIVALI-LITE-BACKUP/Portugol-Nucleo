@@ -98,12 +98,12 @@ public final class Programa
      *                       momento da execução.
      * @since 1.0
      */
-    public void interpretar(final String[] parametros){
-        executar(parametros, false);
+    public void executar(final String[] parametros){
+        interpretar(parametros, false);
     }
     
     
-    private void executar(final String[] parametros, final boolean depurar)
+    private void interpretar(final String[] parametros, final boolean depurar)
     {
         if (!isExecutando())
         {
@@ -198,7 +198,7 @@ public final class Programa
     
     public void depurar(final String[] parametros) 
     {
-        executar(parametros, true);
+        interpretar(parametros, true);
     }
     
     /**

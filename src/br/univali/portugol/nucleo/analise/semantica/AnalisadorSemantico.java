@@ -822,16 +822,40 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         tabelaSimbolos.empilharEscopo();
          
-        noPara.getInicializacao().aceitar(this);
-        
-        TipoDado tipoDadoCondicao = (TipoDado) noPara.getCondicao().aceitar(this);
-        
-        if (tipoDadoCondicao != TipoDado.LOGICO)
+        try
         {
-            notificarErroSemantico(new ErroTiposIncompativeis(noPara, tipoDadoCondicao));
+            noPara.getInicializacao().aceitar(this);
+        }
+        catch (ExcecaoVisitaASA excecao)
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                throw excecao;
         }
         
-        noPara.getIncremento().aceitar(this);
+        try
+        {        
+            TipoDado tipoDadoCondicao = (TipoDado) noPara.getCondicao().aceitar(this);
+
+            if (tipoDadoCondicao != TipoDado.LOGICO)
+            {
+                notificarErroSemantico(new ErroTiposIncompativeis(noPara, tipoDadoCondicao));
+            }
+        }
+        catch (ExcecaoVisitaASA excecao)
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                throw excecao;
+        }
+        
+        try
+        {
+            noPara.getIncremento().aceitar(this);
+        }
+        catch (ExcecaoVisitaASA excecao)
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+                throw excecao;
+        }
         
         analisarListaBlocos(noPara.getBlocos());
         
@@ -970,7 +994,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         if (funcaoAtual.getTipoDado() != tipoDadoRetorno)
         {
-            notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, funcaoAtual.getTipoDado(), tipoDadoRetorno).incluirDetalhes(funcaoAtual.getNome()));
+            notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, new String[] { funcaoAtual.getNome() }, funcaoAtual.getTipoDado(), tipoDadoRetorno));
         }
         
         return null;
