@@ -421,6 +421,9 @@ public final class AnalisadorSemantico implements VisitanteASA
                     referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
                     NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
                     
+                    memoria.empilharEscopo();
+                    memoria.adicionarSimbolo(variavel);
+                    
                     try 
                     {
                         operacao.aceitar(this);
@@ -432,7 +435,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                             throw excecao;
                         }
                     }
-                
+                    
+                    memoria.desempilharEscopo();                
                 }
                 else
                 {
