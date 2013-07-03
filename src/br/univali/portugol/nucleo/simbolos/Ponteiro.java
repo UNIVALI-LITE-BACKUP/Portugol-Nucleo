@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.TipoDado;
+
 /**
  * Representa um ponteiro para outro símbolo durante a execução de um programa.
  * 
@@ -17,13 +19,22 @@ public final class Ponteiro extends Simbolo
      */
     public Ponteiro(String nome, Simbolo simbolo)
     {
-        super(nome, simbolo.getTipoDado());
-        this.simbolo = simbolo;
+        super(nome, null);
+        setSimbolo(simbolo);
     }
 
     public void setSimbolo(Simbolo simbolo)
     {
-        this.simbolo = simbolo;
+        if (simbolo != null)
+        {
+            this.simbolo = simbolo;
+            this.tipoDado = simbolo.getTipoDado();
+        }
+        else
+        {
+            this.simbolo = null;
+            this.tipoDado = null;
+        }
     }
     
     /**

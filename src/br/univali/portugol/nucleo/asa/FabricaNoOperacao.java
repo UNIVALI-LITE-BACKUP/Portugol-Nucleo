@@ -1,50 +1,46 @@
 package br.univali.portugol.nucleo.asa;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public final class FabricaNoOperacao
 {
-    public static NoOperacao novoNo(String operador, NoExpressao operandoEsquerdo, NoExpressao operandoDireito){
-        if ("==".equals(operador))
-            return new NoOperacaoLogicaIgualdade(operandoEsquerdo, operandoDireito);
-        else
-        if ("!=".equals(operador))
-            return new NoOperacaoLogicaDiferenca(operandoEsquerdo, operandoDireito);
-        else
-        if ("=".equals(operador))
-            return new NoOperacaoAtribuicao(operandoEsquerdo, operandoDireito);
-        else
-        if ("e".equals(operador))
-            return new NoOperacaoLogicaE(operandoEsquerdo, operandoDireito);
-        else
-        if ("ou".equals(operador))
-            return new NoOperacaoLogicaOU(operandoEsquerdo, operandoDireito);
-        else
-        if (">".equals(operador))
-            return new NoOperacaoLogicaMaior(operandoEsquerdo, operandoDireito);
-        else
-        if (">=".equals(operador))
-            return new NoOperacaoLogicaMaiorIgual(operandoEsquerdo, operandoDireito);
-        else
-        if ("<".equals(operador))
-            return new NoOperacaoLogicaMenor(operandoEsquerdo, operandoDireito);
-        else
-        if ("<=".equals(operador))
-            return new NoOperacaoLogicaMenorIgual(operandoEsquerdo, operandoDireito);
-        else
-        if ("+".equals(operador))
-            return new NoOperacaoSoma(operandoEsquerdo, operandoDireito);
-        else
-        if ("-".equals(operador))
-            return new NoOperacaoSubtracao(operandoEsquerdo, operandoDireito);
-        else
-        if ("/".equals(operador))
-            return new NoOperacaoDivisao(operandoEsquerdo, operandoDireito);
-        else
-        if ("*".equals(operador))
-            return new NoOperacaoMultiplicacao(operandoEsquerdo, operandoDireito);
-        else
-        if ("%".equals(operador))
-            return new NoOperacaoModulo(operandoEsquerdo, operandoDireito);
+    private static final Map<String, Class<? extends NoOperacao>> nos = criarMapaNos();
+         
+    private static Map<String, Class<? extends NoOperacao>> criarMapaNos()
+    {
+        Map<String, Class<? extends NoOperacao>> mapaNos = new HashMap<String, Class<? extends NoOperacao>>();
+        
+        mapaNos.put("==", NoOperacaoLogicaIgualdade.class);
+        mapaNos.put("!=", NoOperacaoLogicaDiferenca.class);        
+        mapaNos.put("=", NoOperacaoAtribuicao.class);
+        mapaNos.put("e", NoOperacaoLogicaE.class);        
+        mapaNos.put("ou", NoOperacaoLogicaOU.class);        
+        mapaNos.put(">", NoOperacaoLogicaMaior.class);
+        mapaNos.put(">=", NoOperacaoLogicaMaiorIgual.class);        
+        mapaNos.put("<", NoOperacaoLogicaMenor.class);        
+        mapaNos.put("<=", NoOperacaoLogicaMenorIgual.class);        
+        mapaNos.put("+", NoOperacaoSoma.class);        
+        mapaNos.put("-", NoOperacaoSubtracao.class);        
+        mapaNos.put("/", NoOperacaoDivisao.class);        
+        mapaNos.put("*", NoOperacaoMultiplicacao.class);        
+        mapaNos.put("%", NoOperacaoModulo.class);
+        
+        return mapaNos;
+    }
+    
+    public static NoOperacao novoNo(String operador, NoExpressao operandoEsquerdo, NoExpressao operandoDireito)
+    {        
+        try
+        {
+            return nos.get(operador).getConstructor(NoExpressao.class, NoExpressao.class).newInstance(operandoEsquerdo, operandoDireito);
+        }
+        catch (Exception excecao)
+        {
+            excecao.printStackTrace(System.out);
+        }
         
         return null;
     }

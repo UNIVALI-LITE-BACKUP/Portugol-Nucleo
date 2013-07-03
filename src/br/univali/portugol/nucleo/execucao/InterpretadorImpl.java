@@ -250,49 +250,55 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                                                 else
                                                 {                                                
                                                     Funcao funcao = (Funcao) memoria.getSimbolo(noChamadaFuncao.getNome());
-                                                    memoria.empilharFuncao();
-
+                                                    
                                                     List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
                                                     List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
 
-                                                    for (int i = 0; i < listaParametrosEsperados.size(); i++)
-                                                    {                                                    
+                                                    List<Object> valoresParametrosPassados = new ArrayList<Object>();
+                                                    
+                                                    for (int i = 0; i < listaParametrosPassados.size(); i++)
+                                                    {   
                                                         NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                                                        Simbolo simbolo = (Simbolo) declaracao.aceitar(this);                                                    
+                                                        
+                                                        referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;                                                        
+                                                        valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
+                                                        referencia = false;
+                                                    }
 
+                                                    memoria.empilharFuncao();
+                                                    
+                                                    for (int i = 0; i < listaParametrosEsperados.size(); i++)
+                                                    {
+                                                        NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+                                                        Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
+                                                        Object valor = valoresParametrosPassados.get(i);
+                                                        
                                                         if (simbolo instanceof Variavel)
                                                         {
-                                                            Object valor = listaParametrosPassados.get(i).aceitar(this);
                                                             ((Variavel) simbolo).setValor(valor);
                                                         }
                                                         else
                                                         {
                                                             if (simbolo instanceof Ponteiro)
                                                             {
-                                                                referencia = true;
-                                                                Object valor = listaParametrosPassados.get(i).aceitar(this);
-                                                                referencia = false;
                                                                 ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
                                                             }
                                                             else
                                                             {
                                                                 if (simbolo instanceof Vetor)
                                                                 {
-                                                                    List<Object> valores = (List<Object>) listaParametrosPassados.get(i).aceitar(this);
-                                                                    ((Vetor) simbolo).inicializarComValores(valores);
+                                                                    ((Vetor) simbolo).inicializarComValores((List<Object>) valor);
                                                                 }
                                                                 else
                                                                 {
                                                                     if (simbolo instanceof Matriz)
                                                                     {
-                                                                        List<List<Object>> valores = (List<List<Object>>) listaParametrosPassados.get(i).aceitar(this);
-                                                                        ((Matriz) simbolo).inicializarComValores(valores);
+                                                                        ((Matriz) simbolo).inicializarComValores((List<List<Object>>) valor);
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
-
 
                                                     Object retorno = interpretarListaBlocos(funcao.getBlocos());
                                                     memoria.desempilharFuncao();
@@ -737,7 +743,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         Object valorRetorno = null;
 
         memoria.empilharEscopo();
-        noPara.getInicializacao().aceitar(this);
+        
+        if (noPara.getInicializacao() != null)
+        {
+            noPara.getInicializacao().aceitar(this);
+        }
+        
         NoExpressao condicao = noPara.getCondicao();
         try
         {
@@ -991,11 +1002,11 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         }
     }
 
-    private Object analizarReferenciaVariavelPrograma(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
+    private Object analisarReferenciaVariavelPrograma(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
         try
         {
-            Simbolo simbolo = memoria.getSimbolo(noReferenciaVariavel.getNome());
+            Simbolo simbolo = extrairSimbolo(memoria.getSimbolo(noReferenciaVariavel.getNome()));
 
             if (referencia)
             {
@@ -1024,7 +1035,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         }
     }
 
-    private Object analizarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
+    private Object analisarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
         try
         {
@@ -1092,11 +1103,11 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         if (noReferenciaVariavel.getEscopo() == null)
         {
-            return analizarReferenciaVariavelPrograma(noReferenciaVariavel);
+            return analisarReferenciaVariavelPrograma(noReferenciaVariavel);
         }
         else
         {
-            return analizarReferenciaVariavelBiblioteca(noReferenciaVariavel);
+            return analisarReferenciaVariavelBiblioteca(noReferenciaVariavel);
         }
     }
 
