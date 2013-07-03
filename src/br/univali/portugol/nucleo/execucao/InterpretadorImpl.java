@@ -743,7 +743,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         Object valorRetorno = null;
 
         memoria.empilharEscopo();
-        noPara.getInicializacao().aceitar(this);
+        
+        if (noPara.getInicializacao() != null)
+        {
+            noPara.getInicializacao().aceitar(this);
+        }
+        
         NoExpressao condicao = noPara.getCondicao();
         try
         {
