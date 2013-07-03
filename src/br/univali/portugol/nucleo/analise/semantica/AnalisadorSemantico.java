@@ -391,10 +391,24 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             try
             {
-                Simbolo simbolo = memoria.getSimbolo(nome);
+                Simbolo simboloExistente = memoria.getSimbolo(nome);
                 
-                variavel.setRedeclarado(true);
-                notificarErroSemantico(new ErroSimboloRedeclarado(variavel, simbolo));
+                if 
+                (
+                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(variavel)) ||
+                    (memoria.isLocal(simboloExistente) && memoria.isLocal(variavel))
+                )
+                {
+                                    variavel.setRedeclarado(true);
+                    notificarErroSemantico(new ErroSimboloRedeclarado(variavel, simboloExistente));
+                }
+                else 
+                {
+                   Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : variavel;
+                   Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? variavel : simboloExistente;
+
+                   notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, declaracaoVariavel));
+                }
             } 
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
@@ -479,10 +493,24 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             try
             {
-                Simbolo simbolo = memoria.getSimbolo(nome);
+                 Simbolo simboloExistente = memoria.getSimbolo(nome);
                 
-                vetor.setRedeclarado(true);
-                notificarErroSemantico(new ErroSimboloRedeclarado(vetor, simbolo));
+                 if 
+                (
+                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(vetor)) ||
+                    (memoria.isLocal(simboloExistente) && memoria.isLocal(vetor))
+                )
+                {
+                    vetor.setRedeclarado(true);
+                    notificarErroSemantico(new ErroSimboloRedeclarado(vetor, simboloExistente));
+                }
+                else
+                {
+                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : vetor;
+                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? vetor : simboloExistente;
+
+                    notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, noDeclaracaoVetor));
+                }
             } 
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {

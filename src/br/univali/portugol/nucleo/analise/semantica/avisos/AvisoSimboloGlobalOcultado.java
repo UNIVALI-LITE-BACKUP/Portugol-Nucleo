@@ -9,7 +9,10 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
+import br.univali.portugol.nucleo.simbolos.Matriz;
 import br.univali.portugol.nucleo.simbolos.Simbolo;
+import br.univali.portugol.nucleo.simbolos.Variavel;
+import br.univali.portugol.nucleo.simbolos.Vetor;
 
 /**
  *
@@ -28,6 +31,7 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
         
         this.simboloGlobal = simboloGlobal;
         this.simboloLocal = simboloLocal;
+        this.declaracao = declaracao;
         
         this.getMensagem();
     }
@@ -60,16 +64,34 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
             }
         }  
 
+        private StringBuilder appendGenericMessage(StringBuilder builder){
+            builder.append(declaracao.getNome())
+                    .append("\" está ocultando ");
+            
+            if (simboloGlobal instanceof Variavel){
+                builder.append("uma variável ");
+            } else if (simboloGlobal instanceof Vetor){
+                builder.append("um vetor ");
+            } else if (simboloGlobal instanceof Matriz) {
+                builder.append("uma matriz");
+            }
+            builder.append("do escopo global.");
+            
+            return builder;
+        }
+        
         @Override
         public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
         {
-            return super.visitar(noDeclaracaoMatriz); //To change body of generated methods, choose Tools | Templates.
+            StringBuilder builder = new StringBuilder("A matriz \"");            
+            return appendGenericMessage(builder).toString();
         }
 
         @Override
         public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
         {
-            return super.visitar(noDeclaracaoVariavel); //To change body of generated methods, choose Tools | Templates.
+            StringBuilder builder = new StringBuilder("A variável \"");            
+            return appendGenericMessage(builder).toString();
         }
 
         @Override
@@ -81,7 +103,8 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
         @Override
         public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
         {
-            return super.visitar(noDeclaracaoVetor); //To change body of generated methods, choose Tools | Templates.
+            StringBuilder builder = new StringBuilder("O vetor \"");            
+            return appendGenericMessage(builder).toString();
         }
 
         @Override
