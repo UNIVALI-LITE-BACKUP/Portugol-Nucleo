@@ -11,7 +11,7 @@ public class AvisoInicializacaoVetorMaisValoresTamanho extends AvisoAnalise
     
     public AvisoInicializacaoVetorMaisValoresTamanho(NoDeclaracaoVetor declaracaoVetor, NoExpressao inicializacao)
     {
-        super(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getColuna());
+        super(inicializacao.getTrechoCodigoFonte());
         this.declaracaoVetor = declaracaoVetor;
     }
 

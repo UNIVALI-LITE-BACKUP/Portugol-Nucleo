@@ -13,7 +13,7 @@ public class AvisoTamanhoReferenciaInicializacao extends AvisoAnalise
     public AvisoTamanhoReferenciaInicializacao(Simbolo simbolo, NoDeclaracaoVetor declaracaoVetor, NoExpressao inicializacao)
     {
         
-        super(inicializacao.getTrechoCodigoFonte().getLinha(), inicializacao.getTrechoCodigoFonte().getLinha());
+        super(inicializacao.getTrechoCodigoFonte());
         this.simbolo = simbolo;
         this.noDeclaracaoVetor = declaracaoVetor;
     }
