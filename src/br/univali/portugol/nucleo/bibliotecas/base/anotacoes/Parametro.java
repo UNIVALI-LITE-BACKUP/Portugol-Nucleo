@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.bibliotecas.base;
+package br.univali.portugol.nucleo.bibliotecas.base.anotacoes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,8 +10,9 @@ import java.lang.annotation.Target;
  * @author Luiz Fernando Noschang
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD})
-public @interface Exportar
+@Target({ElementType.METHOD})
+public @interface Parametro
 {
-    
+    public String nome();
+    public String descricao();
 }

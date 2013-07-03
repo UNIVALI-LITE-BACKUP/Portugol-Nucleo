@@ -496,8 +496,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                      memoria.adicionarSimbolo(vetor);
                 }
-            }
-            
+            }            
             
             if (noDeclaracaoVetor.getInicializacao() != null)
             {
