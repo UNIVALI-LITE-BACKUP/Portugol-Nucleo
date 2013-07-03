@@ -63,7 +63,9 @@ public class Memoria
         if (!escoposLocais.isEmpty())
         {
             escoposLocais.peek().empilharEscopo();
-        }        
+        } else {
+            escopoGlobal.empilharEscopo();
+        }     
     }
     
     public void desempilharEscopo() throws EmptyStackException
@@ -71,6 +73,8 @@ public class Memoria
         if (!escoposLocais.isEmpty())
         {
             escoposLocais.peek().desempilharEscopo();
+        } else {
+            escopoGlobal.empilharEscopo();
         }
     }
     

@@ -298,23 +298,31 @@ public final class AnalisadorSemantico implements VisitanteASA
             try
             {
                 Simbolo simboloExistente = memoria.getSimbolo(nome);
-                
+                final boolean global = memoria.isGlobal(simboloExistente);
+                final boolean local = memoria.isLocal(simboloExistente);
+                memoria.empilharEscopo();
+                memoria.adicionarSimbolo(matriz);
+                final boolean global1 = memoria.isGlobal(matriz);
+                final boolean local1 = memoria.isLocal(matriz);
                 if 
                 (
-                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(matriz)) ||
-                    (memoria.isLocal(simboloExistente) && memoria.isLocal(matriz))
+                    (global && global1) || (local && local1)
                 )
                 {
                     matriz.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(matriz, simboloExistente));
+                    memoria.desempilharEscopo();
                 }
                 else
                 {
+                    memoria.desempilharEscopo();
+                    memoria.adicionarSimbolo(matriz);
                     Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : matriz;
                     Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? matriz : simboloExistente;
                     
                     notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, noDeclaracaoMatriz));
                 }
+                
             } 
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
@@ -392,18 +400,25 @@ public final class AnalisadorSemantico implements VisitanteASA
             try
             {
                 Simbolo simboloExistente = memoria.getSimbolo(nome);
-                
+                final boolean global = memoria.isGlobal(simboloExistente);
+                final boolean local = memoria.isLocal(simboloExistente);
+                memoria.empilharEscopo();
+                memoria.adicionarSimbolo(variavel);
+                final boolean global1 = memoria.isGlobal(variavel);
+                final boolean local1 = memoria.isLocal(variavel);
                 if 
                 (
-                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(variavel)) ||
-                    (memoria.isLocal(simboloExistente) && memoria.isLocal(variavel))
-                )
+                    (global && global1) || (local && local1)
+                )                
                 {
-                                    variavel.setRedeclarado(true);
+                    variavel.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(variavel, simboloExistente));
+                    memoria.desempilharEscopo();
                 }
                 else 
                 {
+                   memoria.desempilharEscopo();
+                   memoria.adicionarSimbolo(variavel);
                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : variavel;
                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? variavel : simboloExistente;
 
@@ -493,19 +508,26 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             try
             {
-                 Simbolo simboloExistente = memoria.getSimbolo(nome);
-                
-                 if 
+                Simbolo simboloExistente = memoria.getSimbolo(nome);
+                final boolean global = memoria.isGlobal(simboloExistente);
+                final boolean local = memoria.isLocal(simboloExistente);
+                memoria.empilharEscopo();
+                memoria.adicionarSimbolo(vetor);
+                final boolean global1 = memoria.isGlobal(vetor);
+                final boolean local1 = memoria.isLocal(vetor);
+                if 
                 (
-                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(vetor)) ||
-                    (memoria.isLocal(simboloExistente) && memoria.isLocal(vetor))
-                )
+                    (global && global1) || (local && local1)
+                )                
                 {
                     vetor.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(vetor, simboloExistente));
+                    memoria.desempilharEscopo();
                 }
                 else
                 {
+                    memoria.desempilharEscopo();
+                    memoria.adicionarSimbolo(vetor);
                     Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : vetor;
                     Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? vetor : simboloExistente;
 
@@ -715,7 +737,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
+    public Object visitar(final NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
     {
         TipoDado tipoDadoRetorno;
         
@@ -729,40 +751,68 @@ public final class AnalisadorSemantico implements VisitanteASA
         }  else {
             try
             {
-                simbolo = memoria.getSimbolo(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
+                if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVariavel) {
+                    simbolo = memoria.getSimbolo(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
 
-                inicializadoAnterior = simbolo.inicializado();
-                simbolo.setInicializado(true);            
-                if (simbolo instanceof Variavel){
-                    if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
-                            (noOperacao.getOperandoDireito() instanceof NoVetor))
-                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
-
-                        @Override
-                        protected String construirMensagem()
-                        {
-                            return "nao e possivel atribuir uma matriz ou um vetor a uma variavel";
-                        }
-                    });
-                } else if (simbolo instanceof Vetor) {
-                    if (!(noOperacao.getOperandoDireito() instanceof NoVetor)){
-                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
+                    inicializadoAnterior = simbolo.inicializado();
+                    simbolo.setInicializado(true);            
+                    if (simbolo instanceof Variavel){
+                        if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
+                                (noOperacao.getOperandoDireito() instanceof NoVetor))
+                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
 
                             @Override
                             protected String construirMensagem()
                             {
-                                return "uma referencia a vetor deve ser inicializada com um vetor literal";
+                                return "nao e possivel atribuir uma matriz ou um vetor a uma variavel";
                             }
                         });
+                    } else if (simbolo instanceof Vetor) {
+                        if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoVetor)){
+                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
+
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "uma referencia a vetor deve ser inicializada com um vetor literal";
+                                }
+                            });
+                        }
+                    } else if (simbolo instanceof Matriz) {
+                        if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz)){
+                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                            {
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "uma refencia de matriz deve ser inicializada com uma matriz";
+                                }
+                            });
+                        }
                     }
-                } else if (simbolo instanceof Matriz) {
-                    if (!(noOperacao.getOperandoDireito() instanceof NoMatriz)){
+                }
+                else if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaMatriz ||
+                        noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVetor)
+                {
+                    if (noOperacao.getOperandoDireito() instanceof NoVetor)
+                    {
                         notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
                         {
                             @Override
                             protected String construirMensagem()
                             {
-                                return "uma refencia de matriz deve ser inicializada com uma matriz";
+                                return "Deve-se atribuir um valor à uma possição do vetor";
+                            }
+                        });
+                    }
+                    else if (noOperacao.getOperandoDireito() instanceof NoMatriz )
+                    {
+                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                        {
+                            @Override
+                            protected String construirMensagem()
+                            {
+                                return "Deve-se atribuir um valor à uma possição da matriz";
                             }
                         });
                     }
