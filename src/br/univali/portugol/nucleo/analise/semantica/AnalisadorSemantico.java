@@ -298,23 +298,31 @@ public final class AnalisadorSemantico implements VisitanteASA
             try
             {
                 Simbolo simboloExistente = memoria.getSimbolo(nome);
-                
+                final boolean global = memoria.isGlobal(simboloExistente);
+                final boolean local = memoria.isLocal(simboloExistente);
+                memoria.empilharEscopo();
+                memoria.adicionarSimbolo(matriz);
+                final boolean global1 = memoria.isGlobal(matriz);
+                final boolean local1 = memoria.isLocal(matriz);
                 if 
                 (
-                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(matriz)) ||
-                    (memoria.isLocal(simboloExistente) && memoria.isLocal(matriz))
+                    (global && global1) || (local && local1)
                 )
                 {
                     matriz.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(matriz, simboloExistente));
+                    memoria.desempilharEscopo();
                 }
                 else
                 {
+                    memoria.desempilharEscopo();
+                    memoria.adicionarSimbolo(matriz);
                     Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : matriz;
                     Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? matriz : simboloExistente;
                     
                     notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, noDeclaracaoMatriz));
                 }
+                
             } 
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
@@ -428,18 +436,25 @@ public final class AnalisadorSemantico implements VisitanteASA
             try
             {
                 Simbolo simboloExistente = memoria.getSimbolo(nome);
-                
+                final boolean global = memoria.isGlobal(simboloExistente);
+                final boolean local = memoria.isLocal(simboloExistente);
+                memoria.empilharEscopo();
+                memoria.adicionarSimbolo(variavel);
+                final boolean global1 = memoria.isGlobal(variavel);
+                final boolean local1 = memoria.isLocal(variavel);
                 if 
                 (
-                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(variavel)) ||
-                    (memoria.isLocal(simboloExistente) && memoria.isLocal(variavel))
-                )
+                    (global && global1) || (local && local1)
+                )                
                 {
                     variavel.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(variavel, simboloExistente));
+                    memoria.desempilharEscopo();
                 }
                 else 
                 {
+                   memoria.desempilharEscopo();
+                   memoria.adicionarSimbolo(variavel);
                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : variavel;
                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? variavel : simboloExistente;
 
@@ -538,19 +553,26 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             try
             {
-                 Simbolo simboloExistente = memoria.getSimbolo(nome);
-                
-                 if 
+                Simbolo simboloExistente = memoria.getSimbolo(nome);
+                final boolean global = memoria.isGlobal(simboloExistente);
+                final boolean local = memoria.isLocal(simboloExistente);
+                memoria.empilharEscopo();
+                memoria.adicionarSimbolo(vetor);
+                final boolean global1 = memoria.isGlobal(vetor);
+                final boolean local1 = memoria.isLocal(vetor);
+                if 
                 (
-                    (memoria.isGlobal(simboloExistente) && memoria.isGlobal(vetor)) ||
-                    (memoria.isLocal(simboloExistente) && memoria.isLocal(vetor))
-                )
+                    (global && global1) || (local && local1)
+                )                
                 {
                     vetor.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(vetor, simboloExistente));
+                    memoria.desempilharEscopo();
                 }
                 else
                 {
+                    memoria.desempilharEscopo();
+                    memoria.adicionarSimbolo(vetor);
                     Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : vetor;
                     Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? vetor : simboloExistente;
 
@@ -782,7 +804,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
+    public Object visitar(final NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
     {
         TipoDado tipoDadoRetorno;
         
@@ -796,7 +818,8 @@ public final class AnalisadorSemantico implements VisitanteASA
         }  else {
             try
             {
-                simbolo = memoria.getSimbolo(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
+                if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVariavel) {
+                    simbolo = memoria.getSimbolo(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
 
                 inicializadoAnterior = simbolo.inicializado();
                 simbolo.setInicializado(true);            
@@ -815,21 +838,21 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 
                                 if (pSimbolo instanceof Variavel)
                                 {
-                                    sb.append("A variável \"");
+                                    sb.append("\"");
                                     sb.append(pSimbolo.getNome());
-                                    sb.append("\" é constante e portante não pode ter seu valor alterado após a inicialização");
+                                    sb.append("\" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização");
                                 }
                                 else if (pSimbolo instanceof Vetor)
                                 {
                                     sb.append("O vetor \"");
                                     sb.append(pSimbolo.getNome());
-                                    sb.append("\" é constante e portante não pode ter seus valores alterados após a inicialização");
+                                    sb.append("\" é constante e, portanto, não pode ter seus valores alterados após a inicialização");
                                 }
                                 else if (pSimbolo instanceof Matriz)
                                 {
                                     sb.append("A matriz \"");
                                     sb.append(pSimbolo.getNome());
-                                    sb.append("\" é constante e portante não pode ter seu valor alterado após a inicialização");
+                                    sb.append("\" é constante e, portanto, não pode ter seu valor alterado após a inicialização");
                                 }
                                 
                                 return sb.toString();
@@ -851,21 +874,48 @@ public final class AnalisadorSemantico implements VisitanteASA
                     if (!(noOperacao.getOperandoDireito() instanceof NoVetor)){
                         notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
 
-                            @Override
-                            protected String construirMensagem()
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "O vetor deve ser inicializado com um vetor literal";
+                                }
+                            });
+                        }
+                    } else if (simbolo instanceof Matriz) {
+                        if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz)){
+                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
                             {
-                                return "um vetor deve ser inicializado com um vetor literal";
-                            }
-                        });
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "A matriz deve ser inicializada com uma matriz literal";
+                                }
+                            });
+                        }
                     }
-                } else if (simbolo instanceof Matriz) {
-                    if (!(noOperacao.getOperandoDireito() instanceof NoMatriz)){
+                }
+                else if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaMatriz ||
+                        noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVetor)
+                {
+                    if (noOperacao.getOperandoDireito() instanceof NoVetor)
+                    {
                         notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
                         {
                             @Override
                             protected String construirMensagem()
                             {
-                                return "uma matriz deve ser inicializada com uma matriz literal";
+                                return "Deve-se atribuir um valor à uma posição do vetor";
+                            }
+                        });
+                    }
+                    else if (noOperacao.getOperandoDireito() instanceof NoMatriz )
+                    {
+                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                        {
+                            @Override
+                            protected String construirMensagem()
+                            {
+                                return "Deve-se atribuir um valor à uma posição da matriz";
                             }
                         });
                     }

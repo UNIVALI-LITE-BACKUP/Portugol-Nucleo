@@ -255,51 +255,52 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                                                     List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
 
                                                     List<Object> valoresParametrosPassados = new ArrayList<Object>();
-                                                    
-                                                    for (int i = 0; i < listaParametrosPassados.size(); i++)
-                                                    {   
-                                                        NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                                                        
-                                                        referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;                                                        
-                                                        valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
-                                                        referencia = false;
+                                                    if (listaParametrosPassados != null ) {
+                                                        for (int i = 0; i < listaParametrosPassados.size(); i++)
+                                                        {   
+                                                            NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+
+                                                            referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;                                                        
+                                                            valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
+                                                            referencia = false;
+                                                        }
                                                     }
 
                                                     memoria.empilharFuncao();
-                                                    
-                                                    for (int i = 0; i < listaParametrosEsperados.size(); i++)
-                                                    {
-                                                        NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                                                        Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
-                                                        Object valor = valoresParametrosPassados.get(i);
-                                                        
-                                                        if (simbolo instanceof Variavel)
+                                                    if (listaParametrosEsperados != null) {
+                                                        for (int i = 0; i < listaParametrosEsperados.size(); i++)
                                                         {
-                                                            ((Variavel) simbolo).setValor(valor);
-                                                        }
-                                                        else
-                                                        {
-                                                            if (simbolo instanceof Ponteiro)
+                                                            NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+                                                            Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
+                                                            Object valor = valoresParametrosPassados.get(i);
+
+                                                            if (simbolo instanceof Variavel)
                                                             {
-                                                                ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
+                                                                ((Variavel) simbolo).setValor(valor);
                                                             }
                                                             else
                                                             {
-                                                                if (simbolo instanceof Vetor)
+                                                                if (simbolo instanceof Ponteiro)
                                                                 {
-                                                                    ((Vetor) simbolo).inicializarComValores((List<Object>) valor);
+                                                                    ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (simbolo instanceof Matriz)
+                                                                    if (simbolo instanceof Vetor)
                                                                     {
-                                                                        ((Matriz) simbolo).inicializarComValores((List<List<Object>>) valor);
+                                                                        ((Vetor) simbolo).inicializarComValores((List<Object>) valor);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (simbolo instanceof Matriz)
+                                                                        {
+                                                                            ((Matriz) simbolo).inicializarComValores((List<List<Object>>) valor);
+                                                                        }
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
-
                                                     Object retorno = interpretarListaBlocos(funcao.getBlocos());
                                                     memoria.desempilharFuncao();
                                                     return retorno;
