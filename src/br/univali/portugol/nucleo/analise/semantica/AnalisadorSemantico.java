@@ -1482,7 +1482,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         throw new ExcecaoImpossivelDeterminarTipoDado();
     }
 
-    private TipoDado analisarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel)
+    private TipoDado analisarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
         final String escopo = noReferenciaVariavel.getEscopo();
         final String nome = noReferenciaVariavel.getNome();
@@ -1520,7 +1520,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             });
         }
         
-        return TipoDado.VAZIO;
+        throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaVariavel);
     }
 
     private Object analisarChamadaFuncaoPrograma(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
@@ -1543,6 +1543,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                     notificarErroSemantico(new ErroReferenciaInvalida(chamadaFuncao, simbolo));
                 }
+                
+                return (TipoDado) simbolo.getTipoDado();
             }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
@@ -1551,13 +1553,13 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
         else
         {
-            analisarChamadaFuncaoEspecial(chamadaFuncao);
+            return (TipoDado) analisarChamadaFuncaoEspecial(chamadaFuncao);
         }
         
-        return null;
+        throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
     }
     
-    private void analisarChamadaFuncaoEspecial(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+    private TipoDado analisarChamadaFuncaoEspecial(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
     	List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
     	
@@ -1594,6 +1596,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                 expressao.aceitar(this);
             }
         }
+        
+        return TipoDado.VAZIO;
     }
         
     private void analisarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao) throws ExcecaoVisitaASA
@@ -1692,7 +1696,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     }
     
 
-    private Object analisarChamadaFuncaoBiblioteca(final NoChamadaFuncao chamadaFuncao)
+    private Object analisarChamadaFuncaoBiblioteca(final NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         final String escopo = chamadaFuncao.getEscopo();
         final String nome = chamadaFuncao.getNome();
@@ -1759,6 +1763,6 @@ public final class AnalisadorSemantico implements VisitanteASA
             });
         }
         
-        return TipoDado.VAZIO;        
+        throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
     }    
 }

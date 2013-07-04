@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.bibliotecas.base;
 
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.ExportarVariavel;
 import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.ExportarFuncao;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -138,7 +139,7 @@ public abstract class Biblioteca
         
         for (Method metodo : metodos)
         {
-            if (metodo.isAnnotationPresent(ExportarVariavel.class))
+            if (metodo.isAnnotationPresent(ExportarFuncao.class))
             {
                 funcoes.add(metodo);
             }

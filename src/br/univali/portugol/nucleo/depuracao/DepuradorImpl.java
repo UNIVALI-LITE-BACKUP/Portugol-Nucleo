@@ -107,7 +107,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -128,7 +128,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -149,7 +149,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -170,7 +170,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -191,7 +191,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -212,7 +212,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -233,7 +233,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -254,7 +254,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -275,7 +275,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -296,7 +296,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -317,7 +317,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
              }
              catch (InterruptedException ex)
              {
-             System.out.println(ex);
+             throw new RuntimeException(ex);
              }
              }
         }
@@ -338,7 +338,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -359,7 +359,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -380,7 +380,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -401,7 +401,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -422,7 +422,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -443,7 +443,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -464,7 +464,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -485,7 +485,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -506,7 +506,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
              }
              catch (InterruptedException ex)
              {
-             System.out.println(ex);
+             throw new RuntimeException(ex);
              }
              }*/
         }
@@ -525,7 +525,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
             }
             catch (InterruptedException ex)
             {
-                System.out.println(ex);
+                throw new RuntimeException(ex);
             }
         }
         return super.visitar(no);
@@ -545,7 +545,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -566,7 +566,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -587,7 +587,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -608,7 +608,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -634,7 +634,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -655,7 +655,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -676,7 +676,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -697,7 +697,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -718,7 +718,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -739,7 +739,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -760,7 +760,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -781,7 +781,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -802,7 +802,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -823,7 +823,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -844,7 +844,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -865,7 +865,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -886,7 +886,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -907,7 +907,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
@@ -928,7 +928,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    System.out.println(ex);
+                    throw new RuntimeException(ex);
                 }
             }
         }
