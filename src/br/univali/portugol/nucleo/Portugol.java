@@ -17,7 +17,7 @@ public final class Portugol
     {
         final AnalisadorAlgoritmo analizador = new AnalisadorAlgoritmo();
         final ResultadoAnalise resultado = analizador.analisar(codigo);
-        if (resultado.getNumeroTotalErros() <= 0)
+        //if (resultado.getNumeroTotalErros() <= 0)
             resultado.setAsa(analizador.getArvoreSintaticaAbstrata());
         return resultado;
     }
