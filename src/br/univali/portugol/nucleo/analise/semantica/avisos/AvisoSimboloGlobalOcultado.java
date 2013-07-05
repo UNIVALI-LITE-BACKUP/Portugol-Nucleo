@@ -24,6 +24,7 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
     private Simbolo simboloGlobal;
     private Simbolo simboloLocal;
     private NoDeclaracao declaracao;
+    private NoDeclaracaoParametro noDeclaracaoParametro;
     
     public AvisoSimboloGlobalOcultado(Simbolo simboloGlobal, Simbolo simboloLocal, NoDeclaracao declaracao)
     {
@@ -32,6 +33,17 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
         this.simboloGlobal = simboloGlobal;
         this.simboloLocal = simboloLocal;
         this.declaracao = declaracao;
+        
+        this.getMensagem();
+    }
+
+    public AvisoSimboloGlobalOcultado(Simbolo simboloGlobal, Simbolo simboloLocal, NoDeclaracaoParametro noDeclaracaoParametro)
+    {
+        super(noDeclaracaoParametro.getTrechoCodigoFonteNome());
+        
+        this.simboloGlobal = simboloGlobal;
+        this.simboloLocal = simboloLocal;
+        this.noDeclaracaoParametro = noDeclaracaoParametro;
         
         this.getMensagem();
     }
@@ -56,7 +68,12 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
         {
             try
             {
-                return (String) declaracao.aceitar(this);
+                if (declaracao != null)                
+                    return (String) declaracao.aceitar(this);
+                else if (noDeclaracaoParametro != null)
+                    return (String) noDeclaracaoParametro.aceitar(this);
+                else
+                    return "Um simbolo está sendo ocultado";
             }
             catch (ExcecaoVisitaASA e)
             {
@@ -65,8 +82,15 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
         }  
 
         private StringBuilder appendGenericMessage(StringBuilder builder){
-            builder.append(declaracao.getNome())
-                    .append("\" está ocultando ");
+            if (declaracao != null) {
+                builder.append(declaracao.getNome());
+            } 
+            else if (noDeclaracaoParametro != null)
+            {
+                builder.append(noDeclaracaoParametro.getNome());
+            }
+                    
+            builder.append("\" está ocultando ");
             
             if (simboloGlobal instanceof Variavel){
                 builder.append("uma variável ");
@@ -97,7 +121,15 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
         @Override
         public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
         {
-            return super.visitar(noDeclaracaoParametro); //To change body of generated methods, choose Tools | Templates.
+            StringBuilder builder = new StringBuilder();
+            if (simboloLocal instanceof Variavel){
+                builder.append("A variável \"");
+            } else if (simboloLocal instanceof Vetor) {
+                builder.append("O vetor \"");
+            } else if (simboloLocal instanceof Matriz) {
+                builder.append("A matriz \"");
+            }
+            return appendGenericMessage(builder).toString();
         }
 
         @Override

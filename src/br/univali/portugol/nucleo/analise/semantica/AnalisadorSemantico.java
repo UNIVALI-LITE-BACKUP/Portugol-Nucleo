@@ -1325,9 +1325,33 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         try
         {            
-            memoria.getSimbolo(nome);
-            simbolo.setRedeclarado(true);
-            notificarErroSemantico(new ErroParametroRedeclarado(noDeclaracaoParametro, funcaoAtual));
+            Simbolo simboloExistente = memoria.getSimbolo(nome);
+            final boolean global = memoria.isGlobal(simboloExistente);
+            final boolean local = memoria.isLocal(simboloExistente);
+            memoria.empilharEscopo();
+            memoria.adicionarSimbolo(simbolo);
+            final boolean global1 = memoria.isGlobal(simbolo);
+            final boolean local1 = memoria.isLocal(simbolo);
+            if 
+            (
+                (global && global1) || (local && local1)
+            )                
+            {
+                simbolo.setRedeclarado(true);
+                notificarErroSemantico(new ErroParametroRedeclarado(noDeclaracaoParametro, funcaoAtual));
+                memoria.desempilharEscopo();
+            }
+            else
+            {
+                memoria.desempilharEscopo();
+                memoria.adicionarSimbolo(simbolo);
+                simbolo.setInicializado(true);
+                
+                Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : simbolo;
+                Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? simbolo : simboloExistente;
+                
+                notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, noDeclaracaoParametro));
+            }
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
