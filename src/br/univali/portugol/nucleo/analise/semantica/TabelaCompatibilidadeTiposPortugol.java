@@ -3,6 +3,11 @@ package br.univali.portugol.nucleo.analise.semantica;
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
 import br.univali.portugol.nucleo.asa.NoOperacao;
 import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseE;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseOu;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseRightShift;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseXOR;
 import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaE;
@@ -48,7 +53,11 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
         tabelas.put(NoOperacaoMultiplicacao.class, criarTabelaCompatibilidadeDivisaoMultiplicacaoSubtracao());        
         tabelas.put(NoOperacaoSoma.class, criarTabelaCompatibilidadeSoma());
         tabelas.put(NoOperacaoSubtracao.class, criarTabelaCompatibilidadeDivisaoMultiplicacaoSubtracao());
-        
+        tabelas.put(NoOperacaoBitwiseLeftShift.class, criarTabelaCompatibilidadeBitwise());
+        tabelas.put(NoOperacaoBitwiseRightShift.class, criarTabelaCompatibilidadeBitwise());
+        tabelas.put(NoOperacaoBitwiseE.class, criarTabelaCompatibilidadeBitwise());
+        tabelas.put(NoOperacaoBitwiseOu.class, criarTabelaCompatibilidadeBitwise());
+        tabelas.put(NoOperacaoBitwiseXOR.class, criarTabelaCompatibilidadeBitwise());
     }
 
     @Override
@@ -316,6 +325,56 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
     }
 
     private TipoDado[][] criarTabelaCompatibilidadeModulo()
+    {
+         int tamanho = TipoDado.values().length;
+        TipoDado[][] tabela = new TipoDado[tamanho][tamanho];
+        
+        tabela[TipoDado.CADEIA.ordinal()][TipoDado.CADEIA.ordinal()] = null;
+        tabela[TipoDado.CADEIA.ordinal()][TipoDado.CARACTER.ordinal()] = null;
+        tabela[TipoDado.CADEIA.ordinal()][TipoDado.INTEIRO.ordinal()] = null;
+        tabela[TipoDado.CADEIA.ordinal()][TipoDado.LOGICO.ordinal()] = null;
+        tabela[TipoDado.CADEIA.ordinal()][TipoDado.REAL.ordinal()] = null;
+        tabela[TipoDado.CADEIA.ordinal()][TipoDado.VAZIO.ordinal()] = null;
+        
+        tabela[TipoDado.CARACTER.ordinal()][TipoDado.CADEIA.ordinal()] = null;
+        tabela[TipoDado.CARACTER.ordinal()][TipoDado.CARACTER.ordinal()] = null;
+        tabela[TipoDado.CARACTER.ordinal()][TipoDado.INTEIRO.ordinal()] = null;
+        tabela[TipoDado.CARACTER.ordinal()][TipoDado.LOGICO.ordinal()] = null;
+        tabela[TipoDado.CARACTER.ordinal()][TipoDado.REAL.ordinal()] = null;
+        tabela[TipoDado.CARACTER.ordinal()][TipoDado.VAZIO.ordinal()] = null;
+        
+        tabela[TipoDado.INTEIRO.ordinal()][TipoDado.CADEIA.ordinal()] = null;
+        tabela[TipoDado.INTEIRO.ordinal()][TipoDado.CARACTER.ordinal()] = null;
+        tabela[TipoDado.INTEIRO.ordinal()][TipoDado.INTEIRO.ordinal()] = TipoDado.INTEIRO;
+        tabela[TipoDado.INTEIRO.ordinal()][TipoDado.LOGICO.ordinal()] = null;
+        tabela[TipoDado.INTEIRO.ordinal()][TipoDado.REAL.ordinal()] = null;
+        tabela[TipoDado.INTEIRO.ordinal()][TipoDado.VAZIO.ordinal()] = null;
+                 
+        tabela[TipoDado.LOGICO.ordinal()][TipoDado.CADEIA.ordinal()] = null;
+        tabela[TipoDado.LOGICO.ordinal()][TipoDado.CARACTER.ordinal()] = null;
+        tabela[TipoDado.LOGICO.ordinal()][TipoDado.INTEIRO.ordinal()] = null;
+        tabela[TipoDado.LOGICO.ordinal()][TipoDado.LOGICO.ordinal()] = null;
+        tabela[TipoDado.LOGICO.ordinal()][TipoDado.REAL.ordinal()] = null;
+        tabela[TipoDado.LOGICO.ordinal()][TipoDado.VAZIO.ordinal()] = null;
+        
+        tabela[TipoDado.REAL.ordinal()][TipoDado.CADEIA.ordinal()] = null;
+        tabela[TipoDado.REAL.ordinal()][TipoDado.CARACTER.ordinal()] = null;
+        tabela[TipoDado.REAL.ordinal()][TipoDado.INTEIRO.ordinal()] = null;
+        tabela[TipoDado.REAL.ordinal()][TipoDado.LOGICO.ordinal()] = null;
+        tabela[TipoDado.REAL.ordinal()][TipoDado.REAL.ordinal()] = null;
+        tabela[TipoDado.REAL.ordinal()][TipoDado.VAZIO.ordinal()] = null;
+        
+        tabela[TipoDado.VAZIO.ordinal()][TipoDado.CADEIA.ordinal()] = null;
+        tabela[TipoDado.VAZIO.ordinal()][TipoDado.CARACTER.ordinal()] = null;
+        tabela[TipoDado.VAZIO.ordinal()][TipoDado.INTEIRO.ordinal()] = null;
+        tabela[TipoDado.VAZIO.ordinal()][TipoDado.LOGICO.ordinal()] = null;
+        tabela[TipoDado.VAZIO.ordinal()][TipoDado.REAL.ordinal()] = null;
+        tabela[TipoDado.VAZIO.ordinal()][TipoDado.VAZIO.ordinal()] = null;
+        
+        return tabela;
+    }
+    
+     private TipoDado[][] criarTabelaCompatibilidadeBitwise()
     {
          int tamanho = TipoDado.values().length;
         TipoDado[][] tabela = new TipoDado[tamanho][tamanho];

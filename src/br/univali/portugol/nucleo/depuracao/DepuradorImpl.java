@@ -434,7 +434,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            //disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
             {
                 try

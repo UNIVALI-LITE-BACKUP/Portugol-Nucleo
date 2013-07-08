@@ -192,6 +192,36 @@ public abstract class VisitanteASABasico implements VisitanteASA
     public Object visitar(NoOperacaoModulo noOperacaoModulo) throws ExcecaoVisitaASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }    
+    
+    @Override
+    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
     }
 
     @Override
@@ -264,5 +294,5 @@ public abstract class VisitanteASABasico implements VisitanteASA
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
-    }
+    }   
 }

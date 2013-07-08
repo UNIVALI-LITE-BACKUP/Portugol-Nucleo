@@ -73,6 +73,16 @@ public interface VisitanteASA
     
     public Object visitar(NoOperacaoModulo noOperacaoModulo) throws ExcecaoVisitaASA;
     
+    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA;
+    
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA;
 
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA;

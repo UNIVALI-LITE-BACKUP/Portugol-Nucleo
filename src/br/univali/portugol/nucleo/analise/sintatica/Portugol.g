@@ -159,7 +159,7 @@ PR_INCLUA				:	'inclua'		;
 PR_BIBLIOTECA			:	'biblioteca'		;
 
 
-GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'^'|'\''|'`'|'|'|'&'|'\\'|'@';
+GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'\''|'`'|'\\'|'@';
  
 fragment PR_FALSO			:	'falso'		;
 fragment PR_VERDADEIRO		:	'verdadeiro'		;
@@ -172,7 +172,7 @@ ID 				:	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*  ;
 
 ID_BIBLIOTECA			:	ID '.' ID;
 
-INTEIRO 				:	'0'..'9'* ;
+INTEIRO 				:	'0'..'9'* | ('0x')(DIGIT_HEX)* ;
 
 REAL					: 	('0'..'9')+ '.' ('0'..'9')+ ;
     
@@ -712,6 +712,7 @@ pare returns[NoPare pare] @init
 		if (gerarArvore)
 		{
 			pare = new NoPare();
+			pare.setTrechoCodigoFonte(criarTrechoCodigoFonte($PR_PARE));
 		}
 	}
 
@@ -882,7 +883,7 @@ expressao returns[NoExpressao expressao] @init
 
 	operandoEsquerdo = expressao2 vPilha = pilha { vPilha.push(operandoEsquerdo); }
 	(
-		(operador = '=' | operador = '+=' | operador = '-=' | operador = '/=' | operador = '*=' | operador = '%=')
+		(operador = '=' | operador = '+=' | operador = '-=' | operador = '/=' | operador = '*=' | operador = '%=' | operador = '>>=' | operador = '<<=' | operador = '|=' | operador = '&=' | operador = '^=') 
 		
 		operandoDireito = expressao2
 		{
@@ -930,7 +931,7 @@ expressao2 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao2");
 }:
 
-	operandoEsquerdo = expressao3
+	operandoEsquerdo = expressao2_5
 	( 	
 		{ 
 		
@@ -947,7 +948,7 @@ expressao2 returns[NoExpressao expressao] @init
 			
 		(operador = 'e' | operador = 'ou')
 		
-		operandoDireito = expressao3
+		operandoDireito = expressao2_5
 	)*
 	{
 		if (gerarArvore)
@@ -961,6 +962,39 @@ finally
 	pilhaContexto.pop();
 }
 
+expressao2_5 returns[NoExpressao expressao] @init
+{
+	pilhaContexto.push("expressao2_5");
+}: 
+	operandoEsquerdo = expressao3
+   	(
+		{ 		
+			if (gerarArvore)
+			{
+				if (operandoDireito != null)
+				{
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
+					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+				 	operandoEsquerdo = operacao; 
+				 }
+			 }
+		}       
+		
+		(operador = '&' | operador = '|' | operador = '^')
+		
+		operandoDireito = expressao3
+	)*
+	{
+		if (gerarArvore)
+		{
+			expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
+		}
+	}
+;
+finally
+{
+	pilhaContexto.pop();
+} 
 
 expressao3 returns[NoExpressao expressao] @init
 {
@@ -1004,7 +1038,7 @@ expressao4 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao4");
 }:
 
-	operandoEsquerdo = expressao5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao5)?
+	operandoEsquerdo = expressao4_5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao4_5)?
 	{
 		if (gerarArvore)
 		{
@@ -1017,6 +1051,38 @@ finally
 	pilhaContexto.pop();
 }
 
+expressao4_5 returns[NoExpressao expressao] @init
+{
+	pilhaContexto.push("expressao4_5");
+}: operandoEsquerdo = expressao5
+   	(
+		{ 		
+			if (gerarArvore)
+			{
+				if (operandoDireito != null)
+				{
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
+					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+				 	operandoEsquerdo = operacao; 
+				 }
+			 }
+		}       
+		
+		(operador = '<<' | operador = '>>')
+		
+		operandoDireito = expressao5
+	)*
+	{
+		if (gerarArvore)
+		{
+			expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
+		}
+	}
+;
+finally
+{
+	pilhaContexto.pop();
+} 
 
 expressao5 returns[NoExpressao expressao] @init
 {
@@ -1426,7 +1492,7 @@ matrizVetor returns[NoExpressao expressao] @init
 			expressao = vExpressao;
 		}
 	}
-;
+	;
 finally
 {
 	pilhaContexto.pop();

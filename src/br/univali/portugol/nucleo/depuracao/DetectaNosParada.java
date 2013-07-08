@@ -29,6 +29,11 @@ import br.univali.portugol.nucleo.asa.NoMatriz;
 import br.univali.portugol.nucleo.asa.NoMenosUnario;
 import br.univali.portugol.nucleo.asa.NoNao;
 import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseE;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseOu;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseRightShift;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseXOR;
 import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaE;
@@ -389,6 +394,36 @@ public class DetectaNosParada implements VisitanteASA
 
     @Override
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
     {
         return null;
     }

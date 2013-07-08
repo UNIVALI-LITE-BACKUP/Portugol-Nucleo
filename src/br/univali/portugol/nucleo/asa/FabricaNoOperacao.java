@@ -27,6 +27,11 @@ public final class FabricaNoOperacao
         mapaNos.put("/", NoOperacaoDivisao.class);        
         mapaNos.put("*", NoOperacaoMultiplicacao.class);        
         mapaNos.put("%", NoOperacaoModulo.class);
+        mapaNos.put("<<", NoOperacaoBitwiseLeftShift.class);
+        mapaNos.put(">>", NoOperacaoBitwiseRightShift.class);
+        mapaNos.put("&", NoOperacaoBitwiseE.class);
+        mapaNos.put("|", NoOperacaoBitwiseOu.class);
+        mapaNos.put("^", NoOperacaoBitwiseXOR.class);
         
         return mapaNos;
     }

@@ -1042,6 +1042,36 @@ public final class AnalisadorSemantico implements VisitanteASA
     }
     
     @Override
+    public Object visitar(NoOperacaoBitwiseLeftShift noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao); 
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseRightShift noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao); 
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseE noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao); 
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseOu noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao); 
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseXOR noOperacao) throws ExcecaoVisitaASA
+    {
+        return recuperaTipoNoOperacao(noOperacao); 
+    }
+    
+    @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
         memoria.empilharEscopo();

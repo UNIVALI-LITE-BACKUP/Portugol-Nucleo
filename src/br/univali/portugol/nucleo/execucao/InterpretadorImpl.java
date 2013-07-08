@@ -15,6 +15,11 @@ import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoModulo;
 import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoMultiplicacao;
 import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoSoma;
 import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.OperacaoSubtracao;
+import br.univali.portugol.nucleo.execucao.operacoes.bitwise.OperacaoBitwiseE;
+import br.univali.portugol.nucleo.execucao.operacoes.bitwise.OperacaoBitwiseLeftShift;
+import br.univali.portugol.nucleo.execucao.operacoes.bitwise.OperacaoBitwiseOu;
+import br.univali.portugol.nucleo.execucao.operacoes.bitwise.OperacaoBitwiseRightShift;
+import br.univali.portugol.nucleo.execucao.operacoes.bitwise.OperacaoBitwiseXOR;
 import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaIgualdade;
 import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaMaior;
 import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogicaMaiorIgual;
@@ -49,6 +54,13 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private OperacaoSoma operacaoSoma = new OperacaoSoma();
     private OperacaoSubtracao operacaoSubtracao = new OperacaoSubtracao();
 
+    private OperacaoBitwiseLeftShift operacaoBitwiseLeftShift = new OperacaoBitwiseLeftShift();
+    private OperacaoBitwiseRightShift operacaoBitwiseRightShift = new OperacaoBitwiseRightShift();
+    private OperacaoBitwiseE operacaoBitwiseE = new OperacaoBitwiseE();
+    private OperacaoBitwiseOu operacaoBitwiseOu = new OperacaoBitwiseOu();
+    private OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
+    
+    
     @Override
     public void setEntrada(Entrada entrada)
     {
@@ -980,6 +992,46 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         return operacaoModulo.executar(opEsq, opDir);
     }
 
+    @Override
+    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
+    {
+        Object opEsq = noOperacaoBitwiseLeftShift.getOperandoEsquerdo().aceitar(this);
+        Object opDir = noOperacaoBitwiseLeftShift.getOperandoDireito().aceitar(this);
+        return operacaoBitwiseLeftShift.executar(opEsq, opDir);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
+    {
+        Object opEsq = noOperacaoBitwiseRightShift.getOperandoEsquerdo().aceitar(this);
+        Object opDir = noOperacaoBitwiseRightShift.getOperandoDireito().aceitar(this);
+        return operacaoBitwiseRightShift.executar(opEsq, opDir);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
+    {
+        Object opEsq = noOperacaoBitwiseE.getOperandoEsquerdo().aceitar(this);
+        Object opDir = noOperacaoBitwiseE.getOperandoDireito().aceitar(this);
+        return operacaoBitwiseE.executar(opEsq, opDir);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA
+    {
+        Object opEsq = noOperacaoBitwiseOu.getOperandoEsquerdo().aceitar(this);
+        Object opDir = noOperacaoBitwiseOu.getOperandoDireito().aceitar(this);
+        return operacaoBitwiseOu.executar(opEsq, opDir);
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
+    {
+        Object opEsq = noOperacaoBitwiseXOR.getOperandoEsquerdo().aceitar(this);
+        Object opDir = noOperacaoBitwiseXOR.getOperandoDireito().aceitar(this);
+        return operacaoBitwiseXOR.executar(opEsq, opDir);
+    }
+    
     @Override
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
