@@ -172,7 +172,7 @@ ID 				:	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*  ;
 
 ID_BIBLIOTECA			:	ID '.' ID;
 
-INTEIRO 				:	'0'..'9'* | ('0x')(DIGIT_HEX)* ;
+INTEIRO 				:	'0'..'9'+ | ('0x'|'0X')(DIGIT_HEX)+ ;
 
 REAL					: 	('0'..'9')+ '.' ('0'..'9')+ ;
     
@@ -1301,7 +1301,12 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 	
 		if (gerarArvore)
 		{
-			NoInteiro inteiro = new NoInteiro(Integer.parseInt($INTEIRO.text));
+			NoInteiro inteiro = null;
+			if ($INTEIRO.text.matches("(0x|0X).+")){
+				inteiro = new NoInteiro(Integer.valueOf($INTEIRO.text.replaceAll("0x|0X", ""),16));
+			} else {
+				inteiro = new NoInteiro(Integer.parseInt($INTEIRO.text));
+			}
 			inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte($INTEIRO));
 			expressao = inteiro;
 		}
