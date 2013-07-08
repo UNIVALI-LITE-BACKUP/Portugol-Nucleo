@@ -33,13 +33,11 @@ import java.util.logging.Logger;
 
 public class InterpretadorImpl implements VisitanteASA, Interpretador
 {
-    public static final String funcaoInicialPadrao = "inicio";
     private Saida saida;
     private Entrada entrada;
     private boolean referencia = false;
     private ArvoreSintaticaAbstrata asa;
     private Random random = new Random(System.currentTimeMillis());
-    private String funcaoInicial = funcaoInicialPadrao;
     private String ultimaReferenciaAcessada;
     private Memoria memoria = new Memoria();
     private Map<String, Biblioteca> bibliotecas = new TreeMap<String, Biblioteca>();
@@ -53,13 +51,13 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private OperacaoMultiplicacao operacaoMultiplicacao = new OperacaoMultiplicacao();
     private OperacaoSoma operacaoSoma = new OperacaoSoma();
     private OperacaoSubtracao operacaoSubtracao = new OperacaoSubtracao();
-
     private OperacaoBitwiseLeftShift operacaoBitwiseLeftShift = new OperacaoBitwiseLeftShift();
     private OperacaoBitwiseRightShift operacaoBitwiseRightShift = new OperacaoBitwiseRightShift();
     private OperacaoBitwiseE operacaoBitwiseE = new OperacaoBitwiseE();
     private OperacaoBitwiseOu operacaoBitwiseOu = new OperacaoBitwiseOu();
     private OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
     
+    private String funcaoInicial;
     
     @Override
     public void setEntrada(Entrada entrada)
@@ -79,11 +77,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
         try
         {
+            funcaoInicial = programa.getFuncaoInicial();
             asa = programa.getArvoreSintaticaAbstrata();
             asa.aceitar(this);
 
-            try {
-
+            try 
+            {
                 Funcao funcaoPrincipal = (Funcao) memoria.getSimbolo(funcaoInicial);
                 memoria.empilharFuncao();
                 try {
