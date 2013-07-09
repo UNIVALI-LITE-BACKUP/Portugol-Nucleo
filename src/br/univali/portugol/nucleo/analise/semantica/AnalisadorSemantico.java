@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
@@ -1692,7 +1694,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 boolean erroPassagem = false;
 
-                NoDeclaracaoParametro parametroEsperado = parametrosEsperados.get(i);
+                final NoDeclaracaoParametro parametroEsperado = parametrosEsperados.get(i);
                 NoExpressao parametroPassado = parametrosPassados.get(i);
 
                 if (parametroEsperado.getModoAcesso() == ModoAcesso.POR_REFERENCIA)
@@ -1736,7 +1738,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     } finally {
                         passagemParametro = false;
                     }
-
+                    
                     if (tipoDadoParametroPassado != null)
                     {
                         if (tipoDadoParametroEsperado != tipoDadoParametroPassado)
@@ -1747,6 +1749,82 @@ public final class AnalisadorSemantico implements VisitanteASA
                             }
                         }
                     }
+                    
+                    if (parametroPassado instanceof NoReferenciaVariavel) {
+                        String nome = ((NoReferenciaVariavel) parametroPassado).getNome();
+                        try
+                        {
+                            Simbolo simbolo = memoria.getSimbolo(nome);
+                            if (parametroEsperado.getQuantificador() == Quantificador.MATRIZ) {
+                                if (!(simbolo instanceof Matriz))
+                                {
+                                    notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
+                                    {
+                                        @Override
+                                        protected String construirMensagem()
+                                        {
+                                            return "O parâmetro esperado para essa função deve ser uma matriz";
+                                        }
+                                    });
+                                }
+                            } else if (parametroEsperado.getQuantificador() == Quantificador.VETOR) {
+                                if (!(simbolo instanceof Vetor))
+                                {
+                                    notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
+                                    {
+                                        @Override
+                                        protected String construirMensagem()
+                                        {
+                                            return "O parâmetro esperado para essa função deve ser um vetor";
+                                        }
+                                    });
+                                }
+                            } else if (parametroEsperado.getQuantificador() == Quantificador.VALOR) {
+                                if (!(simbolo instanceof Variavel))
+                                {
+                                    notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
+                                    {
+                                        @Override
+                                        protected String construirMensagem()
+                                        {
+                                            return "O parâmetro esperado para essa função deve ser um valor";
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        catch (ExcecaoSimboloNaoDeclarado ex)
+                        {
+                            //
+                        }
+                    } 
+                    else if (parametroPassado instanceof NoVetor)
+                    {
+                        if (parametroEsperado.getQuantificador() != Quantificador.VETOR) {
+                            notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
+                                    {
+                                        @Override
+                                        protected String construirMensagem()
+                                        {
+                                            return "Você deve passar um(a) "+parametroEsperado.getQuantificador().name().toLowerCase();
+                                        }
+                                    });
+                        }
+                    }
+                    else if (parametroPassado instanceof NoMatriz)
+                    {
+                        if (parametroEsperado.getQuantificador() != Quantificador.MATRIZ) {
+                            notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
+                                    {
+                                        @Override
+                                        protected String construirMensagem()
+                                        {
+                                            return "Você deve passar um(a) "+parametroEsperado.getQuantificador().name().toLowerCase();
+                                        }
+                                    });
+                        }
+                    }
+                    
                 }
             }
         }
