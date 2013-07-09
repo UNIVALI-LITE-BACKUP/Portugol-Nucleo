@@ -1122,27 +1122,37 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         try
         {
-            int linha = (Integer) noReferenciaMatriz.getLinha().aceitar(this);
-            int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
             String nome = noReferenciaMatriz.getNome();
-            Matriz matriz = (Matriz) extrairSimbolo(memoria.getSimbolo(nome));
-
-            Object valor;
-            try
+            Simbolo simbolo = extrairSimbolo(memoria.getSimbolo(nome));
+            
+            if (referencia)
             {
-                valor = matriz.getValor(linha, coluna);
+                return simbolo;
             }
-            catch (IndexOutOfBoundsException ie)
-            {
-                throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz, linha, coluna), asa, noReferenciaMatriz);
-            }
+            else 
+            {            
+                int linha = (Integer) noReferenciaMatriz.getLinha().aceitar(this);
+                int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
+                
+                Matriz matriz = (Matriz) simbolo;
 
-            while (valor instanceof NoExpressao)
-            {
-                valor = ((NoExpressao) valor).aceitar(this);
-            }
+                Object valor;
+                try
+                {
+                    valor = matriz.getValor(linha, coluna);
+                }
+                catch (IndexOutOfBoundsException ie)
+                {
+                    throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz, linha, coluna), asa, noReferenciaMatriz);
+                }
 
-            return valor;
+                while (valor instanceof NoExpressao)
+                {
+                    valor = ((NoExpressao) valor).aceitar(this);
+                }
+
+                return valor;
+            }
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
@@ -1168,30 +1178,39 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         try
         {
-            Vetor vetor = (Vetor) memoria.getSimbolo(noReferenciaVetor.getNome());
-            int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
-
-            if (indice >= vetor.getTamanho())
+            Simbolo simbolo = extrairSimbolo(memoria.getSimbolo(noReferenciaVetor.getNome()));
+            
+            if (referencia)
             {
-                throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, noReferenciaVetor);
+                return simbolo;
             }
+            else
+            {            
+                Vetor vetor = (Vetor) simbolo;
+                int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
 
-            Object valor;
-            try
-            {
-                valor = vetor.getValor(indice);
-            }
-            catch (ArrayIndexOutOfBoundsException aioobe)
-            {
-                throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, ultimaReferenciaAcessada), null, noReferenciaVetor);
-            }
+                if (indice >= vetor.getTamanho())
+                {
+                    throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, noReferenciaVetor);
+                }
 
-            while (valor instanceof NoExpressao)
-            {
-                valor = ((NoExpressao) valor).aceitar(this);
-            }
+                Object valor;
+                try
+                {
+                    valor = vetor.getValor(indice);
+                }
+                catch (ArrayIndexOutOfBoundsException aioobe)
+                {
+                    throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, ultimaReferenciaAcessada), null, noReferenciaVetor);
+                }
 
-            return valor;
+                while (valor instanceof NoExpressao)
+                {
+                    valor = ((NoExpressao) valor).aceitar(this);
+                }
+
+                return valor;
+            }
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
