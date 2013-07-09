@@ -1281,12 +1281,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     }
                     case VETOR:
                     {
-                        simbolo = new Vetor(nome, tipoDado, null);
+                        simbolo = new Vetor(nome, tipoDado);
                         break;
                     }
                     case MATRIZ:
                     {
-                        simbolo = new Matriz(nome, tipoDado, null);
+                        simbolo = new Matriz(nome, tipoDado);
                         break;
                     }
                 }

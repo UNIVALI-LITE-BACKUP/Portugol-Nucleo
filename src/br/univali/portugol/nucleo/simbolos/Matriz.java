@@ -23,7 +23,7 @@ public final class Matriz extends Simbolo
      * @param tipoDado     o tipo de dado armazenado por esta matriz.
      * @since 1.0
      */
-    private Matriz(String nome, TipoDado tipoDado)
+    public Matriz(String nome, TipoDado tipoDado)
     {
         super(nome, tipoDado);
         setInicializado(true);

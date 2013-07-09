@@ -22,7 +22,7 @@ public final class Vetor extends Simbolo
      * @param tipoDado     o tipo de dado armazenado por este vetor.
      * @since 1.0
      */
-    private Vetor(String nome, TipoDado tipoDado)
+    public Vetor(String nome, TipoDado tipoDado)
     {
         super(nome, tipoDado);
         setInicializado(true);

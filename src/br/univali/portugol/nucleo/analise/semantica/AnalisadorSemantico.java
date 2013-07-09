@@ -58,6 +58,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     private TipoDado tipoDadoEscolha;
     private boolean declarandoVetor;
     private boolean declarandoMatriz;
+    private boolean passagemParametro = false;
     
     public AnalisadorSemantico()
     {
@@ -1521,7 +1522,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel,simbolo));
             }      
             
-            if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz)
+            if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passagemParametro)
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
             }
@@ -1724,7 +1725,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {        
                     TipoDado tipoDadoParametroEsperado = parametrosEsperados.get(i).getTipoDado();
                     TipoDado tipoDadoParametroPassado = null;
-
+                    passagemParametro = true;
                     try { tipoDadoParametroPassado = (TipoDado) parametrosPassados.get(i).aceitar(this); }
                     catch (ExcecaoVisitaASA excecao)
                     { 
@@ -1732,6 +1733,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                         {
                             throw excecao;
                         }
+                    } finally {
+                        passagemParametro = false;
                     }
 
                     if (tipoDadoParametroPassado != null)
