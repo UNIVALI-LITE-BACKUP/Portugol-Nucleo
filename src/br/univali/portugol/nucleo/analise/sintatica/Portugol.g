@@ -1187,10 +1187,12 @@ expressao7 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao7");
 }:
 
-	(('-') => (listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)*)  vExpressao = expressao8
+	(('-') => (listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)* | listaTokenNot += '~' )  vExpressao = expressao8
 	{
 		if (gerarArvore)
 		{
+			if ($listaTokenNot != null) vExpressao = new NoBitwiseNao(vExpressao);
+			
 			if ($listaTokenNao != null)
 			{
 				for (int i = 0; i < $listaTokenNao.size(); i++)

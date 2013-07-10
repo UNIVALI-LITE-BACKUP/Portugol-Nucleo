@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
@@ -1075,6 +1073,17 @@ public final class AnalisadorSemantico implements VisitanteASA
     }
     
     @Override
+    public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA
+    {
+        TipoDado tipo = (TipoDado) noOperacaoBitwiseNao.getExpressao().aceitar(this);
+        if (tipo != TipoDado.INTEIRO){
+            notificarErroSemantico(new ErroTiposIncompativeis(noOperacaoBitwiseNao, tipo, TipoDado.LOGICO));
+            throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noOperacaoBitwiseNao);
+        }        
+        return tipo;
+    }
+    
+    @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
         memoria.empilharEscopo();
@@ -1900,4 +1909,5 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
     }    
+    
 }

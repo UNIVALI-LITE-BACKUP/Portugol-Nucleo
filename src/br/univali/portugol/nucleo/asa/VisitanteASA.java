@@ -83,6 +83,8 @@ public interface VisitanteASA
     
     public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA;
     
+    public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA;
+       
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA;
 
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA;

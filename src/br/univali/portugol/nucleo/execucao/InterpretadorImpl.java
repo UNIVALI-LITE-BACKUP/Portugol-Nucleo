@@ -1032,6 +1032,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     }
     
     @Override
+    public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA
+    {
+        return ~((Integer) noOperacaoBitwiseNao.getExpressao().aceitar(this));
+    }
+    
+    @Override
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
         try

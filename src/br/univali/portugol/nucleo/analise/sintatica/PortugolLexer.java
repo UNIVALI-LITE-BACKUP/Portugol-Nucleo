@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-07-08 19:34:25
+// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-07-10 15:09:27
  
 	package br.univali.portugol.nucleo.analise.sintatica;
 
@@ -52,6 +52,7 @@ public class PortugolLexer extends Lexer {
     public static final int T__80=80;
     public static final int T__81=81;
     public static final int T__82=82;
+    public static final int T__83=83;
     public static final int CADEIA=4;
     public static final int CARACTER=5;
     public static final int COMENTARIO=6;
@@ -1006,6 +1007,27 @@ public class PortugolLexer extends Lexer {
         }
     }
     // $ANTLR end "T__82"
+
+    // $ANTLR start "T__83"
+    public final void mT__83() throws RecognitionException {
+        try {
+            int _type = T__83;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:47:7: ( '~' )
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:47:9: '~'
+            {
+            match('~'); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        	// do for sure before leaving
+        }
+    }
+    // $ANTLR end "T__83"
 
     // $ANTLR start "PR_PROGRAMA"
     public final void mPR_PROGRAMA() throws RecognitionException {
@@ -2633,8 +2655,8 @@ public class PortugolLexer extends Lexer {
     // $ANTLR end "COMENTARIO"
 
     public void mTokens() throws RecognitionException {
-        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:8: ( T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | PR_INCLUA | PR_BIBLIOTECA | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | ID_BIBLIOTECA | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO )
-        int alt17=73;
+        // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:8: ( T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | PR_INCLUA | PR_BIBLIOTECA | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | ID_BIBLIOTECA | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO )
+        int alt17=74;
         alt17 = dfa17.predict(input);
         switch (alt17) {
             case 1 :
@@ -2966,255 +2988,263 @@ public class PortugolLexer extends Lexer {
                 }
                 break;
             case 42 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:256: PR_PROGRAMA
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:256: T__83
+                {
+                mT__83(); 
+
+
+                }
+                break;
+            case 43 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:262: PR_PROGRAMA
                 {
                 mPR_PROGRAMA(); 
 
 
                 }
                 break;
-            case 43 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:268: PR_REAL
+            case 44 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:274: PR_REAL
                 {
                 mPR_REAL(); 
 
 
                 }
                 break;
-            case 44 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:276: PR_VAZIO
+            case 45 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:282: PR_VAZIO
                 {
                 mPR_VAZIO(); 
 
 
                 }
                 break;
-            case 45 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:285: PR_LOGICO
+            case 46 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:291: PR_LOGICO
                 {
                 mPR_LOGICO(); 
 
 
                 }
                 break;
-            case 46 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:295: PR_CADEIA
+            case 47 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:301: PR_CADEIA
                 {
                 mPR_CADEIA(); 
 
 
                 }
                 break;
-            case 47 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:305: PR_INTEIRO
+            case 48 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:311: PR_INTEIRO
                 {
                 mPR_INTEIRO(); 
 
 
                 }
                 break;
-            case 48 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:316: PR_CARACTER
+            case 49 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:322: PR_CARACTER
                 {
                 mPR_CARACTER(); 
 
 
                 }
                 break;
-            case 49 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:328: PR_ESCOLHA
+            case 50 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:334: PR_ESCOLHA
                 {
                 mPR_ESCOLHA(); 
 
 
                 }
                 break;
-            case 50 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:339: PR_CASO
+            case 51 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:345: PR_CASO
                 {
                 mPR_CASO(); 
 
 
                 }
                 break;
-            case 51 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:347: PR_CONTRARIO
+            case 52 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:353: PR_CONTRARIO
                 {
                 mPR_CONTRARIO(); 
 
 
                 }
                 break;
-            case 52 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:360: PR_CONST
+            case 53 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:366: PR_CONST
                 {
                 mPR_CONST(); 
 
 
                 }
                 break;
-            case 53 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:369: PR_FUNCAO
+            case 54 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:375: PR_FUNCAO
                 {
                 mPR_FUNCAO(); 
 
 
                 }
                 break;
-            case 54 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:379: PR_RETORNE
+            case 55 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:385: PR_RETORNE
                 {
                 mPR_RETORNE(); 
 
 
                 }
                 break;
-            case 55 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:390: PR_PARA
+            case 56 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:396: PR_PARA
                 {
                 mPR_PARA(); 
 
 
                 }
                 break;
-            case 56 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:398: PR_PARE
+            case 57 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:404: PR_PARE
                 {
                 mPR_PARE(); 
 
 
                 }
                 break;
-            case 57 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:406: PR_FACA
+            case 58 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:412: PR_FACA
                 {
                 mPR_FACA(); 
 
 
                 }
                 break;
-            case 58 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:414: PR_ENQUANTO
+            case 59 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:420: PR_ENQUANTO
                 {
                 mPR_ENQUANTO(); 
 
 
                 }
                 break;
-            case 59 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:426: PR_SE
+            case 60 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:432: PR_SE
                 {
                 mPR_SE(); 
 
 
                 }
                 break;
-            case 60 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:432: PR_SENAO
+            case 61 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:438: PR_SENAO
                 {
                 mPR_SENAO(); 
 
 
                 }
                 break;
-            case 61 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:441: PR_INCLUA
+            case 62 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:447: PR_INCLUA
                 {
                 mPR_INCLUA(); 
 
 
                 }
                 break;
-            case 62 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:451: PR_BIBLIOTECA
+            case 63 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:457: PR_BIBLIOTECA
                 {
                 mPR_BIBLIOTECA(); 
 
 
                 }
                 break;
-            case 63 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:465: GAMBIARRA
+            case 64 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:471: GAMBIARRA
                 {
                 mGAMBIARRA(); 
 
 
                 }
                 break;
-            case 64 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:475: OPERADOR_NAO
+            case 65 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:481: OPERADOR_NAO
                 {
                 mOPERADOR_NAO(); 
 
 
                 }
                 break;
-            case 65 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:488: LOGICO
+            case 66 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:494: LOGICO
                 {
                 mLOGICO(); 
 
 
                 }
                 break;
-            case 66 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:495: ID
+            case 67 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:501: ID
                 {
                 mID(); 
 
 
                 }
                 break;
-            case 67 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:498: ID_BIBLIOTECA
+            case 68 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:504: ID_BIBLIOTECA
                 {
                 mID_BIBLIOTECA(); 
 
 
                 }
                 break;
-            case 68 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:512: INTEIRO
+            case 69 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:518: INTEIRO
                 {
                 mINTEIRO(); 
 
 
                 }
                 break;
-            case 69 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:520: REAL
+            case 70 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:526: REAL
                 {
                 mREAL(); 
 
 
                 }
                 break;
-            case 70 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:525: CADEIA
+            case 71 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:531: CADEIA
                 {
                 mCADEIA(); 
 
 
                 }
                 break;
-            case 71 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:532: CARACTER
+            case 72 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:538: CARACTER
                 {
                 mCARACTER(); 
 
 
                 }
                 break;
-            case 72 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:541: ESPACO
+            case 73 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:547: ESPACO
                 {
                 mESPACO(); 
 
 
                 }
                 break;
-            case 73 :
-                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:548: COMENTARIO
+            case 74 :
+                // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:554: COMENTARIO
                 {
                 mCOMENTARIO(); 
 
@@ -3229,125 +3259,121 @@ public class PortugolLexer extends Lexer {
 
     protected DFA17 dfa17 = new DFA17(this);
     static final String DFA17_eotS =
-        "\2\uffff\1\52\1\54\2\uffff\1\56\1\61\1\uffff\1\64\1\67\2\uffff\1"+
-        "\72\1\74\1\77\2\uffff\1\101\1\104\1\110\1\uffff\1\112\1\uffff\11"+
-        "\110\1\47\2\110\2\132\1\47\13\uffff\1\136\5\uffff\1\140\5\uffff"+
-        "\1\142\3\uffff\2\110\1\uffff\1\110\1\uffff\1\145\3\uffff\13\110"+
-        "\1\167\1\110\1\uffff\1\110\11\uffff\2\110\1\uffff\21\110\1\uffff"+
-        "\1\110\1\u0090\3\110\1\u0094\1\u0095\1\u0096\6\110\1\u009d\5\110"+
-        "\1\u00a3\3\110\1\uffff\3\110\3\uffff\1\110\1\u00ab\4\110\1\uffff"+
-        "\1\110\1\u00b1\3\110\1\uffff\1\u00b5\1\u00b6\5\110\1\uffff\1\110"+
-        "\1\u00bd\1\u00be\2\110\1\uffff\1\110\1\u00c2\1\u00c3\2\uffff\1\110"+
-        "\1\u00c5\2\110\1\u00c8\1\110\2\uffff\2\110\1\u00cc\2\uffff\1\110"+
-        "\1\uffff\1\u00ce\1\u00cf\1\uffff\1\110\1\u00d1\1\110\1\uffff\1\110"+
-        "\2\uffff\1\110\1\uffff\1\u00d5\1\110\1\u00b5\1\uffff\1\u00d7\1\uffff";
+        "\2\uffff\1\53\1\55\2\uffff\1\57\1\62\1\uffff\1\65\1\70\2\uffff\1"+
+        "\73\1\75\1\100\2\uffff\1\102\1\105\1\111\1\uffff\1\113\2\uffff\11"+
+        "\111\1\50\2\111\2\134\1\50\13\uffff\1\140\5\uffff\1\142\5\uffff"+
+        "\1\144\3\uffff\2\111\1\uffff\1\111\1\uffff\1\147\4\uffff\13\111"+
+        "\1\171\1\111\1\uffff\1\111\11\uffff\2\111\1\uffff\21\111\1\uffff"+
+        "\1\111\1\u0092\3\111\1\u0096\1\u0097\1\u0098\6\111\1\u009f\5\111"+
+        "\1\u00a5\3\111\1\uffff\3\111\3\uffff\1\111\1\u00ad\4\111\1\uffff"+
+        "\1\111\1\u00b3\3\111\1\uffff\1\u00b7\1\u00b8\5\111\1\uffff\1\111"+
+        "\1\u00bf\1\u00c0\2\111\1\uffff\1\111\1\u00c4\1\u00c5\2\uffff\1\111"+
+        "\1\u00c7\2\111\1\u00ca\1\111\2\uffff\2\111\1\u00ce\2\uffff\1\111"+
+        "\1\uffff\1\u00d0\1\u00d1\1\uffff\1\111\1\u00d3\1\111\1\uffff\1\111"+
+        "\2\uffff\1\111\1\uffff\1\u00d7\1\111\1\u00b7\1\uffff\1\u00d9\1\uffff";
     static final String DFA17_eofS =
-        "\u00d8\uffff";
+        "\u00da\uffff";
     static final String DFA17_minS =
         "\1\11\1\uffff\2\75\2\uffff\1\75\1\53\1\uffff\1\55\1\52\2\uffff\1"+
-        "\74\2\75\2\uffff\1\75\2\56\1\uffff\1\75\1\uffff\11\56\1\0\4\56\1"+
+        "\74\2\75\2\uffff\1\75\2\56\1\uffff\1\75\2\uffff\11\56\1\0\4\56\1"+
         "\0\13\uffff\1\76\5\uffff\1\75\5\uffff\1\75\3\uffff\2\56\1\uffff"+
-        "\1\56\1\uffff\1\56\3\uffff\15\56\1\uffff\1\56\11\uffff\2\56\1\uffff"+
+        "\1\56\1\uffff\1\56\4\uffff\15\56\1\uffff\1\56\11\uffff\2\56\1\uffff"+
         "\21\56\1\uffff\30\56\1\uffff\3\56\3\uffff\6\56\1\uffff\5\56\1\uffff"+
         "\7\56\1\uffff\5\56\1\uffff\3\56\2\uffff\6\56\2\uffff\3\56\2\uffff"+
         "\1\56\1\uffff\2\56\1\uffff\3\56\1\uffff\1\56\2\uffff\1\56\1\uffff"+
         "\3\56\1\uffff\1\56\1\uffff";
     static final String DFA17_maxS =
         "\1\u00fc\1\uffff\2\75\2\uffff\2\75\1\uffff\2\75\2\uffff\2\75\1\76"+
-        "\2\uffff\1\75\2\172\1\uffff\1\75\1\uffff\11\172\1\uffff\2\172\2"+
+        "\2\uffff\1\75\2\172\1\uffff\1\75\2\uffff\11\172\1\uffff\2\172\2"+
         "\71\1\uffff\13\uffff\1\76\5\uffff\1\75\5\uffff\1\75\3\uffff\2\172"+
-        "\1\uffff\1\172\1\uffff\1\172\3\uffff\15\172\1\uffff\1\172\11\uffff"+
+        "\1\uffff\1\172\1\uffff\1\172\4\uffff\15\172\1\uffff\1\172\11\uffff"+
         "\2\172\1\uffff\21\172\1\uffff\30\172\1\uffff\3\172\3\uffff\6\172"+
         "\1\uffff\5\172\1\uffff\7\172\1\uffff\5\172\1\uffff\3\172\2\uffff"+
         "\6\172\2\uffff\3\172\2\uffff\1\172\1\uffff\2\172\1\uffff\3\172\1"+
         "\uffff\1\172\2\uffff\1\172\1\uffff\3\172\1\uffff\1\172\1\uffff";
     static final String DFA17_acceptS =
         "\1\uffff\1\1\2\uffff\1\6\1\7\2\uffff\1\15\2\uffff\1\24\1\25\3\uffff"+
-        "\1\40\1\41\3\uffff\1\46\1\uffff\1\51\17\uffff\1\77\1\110\1\3\1\2"+
-        "\1\5\1\4\1\11\1\10\1\13\1\14\1\12\1\uffff\1\21\1\16\1\23\1\111\1"+
-        "\22\1\uffff\1\31\1\26\1\33\1\32\1\35\1\uffff\1\34\1\43\1\42\2\uffff"+
-        "\1\44\1\uffff\1\103\1\uffff\1\102\1\50\1\47\15\uffff\1\106\1\uffff"+
-        "\1\104\1\105\1\107\1\20\1\17\1\30\1\27\1\37\1\36\2\uffff\1\45\21"+
-        "\uffff\1\73\30\uffff\1\100\3\uffff\1\67\1\70\1\53\6\uffff\1\62\5"+
-        "\uffff\1\71\7\uffff\1\54\5\uffff\1\64\3\uffff\1\101\1\74\6\uffff"+
-        "\1\55\1\56\3\uffff\1\75\1\65\1\uffff\1\61\2\uffff\1\66\3\uffff\1"+
-        "\57\1\uffff\1\72\1\52\1\uffff\1\60\3\uffff\1\63\1\uffff\1\76";
+        "\1\40\1\41\3\uffff\1\46\1\uffff\1\51\1\52\17\uffff\1\100\1\111\1"+
+        "\3\1\2\1\5\1\4\1\11\1\10\1\13\1\14\1\12\1\uffff\1\21\1\16\1\23\1"+
+        "\112\1\22\1\uffff\1\31\1\26\1\33\1\32\1\35\1\uffff\1\34\1\43\1\42"+
+        "\2\uffff\1\44\1\uffff\1\104\1\uffff\1\103\1\50\1\47\1\52\15\uffff"+
+        "\1\107\1\uffff\1\105\1\106\1\110\1\20\1\17\1\30\1\27\1\37\1\36\2"+
+        "\uffff\1\45\21\uffff\1\74\30\uffff\1\101\3\uffff\1\70\1\71\1\54"+
+        "\6\uffff\1\63\5\uffff\1\72\7\uffff\1\55\5\uffff\1\65\3\uffff\1\102"+
+        "\1\75\6\uffff\1\56\1\57\3\uffff\1\76\1\66\1\uffff\1\62\2\uffff\1"+
+        "\67\3\uffff\1\60\1\uffff\1\73\1\53\1\uffff\1\61\3\uffff\1\64\1\uffff"+
+        "\1\77";
     static final String DFA17_specialS =
-        "\41\uffff\1\0\4\uffff\1\1\u00b1\uffff}>";
+        "\42\uffff\1\1\4\uffff\1\0\u00b2\uffff}>";
     static final String[] DFA17_transitionS = {
-            "\2\50\2\uffff\1\50\22\uffff\1\50\1\1\1\41\2\47\1\2\1\3\1\46"+
-            "\1\4\1\5\1\6\1\7\1\10\1\11\1\47\1\12\1\44\11\45\1\13\1\14\1"+
-            "\15\1\16\1\17\2\47\32\43\1\20\1\47\1\21\1\22\1\43\1\47\1\43"+
-            "\1\40\1\34\1\43\1\23\1\36\2\43\1\35\2\43\1\33\1\43\1\42\1\24"+
-            "\1\30\1\43\1\31\1\37\2\43\1\32\4\43\1\25\1\26\1\27\1\47\43\uffff"+
-            "\2\47\3\uffff\1\47\2\uffff\1\47\1\uffff\1\47\5\uffff\2\47\5"+
-            "\uffff\2\47\5\uffff\4\47\3\uffff\1\47\1\uffff\2\47\2\uffff\1"+
-            "\47\5\uffff\3\47\4\uffff\1\47\1\uffff\1\47\3\uffff\4\47\3\uffff"+
-            "\1\47\1\uffff\2\47\2\uffff\1\47\5\uffff\3\47\4\uffff\1\47\1"+
-            "\uffff\1\47",
+            "\2\51\2\uffff\1\51\22\uffff\1\51\1\1\1\42\2\50\1\2\1\3\1\47"+
+            "\1\4\1\5\1\6\1\7\1\10\1\11\1\50\1\12\1\45\11\46\1\13\1\14\1"+
+            "\15\1\16\1\17\2\50\32\44\1\20\1\50\1\21\1\22\1\44\1\50\1\44"+
+            "\1\41\1\35\1\44\1\23\1\37\2\44\1\36\2\44\1\34\1\44\1\43\1\24"+
+            "\1\31\1\44\1\32\1\40\2\44\1\33\4\44\1\25\1\26\1\27\1\30\43\uffff"+
+            "\2\50\3\uffff\1\50\2\uffff\1\50\1\uffff\1\50\5\uffff\2\50\5"+
+            "\uffff\2\50\5\uffff\4\50\3\uffff\1\50\1\uffff\2\50\2\uffff\1"+
+            "\50\5\uffff\3\50\4\uffff\1\50\1\uffff\1\50\3\uffff\4\50\3\uffff"+
+            "\1\50\1\uffff\2\50\2\uffff\1\50\5\uffff\3\50\4\uffff\1\50\1"+
+            "\uffff\1\50",
             "",
-            "\1\51",
-            "\1\53",
-            "",
-            "",
-            "\1\55",
-            "\1\57\21\uffff\1\60",
-            "",
-            "\1\62\17\uffff\1\63",
-            "\1\66\4\uffff\1\66\15\uffff\1\65",
+            "\1\52",
+            "\1\54",
             "",
             "",
-            "\1\70\1\71",
-            "\1\73",
-            "\1\75\1\76",
+            "\1\56",
+            "\1\60\21\uffff\1\61",
+            "",
+            "\1\63\17\uffff\1\64",
+            "\1\67\4\uffff\1\67\15\uffff\1\66",
             "",
             "",
-            "\1\100",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\15\105\1\103\4\105\1\102\7\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\24\105\1\107\5\105",
-            "",
-            "\1\111",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\114\20\105\1\113\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\115\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\116\3\105\1\117\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\120\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\121\15\105\1\122\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\15\105\1\123\14\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\125\23\105\1\124\5\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\126\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\127\21\105",
-            "\0\130",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\131\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\133\1\uffff\12\45",
-            "\1\133\1\uffff\12\45",
-            "\47\134\1\uffff\uffd8\134",
+            "\1\71\1\72",
+            "\1\74",
+            "\1\76\1\77",
             "",
             "",
+            "\1\101",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\15\106\1\104\4\106\1\103\7\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\24\106\1\110\5\106",
             "",
+            "\1\112",
+            "",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\116\20\106\1\115\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\117\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\120\3\106\1\121\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\122\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\123\15\106\1\124\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\15\106\1\125\14\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\127\23\106\1\126\5\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\130\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\131\21\106",
+            "\0\132",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\133\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\135\1\uffff\12\46",
+            "\1\135\1\uffff\12\46",
+            "\47\136\1\uffff\uffd8\136",
             "",
             "",
             "",
             "",
             "",
             "",
-            "",
-            "",
-            "\1\135",
             "",
             "",
             "",
@@ -3363,266 +3389,273 @@ public class PortugolLexer extends Lexer {
             "",
             "",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\2\105\1\143\27\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\20\105\1\144\11\105",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
+            "\1\143",
             "",
             "",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\146\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\147\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\150\22\105\1\151\6\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\31\105\1\152",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\153\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\6\105\1\154\23\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\3\105\1\155\15\105\1\156\1\157\7\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\15\105\1\160\14\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\2\105\1\162\20\105\1\161\6\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\15\105\1\163\14\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\2\105\1\164\10\105\1\165\16\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\15\105\1\166\14\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\105\1\170\30\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\2\106\1\145\27\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\20\106\1\146\11\106",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\171\13\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
             "",
             "",
             "",
             "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\150\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\151\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\152\22\106\1\153\6\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\31\106\1\154",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\155\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\6\106\1\156\23\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\3\106\1\157\15\106\1\160\1\161\7\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\15\106\1\162\14\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\2\106\1\164\20\106\1\163\6\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\15\106\1\165\14\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\2\106\1\166\10\106\1\167\16\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\15\106\1\170\14\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\106\1\172\30\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\173\13\106",
             "",
             "",
             "",
             "",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\172\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\24\105\1\173\5\105",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\6\105\1\174\23\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\175\3\105\1\176\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\13\105\1\177\16\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u0080\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\u0081\21\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\3\105\1\u0082\26\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\u0083\21\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\u0084\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u0085\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u0086\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\22\105\1\u0088\1\u0087\6\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\u0089\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\13\105\1\u008a\16\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\2\105\1\u008b\27\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u008c\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\22\105\1\u008d\7\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u008e\31\105",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\13\105\1\u008f\16\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\13\105\1\u0091\16\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u0092\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\u0093\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\u0097\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u0098\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u0099\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\2\105\1\u009a\27\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\u009b\21\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\2\105\1\u009c\27\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\u009e\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\23\105\1\u009f\6\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\u00a0\21\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\24\105\1\u00a1\5\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00a2\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00a4\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00a5\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\u00a6\21\105",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\7\105\1\u00a7\22\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\15\105\1\u00a8\14\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00a9\31\105",
             "",
             "",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\15\105\1\u00aa\14\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\3\105\1\u00ac\26\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00ad\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00ae\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\23\105\1\u00af\6\105",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00b0\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\u00b2\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00b3\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00b4\13\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\174\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\24\106\1\175\5\106",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00b7\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00b8\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\23\105\1\u00b9\6\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\14\105\1\u00ba\15\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\u00bb\25\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\6\106\1\176\23\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\177\3\106\1\u0080\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\13\106\1\u0081\16\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u0082\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\u0083\21\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\3\106\1\u0084\26\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\u0085\21\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\u0086\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u0087\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u0088\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\22\106\1\u008a\1\u0089\6\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\u008b\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\13\106\1\u008c\16\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\2\106\1\u008d\27\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u008e\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\22\106\1\u008f\7\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u0090\31\106",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\u00bc\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\u00bf\25\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\u00c0\10\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\13\106\1\u0091\16\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\13\106\1\u0093\16\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u0094\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\u0095\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\u0099\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u009a\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u009b\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\2\106\1\u009c\27\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\u009d\21\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\2\106\1\u009e\27\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\u00a0\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\23\106\1\u00a1\6\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\u00a2\21\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\24\106\1\u00a3\5\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00a4\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00a6\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00a7\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\u00a8\21\106",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00c1\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\23\105\1\u00c4\6\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00c6\13\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00c7\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\u00c9\21\105",
-            "",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\u00ca\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\10\105\1\u00cb\21\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\4\105\1\u00cd\25\105",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\21\105\1\u00d0\10\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00d2\13\105",
-            "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\2\105\1\u00d3\27\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\7\106\1\u00a9\22\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\15\106\1\u00aa\14\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00ab\31\106",
             "",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\16\105\1\u00d4\13\105",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\1\u00d6\31\105",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\15\106\1\u00ac\14\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\3\106\1\u00ae\26\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00af\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00b0\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\23\106\1\u00b1\6\106",
             "",
-            "\1\106\1\uffff\12\105\7\uffff\32\105\4\uffff\1\105\1\uffff"+
-            "\32\105",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00b2\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\u00b4\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00b5\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00b6\13\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00b9\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00ba\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\23\106\1\u00bb\6\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\14\106\1\u00bc\15\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\u00bd\25\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\u00be\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\u00c1\25\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\u00c2\10\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00c3\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\23\106\1\u00c6\6\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00c8\13\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00c9\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\u00cb\21\106",
+            "",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\u00cc\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\10\106\1\u00cd\21\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\4\106\1\u00cf\25\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\21\106\1\u00d2\10\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00d4\13\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\2\106\1\u00d5\27\106",
+            "",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\16\106\1\u00d6\13\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\1\u00d8\31\106",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
+            "",
+            "\1\107\1\uffff\12\106\7\uffff\32\106\4\uffff\1\106\1\uffff"+
+            "\32\106",
             ""
     };
 
@@ -3656,30 +3689,30 @@ public class PortugolLexer extends Lexer {
             this.transition = DFA17_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | PR_INCLUA | PR_BIBLIOTECA | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | ID_BIBLIOTECA | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO );";
+            return "1:1: Tokens : ( T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | PR_INCLUA | PR_BIBLIOTECA | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | ID_BIBLIOTECA | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA17_33 = input.LA(1);
+                        int LA17_39 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA17_33 >= '\u0000' && LA17_33 <= '\uFFFF')) ) {s = 88;}
+                        if ( ((LA17_39 >= '\u0000' && LA17_39 <= '&')||(LA17_39 >= '(' && LA17_39 <= '\uFFFF')) ) {s = 94;}
 
-                        else s = 39;
+                        else s = 40;
 
                         if ( s>=0 ) return s;
                         break;
 
                     case 1 : 
-                        int LA17_38 = input.LA(1);
+                        int LA17_34 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA17_38 >= '\u0000' && LA17_38 <= '&')||(LA17_38 >= '(' && LA17_38 <= '\uFFFF')) ) {s = 92;}
+                        if ( ((LA17_34 >= '\u0000' && LA17_34 <= '\uFFFF')) ) {s = 90;}
 
-                        else s = 39;
+                        else s = 40;
 
                         if ( s>=0 ) return s;
                         break;

@@ -225,6 +225,12 @@ public abstract class VisitanteASABasico implements VisitanteASA
     }
 
     @Override
+    public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
+    
+    @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
@@ -294,5 +300,5 @@ public abstract class VisitanteASABasico implements VisitanteASA
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
-    }   
+    }
 }
