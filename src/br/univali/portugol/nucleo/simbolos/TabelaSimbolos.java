@@ -12,10 +12,16 @@ import java.util.Stack;
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class TabelaSimbolos
+public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
 {
     private Stack<Map<String, Simbolo>> escopos;
 
+    @Override
+    public Iterator<Map<String, Simbolo>> iterator()
+    {
+        return escopos.iterator();
+    }
+    
     public TabelaSimbolos()
     {
         escopos = new Stack<Map<String, Simbolo>>();

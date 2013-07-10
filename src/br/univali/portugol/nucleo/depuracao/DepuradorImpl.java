@@ -50,26 +50,45 @@ import java.util.List;
 
 public class DepuradorImpl extends InterpretadorImpl implements Depurador, InterfaceDepurador
 {
-    List<NoBloco> visitar;
-    List<DepuradorListener> listeners = new ArrayList<DepuradorListener>();
+    private List<NoBloco> visitar;
+    private List<DepuradorListener> listeners = new ArrayList<DepuradorListener>();
 
-    public void disparaDestacarLinha(int linha)
+    
+    @Override
+    public synchronized void proximo()
     {
-        for(DepuradorListener l : listeners){
-            l.linhaAtual(linha);
-        }
+        notifyAll();
     }
     
+    public void disparaDestacarLinha(int linha)
+    {
+        for (DepuradorListener l : listeners)
+        {
+            l.highlightLinha(linha);
+        }
+    }
+
+    public void disparaMemoria()
+    {
+        for (DepuradorListener l : listeners)
+        {
+            l.simbolos(new MemoriaDados(memoria));
+        }
+    }
+
     public void disparaDepuracaoInicializada()
     {
-        for(DepuradorListener l : listeners){
+        for (DepuradorListener l : listeners)
+        {
             l.depuracaoInicializada(this);
         }
     }
-    
+
     @Override
-    public void addListener(DepuradorListener listener){
-        if (!listeners.contains(listener)){
+    public void addListener(DepuradorListener listener)
+    {
+        if (!listeners.contains(listener))
+        {
             listeners.add(listener);
         }
     }
@@ -80,11 +99,10 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         disparaDepuracaoInicializada();
         super.executar(programa, parametros);
     }
-    
-    
-    
+
     @Override
-    public void removeListener(DepuradorListener listener){
+    public void removeListener(DepuradorListener listener)
+    {
         listeners.remove(listener);
     }
 
@@ -195,7 +213,9 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
             }
         }
-        return super.visitar(no);
+        final Object result = super.visitar(no);
+        disparaMemoria();
+        return result;
     }
 
     @Override
@@ -216,7 +236,9 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
             }
         }
-        return super.visitar(no);
+        final Object result = super.visitar(no);
+        disparaMemoria();
+        return result;
     }
 
     @Override
@@ -237,7 +259,9 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
             }
         }
-        return super.visitar(no);
+        final Object result = super.visitar(no);
+        disparaMemoria();
+        return result;
     }
 
     @Override
@@ -310,16 +334,16 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         {
             disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
-             {
-             try
-             {
-             wait();
-             }
-             catch (InterruptedException ex)
-             {
-             throw new RuntimeException(ex);
-             }
-             }
+            {
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
         return super.visitar(no);
     }
@@ -498,17 +522,17 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         if (visitar.contains(no))
         {
             disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
-            /*synchronized (this)
-             {
-             try
-             {
-             wait();
-             }
-             catch (InterruptedException ex)
-             {
-             throw new RuntimeException(ex);
-             }
-             }*/
+            synchronized (this)
+            {
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
         return super.visitar(no);
     }
@@ -612,12 +636,9 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
             }
         }
-        return super.visitar(no);
-    }
-
-    public synchronized void proximo()
-    {
-        notifyAll();
+        final Object result = super.visitar(no);
+        disparaMemoria();
+        return result;
     }
 
     @Override
@@ -680,7 +701,9 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
             }
         }
-        return super.visitar(no);
+        final Object result = super.visitar(no);
+        disparaMemoria();
+        return result;
     }
 
     @Override
@@ -917,7 +940,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     @Override
     public Object visitar(NoInclusaoBiblioteca no) throws ExcecaoVisitaASA
     {
-       if (visitar.contains(no))
+        if (visitar.contains(no))
         {
             disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
             synchronized (this)
@@ -934,5 +957,4 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         }
         return super.visitar(no);
     }
-
 }

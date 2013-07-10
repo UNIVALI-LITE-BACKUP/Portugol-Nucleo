@@ -1,16 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.univali.portugol.nucleo.depuracao;
 
 import br.univali.portugol.nucleo.simbolos.Memoria;
+import br.univali.portugol.nucleo.simbolos.Simbolo;
+import java.util.Iterator;
 
-/**
- *
- * @author Luiz Fernando
- */
-public final class MemoriaDados
+
+public final class MemoriaDados implements Iterable<Simbolo>
 {
     private Memoria memoria;
 
@@ -18,4 +13,13 @@ public final class MemoriaDados
     {
         this.memoria = memoria;
     }
+
+    @Override
+    public Iterator<Simbolo> iterator()
+    {
+        return memoria.getSimbolosVisiveisEscopoAtual().iterator();
+    }
+    
+    
+    
 }

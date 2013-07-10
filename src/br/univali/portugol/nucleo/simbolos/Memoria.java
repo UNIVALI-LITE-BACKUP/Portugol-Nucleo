@@ -1,6 +1,9 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import java.util.ArrayList;
 import java.util.EmptyStackException;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -17,6 +20,25 @@ public class Memoria
     {
         escopoGlobal = new TabelaSimbolos();
         escoposLocais = new Stack<TabelaSimbolos>();
+    }
+    
+    public List<Simbolo> getSimbolosVisiveisEscopoAtual()
+    {
+        List<Simbolo> simbolos = new ArrayList<Simbolo>();
+        for (Map<String,Simbolo> escopo : escopoGlobal){
+            for (String nome : escopo.keySet()){
+                simbolos.add(escopo.get(nome));
+            }
+        }
+        
+        TabelaSimbolos escopoAtual = escoposLocais.peek();
+        for (Map<String,Simbolo> escopo : escopoAtual){
+            for (String nome : escopo.keySet()){
+                simbolos.add(escopo.get(nome));
+            }
+        }
+        
+        return simbolos;
     }
     
     public Simbolo getSimbolo(String nome) throws ExcecaoSimboloNaoDeclarado

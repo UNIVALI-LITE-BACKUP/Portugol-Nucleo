@@ -224,7 +224,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             TipoDado tipoDado = declaracaoFuncao.getTipoDado();
             Quantificador quantificador = declaracaoFuncao.getQuantificador();
 
-            Funcao funcao = new Funcao(nome, tipoDado, quantificador, declaracaoFuncao.getParametros(), declaracaoFuncao.getBlocos());
+            Funcao funcao = new Funcao(nome, tipoDado, quantificador, declaracaoFuncao.getParametros(), declaracaoFuncao);
             funcao.setTrechoCodigoFonteNome(declaracaoFuncao.getTrechoCodigoFonteNome());
             funcao.setTrechoCodigoFonteTipoDado(declaracaoFuncao.getTrechoCodigoFonteTipoDado());
         
@@ -294,7 +294,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     colunas = ((NoInteiro)noDeclaracaoMatriz.getNumeroColunas()).getValor();
             }
                   
-            Matriz matriz = new Matriz(nome, tipoDados,1,1);
+            Matriz matriz = new Matriz(nome, tipoDados, noDeclaracaoMatriz, 1, 1);
             matriz.setTrechoCodigoFonteNome(noDeclaracaoMatriz.getTrechoCodigoFonteNome());
             matriz.setTrechoCodigoFonteTipoDado(noDeclaracaoMatriz.getTrechoCodigoFonteTipoDado());
 
@@ -432,7 +432,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             String nome = declaracaoVariavel.getNome();
             TipoDado tipoDados = declaracaoVariavel.getTipoDado();
 
-            Variavel variavel = new Variavel(nome, tipoDados);
+            Variavel variavel = new Variavel(nome, tipoDados, declaracaoVariavel);
             variavel.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
             variavel.setTrechoCodigoFonteTipoDado(declaracaoVariavel.getTrechoCodigoFonteTipoDado());
 
@@ -550,7 +550,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     tamanho = ((NoInteiro)noDeclaracaoVetor.getTamanho()).getValor();
             }
                   
-            Vetor vetor = new Vetor(nome, tipoDados,1);
+            Vetor vetor = new Vetor(nome, tipoDados, noDeclaracaoVetor,1);
             vetor.setTrechoCodigoFonteNome(noDeclaracaoVetor.getTrechoCodigoFonteNome());
             vetor.setTrechoCodigoFonteTipoDado(noDeclaracaoVetor.getTrechoCodigoFonteTipoDado());
 
@@ -1339,21 +1339,21 @@ public final class AnalisadorSemantico implements VisitanteASA
 
         if (quantificador == Quantificador.VALOR)
         {
-            simbolo = new Variavel(nome, tipoDado);
+            simbolo = new Variavel(nome, tipoDado, noDeclaracaoParametro);
         }
         
         else 
         
         if (quantificador == Quantificador.VETOR)
         {
-            simbolo = new Vetor(nome, tipoDado, 0, new ArrayList<Object>());
+            simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro, 0, new ArrayList<Object>());
         }
         
         else 
             
         if (quantificador == Quantificador.MATRIZ)
         {
-            simbolo = new Matriz(nome, tipoDado, 0, 0, new ArrayList<List<Object>>());
+            simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro, 0, 0, new ArrayList<List<Object>>());
         }
         
         try

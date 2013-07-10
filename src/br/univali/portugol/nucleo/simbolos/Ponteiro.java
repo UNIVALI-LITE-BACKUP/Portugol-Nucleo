@@ -19,7 +19,7 @@ public final class Ponteiro extends Simbolo
      */
     public Ponteiro(String nome, Simbolo simbolo)
     {
-        super(nome, null);
+        super(nome, null, null);
         setSimbolo(simbolo);
     }
 
@@ -29,6 +29,7 @@ public final class Ponteiro extends Simbolo
         {
             this.simbolo = simbolo;
             this.tipoDado = simbolo.getTipoDado();
+            setOrigemDoSimbolo(simbolo.getOrigemDoSimbolo());
         }
         else
         {

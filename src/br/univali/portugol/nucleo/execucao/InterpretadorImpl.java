@@ -39,7 +39,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private ArvoreSintaticaAbstrata asa;
     private Random random = new Random(System.currentTimeMillis());
     private String ultimaReferenciaAcessada;
-    private Memoria memoria = new Memoria();
+    protected Memoria memoria = new Memoria();
     private Map<String, Biblioteca> bibliotecas = new TreeMap<String, Biblioteca>();
     private OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
     private OperacaoLogicaIgualdade operacaoLogicaIgualdade = new OperacaoLogicaIgualdade();
@@ -95,7 +95,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                         if (funcaoPrincipal.getParametros().size() == 1)
                         {
                             List<Object> listaParametros = converterVetorEmLista(parametros);
-                            memoria.adicionarSimbolo(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, listaParametros.size(), listaParametros));
+                            memoria.adicionarSimbolo(new Vetor(funcaoPrincipal.getParametros().get(0).getNome(), TipoDado.CADEIA, funcaoPrincipal.getParametros().get(0), listaParametros.size(), listaParametros));
                         }
 
                         interpretarListaBlocos(funcaoPrincipal.getBlocos());
@@ -419,7 +419,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
         List<NoDeclaracaoParametro> parametros = declaracaoFuncao.getParametros();
         List<NoBloco> blocos = declaracaoFuncao.getBlocos();
-        Funcao funcao = new Funcao(nome, tipoDados, quantificador, parametros, blocos);
+        Funcao funcao = new Funcao(nome, tipoDados, quantificador, parametros, declaracaoFuncao);
 
         memoria.adicionarSimbolo(funcao);
 
@@ -445,17 +445,17 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
         if (numeroLinhas == 0 && valores != null)
         {
-            matriz = new Matriz(nome, tipoDado, valores);
+            matriz = new Matriz(nome, tipoDado, noDeclaracaoMatriz, valores);
         }
         else
         {
             if (valores == null)
             {
-                matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas);
+                matriz = new Matriz(nome, tipoDado, noDeclaracaoMatriz, numeroLinhas, numeroColunas);
             }
             else
             {
-                matriz = new Matriz(nome, tipoDado, numeroLinhas, numeroColunas, valores);
+                matriz = new Matriz(nome, tipoDado, noDeclaracaoMatriz, numeroLinhas, numeroColunas, valores);
             }
         }
 
@@ -472,7 +472,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         String nome = noDeclaracaoVariavel.getNome();
         TipoDado tipoDado = noDeclaracaoVariavel.getTipoDado();
 
-        Variavel variavel = new Variavel(nome, tipoDado);
+        Variavel variavel = new Variavel(nome, tipoDado, noDeclaracaoVariavel);
 
         if (noDeclaracaoVariavel.getInicializacao() != null)
         {
@@ -504,17 +504,17 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
         if (tamanho == 0 && valores != null)
         {
-            vetor = new Vetor(nome, tipoDado, valores);
+            vetor = new Vetor(nome, tipoDado, noDeclaracaoVetor, valores);
         }
         else
         {
             if (valores == null)
             {
-                vetor = new Vetor(nome, tipoDado, tamanho);
+                vetor = new Vetor(nome, tipoDado, noDeclaracaoVetor, tamanho);
             }
             else
             {
-                vetor = new Vetor(nome, tipoDado, tamanho, valores);
+                vetor = new Vetor(nome, tipoDado, noDeclaracaoVetor, tamanho, valores);
             }
         }
 
@@ -1295,17 +1295,17 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 {
                     case VALOR:
                     {
-                        simbolo = new Variavel(nome, tipoDado, tipoDado.getValorPadrao());
+                        simbolo = new Variavel(nome, tipoDado, noDeclaracaoParametro);
                         break;
                     }
                     case VETOR:
                     {
-                        simbolo = new Vetor(nome, tipoDado);
+                        simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro);
                         break;
                     }
                     case MATRIZ:
                     {
-                        simbolo = new Matriz(nome, tipoDado);
+                        simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro);
                         break;
                     }
                 }

@@ -1,9 +1,11 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.No;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.Quantificador;
 import java.util.List;
 import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 
 /**
@@ -28,10 +30,10 @@ public final class Funcao extends Simbolo
      * @param blocos            a lista de blocos a serem executados por esta função.
      * @since 1.0
      */
-    public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, List<NoBloco> blocos)
+    public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, No origem)
     {
-        super(nome, tipoDado);
-        this.blocos = blocos;
+        super(nome, tipoDado, origem);
+        this.blocos = ((NoDeclaracaoFuncao) origem).getBlocos();
         this.parametros = parametros;
         this.quantificador = quantificador;
     }

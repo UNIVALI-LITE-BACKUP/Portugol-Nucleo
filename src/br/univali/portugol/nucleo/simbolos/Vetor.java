@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.No;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +23,9 @@ public final class Vetor extends Simbolo
      * @param tipoDado     o tipo de dado armazenado por este vetor.
      * @since 1.0
      */
-    public Vetor(String nome, TipoDado tipoDado)
+    public Vetor(String nome, TipoDado tipoDado, No origem)
     {
-        super(nome, tipoDado);
+        super(nome, tipoDado, origem);
         setInicializado(true);
     }
     
@@ -37,9 +38,9 @@ public final class Vetor extends Simbolo
      * @param tamanho           o tamamho que este vetor terá.
      * @since 1.0
      */
-    public Vetor(String nome, TipoDado tipoDado, int tamanho)
+    public Vetor(String nome, TipoDado tipoDado, No origem, int tamanho)
     {
-        this(nome, tipoDado);
+        this(nome, tipoDado, origem);
         valores = new ArrayList<Object>(tamanho);
         for (int i = 0; i < tamanho; i ++)
         {
@@ -56,9 +57,9 @@ public final class Vetor extends Simbolo
      * @param valores           os valores que serão armazenados neste vetor.
      * @since 1.0
      */    
-    public Vetor(String nome, TipoDado tipoDado, int tamanho, List<Object> valores)
+    public Vetor(String nome, TipoDado tipoDado, No origem, int tamanho, List<Object> valores)
     {
-        this(nome, tipoDado, tamanho);
+        this(nome, tipoDado, origem, tamanho);
         for (int i = 0; i < this.valores.size(); i++) {
             this.valores.set(i,valores.get(i));
         }
@@ -74,9 +75,9 @@ public final class Vetor extends Simbolo
      * @param valores           os valores que serão armazenados neste vetor.
      * @since 1.0
      */        
-    public Vetor(String nome, TipoDado tipoDado, List<Object> valores)
+    public Vetor(String nome, TipoDado tipoDado, No origem, List<Object> valores)
     {
-        this(nome, tipoDado);
+        this(nome, tipoDado, origem);
         this.valores = new ArrayList<Object>(valores);
         setInicializado(true);
     }
@@ -129,7 +130,7 @@ public final class Vetor extends Simbolo
     @Override
     public Vetor copiar(String novoNome)
     {
-        Vetor vetor = new Vetor(novoNome, getTipoDado());
+        Vetor vetor = new Vetor(novoNome, getTipoDado(), getOrigemDoSimbolo());
         vetor.valores = new ArrayList<Object>(this.valores.size());
         Collections.copy(vetor.valores, this.valores);
         return vetor;
