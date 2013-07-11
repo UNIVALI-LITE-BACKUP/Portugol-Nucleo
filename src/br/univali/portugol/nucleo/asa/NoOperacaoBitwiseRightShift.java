@@ -2,8 +2,8 @@ package br.univali.portugol.nucleo.asa;
 
 
 /**
- * Representa uma operação de soma no código fonte.
-    * Esta enumeração representa a operação de <code>Bitwise right shift</code> no código fonte e é representada pelo operador "/".
+ * Representa uma operação de Bitwise Right Shift no código fonte.
+    * Esta enumeração representa a operação de <code>Bitwise Right Shift</code> no código fonte e é representada pelo operador "&gt;&gt;".
     * <p>
     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
     * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.

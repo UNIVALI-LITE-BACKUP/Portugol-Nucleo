@@ -2,8 +2,8 @@ package br.univali.portugol.nucleo.asa;
 
 
 /**
- * Representa uma operação de soma no código fonte.
-    * Esta enumeração representa a operação de <code>Bitwise xor</code> no código fonte e é representada pelo operador "/".
+ * Representa uma operação de Bitwise XOR no código fonte.
+    * Esta enumeração representa a operação de <code>Bitwise XOR</code> no código fonte e é representada pelo operador "^".
     * <p>
     * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
     * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.

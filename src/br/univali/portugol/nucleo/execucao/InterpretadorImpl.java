@@ -4,7 +4,7 @@ import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.CarregadorBibliotecas;
+import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
@@ -191,7 +191,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     {
         try
         {
-            if (!noChamadaFuncao.getNome().contains("."))
+            if (noChamadaFuncao.getEscopo() == null)
             {
                 if (noChamadaFuncao.getNome().equals("escreva"))
                 {
@@ -330,8 +330,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
             {
                 try
                 {
-                    String[] ref = noChamadaFuncao.getNome().split("\\.");
-                    Biblioteca biblioteca = bibliotecas.get(ref[0]);
+                    Biblioteca biblioteca = bibliotecas.get(noChamadaFuncao.getEscopo());
 
                     List<NoExpressao> param = noChamadaFuncao.getParametros();
                     Object[] parametros = new Object[param.size()];
@@ -341,7 +340,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                         parametros[i] = param.get(i).aceitar(this);
                     }
 
-                    return biblioteca.chamarFuncao(ref[1], parametros);
+                    return biblioteca.chamarFuncao(noChamadaFuncao.getNome(), parametros);
                 }
                 catch (Exception excecao)
                 {
@@ -1043,7 +1042,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         try
         {
             String nome = noInclusaoBiblioteca.getNome();
-            Biblioteca biblioteca = CarregadorBibliotecas.carregarBiblioteca(nome);
+            Biblioteca biblioteca = GerenciadorBibliotecas.carregarBiblioteca(nome);
 
             bibliotecas.put(nome, biblioteca);
 
