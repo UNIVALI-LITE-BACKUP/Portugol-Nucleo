@@ -4,7 +4,7 @@ import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
+import br.univali.portugol.nucleo.bibliotecas.base.CarregadorBibliotecas;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
@@ -1042,7 +1042,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         try
         {
             String nome = noInclusaoBiblioteca.getNome();
-            Biblioteca biblioteca = GerenciadorBibliotecas.carregarBiblioteca(nome);
+            Biblioteca biblioteca = CarregadorBibliotecas.carregarBiblioteca(nome);
 
             bibliotecas.put(nome, biblioteca);
 
