@@ -30,11 +30,12 @@ public class Memoria
                 simbolos.add(escopo.get(nome));
             }
         }
-        
-        TabelaSimbolos escopoAtual = escoposLocais.peek();
-        for (Map<String,Simbolo> escopo : escopoAtual){
-            for (String nome : escopo.keySet()){
-                simbolos.add(escopo.get(nome));
+        if (!escoposLocais.empty()){
+            TabelaSimbolos escopoAtual = escoposLocais.peek();
+            for (Map<String,Simbolo> escopo : escopoAtual){
+                for (String nome : escopo.keySet()){
+                    simbolos.add(escopo.get(nome));
+                }
             }
         }
         

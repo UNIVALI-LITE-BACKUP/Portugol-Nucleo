@@ -44,7 +44,7 @@ public final class Vetor extends Simbolo
         valores = new ArrayList<Object>(tamanho);
         for (int i = 0; i < tamanho; i ++)
         {
-            valores.add(tipoDado.getValorPadrao());
+            valores.add(null);
         }
     }
 

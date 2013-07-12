@@ -144,7 +144,7 @@ public final class Matriz extends Simbolo
         {
             for (int j = 0; j < numeroColunas; j++)
             {
-                valores[i][j] = valorPadrao;
+                valores[i][j] = null;
             }
         }
     }
@@ -167,7 +167,7 @@ public final class Matriz extends Simbolo
                 }
                 catch (Exception e)
                 {
-                    this.valores[i][j] = valorPadrao;
+                    this.valores[i][j] = null;
                 }
             }
         }
