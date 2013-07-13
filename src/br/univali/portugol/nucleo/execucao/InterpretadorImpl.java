@@ -313,6 +313,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                                                         }
                                                     }
                                                     Object retorno = interpretarListaBlocos(funcao.getBlocos());
+                                                    
                                                     memoria.desempilharFuncao();
                                                     return retorno;
                                                 }
@@ -563,7 +564,11 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         {
             for (NoBloco noBloco : blocos)
             {
-                noBloco.aceitar(this);
+                Object retorno = noBloco.aceitar(this);
+                if (retorno != null)
+                {
+                    return retorno;
+                }
             }
         }
         catch (RetorneException re)
