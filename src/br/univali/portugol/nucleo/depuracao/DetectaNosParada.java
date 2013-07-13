@@ -71,8 +71,10 @@ import java.util.logging.Logger;
  */
 public class DetectaNosParada implements VisitanteASA
 {
-    List<NoBloco> nosParada;
-
+    private List<NoBloco> nosParada;
+   
+    private NoBloco blocoAnterior = null;
+            
     private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {        
         if (blocos != null)
@@ -86,9 +88,32 @@ public class DetectaNosParada implements VisitanteASA
                     !(noBloco instanceof NoEscolha) &&
                     !(noBloco instanceof NoCaso) ) 
                 {
-                    nosParada.add(noBloco);
+                    if (blocoAnterior != null) {
+                        Integer linhaBlocoAnterior = null;
+                        if (blocoAnterior instanceof NoExpressao) {
+                            linhaBlocoAnterior = ((NoExpressao) blocoAnterior).getTrechoCodigoFonte().getLinha();
+                        } else if(blocoAnterior instanceof NoDeclaracao) {
+                            linhaBlocoAnterior = ((NoDeclaracao) blocoAnterior).getTrechoCodigoFonteTipoDado().getLinha();
+                        }
+                        if (linhaBlocoAnterior != null) {
+                            Integer linhaBlocoAtual = null;
+                            if (noBloco instanceof NoExpressao) {
+                                linhaBlocoAtual = ((NoExpressao) noBloco).getTrechoCodigoFonte().getLinha();
+                            } else if(noBloco instanceof NoDeclaracao) {
+                                linhaBlocoAtual = ((NoDeclaracao) noBloco).getTrechoCodigoFonteTipoDado().getLinha();
+                            }
+                            if (linhaBlocoAtual != null){
+                                if (linhaBlocoAnterior != linhaBlocoAtual) {
+                                    nosParada.add(noBloco);
+                                }
+                            }
+                        }
+                    } else {                    
+                        nosParada.add(noBloco);
+                    }
                 }
                 noBloco.aceitar(this);
+                blocoAnterior = noBloco;
             }
         }
         return null;
