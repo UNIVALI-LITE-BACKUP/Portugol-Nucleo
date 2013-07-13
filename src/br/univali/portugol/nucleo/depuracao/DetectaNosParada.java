@@ -72,8 +72,8 @@ import java.util.logging.Logger;
 public class DetectaNosParada implements VisitanteASA
 {
     private List<NoBloco> nosParada;
-   
     private NoBloco blocoAnterior = null;
+    private boolean depuracaoDetalhada = false;
             
     private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {        
@@ -88,28 +88,33 @@ public class DetectaNosParada implements VisitanteASA
                     !(noBloco instanceof NoEscolha) &&
                     !(noBloco instanceof NoCaso) ) 
                 {
-                    if (blocoAnterior != null) {
-                        Integer linhaBlocoAnterior = null;
-                        if (blocoAnterior instanceof NoExpressao) {
-                            linhaBlocoAnterior = ((NoExpressao) blocoAnterior).getTrechoCodigoFonte().getLinha();
-                        } else if(blocoAnterior instanceof NoDeclaracao) {
-                            linhaBlocoAnterior = ((NoDeclaracao) blocoAnterior).getTrechoCodigoFonteTipoDado().getLinha();
-                        }
-                        if (linhaBlocoAnterior != null) {
-                            Integer linhaBlocoAtual = null;
-                            if (noBloco instanceof NoExpressao) {
-                                linhaBlocoAtual = ((NoExpressao) noBloco).getTrechoCodigoFonte().getLinha();
-                            } else if(noBloco instanceof NoDeclaracao) {
-                                linhaBlocoAtual = ((NoDeclaracao) noBloco).getTrechoCodigoFonteTipoDado().getLinha();
+                    if (depuracaoDetalhada) {
+                        nosParada.add(noBloco);
+                    } else {
+                        // verifica se noBloco esta nao mesma linha do blocoAnterior.
+                        if (blocoAnterior != null) {
+                            Integer linhaBlocoAnterior = null;
+                            if (blocoAnterior instanceof NoExpressao) {
+                                linhaBlocoAnterior = ((NoExpressao) blocoAnterior).getTrechoCodigoFonte().getLinha();
+                            } else if(blocoAnterior instanceof NoDeclaracao) {
+                                linhaBlocoAnterior = ((NoDeclaracao) blocoAnterior).getTrechoCodigoFonteTipoDado().getLinha();
                             }
-                            if (linhaBlocoAtual != null){
-                                if (linhaBlocoAnterior != linhaBlocoAtual) {
-                                    nosParada.add(noBloco);
+                            if (linhaBlocoAnterior != null) {
+                                Integer linhaBlocoAtual = null;
+                                if (noBloco instanceof NoExpressao) {
+                                    linhaBlocoAtual = ((NoExpressao) noBloco).getTrechoCodigoFonte().getLinha();
+                                } else if(noBloco instanceof NoDeclaracao) {
+                                    linhaBlocoAtual = ((NoDeclaracao) noBloco).getTrechoCodigoFonteTipoDado().getLinha();
+                                }
+                                if (linhaBlocoAtual != null){
+                                    if (linhaBlocoAnterior != linhaBlocoAtual) {
+                                        nosParada.add(noBloco);
+                                    }
                                 }
                             }
+                        } else {                    
+                            nosParada.add(noBloco);
                         }
-                    } else {                    
-                        nosParada.add(noBloco);
                     }
                 }
                 noBloco.aceitar(this);
@@ -198,6 +203,10 @@ public class DetectaNosParada implements VisitanteASA
     {
         NoExpressao condicao = noPara.getCondicao();
         nosParada.add(condicao);
+        if (depuracaoDetalhada) {
+            nosParada.add(noPara.getInicializacao());
+            nosParada.add(noPara.getIncremento());            
+        }
         interpretarListaBlocos(noPara.getBlocos());
         return null;
     }

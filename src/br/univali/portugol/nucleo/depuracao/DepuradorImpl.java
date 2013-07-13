@@ -43,6 +43,7 @@ import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
 import br.univali.portugol.nucleo.asa.NoRetorne;
 import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.NoVetor;
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
 {
     private List<NoBloco> visitar;
     private List<DepuradorListener> listeners = new ArrayList<DepuradorListener>();
-
+    private final boolean detalhado;
+    
     
     @Override
     public synchronized void proximo()
@@ -60,11 +62,22 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         notifyAll();
     }
     
-    public void disparaDestacarLinha(int linha)
+    public void disparaDestacar(int linha)
     {
         for (DepuradorListener l : listeners)
         {
             l.highlightLinha(linha);
+        }
+    }
+    
+    public void disparaDestacar(TrechoCodigoFonte trechoCodigoFonte)
+    {
+        int linha = trechoCodigoFonte.getLinha();
+        int coluna = trechoCodigoFonte.getColuna();
+        int tamanho = trechoCodigoFonte.getTamanhoTexto();
+        for (DepuradorListener l : listeners)
+        {
+            l.HighlightDetalhadoAtual(linha,coluna,tamanho);
         }
     }
 
@@ -106,9 +119,15 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         listeners.remove(listener);
     }
 
-    public DepuradorImpl(List<NoBloco> nosParada)
+    public DepuradorImpl(List<NoBloco> nosParada, boolean detalhado)
     {
         visitar = nosParada;
+        this.detalhado = detalhado;
+    }
+    
+    public DepuradorImpl(List<NoBloco> nosParada)
+    {
+        this(nosParada,false);
     }
 
     @Override
@@ -116,7 +135,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {                
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -137,7 +160,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else { 
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha()); 
+            }
             synchronized (this)
             {
                 try
@@ -158,7 +185,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getExpressao().getTrechoCodigoFonte().getLinha());
+            if (detalhado) {                
+                disparaDestacar(no.getExpressao().getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getExpressao().getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -179,7 +210,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -200,7 +235,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonteNome());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -223,7 +262,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonteNome());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -246,7 +289,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonteNome());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -269,7 +316,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -290,7 +341,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getExpressao().getTrechoCodigoFonte().getLinha());
+             if (detalhado) {
+                disparaDestacar(no.getExpressao().getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getExpressao().getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -311,7 +366,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -332,7 +391,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+               disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -353,7 +416,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+               disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -374,7 +441,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -395,7 +466,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -416,7 +491,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -437,7 +516,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
+             if (detalhado) {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -458,7 +541,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -479,7 +566,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -500,7 +591,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -521,7 +616,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -540,7 +639,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     @Override
     public Object visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
     {
-        disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+        if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
         synchronized (this)
         {
             try
@@ -560,7 +663,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getExpressao().getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getExpressao().getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getExpressao().getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -581,7 +688,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getCondicao().getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -602,7 +713,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -623,7 +738,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonteNome().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonteNome());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -646,7 +765,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -667,7 +790,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -688,7 +815,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -711,7 +842,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -732,7 +867,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -753,7 +892,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -774,7 +917,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -795,7 +942,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -816,7 +967,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -837,7 +992,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -858,7 +1017,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -879,7 +1042,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -900,7 +1067,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -921,7 +1092,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
@@ -942,7 +1117,11 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     {
         if (visitar.contains(no))
         {
-            disparaDestacarLinha(no.getTrechoCodigoFonte().getLinha());
+            if (detalhado) {
+                disparaDestacar(no.getTrechoCodigoFonte());
+            } else {
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+            }
             synchronized (this)
             {
                 try
