@@ -6,15 +6,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Armazena as informações do autor da função
+ * 
  * @author Luiz Fernando Noschang
+ * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface ExportarFuncao
+public @interface Autor
 {
-    public String descricao();
-    public Parametro[] parametros();
-    public String retorno();
-    public String referencia() default "";
+    /**
+     * 
+     * @return  o nome do autor
+     */
+    
+    public String nome();
+    
+    /**
+     * 
+     * @return  o email do autor
+     */
+    public String email() default "";
 }

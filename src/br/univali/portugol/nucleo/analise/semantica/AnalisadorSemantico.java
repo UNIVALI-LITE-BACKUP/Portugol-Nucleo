@@ -20,7 +20,7 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeter
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.CarregadorBibliotecas;
+import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
@@ -1487,12 +1487,11 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
         String nome = noInclusaoBiblioteca.getNome();
-        String alias = noInclusaoBiblioteca.getAlias();
-        
+        String alias = noInclusaoBiblioteca.getAlias();        
         
         try
         {
-            Biblioteca biblioteca = CarregadorBibliotecas.carregarBiblioteca(nome);
+            Biblioteca biblioteca = GerenciadorBibliotecas.carregarBiblioteca(nome);
             
             if (bibliotecas.containsKey(nome))
             {
