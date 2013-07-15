@@ -74,7 +74,14 @@ public class DetectaNosParada implements VisitanteASA
     private List<NoBloco> nosParada;
     private NoBloco blocoAnterior = null;
     private boolean depuracaoDetalhada = false;
+
+    public DetectaNosParada(boolean depuracaoDetalhada)
+    {
+        this.depuracaoDetalhada = depuracaoDetalhada;
+    }
             
+    
+    
     private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {        
         if (blocos != null)

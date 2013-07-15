@@ -105,7 +105,7 @@ public final class Programa
      */
     public void executar(final String[] parametros)
     {
-        interpretar(parametros, false);
+        interpretar(parametros, false, false);
     }
 
     public List<String> getFuncoes()
@@ -118,7 +118,7 @@ public final class Programa
         this.funcoes = funcoes;
     }
 
-    private void interpretar(final String[] parametros, final boolean depurar)
+    private void interpretar(final String[] parametros, final boolean depurar, final boolean detalhado)
     {
         if (!isExecutando())
         {
@@ -133,9 +133,9 @@ public final class Programa
 
                         if (depurar)
                         {
-                            List<NoBloco> nosParada = new DetectaNosParada().executar(Programa.this, parametros);
+                            List<NoBloco> nosParada = new DetectaNosParada(detalhado).executar(Programa.this, parametros);
 
-                            interpretador = new DepuradorImpl(nosParada);
+                            interpretador = new DepuradorImpl(nosParada,detalhado);
                             
                             if (listener == null)
                             {
@@ -223,8 +223,14 @@ public final class Programa
 
     public void depurar(final String[] parametros)
     {
-        interpretar(parametros, true);
+        depurar(parametros, false);
     }
+    
+    public void depurar(final String[] parametros, boolean detalhado)
+    {
+        interpretar(parametros, true, detalhado);
+    }
+
 
     /**
      * Interrompe a execução deste programa. Não tem nenhum efeito se o programa
