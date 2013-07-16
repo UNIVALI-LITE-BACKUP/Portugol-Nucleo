@@ -138,6 +138,11 @@ public final class Vetor extends Simbolo
 
     public List<Object> obterValores()
     {
-        return new ArrayList<Object>(valores);
+        if (valores != null)
+        {
+            return new ArrayList<Object>(valores);
+        }
+        
+        return new ArrayList<Object>();
     }
 }

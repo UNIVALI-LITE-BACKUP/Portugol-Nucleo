@@ -48,8 +48,7 @@ public final class Graficos extends Biblioteca
     public static final Integer COR_VERMELHO = Color.RED.getRGB();
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'verde'")
-    public static final Integer COR_VERDE = Color.GREEN.getRGB();
-    
+    public static final Integer COR_VERDE = Color.GREEN.getRGB();    
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
     public static final Integer COR_AMARELO = Color.YELLOW.getRGB();
