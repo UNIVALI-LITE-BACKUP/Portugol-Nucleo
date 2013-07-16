@@ -10,6 +10,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
  */
 public final class MetaDadosConstante
 {
+    private Object valor;
     private String nome;
     private TipoDado tipoDado;
     private Quantificador quantificador;
@@ -18,6 +19,16 @@ public final class MetaDadosConstante
     MetaDadosConstante()
     {
         
+    }
+
+    public Object getValor()
+    {
+        return valor;
+    }
+
+    void setValor(Object valor)
+    {
+        this.valor = valor;
     }
 
     public String getNome()

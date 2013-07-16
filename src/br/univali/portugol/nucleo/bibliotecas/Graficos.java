@@ -36,23 +36,23 @@ public final class Graficos extends Biblioteca
     private JFrame janela;    
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'preto'")
-    public final Integer COR_PRETO = Color.BLACK.getRGB();
+    public static final Integer COR_PRETO = Color.BLACK.getRGB();
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'branca'")
-    public final Integer COR_BRANCO = Color.WHITE.getRGB();
+    public static final Integer COR_BRANCO = Color.WHITE.getRGB();
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'azul'")
-    public final Integer COR_AZUL = Color.BLUE.getRGB();
+    public static final Integer COR_AZUL = Color.BLUE.getRGB();
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'vermelho'")
-    public final Integer COR_VERMELHO = Color.RED.getRGB();
+    public static final Integer COR_VERMELHO = Color.RED.getRGB();
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'verde'")
-    public final Integer COR_VERDE = Color.GREEN.getRGB();
+    public static final Integer COR_VERDE = Color.GREEN.getRGB();
     
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
-    public final Integer COR_AMARELO = Color.YELLOW.getRGB();
+    public static final Integer COR_AMARELO = Color.YELLOW.getRGB();
     
 
     @DocumentacaoFuncao
@@ -210,20 +210,20 @@ public final class Graficos extends Biblioteca
         {
             String corErrada = "indefinido";
             
-            if (excecao.getMessage().contains("red"))
+            if (excecao.getMessage().contains("Red"))
             {
                 corErrada = "vermelho";
             }
-            else if (excecao.getMessage().contains("green"))
+            else if (excecao.getMessage().contains("Green"))
             {
                 corErrada = "verde";
             }            
-            else if (excecao.getMessage().contains("azul"))
+            else if (excecao.getMessage().contains("Blue"))
             {
                 corErrada = "azul";
             }
              
-            throw new ErroExecucaoBiblioteca(String.format("Erro ao criar a cor, o valor tom de %s deve estar 0 e 255", corErrada));
+            throw new ErroExecucaoBiblioteca(String.format("Erro ao criar a cor, o valor do tom de %s deve estar entre 0 e 255", corErrada));
         }
     }    
     

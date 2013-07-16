@@ -409,18 +409,28 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         {
             if (Modifier.isPublic(atributo.getModifiers()))
             {
-                if (!Modifier.isStatic(atributo.getModifiers()))
+                if (Modifier.isStatic(atributo.getModifiers()))
                 {
                     if (Modifier.isFinal(atributo.getModifiers()))
                     {
                         if (maiusculo(atributo.getName()))
-                        {
+                        {                            
                             DocumentacaoConstante documentacaoConstante = obterAnotacaoAtributo(nomeBiblioteca, atributo, DocumentacaoConstante.class);
                             MetaDadosConstante metaDadosConstante = new MetaDadosConstante();
                             
                             metaDadosConstante.setNome(atributo.getName());
                             metaDadosConstante.setDocumentacao(documentacaoConstante);
                             metaDadosConstante.setQuantificador(Quantificador.VALOR);
+                            
+                            try
+                            {
+                                metaDadosConstante.setValor(atributo.get(null));
+                            }
+                            catch (Exception excecao)
+                            {
+                                metaDadosConstante.setValor("indefinido");
+                            }
+                            
                             metaDadosConstante.setTipoDado(obterTipoDadoConstante(nomeBiblioteca, atributo));
                             
                             if (!metaDadosConstantes.contains(metaDadosConstante))
@@ -435,7 +445,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                     else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' deve ser final para ser exportado como uma constante", atributo.getName()));
                 }
                 
-                else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' não pode ser estático para ser exportado como uma constante", atributo.getName()));
+                else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' deve ser estático para ser exportado como uma constante", atributo.getName()));
             }
         }
         

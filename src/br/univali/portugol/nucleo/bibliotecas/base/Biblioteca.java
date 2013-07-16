@@ -55,9 +55,8 @@ import java.lang.reflect.Method;
  *      <li>
  *          <p>
  *              Para que um atributo da classe seja exportado como uma constante da biblioteca,
- *              o atributo deve ser <strong>público</strong>, <strong>final</strong>, não
- *              <strong>estático</strong>, ter o nome todo em letras maiúsculas e estar 
- *              anotado com a anotação {@link DocumentacaoConstante}
+ *              o atributo deve ser <strong>público</strong>, <strong>final</strong>, <strong>estático</strong>, 
+ *              ter o nome todo em letras maiúsculas e estar anotado com a anotação {@link DocumentacaoConstante}
  *          </p>
  *          <br/>
  *      </li>

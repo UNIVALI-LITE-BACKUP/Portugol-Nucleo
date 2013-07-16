@@ -32,7 +32,7 @@ public final class Matematica extends Biblioteca
         descricao = "Constante matemática que representa a relação entre o perímetro de uma circunferência e seu diâmetro, em outras palavras: perimetro/diâmetro",
         referencia = "http://pt.wikipedia.org/wiki/Pi"
     )
-    public final Double PI = Math.PI;
+    public static final Double PI = Math.PI;
     
     @DocumentacaoFuncao
     (
