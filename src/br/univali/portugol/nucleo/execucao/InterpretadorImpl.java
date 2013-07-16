@@ -577,7 +577,8 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
             for (NoBloco noBloco : blocos)
             {
                 Object retorno = noBloco.aceitar(this);
-                if (retorno != null)
+                
+                if (!(noBloco instanceof NoExpressao) && retorno != null)
                 {
                     return retorno;
                 }
