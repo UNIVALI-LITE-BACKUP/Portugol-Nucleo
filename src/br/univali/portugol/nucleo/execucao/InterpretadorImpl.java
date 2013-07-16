@@ -4,8 +4,8 @@ import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.CarregadorBibliotecas;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroFuncaoInicialNaoDeclarada;
 import br.univali.portugol.nucleo.execucao.erros.ErroIndiceMatrizInvalido;
@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 
 public class InterpretadorImpl implements VisitanteASA, Interpretador
 {
+    private Programa programa;
     private Saida saida;
     private Entrada entrada;
     private boolean referencia = false;
@@ -74,9 +75,9 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     @Override
     public void executar(Programa programa, String[] parametros) throws ErroExecucao
     {
-
         try
         {
+            this.programa = programa;
             funcaoInicial = programa.getFuncaoInicial();
             asa = programa.getArvoreSintaticaAbstrata();
             asa.aceitar(this);
@@ -121,7 +122,16 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
             {
                 throw new ErroFuncaoInicialNaoDeclarada(funcaoInicial);
             }
-
+            finally
+            {
+                if (!bibliotecas.isEmpty())
+                {
+                    for (Biblioteca biblioteca : bibliotecas.values())
+                    {
+                        GerenciadorBibliotecas.getInstance().desregistrarBiblioteca(biblioteca, programa);
+                    }
+                }
+            }
         }
         catch (Exception e)
         {
@@ -134,8 +144,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 throw (ErroExecucao) e;
             }
             throw new ErroExecucaoNaoTratado(e);
-        }
-
+        }        
     }
 
     private List<Object> converterVetorEmLista(Object[] vetor)
@@ -152,9 +161,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
-    {
-       
-        
+    {       
         for (NoInclusaoBiblioteca inclusao : asap.getListaInclusoesBibliotecas())
         {
             inclusao.aceitar(this);
@@ -332,16 +339,21 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 try
                 {
                     Biblioteca biblioteca = bibliotecas.get(noChamadaFuncao.getEscopo());
-
                     List<NoExpressao> param = noChamadaFuncao.getParametros();
-                    Object[] parametros = new Object[param.size()];
-
-                    for (int i = 0; i < parametros.length; i++)
+                    
+                    if (param != null && !param.isEmpty())
                     {
-                        parametros[i] = param.get(i).aceitar(this);
-                    }
+                        Object[] parametros = new Object[param.size()];
 
-                    return biblioteca.chamarFuncao(noChamadaFuncao.getNome(), parametros);
+                        for (int i = 0; i < parametros.length; i++)
+                        {
+                            parametros[i] = param.get(i).aceitar(this);
+                        }
+
+                        return biblioteca.chamarFuncao(noChamadaFuncao.getNome(), parametros);
+                    }
+                    
+                    else return biblioteca.chamarFuncao(noChamadaFuncao.getNome());
                 }
                 catch (Exception excecao)
                 {
@@ -1047,7 +1059,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         try
         {
             String nome = noInclusaoBiblioteca.getNome();
-            Biblioteca biblioteca = CarregadorBibliotecas.carregarBiblioteca(nome);
+            Biblioteca biblioteca = GerenciadorBibliotecas.getInstance().registrarBiblioteca(nome, this.programa);
 
             bibliotecas.put(nome, biblioteca);
 

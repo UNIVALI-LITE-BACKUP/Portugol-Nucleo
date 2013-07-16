@@ -11,8 +11,17 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface Parametro
+public @interface DocumentacaoParametro
 {
+    /**
+     * 
+     * @return  o nome do parâmetro da função
+     */
     public String nome();
+    
+    /**
+     * 
+     * @return  a descrição do propósito deste parãmetro na função
+     */
     public String descricao();
 }

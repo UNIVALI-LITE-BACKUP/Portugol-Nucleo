@@ -1,7 +1,5 @@
 package br.univali.portugol.nucleo.simbolos;
 
-import br.univali.portugol.nucleo.asa.TipoDado;
-
 /**
  * Representa um ponteiro para outro símbolo durante a execução de um programa.
  * 

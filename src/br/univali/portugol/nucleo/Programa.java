@@ -221,11 +221,6 @@ public final class Programa
         this.listener = listener;
     }
 
-    public void depurar(final String[] parametros)
-    {
-        depurar(parametros, false);
-    }
-    
     public void depurar(final String[] parametros, boolean detalhado)
     {
         interpretar(parametros, true, detalhado);
@@ -418,5 +413,22 @@ public final class Programa
         {
             observador.execucaoEncerrada(this, resultadoExecucao);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Programa)
+        {
+            return ((Programa) obj) == this;
+        }
+        
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return System.identityHashCode(this);
     }
 }

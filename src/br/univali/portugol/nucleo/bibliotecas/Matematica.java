@@ -1,62 +1,75 @@
 package br.univali.portugol.nucleo.bibliotecas;
 
+import static br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca.*;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.ExportarFuncao;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.ExportarVariavel;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Parametro;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
+@PropriedadesBiblioteca( tipo = COMPARTILHADA )
+@DocumentacaoBiblioteca
+(       
+    descricao = "Esta biblioteca contém uma série das funções matemáticas mais comuns",
+    versao = "1.0"
+)
 public final class Matematica extends Biblioteca
 {
-    public Matematica() throws Exception
+    public Matematica()
     {
-        super();
+
     }
 
-    @Override
-    public String getNome()
-    {
-        return "Matematica";
-    }
-    
-    @ExportarVariavel
-    (
+    @DocumentacaoConstante
+    (            
         descricao = "Constante matemática que representa a relação entre o perímetro de uma circunferência e seu diâmetro, em outras palavras: perimetro/diâmetro",
         referencia = "http://pt.wikipedia.org/wiki/Pi"
     )
     public final Double PI = Math.PI;
     
-    @ExportarFuncao
+    @DocumentacaoFuncao
     (
         descricao = "Realiza uma exponenciação através da multiplicação da base por ela mesma tantas vezes quanto indicar o expoente",            
         parametros = 
         {
-            @Parametro(nome = "base", descricao = "o número que será multiplicado"),
-            @Parametro(nome = "expoente", descricao = "o número de vezes que a base será multiplicada")
+            @DocumentacaoParametro(nome = "base", descricao = "o número que será multiplicado"),
+            @DocumentacaoParametro(nome = "expoente", descricao = "o número de vezes que a base será multiplicada")
         },        
         retorno = "A exponenciação da base pelo expoente",        
-        referencia = "http://pt.wikipedia.org/wiki/Exponencia%C3%A7%C3%A3o"
+        referencia = "http://pt.wikipedia.org/wiki/Exponencia%C3%A7%C3%A3o",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
     )    
-    public Double potencia(Double base, Double expoente)
+    public Double potencia(Double base, Double expoente) throws ErroExecucao
     {
         return Math.pow(base, expoente);
     }
     
-    @ExportarFuncao
+    @DocumentacaoFuncao
     (
         descricao = "Realiza a radiciação (extrai a raíz) de um número por um determinado índice",        
         parametros = 
         {
-            @Parametro(nome = "radicando", descricao = "o número do qual será extraída a raíz"),            
-            @Parametro(nome = "indice", descricao = "indica o grau da radiciação. Quando o indice é 2 a raíz é quadrada, quando o indice é 3 a raíz é cúbica, e assim por diante")
+            @DocumentacaoParametro(nome = "radicando", descricao = "o número do qual será extraída a raíz"),            
+            @DocumentacaoParametro(nome = "indice", descricao = "indica o grau da radiciação. Quando o indice é 2 a raíz é quadrada, quando o indice é 3 a raíz é cúbica, e assim por diante")
         },        
-        retorno = "a raíz do número informado",        
-        referencia = ""
+        retorno = "a raíz do número informado",
+        referencia = "http://pt.wikipedia.org/wiki/Radicia%C3%A7%C3%A3o",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
     )
-    public Double raiz(Double radicando, Double indice)
+    public Double raiz(Double radicando, Double indice) throws ErroExecucao
     {
         return Math.pow(radicando, 1.0 / indice);
     }
