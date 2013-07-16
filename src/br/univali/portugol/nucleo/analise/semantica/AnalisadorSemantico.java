@@ -19,14 +19,14 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstante;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     
     private TabelaCompatibilidadeTipos tabelaCompatibilidadeTipos = TabelaCompatibilidadeTiposPortugol.INSTANCE;
     private ArvoreSintaticaAbstrata asa;
-    private Map<String, Biblioteca> bibliotecas;
+    private Map<String, MetaDadosBiblioteca> metaDadosBibliotecas;
     
     private Funcao funcaoAtual;
     private TipoDado tipoDadoEscolha;
@@ -63,7 +63,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     public AnalisadorSemantico()
     {
         memoria = new Memoria();
-        bibliotecas = new TreeMap<String, Biblioteca> ();
+        metaDadosBibliotecas = new TreeMap<String, MetaDadosBiblioteca>();
         observadores = new ArrayList<ObservadorAnaliseSemantica>();
     }   
         
@@ -1491,28 +1491,44 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         try
         {
-            Biblioteca biblioteca = GerenciadorBibliotecas.carregarBiblioteca(nome);
-            
-            if (bibliotecas.containsKey(nome))
+            try
             {
-                notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteNome(), new Exception(String.format("A biblioteca \"%s\" já foi incluída", nome))));
+                memoria.getSimbolo(nome);
+                notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteNome(), new Exception(String.format("o identificador \"%s\" já está sendo utilizado", nome))));
             }
-            else
+            catch (ExcecaoSimboloNaoDeclarado excecao)
             {
-                bibliotecas.put(nome, biblioteca);
-            }
+                MetaDadosBiblioteca metaDadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(nome);
 
-            if (alias != null)
-            {
-                if (bibliotecas.containsKey(alias))
+                if (metaDadosBibliotecas.containsKey(nome))
                 {
-                    notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteAlias(), new Exception(String.format("O alias \"%s\" já está sendo utilizado pela biblioteca \"%s\"", alias, bibliotecas.get(alias).getNome()))));
+                    notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteNome(), new Exception(String.format("A biblioteca \"%s\" já foi incluída", nome))));
                 }
                 else
                 {
-                    bibliotecas.put(alias, biblioteca);
+                    metaDadosBibliotecas.put(nome, metaDadosBiblioteca);
                 }
-            }            
+
+                if (alias != null)
+                {
+                    try
+                    {
+                        memoria.getSimbolo(nome);
+                        notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteNome(), new Exception(String.format("o identificador \"%s\" já está sendo utilizado", nome))));
+                    }
+                    catch (ExcecaoSimboloNaoDeclarado excecao2)
+                    {
+                        if (metaDadosBibliotecas.containsKey(alias))
+                        {
+                            notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteAlias(), new Exception(String.format("O alias \"%s\" já está sendo utilizado pela biblioteca \"%s\"", alias, metaDadosBibliotecas.get(alias).getNome()))));
+                        }
+                        else
+                        {
+                            metaDadosBibliotecas.put(alias, metaDadosBiblioteca);
+                        }
+                    }
+                }
+            }
         }
         catch (ErroCarregamentoBiblioteca erro)
         {
@@ -1550,17 +1566,16 @@ public final class AnalisadorSemantico implements VisitanteASA
     private TipoDado analisarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
         final String escopo = noReferenciaVariavel.getEscopo();
-        final String nome = noReferenciaVariavel.getNome();
+        final String nome = noReferenciaVariavel.getNome();        
+        final MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(escopo);
         
-        final Biblioteca biblioteca = bibliotecas.get(escopo);        
-        
-        if (biblioteca != null)
+        if (metaDadosBiblioteca != null)
         {
-            for (Field variavel : biblioteca.getVariaveis())
+            for (MetaDadosConstante metaDadosConstante : metaDadosBiblioteca.getMetaDadosConstantes())
             {
-                if (variavel.getName().equals(nome))
+                if (metaDadosConstante.getNome().equals(nome))
                 {
-                    return TipoDado.obterTipoDadoPeloTipoJava(variavel.getType());
+                    return metaDadosConstante.getTipoDado();
                 }
             }
 
@@ -1569,7 +1584,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 @Override
                 protected String construirMensagem()
                 {
-                    return String.format("A variável \"%s\" não existe na biblioteca \"%s\"", nome, biblioteca.getNome());
+                    return String.format("A constante \"%s\" não existe na biblioteca \"%s\"", nome, metaDadosBiblioteca.getNome());
                 }
             });
         }            
@@ -1843,45 +1858,45 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         final String escopo = chamadaFuncao.getEscopo();
         final String nome = chamadaFuncao.getNome();
+        final MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(escopo);
         
-        
-        final Biblioteca biblioteca = bibliotecas.get(escopo);
-        
-        if (biblioteca != null)
+        if (metaDadosBiblioteca != null)
         {
-            for (Method funcao : biblioteca.getFuncoes())
+            for (MetaDadosFuncao metaDadosFuncao : metaDadosBiblioteca.getMetaDadosFuncoes())
             {
-                if (funcao.getName().equals(nome))
+                if (metaDadosFuncao.getNome().equals(nome))
                 {
-                    final Class[] tiposParametrosEsperados = funcao.getParameterTypes();                    
-                    
-                    for (int i = 0; i < chamadaFuncao.getParametros().size(); i++)
+                    if (chamadaFuncao.getParametros() != null)
                     {
-                        final int indice = i;
-                        
-                        try
+                        for (int i = 0; i < chamadaFuncao.getParametros().size(); i++)
                         {
-                            final TipoDado tipoParametroPassado = (TipoDado) chamadaFuncao.getParametros().get(i).aceitar(this);
-                            
-                            if (tipoParametroPassado.getTipoJava() != tiposParametrosEsperados[i])
+                            final int indice = i;
+                            final TipoDado tipoParametroEsperado = metaDadosFuncao.getMetaDadosParametros().get(i).getTipoDado();
+
+                            try
                             {
-                                notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome())
+                                final TipoDado tipoParametroPassado = (TipoDado) chamadaFuncao.getParametros().get(i).aceitar(this);
+
+                                if (tipoParametroPassado != tipoParametroEsperado)
                                 {
-                                    @Override
-                                    protected String construirMensagem()
+                                    notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome())
                                     {
-                                        return String.format("Tipos incompatíveis! O parâmetro \"%s\" da função \"%s\" esperava uma expressão do tipo \"%s\" mas foi passada uma expressão do tipo \"%s\".", indice+1, chamadaFuncao.getNome(), TipoDado.obterTipoDadoPeloTipoJava(tiposParametrosEsperados[indice]), tipoParametroPassado);
-                                    }
-                                });
+                                        @Override
+                                        protected String construirMensagem()
+                                        {
+                                            return String.format("Tipos incompatíveis! O parâmetro \"%s\" da função \"%s\" esperava uma expressão do tipo \"%s\" mas foi passada uma expressão do tipo \"%s\".", indice+1, chamadaFuncao.getNome(), tipoParametroEsperado, tipoParametroPassado);
+                                        }
+                                    });
+                                }
                             }
-                        }
-                        catch (ExcecaoVisitaASA excecao)
-                        {
-                            excecao.printStackTrace(System.out);
+                            catch (ExcecaoVisitaASA excecao)
+                            {
+                                excecao.printStackTrace(System.out);
+                            }
                         }
                     }
                     
-                    return TipoDado.obterTipoDadoPeloTipoJava(funcao.getReturnType());
+                    return metaDadosFuncao.getTipoDado();
                 }
             }
 
@@ -1890,7 +1905,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 @Override
                 protected String construirMensagem()
                 {
-                    return String.format("A função \"%s\" não existe na biblioteca \"%s\"", chamadaFuncao.getNome(), biblioteca.getNome());
+                    return String.format("A função \"%s\" não existe na biblioteca \"%s\"", chamadaFuncao.getNome(), metaDadosBiblioteca.getNome());
                 }
             });
         }            

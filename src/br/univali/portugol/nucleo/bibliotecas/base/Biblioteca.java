@@ -139,20 +139,29 @@ public abstract class Biblioteca
         }
     }
     
-    public final Object chamarFuncao(String nome, Object[] parametros) throws ErroExecucao
+    public final Object chamarFuncao(String nome, Object... parametros) throws ErroExecucao
     {
-        Class[] tiposParametros = new Class[parametros.length];
-        
-        for (int i = 0; i < parametros.length; i++)
-        {
-            tiposParametros[i] = parametros[i].getClass();
-        }
-        
         try
         {
-            Method funcao = this.getClass().getDeclaredMethod(nome, tiposParametros);
-        
-            return funcao.invoke(this, parametros);
+            if (parametros != null && parametros.length > 0)
+            {
+                Class[] tiposParametros = new Class[parametros.length];
+
+                for (int i = 0; i < parametros.length; i++)
+                {
+                    tiposParametros[i] = parametros[i].getClass();
+                }
+
+                Method funcao = this.getClass().getDeclaredMethod(nome, tiposParametros);
+
+                return funcao.invoke(this, parametros);
+            }
+            else
+            {
+                Method funcao = this.getClass().getDeclaredMethod(nome);
+
+                return funcao.invoke(this, parametros);
+            }            
         }
         catch (Exception excecao)
         {

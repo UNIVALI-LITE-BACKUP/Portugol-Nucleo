@@ -30,7 +30,7 @@ public @interface DocumentacaoFuncao
      * 
      * @return  a descrição do que valor que é retornado por esta função
      */
-    public String retorno();
+    public String retorno() default "";
     
     /**
      * <string>Opcional<strong>

@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.base;
 
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.ModoAcesso;
 import br.univali.portugol.nucleo.asa.Quantificador;
 import br.univali.portugol.nucleo.asa.TipoDado;
@@ -8,6 +9,8 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
+import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -15,6 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -27,13 +31,16 @@ import java.util.TreeMap;
  * 
  * @author Luiz Fernando Noschang
  */
-public final class GerenciadorBibliotecas
+public final class GerenciadorBibliotecas implements ObservadorExecucao
 {
     private static GerenciadorBibliotecas instance = null;
 
     private List<String> bibliotecasDisponiveis;
     private Map<String, MetaDadosBiblioteca> metaDadosBibliotecas;
     private Map<String, Class<? extends Biblioteca>> bibliotecasCarregadas;
+    
+    private Map<String, Biblioteca> bibliotecasCompartilhadas;
+    private Map<Programa, Map<String, Biblioteca>> bibliotecasReservadas;
     
     
     public static GerenciadorBibliotecas getInstance()
@@ -51,6 +58,21 @@ public final class GerenciadorBibliotecas
         metaDadosBibliotecas = new TreeMap<String, MetaDadosBiblioteca>();
         bibliotecasCarregadas = new TreeMap<String, Class<? extends Biblioteca>>();
         metaDadosBibliotecas = new TreeMap<String, MetaDadosBiblioteca>();
+        
+        bibliotecasCompartilhadas = new TreeMap<String, Biblioteca>();
+        bibliotecasReservadas = new TreeMap<Programa, Map<String, Biblioteca>>(new ComparadorPrograma());
+    }
+    
+    private class ComparadorPrograma implements Comparator<Programa>
+    {
+        @Override
+        public int compare(Programa o1, Programa o2)
+        {
+            Integer h1 = System.identityHashCode(o1);
+            Integer h2 = System.identityHashCode(o2);
+            
+            return h1.compareTo(h2);
+        }
     }
     
     public List<String> listarBibliotecasDisponiveis()
@@ -59,6 +81,7 @@ public final class GerenciadorBibliotecas
         {
             bibliotecasDisponiveis = new ArrayList<String>();
             bibliotecasDisponiveis.add("Matematica");
+            bibliotecasDisponiveis.add("Graficos");
         }
         
         return new ArrayList<String>(bibliotecasDisponiveis);
@@ -81,7 +104,7 @@ public final class GerenciadorBibliotecas
      * @throws ErroCarregamentoBiblioteca   esta exceção é jogada caso o {@link GerenciadorBibliotecas}
      *                                      não consiga carregar a biblioteca especificada
      */
-    public MetaDadosBiblioteca getMetaDadosBiblioteca(String nome) throws ErroCarregamentoBiblioteca
+    public MetaDadosBiblioteca obterMetaDadosBiblioteca(String nome) throws ErroCarregamentoBiblioteca
     {
         if (!metaDadosBibliotecas.containsKey(nome))
         {
@@ -94,13 +117,113 @@ public final class GerenciadorBibliotecas
         return metaDadosBibliotecas.get(nome);
     }
     
+    /**
+     * Obtém a biblioteca especificada, carregando-a se necessário. Este método é responsável
+     * por gerenciar o ciclo de vida da biblioteca em memória.
+     * 
+     * @param nome  o nome da biblioteca a ser obtida
+     * @param programa  
+     * @return
+     * @throws ErroCarregamentoBiblioteca 
+     */
+    public Biblioteca registrarBiblioteca(String nome, Programa programa) throws ErroCarregamentoBiblioteca
+    {
+        try
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = obterMetaDadosBiblioteca(nome);
+
+            if (metaDadosBiblioteca.getTipo() == TipoBiblioteca.COMPARTILHADA)
+            {
+                if (!bibliotecasCompartilhadas.containsKey(nome))
+                {
+                    Biblioteca biblioteca =  bibliotecasCarregadas.get(nome).newInstance();
+                    biblioteca.inicializar();
+                    
+                    bibliotecasCompartilhadas.put(nome, biblioteca);
+                }
+                
+                return bibliotecasCompartilhadas.get(nome);
+            }
+            else if (metaDadosBiblioteca.getTipo() == TipoBiblioteca.RESERVADA)
+            {
+                if (!bibliotecasReservadas.containsKey(programa))
+                {
+                    bibliotecasReservadas.put(programa, new TreeMap<String, Biblioteca>());
+                }
+                
+                Map<String, Biblioteca> memoriaPrograma = bibliotecasReservadas.get(programa);
+                
+                if (!memoriaPrograma.containsKey(nome))
+                {
+                    Biblioteca biblioteca = bibliotecasCarregadas.get(nome).newInstance();
+                    biblioteca.inicializar();
+                    
+                    memoriaPrograma.put(nome, biblioteca);
+                }
+                
+                return memoriaPrograma.get(nome);
+            }
+        }
+        catch (Exception excecao)
+        {
+            if (!(excecao instanceof ErroCarregamentoBiblioteca))
+            {
+                throw new ErroCarregamentoBiblioteca(nome, excecao);
+            }
+            else
+            {
+                throw (ErroCarregamentoBiblioteca) excecao;
+            }
+        }
+        
+        return null;
+    }
+    
+    public void desregistrarBiblioteca(Biblioteca biblioteca, Programa programa) throws ErroCarregamentoBiblioteca
+    {
+        try
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = obterMetaDadosBiblioteca(biblioteca.getNome());
+
+            if (metaDadosBiblioteca.getTipo() == TipoBiblioteca.RESERVADA)
+            {
+                if (bibliotecasReservadas.containsKey(programa))
+                {
+                    Map<String, Biblioteca> memoriaPrograma = bibliotecasReservadas.get(programa);
+
+                    if (memoriaPrograma.containsKey(biblioteca.getNome()))
+                    {
+                        biblioteca.finalizar();
+                        memoriaPrograma.remove(biblioteca.getNome());
+                    }
+                    
+                    bibliotecasReservadas.remove(programa);
+                }
+            }
+        }
+        catch (Exception excecao)
+        {
+            if (!(excecao instanceof ErroCarregamentoBiblioteca))
+            {
+                throw new ErroCarregamentoBiblioteca(biblioteca.getNome(), excecao);
+            }
+            else
+            {
+                throw (ErroCarregamentoBiblioteca) excecao;
+            }
+        }            
+    }
+    
     private Class<? extends Biblioteca> carregarBiblioteca(String nome) throws ErroCarregamentoBiblioteca
     {
         if (!bibliotecasCarregadas.containsKey(nome))
         {
             try
             {
-                return Class.forName("br.univali.portugol.nucleo.bibliotecas.".concat(nome)).asSubclass(Biblioteca.class);
+                Class classeBiblioteca = Class.forName("br.univali.portugol.nucleo.bibliotecas.".concat(nome)).asSubclass(Biblioteca.class);
+                bibliotecasCarregadas.put(nome, classeBiblioteca);
+                
+                return classeBiblioteca;
             }
             catch (ClassNotFoundException excecao)
             {
@@ -536,5 +659,31 @@ public final class GerenciadorBibliotecas
         if (classeBiblioteca.isLocalClass())                        return "a biblioteca não pode ser uma classe local";
         
         return null;
+    }
+
+    @Override
+    public void execucaoIniciada(Programa programa)
+    {
+        if (bibliotecasReservadas.containsKey(programa))
+        {
+            for (Biblioteca biblioteca : bibliotecasReservadas.get(programa).values())
+            {
+                biblioteca.inicializar();
+            }
+        }
+    }
+
+    @Override
+    public void execucaoEncerrada(Programa programa, ResultadoExecucao resultadoExecucao)
+    {
+        if (bibliotecasReservadas.containsKey(programa))
+        {
+            for (Biblioteca biblioteca : bibliotecasReservadas.get(programa).values())
+            {
+                biblioteca.finalizar();
+            }
+            
+            bibliotecasReservadas.remove(programa);
+        }
     }
 }
