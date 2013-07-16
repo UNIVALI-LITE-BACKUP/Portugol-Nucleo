@@ -2,12 +2,14 @@ package br.univali.portugol.nucleo.bibliotecas.base;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.List;
 
 /**
  * Classe base para a construção de bibliotecas do Portugol. Todas as bibliotecas
@@ -19,12 +21,29 @@ import java.util.List;
  *      <li><p>A biblioteca deve estender a classe {@link Biblioteca}</p><br/></li>
  *      <li>
  *          <p>
- *              A classe da biblioteca deve ser <strong>pública</strong> e 
- *              <strong>final</strong>
+ *              A classe da biblioteca deve ser <strong>pública</strong>, <strong>final</strong>
+ *              e não pode ser <strong>estática</strong>, <strong>anônima</strong>, <strong>sintética</strong>,
+ *              <strong>membro</strong> ou <strong>local</strong>
+ *          </p>
+ *          <br/>
+ *      </li>
+ *      <li>
+ *          <p>
+ *              A biblioteca deve estar anotada com as anotações {@link DocumentacaoBiblioteca}
+ *              e {@link PropriedadesBiblioteca}
  *          </p>
  *          <br/>
  *      </li>
  *      <li><p>A biblioteca deve exportar pelo menos uma função ou constante</p><br/></li>
+ *      <li>
+ *          <p>
+ *              Para que um método da classe seja exportado como uma função da biblioteca, 
+ *              o método deve ser <strong>público</strong>, <strong> não estático</strong>,
+ *              estar anotado com a anotação {@link DocumentacaoFuncao} e jogar um 
+ *              {@link ErroExecucao}
+ *          </p>
+ *          <br/>
+ *      </li>
  *      <li>
  *          <p>
  *              A biblioteca não pode ter sobrecarga dos métodos públicos exportados 
@@ -35,20 +54,20 @@ import java.util.List;
  *      </li>
  *      <li>
  *          <p>
- *              Para que um método da classe seja exportado como uma função da biblioteca, 
- *              o método deve ser <strong>público</strong>, <strong> não estático</strong>
- *              e deve estar anotado com a anotação {@link DocumentacaoFuncao}
- *          </p>
- *          <br/>
- *      </li>
- *      <li>
- *          <p>
  *              Para que um atributo da classe seja exportado como uma constante da biblioteca,
- *              o atributo deve ser <strong>público</strong>, <strong>final</strong>, ter o
- *              nome todo em letras maiúsculas e estar anotado com a anotação {@link DocumentacaoConstante}
+ *              o atributo deve ser <strong>público</strong>, <strong>final</strong>, não
+ *              <strong>estático</strong>, ter o nome todo em letras maiúsculas e estar 
+ *              anotado com a anotação {@link DocumentacaoConstante}
  *          </p>
  *          <br/>
  *      </li>
+  *      <li>
+ *          <p>
+ *              Os atributos da classe exportados como constantes da biblioteca,
+ *              não podederão ser vetor nem matriz, somente valores
+ *          </p>
+ *          <br/>
+ *      </li>* 
  *      <li>
  *          <p>
  *              O tipo de retorno e parâmetros dos métodos, e o tipo dos atributos
@@ -79,95 +98,48 @@ import java.util.List;
  */
 public abstract class Biblioteca
 {    
-    private List<Field> variaveis;
-    private List<Method> funcoes; 
-    private TipoBiblioteca tipo;
+    private TipoBiblioteca tipo = getClass().getAnnotation(PropriedadesBiblioteca.class).tipo();
     
-    public Biblioteca() throws Exception
+    public Biblioteca()
     {
-        //variaveis = listarVariaveisExportadas();
-        //funcoes = listarFuncoesExportadas();
+        
+    }
+    
+    public final String getNome()
+    {
+        return getClass().getSimpleName();
     }
 
-    private void validarFuncoes(List<Method> funcoes) throws Exception
+    public final TipoBiblioteca getTipo()
     {
-        for (Method funcao : funcoes)
-        {
-            if (!tipoSuportado(funcao.getReturnType()))
-            {
-                throw new Exception(String.format("O tipo de retorno da função \"%s\" deve ser um dos tipos suportados: %s", funcao.getName(), listarTiposSuportados()));
-            }
-            
-            if (Modifier.isStatic(funcao.getModifiers()))
-            {
-                throw new Exception(String.format("A função \"%s\" não pode ser declarada com o modificador \"static\"", funcao.getName()));
-            }
+        return tipo;
+    }
 
-            for (int i = 0; i < funcao.getParameterTypes().length; i++)
-            {
-                Class tipoParametro = funcao.getParameterTypes()[i];
-                
-                if (!tipoSuportado(tipoParametro))
-                {
-                    throw new Exception(String.format("O tipo do %dº parâmetro da função \"%s\" deve ser um dos tipos suportados: %s", (i + 1), funcao.getName(), listarTiposSuportados()));
-                }
-            }
-        }
+    void setTipo(TipoBiblioteca tipo)
+    {
+        this.tipo = tipo;
     }
     
-    private void validarVariaveis(List<Field> variaveis) throws Exception
+    public final Object getValorVariavel(String nome) throws ErroExecucao
     {
-        for (Field variavel : variaveis)
+        try
         {
-            if (!Modifier.isFinal(variavel.getModifiers()))
+            Field variavel = this.getClass().getDeclaredField(nome);
+                
+            return variavel.get(this);
+        }
+        catch (Exception excecao)
+        {
+            if (!(excecao instanceof ErroExecucao))
             {
-                throw new Exception(String.format("A variável \"%s\" deve ser declarada com o modificador final", variavel.getName()));
+                excecao = new ErroExecucaoNaoTratado(excecao);
             }
             
-            if (!tipoSuportado(variavel.getType()))
-            {
-                throw new Exception(String.format("O tipo da variável \"%s\" deve ser um dos tipos suportados: %s", variavel.getName(), listarTiposSuportados()));
-            }
+            throw (ErroExecucao) excecao;
         }
     }
     
-    private boolean tipoSuportado(Class classe)
-    {
-        for (TipoDado tipo : TipoDado.values())
-        {
-            if (classe == tipo.getTipoJava())
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    private String listarTiposSuportados()
-    {
-        StringBuilder construtorTexto = new StringBuilder();
-        TipoDado[] tiposDado = TipoDado.values();
-        
-        for (int i = 0; i < tiposDado.length - 1; i++)
-        {
-            construtorTexto.append(tiposDado[i].getTipoJava().getName());
-            construtorTexto.append(", ");
-        }
-        
-        construtorTexto.append(tiposDado[tiposDado.length - 1].getTipoJava().getName());
-        
-        return construtorTexto.toString();
-    }
-    
-    public final Object getValorVariavel(String nome) throws Exception
-    {
-        Field variavel = this.getClass().getDeclaredField(nome);        
-                
-        return variavel.get(this);
-    }    
-    
-    public final Object chamarFuncao(String nome, Object[] parametros) throws Exception
+    public final Object chamarFuncao(String nome, Object[] parametros) throws ErroExecucao
     {
         Class[] tiposParametros = new Class[parametros.length];
         
@@ -176,9 +148,21 @@ public abstract class Biblioteca
             tiposParametros[i] = parametros[i].getClass();
         }
         
-        Method funcao = this.getClass().getDeclaredMethod(nome, tiposParametros);
+        try
+        {
+            Method funcao = this.getClass().getDeclaredMethod(nome, tiposParametros);
         
-        return funcao.invoke(this, parametros);
+            return funcao.invoke(this, parametros);
+        }
+        catch (Exception excecao)
+        {
+            if (!(excecao instanceof ErroExecucao))
+            {
+                excecao = new ErroExecucaoNaoTratado(excecao);
+            }
+            
+            throw (ErroExecucao) excecao;
+        }
     }
     
     /**
@@ -214,15 +198,5 @@ public abstract class Biblioteca
     protected void finalizar()
     {
 
-    }    
-
-    public List<Field> getVariaveis()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public List<Method> getFuncoes()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -24,7 +24,7 @@ public @interface DocumentacaoFuncao
      * 
      * @return  a informacoes de documentação dos parâmetros desta função
      */
-    public DocumentacaoParametro[] parametros();
+    public DocumentacaoParametro[] parametros() default {};
     
     /**
      * 

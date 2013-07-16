@@ -2,23 +2,20 @@ package br.univali.portugol.nucleo.bibliotecas.base;
 
 import br.univali.portugol.nucleo.asa.Quantificador;
 import br.univali.portugol.nucleo.asa.TipoDado;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
-import java.util.ArrayList;
-import java.util.List;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class MetaDadosFuncao
+public final class MetaDadosConstante
 {
     private String nome;
     private TipoDado tipoDado;
     private Quantificador quantificador;
-    private DocumentacaoFuncao documentacao;
-    private List<MetaDadosParametro> metaDadosParametros;    
+    private DocumentacaoConstante documentacao;
 
-    MetaDadosFuncao()
+    MetaDadosConstante()
     {
         
     }
@@ -32,7 +29,7 @@ public final class MetaDadosFuncao
     {
         this.nome = nome;
     }
-    
+
     public TipoDado getTipoDado()
     {
         return tipoDado;
@@ -42,7 +39,7 @@ public final class MetaDadosFuncao
     {
         this.tipoDado = tipoDado;
     }
-    
+
     public Quantificador getQuantificador()
     {
         return quantificador;
@@ -51,34 +48,24 @@ public final class MetaDadosFuncao
     void setQuantificador(Quantificador quantificador)
     {
         this.quantificador = quantificador;
-    }    
-    
-    public DocumentacaoFuncao getDocumentacao()
+    }
+
+    public DocumentacaoConstante getDocumentacao()
     {
         return documentacao;
     }
 
-    void setDocumentacao(DocumentacaoFuncao documentacao)
+    void setDocumentacao(DocumentacaoConstante documentacao)
     {
         this.documentacao = documentacao;
-    }    
-
-    public List<MetaDadosParametro> getMetaDadosParametros()
-    {
-        return new ArrayList<MetaDadosParametro>(metaDadosParametros);
-    }
-
-    void setMetaDadosParametros(List<MetaDadosParametro> metaDadosParametros)
-    {
-        this.metaDadosParametros = metaDadosParametros;
     }
 
     @Override
     public boolean equals(Object obj)
     {
-        if (obj instanceof MetaDadosFuncao)
+        if (obj instanceof MetaDadosConstante)
         {
-            return ((MetaDadosFuncao) obj).nome.equals(this.nome);
+            return ((MetaDadosConstante) obj).nome.equals(this.nome);
         }
         
         return false;
@@ -87,6 +74,6 @@ public final class MetaDadosFuncao
     @Override
     public int hashCode()
     {
-        return 89 * 7 + (this.nome != null ? this.nome.hashCode() : 0);
-    }
+        return 83 * 7 + (this.nome != null ? this.nome.hashCode() : 0);
+    }    
 }

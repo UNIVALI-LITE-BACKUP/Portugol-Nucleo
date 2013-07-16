@@ -1,24 +1,23 @@
 package br.univali.portugol.nucleo.bibliotecas.base;
 
+import br.univali.portugol.nucleo.asa.ModoAcesso;
 import br.univali.portugol.nucleo.asa.Quantificador;
 import br.univali.portugol.nucleo.asa.TipoDado;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
-import java.util.ArrayList;
-import java.util.List;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class MetaDadosFuncao
+public final class MetaDadosParametro
 {
     private String nome;
     private TipoDado tipoDado;
+    private ModoAcesso modoAcesso;
     private Quantificador quantificador;
-    private DocumentacaoFuncao documentacao;
-    private List<MetaDadosParametro> metaDadosParametros;    
+    private DocumentacaoParametro documentacaoParametro;
 
-    MetaDadosFuncao()
+    MetaDadosParametro()
     {
         
     }
@@ -42,7 +41,17 @@ public final class MetaDadosFuncao
     {
         this.tipoDado = tipoDado;
     }
-    
+
+    public ModoAcesso getModoAcesso()
+    {
+        return modoAcesso;
+    }
+
+    void setModoAcesso(ModoAcesso modoAcesso)
+    {
+        this.modoAcesso = modoAcesso;
+    }
+
     public Quantificador getQuantificador()
     {
         return quantificador;
@@ -51,34 +60,24 @@ public final class MetaDadosFuncao
     void setQuantificador(Quantificador quantificador)
     {
         this.quantificador = quantificador;
-    }    
+    }
     
-    public DocumentacaoFuncao getDocumentacao()
+    public DocumentacaoParametro getDocumentacaoParametro()
     {
-        return documentacao;
+        return documentacaoParametro;
     }
 
-    void setDocumentacao(DocumentacaoFuncao documentacao)
+    void setDocumentacaoParametro(DocumentacaoParametro documentacaoParametro)
     {
-        this.documentacao = documentacao;
-    }    
-
-    public List<MetaDadosParametro> getMetaDadosParametros()
-    {
-        return new ArrayList<MetaDadosParametro>(metaDadosParametros);
-    }
-
-    void setMetaDadosParametros(List<MetaDadosParametro> metaDadosParametros)
-    {
-        this.metaDadosParametros = metaDadosParametros;
+        this.documentacaoParametro = documentacaoParametro;
     }
 
     @Override
     public boolean equals(Object obj)
     {
-        if (obj instanceof MetaDadosFuncao)
+        if (obj instanceof MetaDadosParametro)
         {
-            return ((MetaDadosFuncao) obj).nome.equals(this.nome);
+            return ((MetaDadosParametro) obj).nome.equals(this.nome);
         }
         
         return false;
@@ -87,6 +86,6 @@ public final class MetaDadosFuncao
     @Override
     public int hashCode()
     {
-        return 89 * 7 + (this.nome != null ? this.nome.hashCode() : 0);
+        return 71 * 7 + (this.nome != null ? this.nome.hashCode() : 0);
     }
 }

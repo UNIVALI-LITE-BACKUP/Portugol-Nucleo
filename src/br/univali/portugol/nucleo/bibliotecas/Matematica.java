@@ -8,6 +8,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 
 /**
  *
@@ -21,9 +22,9 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBibliot
 )
 public final class Matematica extends Biblioteca
 {
-    public Matematica() throws Exception
+    public Matematica()
     {
-        super();
+
     }
 
     @DocumentacaoConstante
@@ -48,7 +49,7 @@ public final class Matematica extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )    
-    public Double potencia(Double base, Double expoente)
+    public Double potencia(Double base, Double expoente) throws ErroExecucao
     {
         return Math.pow(base, expoente);
     }
@@ -68,7 +69,7 @@ public final class Matematica extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Double raiz(Double radicando, Double indice)
+    public Double raiz(Double radicando, Double indice) throws ErroExecucao
     {
         return Math.pow(radicando, 1.0 / indice);
     }

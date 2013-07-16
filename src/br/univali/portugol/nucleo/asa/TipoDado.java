@@ -137,7 +137,7 @@ public enum TipoDado
      * @since 1.0
      * 
      */
-    VAZIO("vazio", "vazio", null, Void.class);
+    VAZIO("vazio", "vazio", null, Void.TYPE);
     
     private String nome;
     private String descricao;
@@ -208,7 +208,7 @@ public enum TipoDado
      * Obtém um tipo de dado a partir de seu nome.
      * 
      * @param nome     o nome do tipo de dado desejado.
-     * @return         o tipo de dado correspondente ao nome informado. Retorna o tipo {@link TipoDado#VAZIO} 
+     * @return         o tipo de dado correspondente ao nome informado. Retorna <code>null</code>
      *                 se não for encontrado um tipo correspondente ao nome informado.
      * 
      * @since 1.0
@@ -225,7 +225,7 @@ public enum TipoDado
             }
         }
 
-        return TipoDado.VAZIO;
+        return null;
     }
     
     public static TipoDado obterTipoDadoPeloTipoJava(Class tipoJava)
@@ -240,6 +240,6 @@ public enum TipoDado
             }
         }
 
-        return TipoDado.VAZIO;
+        return null;
     }
 }

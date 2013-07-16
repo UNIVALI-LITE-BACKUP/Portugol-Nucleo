@@ -1,7 +1,7 @@
 package br.univali.portugol.nucleo.bibliotecas.base;
 
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,31 +10,64 @@ import java.util.List;
  */
 public final class MetaDadosBiblioteca
 {
-    private Class<? extends Biblioteca> classeBiblioteca;
+    private String nome;
+    private TipoBiblioteca tipo;
+    private DocumentacaoBiblioteca documentacao;
     private List<MetaDadosFuncao> metaDadosFuncoes;
+    private List<MetaDadosConstante> metaDadosConstantes;
     
-    MetaDadosBiblioteca(Class<? extends Biblioteca> classeBiblioteca)
+    MetaDadosBiblioteca()
     {
-        this.classeBiblioteca = classeBiblioteca;
+        
     }
-    
-    public DocumentacaoBiblioteca getDocumentacao()
+
+    public String getNome()
     {
-        return classeBiblioteca.getAnnotation(DocumentacaoBiblioteca.class);
+        return nome;
+    }
+
+    void setNome(String nome)
+    {
+        this.nome = nome;
     }
     
     public TipoBiblioteca getTipo()
     {
-        return classeBiblioteca.getAnnotation(PropriedadesBiblioteca.class).tipo();
+        return tipo;
     }
 
+    void setTipo(TipoBiblioteca tipo)
+    {
+        this.tipo = tipo;
+    }
+    
+    public DocumentacaoBiblioteca getDocumentacao()
+    {
+        return documentacao;
+    }
+
+    void setDocumentacao(DocumentacaoBiblioteca documentacao)
+    {
+        this.documentacao = documentacao;
+    }
+  
     public List<MetaDadosFuncao> getMetaDadosFuncoes()
     {
-        return metaDadosFuncoes;
+        return new ArrayList<MetaDadosFuncao>(metaDadosFuncoes);
     }
 
     void setMetaDadosFuncoes(List<MetaDadosFuncao> metaDadosFuncoes)
     {
         this.metaDadosFuncoes = metaDadosFuncoes;
+    }
+
+    public List<MetaDadosConstante> getMetaDadosConstantes()
+    {
+        return metaDadosConstantes;
+    }
+
+    void setMetaDadosConstantes(List<MetaDadosConstante> metaDadosConstantes)
+    {
+        this.metaDadosConstantes = metaDadosConstantes;
     }
 }
