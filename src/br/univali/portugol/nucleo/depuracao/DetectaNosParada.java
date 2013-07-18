@@ -88,7 +88,7 @@ public class DetectaNosParada implements VisitanteASA
         {
             for (NoBloco noBloco : blocos)
             {
-                if (!(noBloco instanceof NoSe) &&                        
+                if (!(noBloco instanceof NoSe) &&
                     !(noBloco instanceof NoPara) &&                        
                     !(noBloco instanceof NoFacaEnquanto) &&
                     !(noBloco instanceof NoEnquanto) &&
@@ -224,7 +224,7 @@ public class DetectaNosParada implements VisitanteASA
         nosParada.add(noSe.getCondicao());
         List<NoBloco> blocosVer = noSe.getBlocosVerdadeiros(); 
         List<NoBloco> blocosFal = noSe.getBlocosFalsos();
-        interpretarListaBlocos(blocosVer);        
+        interpretarListaBlocos(blocosVer);
         interpretarListaBlocos(blocosFal);
 
         return null;
@@ -383,6 +383,7 @@ public class DetectaNosParada implements VisitanteASA
     @Override
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA
     {
+        nosParada.add(noPare);
         return null;
     }
 
@@ -419,6 +420,7 @@ public class DetectaNosParada implements VisitanteASA
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
+        nosParada.add(noRetorne);
         return null;
     }
 
