@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
+
 /**
  * Esta enumeração define todos os tipos de dado existentes no Portugol.
  * <p>
@@ -116,7 +118,7 @@ public enum TipoDado
     
     /**
      * Este é um tipo de dados especial utilizado apenas nas declarações de função para indicar
-     * que a função não irá retornar valores. Ss o tipo de dado da função for omitido, assume-se
+     * que a função não irá retornar valores. Se o tipo de dado da função for omitido, assume-se
      * automaticamente um retorno vazio.
      * <p>
      * Exemplo:
@@ -137,7 +139,14 @@ public enum TipoDado
      * @since 1.0
      * 
      */
-    VAZIO("vazio", "vazio", null, Void.TYPE);
+    VAZIO("vazio", "vazio", null, Void.TYPE),
+    
+    /**
+     * Este é um tipo de dados especial utilizado apenas com os parâmetros 
+     * das funções de bibliotecas. Este tipo de dado indica ao {@link AnalisadorSemantico}
+     * que o parâmetro da função aceita qualquer tipo de dado.
+     */ 
+    TODOS("todos", "todos", null, Object.class);
     
     private String nome;
     private String descricao;

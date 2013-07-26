@@ -1,13 +1,7 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.NoCadeia;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
-import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
-import br.univali.portugol.nucleo.simbolos.Funcao;
 
 /**
  *
@@ -16,16 +10,16 @@ import br.univali.portugol.nucleo.simbolos.Funcao;
 public final class ErroPassagemParametroInvalida extends ErroSemantico
 {
     private NoExpressao valor;
-    private NoDeclaracaoParametro parametro;
-    private Funcao funcao;
+    private String nomeParametro;
+    private String nomeFuncao;
 
-    public ErroPassagemParametroInvalida(NoExpressao valor, NoDeclaracaoParametro parametro, Funcao funcao)
+    public ErroPassagemParametroInvalida(NoExpressao valor, String nomeParametro, String nomeFuncao)
     {
         super(valor.getTrechoCodigoFonte());
         
         this.valor = valor;
-        this.parametro = parametro;
-        this.funcao = funcao;
+        this.nomeParametro = nomeParametro;
+        this.nomeFuncao = nomeFuncao;
     }
 
     public NoExpressao getValor()
@@ -33,14 +27,14 @@ public final class ErroPassagemParametroInvalida extends ErroSemantico
         return valor;
     }
 
-    public NoDeclaracaoParametro getParametro()
+    public String getNomeParametro()
     {
-        return parametro;
+        return nomeParametro;
     }
 
-    public Funcao getFuncao()
+    public String getNomeFuncao()
     {
-        return funcao;
+        return nomeFuncao;
     }
     
      /**
@@ -54,45 +48,11 @@ public final class ErroPassagemParametroInvalida extends ErroSemantico
         StringBuilder construtorTexto = new StringBuilder();
             
         construtorTexto.append("Não é possível passar uma expressão constante para o parâmetro \"");
-        construtorTexto.append(parametro.getNome());
+        construtorTexto.append(nomeParametro);
         construtorTexto.append("\" da função \"");
-        construtorTexto.append(funcao.getNome());
-        construtorTexto.append("\", pois este parâmetro é passado por referência");
+        construtorTexto.append(nomeFuncao);
+        construtorTexto.append("\", pois este parâmetro espera uma referência");
             
         return construtorTexto.toString();
-    }
-    
-    private class ConstrutorMensagem extends VisitanteASABasico
-    {
-        public ConstrutorMensagem()
-        {
-            
-        }        
-        
-        public String construirMensagem()
-        {
-            try
-            {
-                return (String) valor.aceitar(this);
-            }
-            catch (ExcecaoVisitaASA e)
-            {
-                return e.getMessage();
-            }
-        }
-
-        @Override
-        public Object visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
-        {
-            StringBuilder construtorTexto = new StringBuilder();
-            
-            construtorTexto.append("O parâmetro \"");
-            construtorTexto.append(parametro.getNome());
-            construtorTexto.append("\" da função \"");
-            construtorTexto.append(funcao.getNome());
-            construtorTexto.append("\" ");
-            
-            return construtorTexto.toString();
-        }
     }
 }

@@ -8,10 +8,9 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
  *
  * @author Luiz Fernando Noschang
  */
-public final class MetaDadosConstante
+public final class MetaDadosConstante extends MetaDados
 {
     private Object valor;
-    private String nome;
     private TipoDado tipoDado;
     private Quantificador quantificador;
     private DocumentacaoConstante documentacao;
@@ -29,16 +28,6 @@ public final class MetaDadosConstante
     void setValor(Object valor)
     {
         this.valor = valor;
-    }
-
-    public String getNome()
-    {
-        return nome;
-    }
-
-    void setNome(String nome)
-    {
-        this.nome = nome;
     }
 
     public TipoDado getTipoDado()
@@ -76,7 +65,7 @@ public final class MetaDadosConstante
     {
         if (obj instanceof MetaDadosConstante)
         {
-            return ((MetaDadosConstante) obj).nome.equals(this.nome);
+            return ((MetaDadosConstante) obj).getNome().equals(this.getNome());
         }
         
         return false;
@@ -85,6 +74,6 @@ public final class MetaDadosConstante
     @Override
     public int hashCode()
     {
-        return 83 * 7 + (this.nome != null ? this.nome.hashCode() : 0);
+        return 581 + (this.getNome() != null ? this.getNome().hashCode() : 0);
     }    
 }

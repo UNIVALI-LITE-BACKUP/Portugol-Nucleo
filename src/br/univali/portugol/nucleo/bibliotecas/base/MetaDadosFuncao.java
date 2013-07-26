@@ -3,36 +3,23 @@ package br.univali.portugol.nucleo.bibliotecas.base;
 import br.univali.portugol.nucleo.asa.Quantificador;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class MetaDadosFuncao
+public final class MetaDadosFuncao extends MetaDados
 {
-    private String nome;
     private TipoDado tipoDado;
     private Quantificador quantificador;
     private DocumentacaoFuncao documentacao;
-    private List<MetaDadosParametro> metaDadosParametros;    
+    private MetaDadosParametros metaDadosParametros;
 
     MetaDadosFuncao()
     {
         
     }
 
-    public String getNome()
-    {
-        return nome;
-    }
-
-    void setNome(String nome)
-    {
-        this.nome = nome;
-    }
-    
     public TipoDado getTipoDado()
     {
         return tipoDado;
@@ -63,22 +50,22 @@ public final class MetaDadosFuncao
         this.documentacao = documentacao;
     }    
 
-    public List<MetaDadosParametro> getMetaDadosParametros()
+    public MetaDadosParametros obterMetaDadosParametros()
     {
-        return new ArrayList<MetaDadosParametro>(metaDadosParametros);
+        return metaDadosParametros;
     }
 
-    void setMetaDadosParametros(List<MetaDadosParametro> metaDadosParametros)
+    void setMetaDadosParametros(MetaDadosParametros metaDadosParametros)
     {
         this.metaDadosParametros = metaDadosParametros;
-    }
+    }    
 
     @Override
     public boolean equals(Object obj)
     {
         if (obj instanceof MetaDadosFuncao)
         {
-            return ((MetaDadosFuncao) obj).nome.equals(this.nome);
+            return ((MetaDadosFuncao) obj).getNome().equals(this.getNome());
         }
         
         return false;
@@ -87,6 +74,6 @@ public final class MetaDadosFuncao
     @Override
     public int hashCode()
     {
-        return 89 * 7 + (this.nome != null ? this.nome.hashCode() : 0);
+        return 91 + (this.getNome() != null ? this.getNome().hashCode() : 0);
     }
 }

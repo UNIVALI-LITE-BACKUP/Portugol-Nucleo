@@ -18,14 +18,10 @@ public final class ErroCarregamentoBiblioteca extends Exception
     {
         super(String.format("Erro ao carregar a biblioteca \"%s\": %s", nome, causa.getMessage()), causa);
         this.nome = nome;
-    }
-
-    
+    }    
     
     public String getNome()
     {
         return nome;
     }
-    
-    
 }

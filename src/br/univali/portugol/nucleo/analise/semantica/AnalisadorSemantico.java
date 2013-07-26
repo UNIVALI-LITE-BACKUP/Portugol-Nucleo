@@ -1,14 +1,15 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
 import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoSimboloGlobalOcultado;
+import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoValorExpressaoSeraConvertido;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroLeiaNecessitaReferencia;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosPassadosFuncao;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosFuncao;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroOperacaoComExpressaoConstante;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroPassagemParametroInvalida;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantificadorParametroFuncao;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSemanticoNaoTratado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
@@ -17,6 +18,7 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloRedeclarado
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTipoParametroIncompativel;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
+import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoValorSeraConvertido;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
@@ -24,6 +26,8 @@ import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstante;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametro;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametros;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -58,7 +62,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     private TipoDado tipoDadoEscolha;
     private boolean declarandoVetor;
     private boolean declarandoMatriz;
-    private boolean passagemParametro = false;
+    private boolean passandoReferencia = false;
     
     public AnalisadorSemantico()
     {
@@ -203,16 +207,553 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
-        if (chamadaFuncao.getEscopo() == null)
+        if (funcaoExiste(chamadaFuncao))
         {
-            return analisarChamadaFuncaoPrograma(chamadaFuncao);
+            verificarQuantidadeParametros(chamadaFuncao);            
+            verificarTiposParametros(chamadaFuncao);
+            verificarQuantificador(chamadaFuncao);
+            verificarModoAcesso(chamadaFuncao);
+            verificarParametrosObsoletos(chamadaFuncao);
+            
+            return obterTipoRetornoFuncao(chamadaFuncao);
         }
         else
         {
-            return analisarChamadaFuncaoBiblioteca(chamadaFuncao);
-        }        
+            notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
+            
+            throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
+        }
+    }    
+    
+    private void verificarModoAcesso(NoChamadaFuncao chamadaFuncao)
+    {
+        List<ModoAcesso> modosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
+        List<ModoAcesso> modosAcessoPassados = obterModosAcessoPassados(chamadaFuncao);
+        
+        int cont = Math.min(modosAcessoEsperados.size(), modosAcessoPassados.size());
+        
+        for (int indice = 0; indice < cont; indice++)
+        {
+            ModoAcesso modoAcessoEsperado = modosAcessoEsperados.get(indice);
+            ModoAcesso modoAcessoPassado = modosAcessoPassados.get(indice);
+            
+            if (modoAcessoEsperado == ModoAcesso.POR_REFERENCIA && modoAcessoPassado == ModoAcesso.POR_VALOR)
+            {
+                notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome()));
+            }
+        }
+    }
+    
+    private List<ModoAcesso> obterModosAcessoPassados(NoChamadaFuncao chamadaFuncao)
+    {
+        List<ModoAcesso> modosAcesso = new ArrayList<ModoAcesso>();
+        
+        if (chamadaFuncao.getParametros() != null)
+        {
+            for (NoExpressao parametro : chamadaFuncao.getParametros())
+            {
+                if (parametro instanceof NoReferenciaVariavel)
+                {
+                    NoReferenciaVariavel noReferenciaVariavel = (NoReferenciaVariavel) parametro;
+                    
+                    if (noReferenciaVariavel.getEscopo() == null)
+                    {
+                        try
+                        {
+                            Simbolo simbolo = memoria.getSimbolo(noReferenciaVariavel.getNome());
+                            
+                            if (simbolo.constante())
+                            {
+                                modosAcesso.add(ModoAcesso.POR_VALOR);
+                            }
+                            else modosAcesso.add(ModoAcesso.POR_REFERENCIA);
+                        }
+                        catch (ExcecaoSimboloNaoDeclarado excecao)
+                        {
+                            // Não faz nada aqui
+                        }
+                    }
+                    else
+                    {
+                        modosAcesso.add(ModoAcesso.POR_VALOR);
+                    }
+                }
+                else
+                {
+                    modosAcesso.add(ModoAcesso.POR_VALOR);
+                }
+            }
+        }
+        
+        return modosAcesso;
+    }
+    
+    private List<ModoAcesso> obterModosAcessoEsperados(NoChamadaFuncao chamadaFuncao)
+    {
+        List<ModoAcesso> modosAcesso = new ArrayList<ModoAcesso>();
+        
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            if (!funcoesReservadas.contains(chamadaFuncao.getNome()))
+            {
+                try
+                {
+                    Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+
+                    for (NoDeclaracaoParametro parametro : funcao.getParametros())
+                    {
+                        modosAcesso.add(parametro.getModoAcesso());
+                    }
+                }
+                catch (ExcecaoSimboloNaoDeclarado ex)
+                {
+                    // Não faz nada aqui
+                }
+            }
+        }
+        else
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
+            MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+            MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
+            
+            for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
+            {
+                modosAcesso.add(metaDadosParametro.getModoAcesso());
+            }
+        }
+        
+        return modosAcesso;
+    }
+            
+    private TipoDado obterTipoRetornoFuncao(NoChamadaFuncao chamadaFuncao)
+    {
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            if (funcoesReservadas.contains(chamadaFuncao.getNome()))
+            {
+                return TipoDado.VAZIO;
+            }
+            else
+            {
+                try
+                {
+                    Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+                
+                    return funcao.getTipoDado();
+                }
+                catch (ExcecaoSimboloNaoDeclarado excecao)
+                {
+                    // Não faz nada aqui
+                }
+            }
+        }
+        else
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
+            MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+            
+            return metaDadosFuncao.getTipoDado();
+        }
+        
+        return null;
+    }
+    
+    private void verificarParametrosObsoletos(final NoChamadaFuncao chamadaFuncao)
+    {
+        int parametrosEsperados = obterNumeroParametrosEsperados(chamadaFuncao);
+        int parametrosPassados = (chamadaFuncao.getParametros() != null)? chamadaFuncao.getParametros().size() : 0;
+        
+        int inicio = Math.min(parametrosEsperados, parametrosPassados);
+        
+        if (chamadaFuncao.getParametros() != null)
+        {
+            for (int indice = inicio; indice < parametrosPassados; indice++)
+            {
+                NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
+                        
+                notificarErroSemantico(new ErroSemantico(parametro.getTrechoCodigoFonte())
+                {
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return String.format("A expressão é obsoleta na chamada da função \"%s\", pois extrapola o número de parâmetros esperados pela função", chamadaFuncao.getNome());
+                    }
+                });
+            }
+        }
+    }
+    
+    private void verificarQuantificador(NoChamadaFuncao chamadaFuncao)
+    {
+        List<Quantificador> quantificadoresEsperados = obterQuantificadoresEsperados(chamadaFuncao);
+        List<Quantificador> quantificadoresPassados = obterQuantificadoresPassados(chamadaFuncao);
+        
+        int cont = Math.min(quantificadoresEsperados.size(), quantificadoresPassados.size());        
+        
+        for (int indice = 0; indice < cont; indice++)
+        {
+            Quantificador quantificadorPassado = quantificadoresPassados.get(indice);
+            Quantificador quantificadorEsperado = quantificadoresEsperados.get(indice);
+                    
+            if (quantificadorPassado != quantificadorEsperado)
+            {
+                notificarErroSemantico(new ErroQuantificadorParametroFuncao(chamadaFuncao, indice, obterNomeParametro(chamadaFuncao, indice), quantificadorEsperado, quantificadorPassado));
+            }
+        }
+    }
+    
+    private List<Quantificador> obterQuantificadoresEsperados(NoChamadaFuncao chamadaFuncao)
+    {
+        List<Quantificador> quantificadores = new ArrayList<Quantificador>();
+        
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            if (!funcoesReservadas.contains(chamadaFuncao.getNome()))
+            {
+                try
+                {
+                    Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+
+                    for (NoDeclaracaoParametro declaracaoParametro : funcao.getParametros())
+                    {
+                        quantificadores.add(declaracaoParametro.getQuantificador());
+                    }
+                }
+                catch(ExcecaoSimboloNaoDeclarado ex)                    
+                {
+                    // Não faz nada aqui
+                }
+            }
+        }
+        else
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
+            MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+            MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
+            
+            for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
+            {
+                quantificadores.add(metaDadosParametro.getQuantificador());
+            }
+        }
+        
+        return quantificadores;
+    }
+    
+    private List<Quantificador> obterQuantificadoresPassados(NoChamadaFuncao chamadaFuncao)
+    {
+        List<Quantificador> quantificadores = new ArrayList<Quantificador>();
+        
+        if (chamadaFuncao.getParametros() != null)
+        {
+            for (NoExpressao parametroPassado : chamadaFuncao.getParametros())
+            {            
+                try
+                {            
+                    if (parametroPassado instanceof NoReferenciaVariavel) 
+                    {
+                        String nome = ((NoReferenciaVariavel) parametroPassado).getNome();
+                        Simbolo simbolo = memoria.getSimbolo(nome);
+                        
+                        if (simbolo instanceof Variavel)
+                        {
+                            quantificadores.add(Quantificador.VALOR);
+                        }
+                        else if (simbolo instanceof  Vetor)
+                        {
+                            quantificadores.add(Quantificador.VETOR);
+                        }
+                        else if (simbolo instanceof Matriz)
+                        {
+                            quantificadores.add(Quantificador.MATRIZ);
+                        }
+                    }
+                    else if (parametroPassado instanceof NoVetor)
+                    {                        
+                        quantificadores.add(Quantificador.VETOR);
+                    }
+                    else if (parametroPassado instanceof NoMatriz)
+                    {
+                        quantificadores.add(Quantificador.MATRIZ);
+                    }
+                    else
+                    {
+                        quantificadores.add(Quantificador.VALOR);
+                    }
+                }
+                catch (ExcecaoSimboloNaoDeclarado ex)
+                {
+                    // Não faz nada aqui
+                }
+            }
+        }
+        
+        return quantificadores;
+    }
+    
+    private void verificarTiposParametros(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+    {
+        List<ModoAcesso> modosAcesso = obterModosAcessoEsperados(chamadaFuncao);
+        List<TipoDado> tiposEsperados = obterTiposParametrosEsperados(chamadaFuncao);
+        List<TipoDado> tiposPassado = obterTiposParametrosPassados(chamadaFuncao, modosAcesso);
+        
+        int cont = Math.min(tiposEsperados.size(),tiposPassado.size());
+        
+        for (int indice = 0; indice < cont; indice++)
+        {
+            TipoDado tipoPassado = tiposPassado.get(indice);
+            TipoDado tipoEsperado = tiposEsperados.get(indice);
+            ModoAcesso modoAcesso = modosAcesso.get(indice);            
+            
+            if (tipoPassado != null)
+            {
+                try 
+                {
+                    tabelaCompatibilidadeTipos.obterTipoRetornoPassagemParametro(tipoEsperado, tipoPassado);
+                }
+                catch (ExcecaoValorSeraConvertido excecao)
+                {
+                    if (modoAcesso == ModoAcesso.POR_REFERENCIA)
+                    {
+                        notificarErroSemantico(new ErroTipoParametroIncompativel(chamadaFuncao.getNome(), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getParametros().get(indice), tipoEsperado, tipoPassado));
+                    }                    
+                    else
+                    {
+                        notificarAviso(new AvisoValorExpressaoSeraConvertido(chamadaFuncao.getParametros().get(indice).getTrechoCodigoFonte(), chamadaFuncao, tipoPassado, tipoEsperado, obterNomeParametro(chamadaFuncao, indice)));
+                    }
+                }
+                catch (ExcecaoImpossivelDeterminarTipoDado excecao)
+                {
+                    notificarErroSemantico(new ErroTipoParametroIncompativel(chamadaFuncao.getNome(), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getParametros().get(indice), tipoEsperado, tipoPassado));
+                }
+            }
+        }
+    }
+    
+    private String obterNomeParametro(NoChamadaFuncao chamadaFuncao, int indice)
+    {
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            try
+            {
+                Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+                
+                return funcao.getParametros().get(indice).getNome();
+            }
+            catch(ExcecaoSimboloNaoDeclarado ex)
+            {
+                // Não deve cair aqui nunca
+            }
+        }
+        else
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
+            MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+            MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
+            
+            return metaDadosParametros.obter(indice).getNome();
+        }
+        return "";
+    }
+    
+    private List<TipoDado> obterTiposParametrosEsperados(NoChamadaFuncao chamadaFuncao)
+    {
+        List<TipoDado> tipos = new ArrayList<TipoDado>();
+        
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            if (!funcoesReservadas.contains(chamadaFuncao.getNome()))
+            {
+                try
+                {
+                    Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+                    List<NoDeclaracaoParametro> parametros = funcao.getParametros();
+                    
+                    if (parametros != null)
+                    {
+                        for (NoDeclaracaoParametro parametro : parametros)
+                        {
+                            tipos.add(parametro.getTipoDado());
+                        }
+                    }
+                }
+                catch(ExcecaoSimboloNaoDeclarado ex)
+                {
+                    // Não deve cair aqui nunca
+                }
+            }
+        }
+        else
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
+            MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+            MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
+            
+            for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
+            {
+                tipos.add(metaDadosParametro.getTipoDado());
+            }
+        }
+        
+        return tipos;
+    }
+    
+    private List<TipoDado> obterTiposParametrosPassados(NoChamadaFuncao chamadaFuncao, List<ModoAcesso> modosAcesso) throws ExcecaoVisitaASA
+    {
+        List<TipoDado> tipos = new ArrayList<TipoDado>();
+        
+        if (chamadaFuncao.getParametros() != null)
+        {
+            for (int indice = 0; indice < chamadaFuncao.getParametros().size(); indice++)
+            {
+                NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
+                
+                if (chamadaFuncao.getEscopo() == null && funcoesReservadas.contains(chamadaFuncao.getNome()))
+                {
+                    passandoReferencia = false;
+                }
+                else
+                {
+                    if (indice < modosAcesso.size())
+                    {
+                        passandoReferencia = modosAcesso.get(indice) == ModoAcesso.POR_REFERENCIA;
+                    }
+                    
+                    else passandoReferencia = false;
+                }
+                
+                try
+                {                    
+                    if (parametro instanceof NoReferenciaVariavel && chamadaFuncao.getNome().equals("leia"))
+                    {
+                        String nome = ((NoReferenciaVariavel) parametro).getNome();
+                        
+                        try
+                        {
+                            Simbolo variavel = memoria.getSimbolo(nome);
+                            variavel.setInicializado(true);
+                        }
+                        catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
+                        {
+                            // Não faz nada
+                        }
+                    }
+                    
+                    tipos.add( (TipoDado) parametro.aceitar(this));
+                }
+                catch(ExcecaoVisitaASA ex)
+                {
+                    if (ex.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)
+                    {
+                        tipos.add(null);
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
+                }
+                
+                passandoReferencia = false;
+            }
+        }
+        
+        return tipos;
+    }
+    
+    private void verificarQuantidadeParametros(NoChamadaFuncao chamadaFuncao)
+    {        
+        int esperados = obterNumeroParametrosEsperados(chamadaFuncao);
+        int passados = (chamadaFuncao.getParametros() != null)? chamadaFuncao.getParametros().size() : 0;
+        
+        if ((esperados == Integer.MAX_VALUE && passados == 0) || (esperados != Integer.MAX_VALUE && passados != esperados))
+        {
+            notificarErroSemantico(new ErroNumeroParametrosFuncao(passados, esperados, chamadaFuncao));
+        }
+    }
+    
+    private int obterNumeroParametrosEsperados(NoChamadaFuncao chamadaFuncao)
+    {
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            if (funcoesReservadas.contains(chamadaFuncao.getNome()))
+            {
+                if (chamadaFuncao.getNome().equals("limpa"))
+                {
+                    return 0;
+                }                
+                else
+                {
+                    return Integer.MAX_VALUE;
+                }
+            }
+            try
+            {
+                Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+                List<NoDeclaracaoParametro> parametros = funcao.getParametros();
+
+                if (parametros != null)
+                {
+                    return parametros.size();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (ExcecaoSimboloNaoDeclarado ex)
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
+            MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+        
+            return metaDadosFuncao.obterMetaDadosParametros().quantidade();
+        }
     }
 
+    private boolean funcaoExiste(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+    {
+        if (chamadaFuncao.getEscopo() == null)
+        {
+            if (funcoesReservadas.contains(chamadaFuncao.getNome()))
+            {
+                return true;
+            }
+            else
+            {
+                try
+                {
+                    memoria.getSimbolo(chamadaFuncao.getNome());
+                    return true;
+                }
+                catch(ExcecaoSimboloNaoDeclarado ex)
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
+            
+            if (metaDadosBiblioteca != null)
+            {
+                MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+            
+                return (metaDadosFuncao != null);
+            }
+            else
+            {
+                notificarErroSemantico(new ErroInclusaoBiblioteca(chamadaFuncao.getTrechoCodigoFonteNome(), new Exception(String.format("A biblioteca '%s' não foi incluída no programa", chamadaFuncao.getEscopo()))));
+                throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
+            }
+        }
+    }
+    
     @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
     {
@@ -954,7 +1495,13 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             try
             {
-                 tipoDadoRetorno = tabelaCompatibilidadeTipos.getRetorno(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
+                 tipoDadoRetorno = tabelaCompatibilidadeTipos.obterTipoRetornoOperacao(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
+            }
+            catch (ExcecaoValorSeraConvertido excecao)
+            {
+                notificarAviso(new AvisoValorExpressaoSeraConvertido(noOperacao.getOperandoDireito().getTrechoCodigoFonte(), noOperacao, excecao.getTipoEntrada(), excecao.getTipoSaida()));
+                
+                tipoDadoRetorno = excecao.getTipoSaida();
             }
             catch (ExcecaoImpossivelDeterminarTipoDado excecao)
             {
@@ -1410,6 +1957,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         funcoes.add("leia");
         funcoes.add("escreva");
+        funcoes.add("limpa");
         
         return funcoes;
     }
@@ -1441,7 +1989,13 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             try
             {
-                return tabelaCompatibilidadeTipos.getRetorno(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
+                return tabelaCompatibilidadeTipos.obterTipoRetornoOperacao(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
+            }
+            catch (ExcecaoValorSeraConvertido excecao)
+            {
+                notificarAviso(new AvisoValorExpressaoSeraConvertido(noOperacao, excecao.getTipoEntrada(), excecao.getTipoSaida()));
+                
+                return excecao.getTipoSaida();
             }
             catch (ExcecaoImpossivelDeterminarTipoDado excecao)
             {
@@ -1548,7 +2102,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel,simbolo));
             }      
             
-            if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passagemParametro)
+            if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passandoReferencia)
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
             }
@@ -1571,12 +2125,11 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         if (metaDadosBiblioteca != null)
         {
-            for (MetaDadosConstante metaDadosConstante : metaDadosBiblioteca.getMetaDadosConstantes())
+            MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(nome);
+            
+            if (metaDadosConstante != null)
             {
-                if (metaDadosConstante.getNome().equals(nome))
-                {
-                    return metaDadosConstante.getTipoDado();
-                }
+                return metaDadosConstante.getTipoDado();            
             }
 
             notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome()) 
@@ -1602,326 +2155,4 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaVariavel);
     }
-
-    private Object analisarChamadaFuncaoPrograma(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
-    {
-        String nome = chamadaFuncao.getNome();
-        
-        if (!funcoesReservadas.contains(nome))
-        {
-            try
-            {
-                Simbolo simbolo = memoria.getSimbolo(nome); 
-
-                if (simbolo instanceof Funcao) 
-                {
-                    Funcao funcao = (Funcao) simbolo;
-                    
-                    analisarChamadaFuncao(chamadaFuncao, funcao);
-                } 
-                else 
-                {
-                    notificarErroSemantico(new ErroReferenciaInvalida(chamadaFuncao, simbolo));
-                }
-                
-                return (TipoDado) simbolo.getTipoDado();
-            }
-            catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
-            {
-                notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
-            }
-        }
-        else
-        {
-            return (TipoDado) analisarChamadaFuncaoEspecial(chamadaFuncao);
-        }
-        
-        throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
-    }
-    
-    private TipoDado analisarChamadaFuncaoEspecial(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
-    {
-    	List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
-    	
-        if (parametrosPassados == null || chamadaFuncao.getParametros().isEmpty())
-        {
-            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, "leia".equals(chamadaFuncao.getNome())? -2 : -1, null, chamadaFuncao));
-        }
-        else if (parametrosPassados != null)
-        {        
-            for (NoExpressao expressao: parametrosPassados)
-            {
-                if ("leia".equals(chamadaFuncao.getNome()))
-                {
-                    if (!(expressao instanceof NoReferenciaVariavel || expressao instanceof NoReferenciaVetor || expressao instanceof NoReferenciaMatriz))
-                    {
-                        notificarErroSemantico(new ErroLeiaNecessitaReferencia(chamadaFuncao,expressao));
-                    } 
-                    
-                    if (expressao instanceof NoReferenciaVariavel) {
-                        String nome = ((NoReferenciaVariavel) expressao).getNome();
-                        
-                        try
-                        {
-                            Simbolo variavel = memoria.getSimbolo(nome);
-                            variavel.setInicializado(true);
-                        }
-                        catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
-                        {
-                            // Não faz nada
-                        }
-                    }
-                }
-
-                expressao.aceitar(this);
-            }
-        }
-        
-        return TipoDado.VAZIO;
-    }
-        
-    private void analisarChamadaFuncao(NoChamadaFuncao chamadaFuncao, Funcao funcao) throws ExcecaoVisitaASA
-    {
-        int cont = 0;
-        
-        List<NoDeclaracaoParametro> parametrosEsperados = funcao.getParametros();
-        List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
-        
-        if (parametrosPassados == null &&  parametrosEsperados.size() > 0)
-        {
-            cont = 0;
-            notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(0, parametrosEsperados.size(), funcao, chamadaFuncao));
-        }
-        
-        else if (parametrosPassados != null)
-        {            
-            if ( parametrosEsperados.size() > parametrosPassados.size())
-            {
-                cont = chamadaFuncao.getParametros().size();
-                notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
-            }
-            else if (parametrosPassados.size() > funcao.getParametros().size())
-            {
-                cont = chamadaFuncao.getParametros().size();
-                notificarErroSemantico(new ErroNumeroParametrosPassadosFuncao(parametrosPassados.size(), parametrosEsperados.size(), funcao, chamadaFuncao));
-            }
-            else 
-            {
-                cont = parametrosPassados.size();
-            }
-        }       
-        
-        for (int i = 0; i < cont; i++)
-        {
-            if (i < parametrosEsperados.size())
-            {
-                boolean erroPassagem = false;
-
-                final NoDeclaracaoParametro parametroEsperado = parametrosEsperados.get(i);
-                NoExpressao parametroPassado = parametrosPassados.get(i);
-
-                if (parametroEsperado.getModoAcesso() == ModoAcesso.POR_REFERENCIA)
-                {
-                    if (!(parametroPassado instanceof NoReferenciaVariavel))
-                    {
-                        notificarErroSemantico(new ErroPassagemParametroInvalida(parametroPassado, parametroEsperado, funcao));
-                        erroPassagem = true;
-                    }
-                    else
-                    {
-                        try
-                        {
-                            Simbolo simbolo = memoria.getSimbolo(((NoReferenciaVariavel) parametroPassado).getNome());
-
-                            if (simbolo.constante())
-                            {
-                                notificarErroSemantico(new ErroPassagemParametroInvalida(parametroPassado, parametroEsperado, funcao));
-                                erroPassagem = true;
-                            }
-                        }
-                        catch(ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
-                        {
-                            excecaoSimboloNaoDeclarado.printStackTrace(System.out);
-                        }
-                    }
-                }
-
-                if (!erroPassagem)
-                {        
-                    TipoDado tipoDadoParametroEsperado = parametrosEsperados.get(i).getTipoDado();
-                    TipoDado tipoDadoParametroPassado = null;
-                    passagemParametro = true;
-                    try { tipoDadoParametroPassado = (TipoDado) parametrosPassados.get(i).aceitar(this); }
-                    catch (ExcecaoVisitaASA excecao)
-                    { 
-                        if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
-                        {
-                            throw excecao;
-                        }
-                    } finally {
-                        passagemParametro = false;
-                    }
-                    
-                    if (tipoDadoParametroPassado != null)
-                    {
-                        if (tipoDadoParametroEsperado != tipoDadoParametroPassado)
-                        {
-                            if (!(tipoDadoParametroPassado == TipoDado.INTEIRO && tipoDadoParametroEsperado == TipoDado.REAL))
-                            {
-                                notificarErroSemantico(new ErroTipoParametroIncompativel(tipoDadoParametroEsperado, tipoDadoParametroPassado, parametrosEsperados.get(i), parametrosPassados.get(i), funcao));
-                            }
-                        }
-                    }
-                    
-                    if (parametroPassado instanceof NoReferenciaVariavel) {
-                        String nome = ((NoReferenciaVariavel) parametroPassado).getNome();
-                        try
-                        {
-                            Simbolo simbolo = memoria.getSimbolo(nome);
-                            if (parametroEsperado.getQuantificador() == Quantificador.MATRIZ) {
-                                if (!(simbolo instanceof Matriz))
-                                {
-                                    notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
-                                    {
-                                        @Override
-                                        protected String construirMensagem()
-                                        {
-                                            return "O parâmetro esperado para essa função deve ser uma matriz";
-                                        }
-                                    });
-                                }
-                            } else if (parametroEsperado.getQuantificador() == Quantificador.VETOR) {
-                                if (!(simbolo instanceof Vetor))
-                                {
-                                    notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
-                                    {
-                                        @Override
-                                        protected String construirMensagem()
-                                        {
-                                            return "O parâmetro esperado para essa função deve ser um vetor";
-                                        }
-                                    });
-                                }
-                            } else if (parametroEsperado.getQuantificador() == Quantificador.VALOR) {
-                                if (!(simbolo instanceof Variavel))
-                                {
-                                    notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
-                                    {
-                                        @Override
-                                        protected String construirMensagem()
-                                        {
-                                            return "O parâmetro esperado para essa função deve ser um valor";
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                        catch (ExcecaoSimboloNaoDeclarado ex)
-                        {
-                            //
-                        }
-                    } 
-                    else if (parametroPassado instanceof NoVetor)
-                    {
-                        if (parametroEsperado.getQuantificador() != Quantificador.VETOR) {
-                            notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
-                                    {
-                                        @Override
-                                        protected String construirMensagem()
-                                        {
-                                            return "Você deve passar um(a) "+parametroEsperado.getQuantificador().name().toLowerCase();
-                                        }
-                                    });
-                        }
-                    }
-                    else if (parametroPassado instanceof NoMatriz)
-                    {
-                        if (parametroEsperado.getQuantificador() != Quantificador.MATRIZ) {
-                            notificarErroSemantico(new ErroSemantico(parametroPassado.getTrechoCodigoFonte())
-                                    {
-                                        @Override
-                                        protected String construirMensagem()
-                                        {
-                                            return "Você deve passar um(a) "+parametroEsperado.getQuantificador().name().toLowerCase();
-                                        }
-                                    });
-                        }
-                    }
-                    
-                }
-            }
-        }
-    }
-    
-
-    private Object analisarChamadaFuncaoBiblioteca(final NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
-    {
-        final String escopo = chamadaFuncao.getEscopo();
-        final String nome = chamadaFuncao.getNome();
-        final MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(escopo);
-        
-        if (metaDadosBiblioteca != null)
-        {
-            for (MetaDadosFuncao metaDadosFuncao : metaDadosBiblioteca.getMetaDadosFuncoes())
-            {
-                if (metaDadosFuncao.getNome().equals(nome))
-                {
-                    if (chamadaFuncao.getParametros() != null)
-                    {
-                        for (int i = 0; i < chamadaFuncao.getParametros().size(); i++)
-                        {
-                            final int indice = i;
-                            final TipoDado tipoParametroEsperado = metaDadosFuncao.getMetaDadosParametros().get(i).getTipoDado();
-
-                            try
-                            {
-                                final TipoDado tipoParametroPassado = (TipoDado) chamadaFuncao.getParametros().get(i).aceitar(this);
-
-                                if (tipoParametroPassado != tipoParametroEsperado)
-                                {
-                                    notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome())
-                                    {
-                                        @Override
-                                        protected String construirMensagem()
-                                        {
-                                            return String.format("Tipos incompatíveis! O parâmetro \"%s\" da função \"%s\" esperava uma expressão do tipo \"%s\" mas foi passada uma expressão do tipo \"%s\".", indice+1, chamadaFuncao.getNome(), tipoParametroEsperado, tipoParametroPassado);
-                                        }
-                                    });
-                                }
-                            }
-                            catch (ExcecaoVisitaASA excecao)
-                            {
-                                excecao.printStackTrace(System.out);
-                            }
-                        }
-                    }
-                    
-                    return metaDadosFuncao.getTipoDado();
-                }
-            }
-
-            notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome()) 
-            {
-                @Override
-                protected String construirMensagem()
-                {
-                    return String.format("A função \"%s\" não existe na biblioteca \"%s\"", chamadaFuncao.getNome(), metaDadosBiblioteca.getNome());
-                }
-            });
-        }            
-        else 
-        {
-            notificarErroSemantico(new ErroSemantico(chamadaFuncao.getTrechoCodigoFonteNome())
-            {
-                @Override
-                protected String construirMensagem()
-                {
-                    return String.format("A biblioteca \"%s\" não foi incluída no programa", escopo);
-                }
-            });
-        }
-        
-        throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
-    }    
-    
 }

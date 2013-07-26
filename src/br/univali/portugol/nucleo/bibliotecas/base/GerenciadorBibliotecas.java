@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +37,8 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     private static GerenciadorBibliotecas instance = null;
 
     private List<String> bibliotecasDisponiveis;
-    private Map<String, MetaDadosBiblioteca> metaDadosBibliotecas;
+    
+    private MetaDadosBibliotecas metaDadosBibliotecas;
     private Map<String, Class<? extends Biblioteca>> bibliotecasCarregadas;
     
     private Map<String, Biblioteca> bibliotecasCompartilhadas;
@@ -55,11 +57,10 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     
     private GerenciadorBibliotecas()
     {
-        metaDadosBibliotecas = new TreeMap<String, MetaDadosBiblioteca>();
         bibliotecasCarregadas = new TreeMap<String, Class<? extends Biblioteca>>();
-        metaDadosBibliotecas = new TreeMap<String, MetaDadosBiblioteca>();
+        metaDadosBibliotecas = new MetaDadosBibliotecas();
         
-        bibliotecasCompartilhadas = new TreeMap<String, Biblioteca>();
+        bibliotecasCompartilhadas = new TreeMap<String, Biblioteca>();        
         bibliotecasReservadas = new TreeMap<Programa, Map<String, Biblioteca>>(new ComparadorPrograma());
     }
     
@@ -80,13 +81,15 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         if (bibliotecasDisponiveis == null)
         {
             bibliotecasDisponiveis = new ArrayList<String>();
+            
             bibliotecasDisponiveis.add("Matematica");
             bibliotecasDisponiveis.add("Graficos");
+            bibliotecasDisponiveis.add("Teste");
         }
         
         return new ArrayList<String>(bibliotecasDisponiveis);
     }
-    
+
     /**
      * Obtém os metadados da biblioteca especificada. Os metadados contém
      * informações importantes sobre a biblioteca, como a documentação e os 
@@ -106,15 +109,15 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
      */
     public MetaDadosBiblioteca obterMetaDadosBiblioteca(String nome) throws ErroCarregamentoBiblioteca
     {
-        if (!metaDadosBibliotecas.containsKey(nome))
+        if (!metaDadosBibliotecas.contem(nome))
         {
             Class classeBiblioteca = carregarBiblioteca(nome);
-            MetaDadosBiblioteca metaDados = obterMetaDadosBiblioteca(nome, classeBiblioteca);
-            
-            metaDadosBibliotecas.put(nome, metaDados);
+            MetaDadosBiblioteca metaDadosBiblioteca = obterMetaDadosBiblioteca(nome, classeBiblioteca);
+    
+            metaDadosBibliotecas.incluir(metaDadosBiblioteca);
         }
-        
-        return metaDadosBibliotecas.get(nome);
+    
+        return metaDadosBibliotecas.obter(nome);
     }
     
     /**
@@ -255,10 +258,10 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
             metaDadosBiblioteca.setTipo(propriedadesBiblioteca.tipo());
             metaDadosBiblioteca.setDocumentacao(documentacaoBiblioteca);
             
-            List<MetaDadosFuncao> metaDadosFuncoes = obterMetaDadosFuncoes(nomeBiblioteca, classeBiblioteca);
-            List<MetaDadosConstante> metaDadosConstantes = obterMetaDadosConstantes(nomeBiblioteca, classeBiblioteca);
+            MetaDadosConstantes metaDadosConstantes = obterMetaDadosConstantes(nomeBiblioteca, classeBiblioteca);
+            MetaDadosFuncoes metaDadosFuncoes = obterMetaDadosFuncoes(nomeBiblioteca, classeBiblioteca);
             
-            if (!metaDadosFuncoes.isEmpty() || !metaDadosConstantes.isEmpty())
+            if (!metaDadosFuncoes.vazio() || !metaDadosConstantes.vazio())
             {
                 metaDadosBiblioteca.setMetaDadosFuncoes(metaDadosFuncoes);
                 metaDadosBiblioteca.setMetaDadosConstantes(metaDadosConstantes);
@@ -272,9 +275,9 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, montarMensagemDeclaracaoInvalida(classeBiblioteca));
     }
     
-    private List<MetaDadosFuncao> obterMetaDadosFuncoes(String nomeBiblioteca, Class<? extends Biblioteca> classeBiblioteca) throws ErroCarregamentoBiblioteca
+    private MetaDadosFuncoes obterMetaDadosFuncoes(String nomeBiblioteca, Class<? extends Biblioteca> classeBiblioteca) throws ErroCarregamentoBiblioteca
     {
-        List<MetaDadosFuncao> metaDadosFuncoes = new ArrayList<MetaDadosFuncao>();
+        MetaDadosFuncoes metaDadosFuncoes = new MetaDadosFuncoes();
         
         for (Method metodo : classeBiblioteca.getDeclaredMethods())
         {
@@ -282,9 +285,9 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
             {
                 MetaDadosFuncao metaDadosFuncao = obterMetaDadosFuncao(nomeBiblioteca, metodo);
                 
-                if (!metaDadosFuncoes.contains(metaDadosFuncao))
+                if (!metaDadosFuncoes.contem(metaDadosFuncao.getNome()))
                 {
-                    metaDadosFuncoes.add(metaDadosFuncao);
+                    metaDadosFuncoes.incluir(metaDadosFuncao);
                 }
                 
                 else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o método '%s' possui sobrecargas", metodo.getName()));
@@ -300,27 +303,21 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         {
             if (jogaExcecao(metodo, ErroExecucao.class))
             {
-                DocumentacaoFuncao documentacaoFuncao = obterAnotacaoMetodo(nomeBiblioteca, metodo, DocumentacaoFuncao.class);
+                if (!metodo.getReturnType().isArray())
+                {                            
+                    DocumentacaoFuncao documentacaoFuncao = obterAnotacaoMetodo(nomeBiblioteca, metodo, DocumentacaoFuncao.class);
 
-                MetaDadosFuncao metaDadosFuncao = new MetaDadosFuncao();
+                    MetaDadosFuncao metaDadosFuncao = new MetaDadosFuncao();
 
-                metaDadosFuncao.setNome(metodo.getName());
-                metaDadosFuncao.setDocumentacao(documentacaoFuncao);
-                metaDadosFuncao.setTipoDado(obterTipoDadoMetodo(nomeBiblioteca, metodo));
-                metaDadosFuncao.setMetaDadosParametros(obterMetaDadosParametros(nomeBiblioteca, metodo, documentacaoFuncao));
+                    metaDadosFuncao.setNome(metodo.getName());
+                    metaDadosFuncao.setDocumentacao(documentacaoFuncao);
+                    metaDadosFuncao.setQuantificador(Quantificador.VALOR);
+                    metaDadosFuncao.setTipoDado(obterTipoDadoMetodo(nomeBiblioteca, metodo));
+                    metaDadosFuncao.setMetaDadosParametros(obterMetaDadosParametros(nomeBiblioteca, metodo, documentacaoFuncao));
 
-                if (eMatriz(metodo.getReturnType()))
-                {
-                    metaDadosFuncao.setQuantificador(Quantificador.MATRIZ);
-                }
-                else if (eVetor(metodo.getReturnType()))
-                {
-                    metaDadosFuncao.setQuantificador(Quantificador.VETOR);
-                }
-
-                else metaDadosFuncao.setQuantificador(Quantificador.VALOR);
-
-                return metaDadosFuncao;
+                    return metaDadosFuncao;
+                }                
+                else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o retorno do método '%s' não pode ser um vetor nem uma matriz para ser exportado como uma função", metodo.getName()));
             }
             
             else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o método '%s' deve jogar uma exceção do tipo '%s' para ser exportado como uma função", metodo.getName(), ErroExecucao.class.getName()));
@@ -342,58 +339,39 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         return false;
     }
     
-    private List<MetaDadosParametro> obterMetaDadosParametros(String nomeBiblioteca, Method metodo, DocumentacaoFuncao documentacaoFuncao) throws ErroCarregamentoBiblioteca
+    private MetaDadosParametros obterMetaDadosParametros(String nomeBiblioteca, Method metodo, DocumentacaoFuncao documentacaoFuncao) throws ErroCarregamentoBiblioteca
     {
-        List<MetaDadosParametro> metaDadosParametros = new ArrayList<MetaDadosParametro>();
+       MetaDadosParametros metaDadosParametros = new MetaDadosParametros();
         
         Class[] tiposParametros = metodo.getParameterTypes();
         Annotation[] anotacoesParametros = documentacaoFuncao.parametros();
         
-        if (tiposParametros.length == anotacoesParametros.length)
-        {        
-            for (int i = 0; i < tiposParametros.length; i++)
+        for (int indice = 0; indice < tiposParametros.length; indice++)
+        {
+            if (indice < anotacoesParametros.length)
             {
-                DocumentacaoParametro documentacaoParametro = (DocumentacaoParametro) anotacoesParametros[i];
+                DocumentacaoParametro documentacaoParametro = (DocumentacaoParametro) anotacoesParametros[indice];
                 MetaDadosParametro metaDadosParametro = new MetaDadosParametro();
-                
+
                 metaDadosParametro.setNome(documentacaoParametro.nome());
                 metaDadosParametro.setDocumentacaoParametro(documentacaoParametro);
-                metaDadosParametro.setTipoDado(obterTipoDadoParametro(nomeBiblioteca, metodo, i, documentacaoParametro.nome(), tiposParametros[i]));
+                metaDadosParametro.setTipoDado(obterTipoDadoParametro(nomeBiblioteca, metodo, indice, documentacaoParametro.nome()));
+                metaDadosParametro.setIndice(indice);
+                metaDadosParametro.setModoAcesso(obterModoAcessoParametro(metodo, indice));
+                metaDadosParametro.setQuantificador(obterQuantificadorParametro(metodo, indice));
 
-                if (tiposParametros[i] == Referencia.class)
+                if (!metaDadosParametros.contem(metaDadosParametro.getNome()))
                 {
-                    tiposParametros[i] = (Class) ((ParameterizedType) metodo.getGenericParameterTypes()[i]).getActualTypeArguments()[0];
-                    metaDadosParametro.setModoAcesso(ModoAcesso.POR_REFERENCIA);
+                    metaDadosParametros.incluir(metaDadosParametro);
                 }
-                
-                else metaDadosParametro.setModoAcesso(ModoAcesso.POR_VALOR);
-                
-                if (eMatriz(tiposParametros[i]))
-                {
-                    metaDadosParametro.setQuantificador(Quantificador.MATRIZ);
-                }                
-                else if (eVetor(tiposParametros[i]))
-                {
-                    metaDadosParametro.setQuantificador(Quantificador.VETOR);
-                }
-                
-                else metaDadosParametro.setQuantificador(Quantificador.VALOR);                
-                
-                
-                if (!metaDadosParametros.contains(metaDadosParametro))
-                {
-                    metaDadosParametros.add(metaDadosParametro);
-                }
-                
+
                 else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o método '%s' está documentando diferentes parâmetros com o mesmo nome: '%s'", metodo.getName(), documentacaoParametro.nome()));
             }
+            
+            else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o %dº parâmetro da função '%s' não foi documentado com a anotação '%s'", indice + 1, metodo.getName(), DocumentacaoParametro.class.getSimpleName()));
         }
         
-        else if (anotacoesParametros.length < tiposParametros.length)
-        {
-            throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("existem parâmetros da função '%s' que não foram documentados com a anotação '%s'", metodo.getName(), DocumentacaoParametro.class.getSimpleName()));
-        }
-        else if (anotacoesParametros.length > tiposParametros.length)
+        if (anotacoesParametros.length > tiposParametros.length)
         {
             throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("a função '%s' está documentando um parâmetro inexistente: '%s'", metodo.getName(), ((DocumentacaoParametro) anotacoesParametros[anotacoesParametros.length - 1]).nome()));
         }
@@ -401,9 +379,47 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         return metaDadosParametros;
     }
     
-    private List<MetaDadosConstante> obterMetaDadosConstantes(String nomeBiblioteca, Class<? extends Biblioteca> classeBiblioteca) throws ErroCarregamentoBiblioteca
+    private Quantificador obterQuantificadorParametro(Method metodo, int indice)
     {
-        List<MetaDadosConstante> metaDadosConstantes = new ArrayList<MetaDadosConstante>();
+        Type tipo = metodo.getGenericParameterTypes()[indice];
+        
+        if (tipo instanceof ParameterizedType)
+        {
+            tipo = ((ParameterizedType) tipo).getRawType();
+        }
+        
+        if (tipo == ReferenciaVetor.class)
+        {
+            return Quantificador.VETOR;
+        }
+        else if (tipo == ReferenciaMatriz.class)
+        {
+            return Quantificador.MATRIZ;
+        }
+        
+        return Quantificador.VALOR;
+    }
+    
+    private ModoAcesso obterModoAcessoParametro(Method metodo, int indice)
+    {
+        Type tipo = metodo.getGenericParameterTypes()[indice];
+        
+        if (tipo instanceof ParameterizedType)
+        {
+            tipo = ((ParameterizedType) tipo).getRawType();
+        }
+        
+        if (tipo == ReferenciaVariavel.class || tipo == ReferenciaVetor.class || tipo == ReferenciaMatriz.class)
+        {
+            return ModoAcesso.POR_REFERENCIA;
+        }
+        
+        return ModoAcesso.POR_VALOR;
+    }
+    
+    private MetaDadosConstantes obterMetaDadosConstantes(String nomeBiblioteca, Class<? extends Biblioteca> classeBiblioteca) throws ErroCarregamentoBiblioteca
+    {
+        MetaDadosConstantes metaDadosConstantes = new MetaDadosConstantes();
         
         for (Field atributo : classeBiblioteca.getDeclaredFields())
         {
@@ -414,29 +430,33 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                     if (Modifier.isFinal(atributo.getModifiers()))
                     {
                         if (maiusculo(atributo.getName()))
-                        {                            
-                            DocumentacaoConstante documentacaoConstante = obterAnotacaoAtributo(nomeBiblioteca, atributo, DocumentacaoConstante.class);
-                            MetaDadosConstante metaDadosConstante = new MetaDadosConstante();
-                            
-                            metaDadosConstante.setNome(atributo.getName());
-                            metaDadosConstante.setDocumentacao(documentacaoConstante);
-                            metaDadosConstante.setQuantificador(Quantificador.VALOR);
-                            
-                            try
+                        {
+                            if (!atributo.getType().isArray())
                             {
-                                metaDadosConstante.setValor(atributo.get(null));
-                            }
-                            catch (Exception excecao)
-                            {
-                                metaDadosConstante.setValor("indefinido");
+                                DocumentacaoConstante documentacaoConstante = obterAnotacaoAtributo(nomeBiblioteca, atributo, DocumentacaoConstante.class);
+                                MetaDadosConstante metaDadosConstante = new MetaDadosConstante();
+
+                                metaDadosConstante.setNome(atributo.getName());
+                                metaDadosConstante.setDocumentacao(documentacaoConstante);
+                                metaDadosConstante.setQuantificador(Quantificador.VALOR);
+                                metaDadosConstante.setTipoDado(obterTipoDadoConstante(nomeBiblioteca, atributo));
+
+                                try
+                                {
+                                    metaDadosConstante.setValor(atributo.get(null));
+                                }
+                                catch (Exception excecao)
+                                {
+                                    metaDadosConstante.setValor("indefinido");
+                                }
+
+                                if (!metaDadosConstantes.contem(metaDadosConstante.getNome()))
+                                {
+                                    metaDadosConstantes.incluir(metaDadosConstante);
+                                }
                             }
                             
-                            metaDadosConstante.setTipoDado(obterTipoDadoConstante(nomeBiblioteca, atributo));
-                            
-                            if (!metaDadosConstantes.contains(metaDadosConstante))
-                            {
-                                metaDadosConstantes.add(metaDadosConstante);
-                            }
+                            else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' não pode ser um vetor nem uma matriz para ser exportado como uma constante", atributo.getName()));
                         }
                         
                         else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' deve ter o nome todo em letras maiúsuclas para ser exportado como uma constante", atributo.getName()));
@@ -455,11 +475,6 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     private TipoDado obterTipoDadoConstante(String nomeBiblioteca, Field atributo) throws ErroCarregamentoBiblioteca
     {
         Class classeTipo = atributo.getType();
-        
-        if (eMatriz(classeTipo) || eVetor(classeTipo))
-        {
-            throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' não pode ser um vetor nem uma matriz para ser exportado como uma constante", atributo.getName()));
-        }
         
         if (classeTipo == Integer.TYPE) throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' dever ser do tipo '%s' ao invés do tipo primitivo '%s'", atributo.getName(), Integer.class.getName(), Integer.TYPE.getSimpleName()));
         if (classeTipo == Double.TYPE) throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o atributo '%s' deve ser do tipo '%s' ao invés do tipo primitivo '%s'", atributo.getName(), Double.class.getName(), Double.TYPE.getSimpleName()));
@@ -517,19 +532,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     
     private TipoDado obterTipoDadoMetodo(String nomeBiblioteca, Method metodo) throws ErroCarregamentoBiblioteca
     {
-        Class classeTipo;
-        
-        if (eMatriz(metodo.getReturnType()))
-        {
-            classeTipo = obterTipoMatriz(metodo.getReturnType());
-        }        
-        else if (eVetor(metodo.getReturnType()))
-        {
-            classeTipo = obterTipoVetor(metodo.getReturnType());
-        }
-        
-        else classeTipo = metodo.getReturnType();
-        
+        Class classeTipo = metodo.getReturnType();
         
         if (classeTipo == Integer.TYPE) throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o retorno do método '%s' deve ser do tipo '%s' ao invés do tipo primitivo '%s'", metodo.getName(), Integer.class.getName(), Integer.TYPE.getSimpleName()));
         if (classeTipo == Double.TYPE) throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o retorno do método '%s' deve ser do tipo '%s' ao invés do tipo primitivo '%s'", metodo.getName(), Double.class.getName(), Double.TYPE.getSimpleName()));
@@ -541,7 +544,10 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         
         if ((tipoDado = TipoDado.obterTipoDadoPeloTipoJava(classeTipo)) != null)
         {        
-            return tipoDado;
+            if (tipoDado != TipoDado.TODOS)
+            {
+                return tipoDado;
+            }
         }
         
         throw new ErroCarregamentoBiblioteca
@@ -557,30 +563,23 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         ));
     }
     
-    private TipoDado obterTipoDadoParametro(String nomeBiblioteca, Method metodo, int indice, String nomeParametro, Class classeTipo) throws ErroCarregamentoBiblioteca
+    private TipoDado obterTipoDadoParametro(String nomeBiblioteca, Method metodo, int indice, String nomeParametro) throws ErroCarregamentoBiblioteca
     {
-        if (classeTipo == Referencia.class)
+        Class classeTipo = metodo.getParameterTypes()[indice];
+        
+        if (eReferencia(classeTipo))
         {
-            if (eMatriz(classeTipo) || eVetor(classeTipo))
-            {
-                throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o parâmetro '%s' do método '%s' não pode ser um vetor nem uma matriz de '%s'", nomeParametro, metodo.getName(), Referencia.class.getName()));
-            }            
+            classeTipo = obterTipoReferencia(metodo.getGenericParameterTypes()[indice]);
             
-            if (metodo.getGenericParameterTypes()[indice] instanceof ParameterizedType)
+            if (classeTipo == null)
             {
-                classeTipo = (Class) ((ParameterizedType) metodo.getGenericParameterTypes()[indice]).getActualTypeArguments()[0];
+                throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o tipo do parâmetro '%s' do método '%s' não foi especificado", nomeParametro, metodo.getName()));
             }
-            
-            else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o tipo do parâmetro '%s' do método '%s' não foi especificado", nomeParametro, metodo.getName()));
         }
         
-        if (eMatriz(classeTipo))
+        if (classeTipo.isArray())
         {
-            classeTipo = obterTipoMatriz(classeTipo);
-        }        
-        else if (eVetor(classeTipo))
-        {
-            classeTipo = obterTipoVetor(classeTipo);
+            throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o tipo do parâmetro '%s' do método '%s' não pode ser um vetor nem uma matriz", nomeParametro, metodo.getName()));
         }
         
         if (classeTipo == Integer.TYPE) throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o parâmetro '%s' do método '%s' deve ser do tipo '%s' ao invés do tipo primitivo '%s'", nomeParametro, metodo.getName(), Integer.class.getName(), Integer.TYPE.getSimpleName()));
@@ -598,39 +597,35 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         
         throw new ErroCarregamentoBiblioteca
         (
-            nomeBiblioteca, String.format("o tipo do parâmetro '%s' do método '%s' deve ser um dos tipos a seguir: '%s', '%s', '%s', '%s', ou '%s'", nomeParametro, metodo.getName(),
+            nomeBiblioteca, String.format("o tipo do parâmetro '%s' do método '%s' deve ser um dos tipos a seguir: '%s', '%s', '%s', '%s', '%s' ou '%s'", nomeParametro, metodo.getName(),
         
             TipoDado.CADEIA.getTipoJava().getName(),
             TipoDado.CARACTER.getTipoJava().getName(),
             TipoDado.INTEIRO.getTipoJava().getName(),
             TipoDado.LOGICO.getTipoJava().getName(),
-            TipoDado.REAL.getTipoJava().getName()
+            TipoDado.REAL.getTipoJava().getName(),
+            Object.class.getName()
         ));
     }
-
-    private boolean eVetor(Class classe)
-    {
-        return classe.isArray();
-    }
     
-    private boolean eMatriz(Class classe)
+    private Class obterTipoReferencia(Type tipo)
     {
-        if (classe.isArray())
+        if (tipo instanceof ParameterizedType)
         {
-            return classe.getComponentType().isArray();
+            Type[] generics = ((ParameterizedType) tipo).getActualTypeArguments();
+
+            if (generics != null && generics.length > 0)
+            {
+                return (Class) generics[0];
+            }
         }
         
-        return false;
+        return null;
     }
-    
-    private Class obterTipoVetor(Class classe)
+
+    private boolean eReferencia(Class tipo)
     {
-        return classe.getComponentType();
-    }
-    
-    private Class obterTipoMatriz(Class classe)
-    {
-        return classe.getComponentType().getComponentType();
+        return (tipo == ReferenciaVariavel.class || tipo == ReferenciaVetor.class || tipo == ReferenciaMatriz.class);
     }
     
     private <T extends Annotation> T obterAnotacaoMetodo(String nomeBiblioteca, Method metodo, Class<T> classeAnotacao) throws ErroCarregamentoBiblioteca

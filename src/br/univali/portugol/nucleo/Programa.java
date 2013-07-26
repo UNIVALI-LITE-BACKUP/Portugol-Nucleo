@@ -7,6 +7,7 @@ import br.univali.portugol.nucleo.depuracao.DepuradorImpl;
 import br.univali.portugol.nucleo.depuracao.DepuradorListener;
 import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
 import br.univali.portugol.nucleo.execucao.Entrada;
+import br.univali.portugol.nucleo.execucao.EntradaSaidaSistema;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
@@ -51,6 +52,10 @@ public final class Programa
 
     public Programa()
     {
+        EntradaSaidaSistema es = new EntradaSaidaSistema();
+        
+        entrada = es;
+        saida = es;
         funcoes = new ArrayList<String>();
         relatorErros = new RelatorErros();
         relatorErros.inicializar("Portugol Núcleo", "1.0");

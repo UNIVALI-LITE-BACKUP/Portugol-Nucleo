@@ -1,34 +1,21 @@
 package br.univali.portugol.nucleo.bibliotecas.base;
 
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 
  * @author Luiz Fernando Noschang
  */
-public final class MetaDadosBiblioteca
+public final class MetaDadosBiblioteca extends MetaDados
 {
-    private String nome;
     private TipoBiblioteca tipo;
     private DocumentacaoBiblioteca documentacao;
-    private List<MetaDadosFuncao> metaDadosFuncoes;
-    private List<MetaDadosConstante> metaDadosConstantes;
+    private MetaDadosFuncoes metaDadosFuncoes;
+    private MetaDadosConstantes metaDadosConstantes;
     
     MetaDadosBiblioteca()
     {
         
-    }
-
-    public String getNome()
-    {
-        return nome;
-    }
-
-    void setNome(String nome)
-    {
-        this.nome = nome;
     }
     
     public TipoBiblioteca getTipo()
@@ -51,23 +38,40 @@ public final class MetaDadosBiblioteca
         this.documentacao = documentacao;
     }
   
-    public List<MetaDadosFuncao> getMetaDadosFuncoes()
+    public MetaDadosFuncoes obterMetaDadosFuncoes()
     {
-        return new ArrayList<MetaDadosFuncao>(metaDadosFuncoes);
+        return metaDadosFuncoes;
     }
 
-    void setMetaDadosFuncoes(List<MetaDadosFuncao> metaDadosFuncoes)
+    void setMetaDadosFuncoes(MetaDadosFuncoes metaDadosFuncoes)
     {
         this.metaDadosFuncoes = metaDadosFuncoes;
     }
 
-    public List<MetaDadosConstante> getMetaDadosConstantes()
+    public MetaDadosConstantes getMetaDadosConstantes()
     {
         return metaDadosConstantes;
     }
 
-    void setMetaDadosConstantes(List<MetaDadosConstante> metaDadosConstantes)
+    void setMetaDadosConstantes(MetaDadosConstantes metaDadosConstantes)
     {
         this.metaDadosConstantes = metaDadosConstantes;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof MetaDadosBiblioteca)
+        {
+            return ((MetaDadosBiblioteca) obj).getNome().equals(this.getNome());
+        }
+        
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 623 + (this.getNome() != null ? this.getNome().hashCode() : 0);
     }
 }

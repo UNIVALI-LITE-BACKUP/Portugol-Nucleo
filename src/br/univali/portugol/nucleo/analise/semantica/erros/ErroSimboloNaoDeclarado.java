@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
+import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
@@ -11,6 +12,7 @@ import br.univali.portugol.nucleo.asa.NoReferencia;
 import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
 import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
 import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
+import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
@@ -70,93 +72,121 @@ public final class ErroSimboloNaoDeclarado extends ErroSemantico
         return referencia;
     }
 
-    /**
+    
+     /**
      * {@inheritDoc }
      */
     @Override
     protected String construirMensagem()
-    {
-        if (referencia instanceof NoReferenciaVetor) return construirMensagemVetor();
-        if (referencia instanceof NoReferenciaMatriz) return construirMensagemMatriz();
-        if (referencia instanceof NoReferenciaVariavel) return construirMensagemVariavel();
-        if (referencia instanceof NoChamadaFuncao) return construirMensagemFuncao();
-
-        return null;
+    {        
+        return new ErroSimboloNaoDeclarado.ConstrutorMensagem().construirMensagem();
     }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para uma declaração de vetor.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoDeclaracaoVetor
-     */    
-    private String construirMensagemVetor()
+    
+    private class ConstrutorMensagem extends VisitanteASABasico
     {
-        StringBuilder construtorTexto = new StringBuilder();
+        public ConstrutorMensagem()
+        {
+            
+        }        
+        
+        public String construirMensagem()
+        {
+            try
+            {
+                return (String) referencia.aceitar(this);
+            }
+            catch (ExcecaoVisitaASA e)
+            {
+                return e.getMessage();
+            }
+        }
+        
+        /**
+         * Constrói uma mensagem de erro personalizada para uma declaração de vetor.
+         *
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         *
+         * @see NoDeclaracaoVetor
+         */    
+        @Override
+        public Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorTexto = new StringBuilder();
 
-        construtorTexto.append("O vetor \"");
-        construtorTexto.append(referencia.getNome());
-        construtorTexto.append("\" não foi declarado neste escopo.");
+            construtorTexto.append("O vetor \"");
+            construtorTexto.append(referencia.getNome());
+            construtorTexto.append("\" não foi declarado neste escopo.");
 
-        return construtorTexto.toString();
-    }
+            return construtorTexto.toString();
+        }
 
-    /**
-     * Constrói uma mensagem de erro personalizada para uma declaração de matriz.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoDeclaracaoMatriz
-     */        
-    private String construirMensagemMatriz()
-    {
-        StringBuilder construtorString = new StringBuilder();
+        /**
+         * Constrói uma mensagem de erro personalizada para uma declaração de matriz.
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoDeclaracaoMatriz
+         */        
+        @Override
+        public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-        construtorString.append("A matriz \"");
-        construtorString.append(referencia.getNome());
-        construtorString.append("\" não foi declarada neste escopo.");
+            construtorString.append("A matriz \"");
+            construtorString.append(referencia.getNome());
+            construtorString.append("\" não foi declarada neste escopo.");
 
-        return construtorString.toString();
-    }
+            return construtorString.toString();
+        }  
 
-    /**
-     * Constrói uma mensagem de erro personalizada para uma declaração de variável.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoDeclaracaoVariavel
-     */        
-    private String construirMensagemVariavel()
-    {
-        StringBuilder construtorString = new StringBuilder();
+        /**
+         * Constrói uma mensagem de erro personalizada para uma declaração de variável.
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoDeclaracaoVariavel
+         */        
+        @Override
+        public Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-        construtorString.append("A variável \"");
-        construtorString.append(referencia.getNome());
-        construtorString.append("\" não foi declarada neste escopo.");
+            construtorString.append("A variável \"");
+            construtorString.append(referencia.getNome());
+            construtorString.append("\" não foi declarada neste escopo.");
 
-        return construtorString.toString();
-    }
+            return construtorString.toString();
+        }
 
-    /**
-     * Constrói uma mensagem de erro personalizada para uma declaração de função.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoDeclaracaoFuncao
-     */        
-    private String construirMensagemFuncao()
-    {
-        StringBuilder construtorString = new StringBuilder();
+        /**
+         * Constrói uma mensagem de erro personalizada para uma declaração de função.
+         * 
+         * @return     a mensagem de erro personalizada.
+         * @since 1.0
+         * 
+         * @see NoDeclaracaoFuncao
+         */        
+        @Override
+        public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
 
-        construtorString.append("A função \"");
-        construtorString.append(referencia.getNome());
-        construtorString.append("\" não foi declarada neste escopo.");
+            construtorString.append("A função \"");
+            construtorString.append(referencia.getNome());
+            
+            if (referencia.getEscopo() == null)
+            {
+                construtorString.append("\" não foi declarada no programa");
+            }
+            else 
+            {
+                construtorString.append(String.format("\" não existe na biblioteca \"%s\"", chamadaFuncao.getEscopo()));
+            }
 
-        return construtorString.toString();
+            return construtorString.toString();
+        }
     }
 }

@@ -9,10 +9,10 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParamet
  *
  * @author Luiz Fernando Noschang
  */
-public final class MetaDadosParametro
+public final class MetaDadosParametro extends MetaDados
 {
-    private String nome;
     private TipoDado tipoDado;
+    private int indice;
     private ModoAcesso modoAcesso;
     private Quantificador quantificador;
     private DocumentacaoParametro documentacaoParametro;
@@ -22,16 +22,16 @@ public final class MetaDadosParametro
         
     }
 
-    public String getNome()
+    public int getIndice()
     {
-        return nome;
+        return indice;
     }
 
-    void setNome(String nome)
+    void setIndice(int indice)
     {
-        this.nome = nome;
+        this.indice = indice;
     }
-    
+
     public TipoDado getTipoDado()
     {
         return tipoDado;
@@ -77,7 +77,7 @@ public final class MetaDadosParametro
     {
         if (obj instanceof MetaDadosParametro)
         {
-            return ((MetaDadosParametro) obj).nome.equals(this.nome);
+            return ((MetaDadosParametro) obj).getNome().equals(this.getNome());
         }
         
         return false;
@@ -86,6 +86,6 @@ public final class MetaDadosParametro
     @Override
     public int hashCode()
     {
-        return 71 * 7 + (this.nome != null ? this.nome.hashCode() : 0);
+        return 497 + (this.getNome() != null ? this.getNome().hashCode() : 0);
     }
 }

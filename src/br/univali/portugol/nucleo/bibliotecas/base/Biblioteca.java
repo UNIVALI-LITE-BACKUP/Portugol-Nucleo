@@ -10,6 +10,9 @@ import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Classe base para a construção de bibliotecas do Portugol. Todas as bibliotecas
@@ -98,10 +101,11 @@ import java.lang.reflect.Method;
 public abstract class Biblioteca
 {    
     private TipoBiblioteca tipo = getClass().getAnnotation(PropriedadesBiblioteca.class).tipo();
+    private Map<String, Method> cacheFuncoes;
     
     public Biblioteca()
     {
-        
+        cacheFuncoes = new TreeMap<String, Method>();
     }
     
     public final String getNome()
@@ -142,25 +146,53 @@ public abstract class Biblioteca
     {
         try
         {
-            if (parametros != null && parametros.length > 0)
+            if (!cacheFuncoes.containsKey(nome))
             {
-                Class[] tiposParametros = new Class[parametros.length];
-
-                for (int i = 0; i < parametros.length; i++)
+                //Method funcao;
+                /*
+                if (parametros != null && parametros.length > 0)
                 {
-                    tiposParametros[i] = parametros[i].getClass();
+                    Class[] tiposParametros = new Class[parametros.length];
+
+                    for (int i = 0; i < parametros.length; i++)
+                    {
+                        Class classe = parametros[i].getClass();
+
+                        if (ReferenciaVariavel.class.isAssignableFrom(classe))
+                        {
+                            classe = ReferenciaVariavel.class;
+                        }
+                        else if (ReferenciaVetor.class.isAssignableFrom(classe))
+                        {
+                            classe = ReferenciaVetor.class;
+                        }
+                        else if (ReferenciaMatriz.class.isAssignableFrom(classe))
+                        {
+                            classe = ReferenciaMatriz.class;
+                        }
+
+                        tiposParametros[i] = classe;
+                    }
+
+                    funcao = this.getClass().getDeclaredMethod(nome, tiposParametros);
                 }
-
-                Method funcao = this.getClass().getDeclaredMethod(nome, tiposParametros);
-
-                return funcao.invoke(this, parametros);
+                else
+                {
+                    funcao = this.getClass().getDeclaredMethod(nome);
+                }*/
+                
+                for (Method funcao : this.getClass().getDeclaredMethods())
+                {
+                    if (Modifier.isPublic(funcao.getModifiers()) && funcao.getName().equals(nome))
+                    {
+                        cacheFuncoes.put(nome, funcao);
+                    }
+                }
+                
+                //cacheFuncoes.put(nome, funcao);
             }
-            else
-            {
-                Method funcao = this.getClass().getDeclaredMethod(nome);
-
-                return funcao.invoke(this, parametros);
-            }            
+            
+            return cacheFuncoes.get(nome).invoke(this, parametros);
         }
         catch (Exception excecao)
         {
