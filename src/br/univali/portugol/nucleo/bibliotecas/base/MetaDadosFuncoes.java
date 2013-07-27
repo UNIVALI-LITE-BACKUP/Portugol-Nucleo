@@ -8,6 +8,6 @@ public final class MetaDadosFuncoes extends ColecaoMetaDados<MetaDadosFuncao>
 {
     MetaDadosFuncoes()
     {
-        super("Não é permitido alterar os metadados das funções");
+        super("Não é permitido alterar os metadados das funções", true);
     }
 }

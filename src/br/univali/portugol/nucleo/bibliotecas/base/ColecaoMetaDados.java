@@ -1,6 +1,8 @@
 package br.univali.portugol.nucleo.bibliotecas.base;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +17,14 @@ abstract class ColecaoMetaDados<Y extends MetaDados> implements Iterable<Y>
     private Map<String, Y> mapa;
     private List<Y> lista;
     private String mensagemErroRemocao;
+    private boolean ordenar = false;
+    private Comparador comparador = new Comparador();
 
-    public ColecaoMetaDados(String mensagemErroRemocao)
+    public ColecaoMetaDados(String mensagemErroRemocao, boolean ordenar)
     {
         this.mapa = new TreeMap<String, Y>();
         this.lista = new ArrayList<Y>();
+        this.ordenar = ordenar;
     }
 
     public final int quantidade()
@@ -41,6 +46,11 @@ abstract class ColecaoMetaDados<Y extends MetaDados> implements Iterable<Y>
     {
         mapa.put(metaDado.getNome(), metaDado);
         lista.add(metaDado);
+        
+        if (ordenar)
+        {
+            Collections.sort(lista, comparador);
+        }
     }
 
     public final Y obter(String nome)
@@ -57,6 +67,15 @@ abstract class ColecaoMetaDados<Y extends MetaDados> implements Iterable<Y>
     public final Iterator<Y> iterator()
     {
         return new IteradorImutavel<Y>(lista.iterator(), mensagemErroRemocao);
+    }
+    
+    private class Comparador implements Comparator<MetaDados>
+    {
+        @Override
+        public int compare(MetaDados o1, MetaDados o2)
+        {
+            return o1.getNome().compareTo(o2.getNome());
+        }
     }
 
     private class IteradorImutavel<T> implements Iterator<T>

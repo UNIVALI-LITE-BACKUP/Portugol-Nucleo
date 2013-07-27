@@ -8,6 +8,6 @@ public final class MetaDadosConstantes extends ColecaoMetaDados<MetaDadosConstan
 {
     MetaDadosConstantes()
     {
-        super("Não é permitido alterar os metadados das constantes");
+        super("Não é permitido alterar os metadados das constantes", true);
     }
 }

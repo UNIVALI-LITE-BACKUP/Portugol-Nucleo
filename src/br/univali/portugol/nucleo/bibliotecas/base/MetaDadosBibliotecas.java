@@ -8,6 +8,6 @@ public final class MetaDadosBibliotecas extends ColecaoMetaDados<MetaDadosBiblio
 {
     MetaDadosBibliotecas()
     {
-        super("Não é permitido alterar os metadados das bibliotecas");
+        super("Não é permitido alterar os metadados das bibliotecas", true);
     }
 }

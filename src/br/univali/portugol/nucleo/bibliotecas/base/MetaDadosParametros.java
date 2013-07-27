@@ -8,6 +8,6 @@ public final class MetaDadosParametros extends ColecaoMetaDados<MetaDadosParamet
 {
     MetaDadosParametros()
     {
-        super("Não é permitido alterar os metadados dos parâmetros");
+        super("Não é permitido alterar os metadados dos parâmetros", false);
     }
 }
