@@ -19,6 +19,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -82,8 +83,11 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         {
             bibliotecasDisponiveis = new ArrayList<String>();
             
+            bibliotecasDisponiveis.add("Utilitarios");
             bibliotecasDisponiveis.add("Graficos");
-            bibliotecasDisponiveis.add("Matematica");            
+            bibliotecasDisponiveis.add("Matematica");
+            
+            Collections.sort(bibliotecasDisponiveis);
         }
         
         return new ArrayList<String>(bibliotecasDisponiveis);

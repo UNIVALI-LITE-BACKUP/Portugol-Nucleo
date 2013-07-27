@@ -9,6 +9,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBibliot
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -193,6 +194,17 @@ public abstract class Biblioteca
             }
             
             return cacheFuncoes.get(nome).invoke(this, parametros);
+        }
+        catch (InvocationTargetException ex)
+        {
+            Exception excecao = (Exception) ex.getCause();
+            
+            if (!(excecao instanceof ErroExecucao))
+            {
+                excecao = new ErroExecucaoNaoTratado(excecao);
+            }
+            
+            throw (ErroExecucao) excecao;            
         }
         catch (Exception excecao)
         {

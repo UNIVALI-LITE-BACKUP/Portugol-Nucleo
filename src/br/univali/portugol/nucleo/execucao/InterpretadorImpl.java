@@ -385,9 +385,13 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     
                     else return biblioteca.chamarFuncao(noChamadaFuncao.getNome());
                 }
-                catch (Exception excecao)
+                catch(ErroCarregamentoBiblioteca excecao)
                 {
                     throw new ExcecaoVisitaASA(new ErroExecucaoNaoTratado(excecao), asa, noChamadaFuncao);
+                }
+                catch (ErroExecucao excecao)
+                {
+                    throw new ExcecaoVisitaASA(excecao, asa, noChamadaFuncao);
                 }
             }
 
