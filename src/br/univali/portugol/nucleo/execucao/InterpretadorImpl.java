@@ -744,10 +744,13 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
 
                 for (int j = 0; j < colunas; j++)
                 {
-                    vetor.set(j, vetor.get(j));
-                    }
-                    }
+                    Object valor = vetor.get(j);
+                    if (valor instanceof NoExpressao)
+                        valor = ((NoExpressao)valor).aceitar(this);
+                    vetor.set(j, valor);
                 }
+            }
+        }
                 
         return valores;
     }
