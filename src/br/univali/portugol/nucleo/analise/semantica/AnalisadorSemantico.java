@@ -1359,7 +1359,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         boolean inicializadoAnterior = false;
         if (!(noOperacao.getOperandoEsquerdo() instanceof NoReferencia)){
             notificarErroSemantico(new ErroOperacaoComExpressaoConstante(noOperacao, noOperacao.getOperandoEsquerdo()));
-        }  else {
+        }  else  {
             try
             {
                 if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVariavel) {
@@ -1463,6 +1463,16 @@ public final class AnalisadorSemantico implements VisitanteASA
                             }
                         });
                     }
+                }
+                else if (noOperacao.getOperandoEsquerdo() instanceof NoChamadaFuncao) {
+                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte())
+                    {
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return "Não é possível atribuir uma expressão a uma chamada de função.";
+                        }
+                    });
                 }
             }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
