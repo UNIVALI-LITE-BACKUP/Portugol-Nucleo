@@ -213,134 +213,83 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     escreva(noChamadaFuncao);
 
                 }
-                else
+                else if (noChamadaFuncao.getNome().equals("leia"))
                 {
-                    if (noChamadaFuncao.getNome().equals("leia"))
-                    {
                         leia(noChamadaFuncao);
 
-                    }
-                    else
+                } else if (noChamadaFuncao.getNome().equals("limpa"))
+                {
+                    try
                     {
-                        if (noChamadaFuncao.getNome().equals("limpa"))
+                        limpar();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex instanceof InterruptedException)
                         {
-                            try
-                            {
-                                limpar();
-                            }
-                            catch (Exception ex)
-                            {
-                                if (ex instanceof InterruptedException)
-                                {
-                                    throw new RuntimeException(ex);
-                                }
-                                Logger.getLogger(InterpretadorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new RuntimeException(ex);
+                        }
+                        Logger.getLogger(InterpretadorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else 
+                {                                                
+                        Funcao funcao = (Funcao) memoria.getSimbolo(noChamadaFuncao.getNome());
+
+                        List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
+                        List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
+
+                        List<Object> valoresParametrosPassados = new ArrayList<Object>();
+                        if (listaParametrosPassados != null ) {
+                            for (int i = 0; i < listaParametrosPassados.size(); i++)
+                            {   
+                                NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+
+                                referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;                                                        
+                                valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
+                                referencia = false;
                             }
                         }
-                        else
-                        {
-                            if (noChamadaFuncao.getNome().equals("aguarde"))
+
+                        memoria.empilharFuncao();
+                        if (listaParametrosEsperados != null) {
+                            for (int i = 0; i < listaParametrosEsperados.size(); i++)
                             {
-                                aguardar(noChamadaFuncao);
-                            }
-                            else
-                            {
-                                if (noChamadaFuncao.getNome().equals("tamanho_vetor"))
+                                NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+                                Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
+                                Object valor = valoresParametrosPassados.get(i);
+
+                                if (simbolo instanceof Variavel)
                                 {
-                                    return tamanho_vetor(noChamadaFuncao);
+                                    ((Variavel) simbolo).setValor(valor);
                                 }
                                 else
                                 {
-                                    if (noChamadaFuncao.getNome().equals("tamanho_matriz"))
+                                    if (simbolo instanceof Ponteiro)
                                     {
-                                        return tamanho_matriz(noChamadaFuncao);
+                                        ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
                                     }
                                     else
                                     {
-                                        if (noChamadaFuncao.getNome().equals("potencia"))
+                                        if (simbolo instanceof Vetor)
                                         {
-                                            return potencia(noChamadaFuncao);
+                                            ((Vetor) simbolo).inicializarComValores((List<Object>) valor);
                                         }
                                         else
                                         {
-                                            if (noChamadaFuncao.getNome().equals("raiz_quadrada"))
+                                            if (simbolo instanceof Matriz)
                                             {
-                                                return raiz(noChamadaFuncao);
-                                            }
-                                            else
-                                            {
-                                                if (noChamadaFuncao.getNome().equals("sorteia"))
-                                                {
-                                                    return sorteia(noChamadaFuncao);
-                                                }
-                                                else
-                                                {                                                
-                                                    Funcao funcao = (Funcao) memoria.getSimbolo(noChamadaFuncao.getNome());
-                                                    
-                                                    List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
-                                                    List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
-
-                                                    List<Object> valoresParametrosPassados = new ArrayList<Object>();
-                                                    if (listaParametrosPassados != null ) {
-                                                        for (int i = 0; i < listaParametrosPassados.size(); i++)
-                                                        {   
-                                                            NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-
-                                                            referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;                                                        
-                                                            valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
-                                                            referencia = false;
-                                                        }
-                                                    }
-
-                                                    memoria.empilharFuncao();
-                                                    if (listaParametrosEsperados != null) {
-                                                        for (int i = 0; i < listaParametrosEsperados.size(); i++)
-                                                        {
-                                                            NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                                                            Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
-                                                            Object valor = valoresParametrosPassados.get(i);
-
-                                                            if (simbolo instanceof Variavel)
-                                                            {
-                                                                ((Variavel) simbolo).setValor(valor);
-                                                            }
-                                                            else
-                                                            {
-                                                                if (simbolo instanceof Ponteiro)
-                                                                {
-                                                                    ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (simbolo instanceof Vetor)
-                                                                    {
-                                                                        ((Vetor) simbolo).inicializarComValores((List<Object>) valor);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        if (simbolo instanceof Matriz)
-                                                                        {
-                                                                            ((Matriz) simbolo).inicializarComValores((List<List<Object>>) valor);
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    Object retorno = interpretarListaBlocos(funcao.getBlocos());
-                                                    
-                                                    memoria.desempilharFuncao();
-                                                    return retorno;
-                                                }
+                                                ((Matriz) simbolo).inicializarComValores((List<List<Object>>) valor);
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
+                        Object retorno = interpretarListaBlocos(funcao.getBlocos());
 
-                }
+                        memoria.desempilharFuncao();
+                        return retorno;
+                    } 
             }
             else
             {
@@ -493,42 +442,6 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         {
             saida.limpar();
         }
-    }
-
-    private void aguardar(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
-    {
-        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
-        try
-        {
-            Thread.sleep((Integer) parametros.get(0).aceitar(this));
-        }
-        catch (InterruptedException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-
-    }
-
-    private int tamanho_vetor(NoChamadaFuncao chamadaFuncao) throws ExcecaoSimboloNaoDeclarado
-    {
-        NoReferencia noReferencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
-        String nome = noReferencia.getNome();
-        ultimaReferenciaAcessada = nome;
-        Simbolo simbolo = extrairSimbolo(memoria.getSimbolo(nome));
-        Vetor vetor = (Vetor) simbolo;
-
-        return vetor.getTamanho();
-    }
-    
-    private int tamanho_matriz(NoChamadaFuncao chamadaFuncao) throws ExcecaoSimboloNaoDeclarado
-    {
-        NoReferencia noReferencia = (NoReferencia) chamadaFuncao.getParametros().get(0);
-        String nome = noReferencia.getNome();
-        ultimaReferenciaAcessada = nome;
-        Simbolo simbolo = extrairSimbolo(memoria.getSimbolo(nome));
-        Matriz matriz = (Matriz) simbolo;
-        
-        return matriz.getNumeroColunas() * matriz.getNumeroLinhas();
     }
 
     private Simbolo extrairSimbolo(Simbolo simbolo)
@@ -943,67 +856,6 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA
     {
         throw new PareException();
-    }
-
-    private Object potencia(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
-    {
-        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
-        Double base = null;
-        Object b = parametros.get(0).aceitar(this);
-        if (b instanceof Double)
-        {
-            base = (Double) b;
-        }
-        else
-        {
-            if (b instanceof Integer)
-            {
-                base = ((Integer) b).doubleValue();
-            }
-        }
-        Double expoente = null;
-        Object e = parametros.get(1).aceitar(this);
-        if (e instanceof Double)
-        {
-            expoente = (Double) e;
-        }
-        else
-        {
-            if (e instanceof Integer)
-            {
-                expoente = ((Integer) e).doubleValue();
-            }
-        }
-        Double potencia = Math.pow(base, expoente);
-        return potencia;
-    }
-
-    private Object raiz(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
-    {
-        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
-        Double valor = null;
-        Object v = parametros.get(0).aceitar(this);
-
-        if (v instanceof Double)
-        {
-            valor = (Double) v;
-        }
-        else
-        {
-            if (v instanceof Integer)
-            {
-                valor = ((Integer) v).doubleValue();
-            }
-        }
-
-        return Math.sqrt(valor);
-    }
-
-    private Object sorteia(NoChamadaFuncao noChamadaFuncao) throws ExcecaoVisitaASA
-    {
-        List<NoExpressao> parametros = noChamadaFuncao.getParametros();
-        Integer n = (Integer) parametros.get(0).aceitar(this);
-        return random.nextInt(n);
     }
 
     @Override
