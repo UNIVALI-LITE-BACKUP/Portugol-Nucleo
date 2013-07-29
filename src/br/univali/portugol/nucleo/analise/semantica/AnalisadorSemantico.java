@@ -1365,44 +1365,44 @@ public final class AnalisadorSemantico implements VisitanteASA
                 if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVariavel) {
                     simbolo = memoria.getSimbolo(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
 
-                inicializadoAnterior = simbolo.inicializado();
-                simbolo.setInicializado(true);            
-                if (simbolo instanceof Variavel){
-                    
-                    if (simbolo.constante())
-                    {
-                        final Simbolo pSimbolo = simbolo;
-                        
-                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                    inicializadoAnterior = simbolo.inicializado();
+                    simbolo.setInicializado(true);            
+                    if (simbolo instanceof Variavel){
+
+                        if (simbolo.constante())
                         {
-                            @Override
-                            protected String construirMensagem()
+                            final Simbolo pSimbolo = simbolo;
+
+                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
                             {
-                                StringBuilder sb = new StringBuilder();
-                                
-                                if (pSimbolo instanceof Variavel)
+                                @Override
+                                protected String construirMensagem()
                                 {
-                                    sb.append("\"");
-                                    sb.append(pSimbolo.getNome());
-                                    sb.append("\" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização");
+                                    StringBuilder sb = new StringBuilder();
+
+                                    if (pSimbolo instanceof Variavel)
+                                    {
+                                        sb.append("\"");
+                                        sb.append(pSimbolo.getNome());
+                                        sb.append("\" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização");
+                                    }
+                                    else if (pSimbolo instanceof Vetor)
+                                    {
+                                        sb.append("O vetor \"");
+                                        sb.append(pSimbolo.getNome());
+                                        sb.append("\" é constante e, portanto, não pode ter seus valores alterados após a inicialização");
+                                    }
+                                    else if (pSimbolo instanceof Matriz)
+                                    {
+                                        sb.append("A matriz \"");
+                                        sb.append(pSimbolo.getNome());
+                                        sb.append("\" é constante e, portanto, não pode ter seu valor alterado após a inicialização");
+                                    }
+
+                                    return sb.toString();
                                 }
-                                else if (pSimbolo instanceof Vetor)
-                                {
-                                    sb.append("O vetor \"");
-                                    sb.append(pSimbolo.getNome());
-                                    sb.append("\" é constante e, portanto, não pode ter seus valores alterados após a inicialização");
-                                }
-                                else if (pSimbolo instanceof Matriz)
-                                {
-                                    sb.append("A matriz \"");
-                                    sb.append(pSimbolo.getNome());
-                                    sb.append("\" é constante e, portanto, não pode ter seu valor alterado após a inicialização");
-                                }
-                                
-                                return sb.toString();
-                            }
-                        });
-                    }
+                            });
+                        }
                     
                     if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
                             (noOperacao.getOperandoDireito() instanceof NoVetor))
