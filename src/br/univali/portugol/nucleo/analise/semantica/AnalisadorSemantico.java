@@ -63,6 +63,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     private boolean declarandoVetor;
     private boolean declarandoMatriz;
     private boolean passandoReferencia = false;
+    private boolean passandoParametro = false;
     
     public AnalisadorSemantico()
     {
@@ -639,8 +640,9 @@ public final class AnalisadorSemantico implements VisitanteASA
                             // Não faz nada
                         }
                     }
-                    
+                    passandoParametro = (chamadaFuncao.getEscopo() == null && !funcoesReservadas.contains(chamadaFuncao.getNome()));
                     tipos.add( (TipoDado) parametro.aceitar(this));
+                    passandoParametro = false;
                 }
                 catch(ExcecaoVisitaASA ex)
                 {
@@ -2102,7 +2104,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel,simbolo));
             }      
             
-            if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passandoReferencia)
+            if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passandoReferencia && !passandoParametro)
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
             }
