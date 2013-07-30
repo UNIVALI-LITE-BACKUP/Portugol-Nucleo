@@ -1,7 +1,27 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroExcedente;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosInicializacaoVetor;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoMatrizLiteral;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroConstanteNaoEncontradaNaBiblioteca;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroParaSemExpressaoComparacao;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeLinhasIncializacaoMatriz;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroBibliotecaNaoInserida;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoMatrizEmBranco;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoMatriz;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoVetor;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoVetorLiteral;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroVetorSemElementos;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosColunaInicializacaoMatriz;
 import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoSimboloGlobalOcultado;
 import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoValorExpressaoSeraConvertido;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoAtribuirEmMatriz;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoAtribuirEmVetor;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoInicializarMatriz;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoInicializarVetor;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmChamadaFuncao;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmConstante;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirMatrizVetorEmVariavel;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
@@ -35,8 +55,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar
@@ -386,14 +404,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
 
-                notificarErroSemantico(new ErroSemantico(parametro.getTrechoCodigoFonte())
-                {
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return String.format("A expressão é obsoleta na chamada da função \"%s\", pois extrapola o número de parâmetros esperados pela função", chamadaFuncao.getNome());
-                    }
-                });
+                notificarErroSemantico(new ErroParametroExcedente(parametro.getTrechoCodigoFonte(), chamadaFuncao));
             }
         }
     }
@@ -848,14 +859,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     && (noDeclaracaoMatriz.getNumeroColunas()) != null && !(noDeclaracaoMatriz.getNumeroColunas() instanceof NoInteiro))
             {
 
-                notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte())
-                {
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return "A número de linhas ou colunas da matriz deve ser um valor inteiro constante";
-                    }
-                });
+                notificarErroSemantico(new ErroTamanhoMatriz(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte()));
             }
             else
             {
@@ -937,14 +941,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                             final int pLinhas = linhas;
                             final String pNome = nome;
 
-                            notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte())
-                            {
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    return String.format("A inicialização da matriz \"%s\" deve possuir %d linhas", pNome, pLinhas);
-                                }
-                            });
+                            notificarErroSemantico(new ErroQuantidadeLinhasIncializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), pNome, pLinhas));
                         }
                     }
 
@@ -958,14 +955,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 final String pNome = nome;
                                 final int pLin = lin;
 
-                                notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte())
-                                {
-                                    @Override
-                                    protected String construirMensagem()
-                                    {
-                                        return String.format("A linha %d na inicialização da matriz \"%s\" deve possuir %d elementos", pLin, pNome, pColunas);
-                                    }
-                                });
+                                notificarErroSemantico(new ErroQuantidadeElementosColunaInicializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), pLin, pNome, pColunas));
                             }
                         }
                     }
@@ -1107,15 +1097,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             if (noDeclaracaoVetor.getTamanho() != null && !(noDeclaracaoVetor.getTamanho() instanceof NoInteiro))
             {
-
-                notificarErroSemantico(new ErroSemantico()
-                {
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return "O tamanho do vetor deve ser um valor inteiro constante";
-                    }
-                });
+                notificarErroSemantico(new ErroTamanhoVetor(noDeclaracaoVetor.getTrechoCodigoFonteNome()));
             }
             else
             {
@@ -1194,14 +1176,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                             final int pTamanho = tamanho;
                             final String pNome = nome;
 
-                            notificarErroSemantico(new ErroSemantico(noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte())
-                            {
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    return String.format("A inicializaçao do vetor \"%s\" deve possuir %d elemento(s)", pNome, pTamanho);
-                                }
-                            });
+                            notificarErroSemantico(new ErroQuantidadeElementosInicializacaoVetor(noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte(), pNome, pTamanho));
                         }
                     }
 
@@ -1310,14 +1285,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                         if (tipoMatriz != tipoDadoElemento)
                         {
-                            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte())
-                            {
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    return "A inicialização da matriz possui mais de um tipo de dado";
-                                }
-                            });
+                            notificarErroSemantico(new ErroDefinirTipoDadoMatrizLiteral(noMatriz.getTrechoCodigoFonte()));
 
                             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noMatriz);
                         }
@@ -1335,14 +1303,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         else
         {
 
-            notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte())
-            {
-                @Override
-                protected String construirMensagem()
-                {
-                    return "A inicialização da matriz não possui elementos";
-                }
-            });
+            notificarErroSemantico(new ErroInicializacaoMatrizEmBranco(noMatriz.getTrechoCodigoFonte()));
 
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noMatriz);
         }
@@ -1419,55 +1380,13 @@ public final class AnalisadorSemantico implements VisitanteASA
                             if (simbolo.constante())
                             {
                                 final Simbolo pSimbolo = simbolo;
-
-                                notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                                {
-                                    @Override
-                                    protected String construirMensagem()
-                                    {
-                                        StringBuilder sb = new StringBuilder();
-
-                                        if (pSimbolo instanceof Variavel)
-                                        {
-                                            sb.append("\"");
-                                            sb.append(pSimbolo.getNome());
-                                            sb.append("\" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização");
-                                        }
-                                        else
-                                        {
-                                            if (pSimbolo instanceof Vetor)
-                                            {
-                                                sb.append("O vetor \"");
-                                                sb.append(pSimbolo.getNome());
-                                                sb.append("\" é constante e, portanto, não pode ter seus valores alterados após a inicialização");
-                                            }
-                                            else
-                                            {
-                                                if (pSimbolo instanceof Matriz)
-                                                {
-                                                    sb.append("A matriz \"");
-                                                    sb.append(pSimbolo.getNome());
-                                                    sb.append("\" é constante e, portanto, não pode ter seu valor alterado após a inicialização");
-                                                }
-                                            }
-                                        }
-
-                                        return sb.toString();
-                                    }
-                                });
+                                notificarErroSemantico(new ErroAtribuirEmConstante(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte(), pSimbolo));
                             }
 
                             if ((noOperacao.getOperandoDireito() instanceof NoMatriz)
                                     || (noOperacao.getOperandoDireito() instanceof NoVetor))
                             {
-                                notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                                {
-                                    @Override
-                                    protected String construirMensagem()
-                                    {
-                                        return "não é possível atribuir uma matriz ou um vetor a uma variável";
-                                    }
-                                });
+                                notificarErroSemantico(new ErroAtribuirMatrizVetorEmVariavel(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
                             }
                         }
                         else
@@ -1476,14 +1395,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                             {
                                 if (!(noOperacao.getOperandoDireito() instanceof NoVetor))
                                 {
-                                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                                    {
-                                        @Override
-                                        protected String construirMensagem()
-                                        {
-                                            return "O vetor deve ser inicializado com um vetor literal";
-                                        }
-                                    });
+                                    notificarErroSemantico(new ErroAoInicializarVetor(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
                                 }
                             }
                             else
@@ -1492,14 +1404,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 {
                                     if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz))
                                     {
-                                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                                        {
-                                            @Override
-                                            protected String construirMensagem()
-                                            {
-                                                return "A matriz deve ser inicializada com uma matriz literal";
-                                            }
-                                        });
+                                        notificarErroSemantico(new ErroAoInicializarMatriz(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
                                     }
                                 }
                             }
@@ -1519,8 +1424,6 @@ public final class AnalisadorSemantico implements VisitanteASA
                          * Por isso, ao trabalhar com as bibliotecas dentro do semântico, deve-se sempre utilizar
                          * o mapa interno, caso contrário vai dar NullPointerException.
                          */
-                            
-                        //MetaDadosBiblioteca metaDadosBiblioteca =  GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(referencia.getEscopo());
                         MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(referencia.getEscopo());
                         MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(referencia.getNome());
                     }
@@ -1532,27 +1435,13 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         if (noOperacao.getOperandoDireito() instanceof NoVetor)
                         {
-                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                            {
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    return "Deve-se atribuir um valor à uma posição do vetor";
-                                }
-                            });
+                            notificarErroSemantico(new ErroAoAtribuirEmVetor(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
                         }
                         else
                         {
                             if (noOperacao.getOperandoDireito() instanceof NoMatriz)
                             {
-                                notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                                {
-                                    @Override
-                                    protected String construirMensagem()
-                                    {
-                                        return "Deve-se atribuir um valor à uma posição da matriz";
-                                    }
-                                });
+                                notificarErroSemantico(new ErroAoAtribuirEmMatriz(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
                             }
                         }
                     }
@@ -1560,14 +1449,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         if (noOperacao.getOperandoEsquerdo() instanceof NoChamadaFuncao)
                         {
-                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte())
-                            {
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    return "Não é possível atribuir uma expressão a uma chamada de função.";
-                                }
-                            });
+                            notificarErroSemantico(new ErroAtribuirEmChamadaFuncao(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte()));
                         }
                     }
                 }
@@ -1772,14 +1654,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             if (noPara.getCondicao() == null)
             {
-                notificarErroSemantico(new ErroSemantico()
-                {
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return "É obrigatório a utilização de uma expressão de condição no comando para";
-                    }
-                });
+                notificarErroSemantico(new ErroParaSemExpressaoComparacao());
             }
             else
             {
@@ -1993,14 +1868,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                     if (tipoDadoElemento != tipoDadoVetor)
                     {
-                        notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte())
-                        {
-                            @Override
-                            protected String construirMensagem()
-                            {
-                                return "A inicialização do vetor possui mais de um tipo de dado";
-                            }
-                        });
+                        notificarErroSemantico(new ErroDefinirTipoDadoVetorLiteral(noVetor.getTrechoCodigoFonte()));
 
                         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noVetor);
                     }
@@ -2016,14 +1884,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         else
         {
             //TODO Fazer essa verificaçao no Sintatico (Portugol.g)
-            notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte())
-            {
-                @Override
-                protected String construirMensagem()
-                {
-                    return "A inicialização do vetor não possui elementos";
-                }
-            });
+            notificarErroSemantico(new ErroVetorSemElementos(noVetor.getTrechoCodigoFonte()));
 
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noVetor);
         }
@@ -2280,25 +2141,11 @@ public final class AnalisadorSemantico implements VisitanteASA
                 return metaDadosConstante.getTipoDado();
             }
 
-            notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome())
-            {
-                @Override
-                protected String construirMensagem()
-                {
-                    return String.format("A constante \"%s\" não existe na biblioteca \"%s\"", nome, metaDadosBiblioteca.getNome());
-                }
-            });
+            notificarErroSemantico(new ErroConstanteNaoEncontradaNaBiblioteca(noReferenciaVariavel.getTrechoCodigoFonteNome(), nome, metaDadosBiblioteca));
         }
         else
         {
-            notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome())
-            {
-                @Override
-                protected String construirMensagem()
-                {
-                    return String.format("A biblioteca \"%s\" não foi incluída no programa", escopo);
-                }
-            });
+            notificarErroSemantico(new ErroBibliotecaNaoInserida(noReferenciaVariavel.getTrechoCodigoFonteNome(), escopo));
         }
 
         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaVariavel);
