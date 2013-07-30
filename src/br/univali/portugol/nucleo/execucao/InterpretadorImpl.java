@@ -152,7 +152,16 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 throw (ErroExecucao) e;
             }
             throw new ErroExecucaoNaoTratado(e);
-        }        
+        }
+        catch (StackOverflowError soe) {
+            throw new ErroExecucao() {
+                @Override
+                protected String construirMensagem()
+                {
+                    return "Ocorreu um ESTOURO DE PILHA. Uma das causas mais comuns desse erro é a recursividade infinita";
+                }
+            };
+        }
     }
 
     private List<Object> converterVetorEmLista(Object[] vetor)
@@ -640,8 +649,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         }
         finally
         {
+            try {
                 memoria.desempilharEscopo();
+            } catch (EmptyStackException e) {
+            
             }
+        }
         return null;
     }
 
