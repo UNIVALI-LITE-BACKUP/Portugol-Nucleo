@@ -1504,17 +1504,25 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 }
                             }
                         }
-                    } else {
-                        try
-                        {
-                            MetaDadosBiblioteca metaDadosBiblioteca =  GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(referencia.getEscopo());
-                            MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(referencia.getNome());
-                        }
-                        catch (ErroCarregamentoBiblioteca ex)
-                        {
-                            Logger.getLogger(AnalisadorSemantico.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        
+                    } else 
+                    {
+                        /* O escopo pode retornar o nome real da biblioteca ou o alias que o usuário definiu.
+                         *                          * 
+                         * Como o alias é dinâmico, o gerenciador de bibliotecas não consegue recuperar a
+                         * biblioteca a partir dele. Por isso, o método obterMetaDadosBiblioteca() só pode
+                         * ser utilizado com o nome real da biblioteca.
+                         * 
+                         * Para resolver isto, o semântico faz um mapeamento interno das biblitecas. Ao incluir 
+                         * a biblioteca ele cria uma chave no mapa, tanto para o nome real da biblioteca, quanto
+                         * para o alias do usuário.
+                         * 
+                         * Por isso, ao trabalhar com as bibliotecas dentro do semântico, deve-se sempre utilizar
+                         * o mapa interno, caso contrário vai dar NullPointerException.
+                         */
+                            
+                        //MetaDadosBiblioteca metaDadosBiblioteca =  GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(referencia.getEscopo());
+                        MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(referencia.getEscopo());
+                        MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(referencia.getNome());
                     }
                 }
                 else
