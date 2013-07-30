@@ -86,6 +86,8 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
             bibliotecasDisponiveis.add("Utilitarios");
             bibliotecasDisponiveis.add("Graficos");
             bibliotecasDisponiveis.add("Matematica");
+            bibliotecasDisponiveis.add("Texto");
+            bibliotecasDisponiveis.add("Tipos");
             
             Collections.sort(bibliotecasDisponiveis);
         }

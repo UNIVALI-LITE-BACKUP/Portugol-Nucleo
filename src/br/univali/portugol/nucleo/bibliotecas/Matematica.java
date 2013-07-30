@@ -9,6 +9,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParamet
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import java.math.BigDecimal;
 
 /**
  *
@@ -73,4 +74,31 @@ public final class Matematica extends Biblioteca
     {
         return Math.pow(radicando, 1.0 / indice);
     }
+    
+    @DocumentacaoFuncao
+    (
+        descricao =             
+            "Arredonda um número :real para o número de casas decimais informado. " +
+            "Quando o último dígito for maior ou igual a 5, o número será arredondado para cima, " +
+            "quando o último dígito for menor que 5, o número será arredondado para baixo",
+        
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "numero", descricao = "o número que será arredondado"),
+            @DocumentacaoParametro(nome = "casas", descricao = "o número de casas decimais após o arredondamento")
+        },        
+        retorno = "o número arredondado",
+        referencia = "http://pt.wikipedia.org/wiki/Arredondamento",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Double arredondar(Double numero, Integer casas) throws ErroExecucao
+    {
+        BigDecimal decimal = new BigDecimal(numero);
+        decimal = decimal.setScale(casas, BigDecimal.ROUND_HALF_UP);
+
+        return decimal.doubleValue();
+    }    
 }
