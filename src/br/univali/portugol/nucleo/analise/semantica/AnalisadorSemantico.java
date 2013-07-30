@@ -1662,11 +1662,22 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         try
         {        
-            TipoDado tipoDadoCondicao = (TipoDado) noPara.getCondicao().aceitar(this);
+            if (noPara.getCondicao() == null){
+                notificarErroSemantico(new ErroSemantico()
+                {
+                    @Override
+                    protected String construirMensagem()
+                    {
+                        return "É obrigatório a utilização de uma expressão de condição no comando para";
+                    }
+                });
+            } else {
+                TipoDado tipoDadoCondicao = (TipoDado) noPara.getCondicao().aceitar(this);
 
-            if (tipoDadoCondicao != TipoDado.LOGICO)
-            {
-                notificarErroSemantico(new ErroTiposIncompativeis(noPara, tipoDadoCondicao));
+                if (tipoDadoCondicao != TipoDado.LOGICO)
+                {
+                    notificarErroSemantico(new ErroTiposIncompativeis(noPara, tipoDadoCondicao));
+                }
             }
         }
         catch (ExcecaoVisitaASA excecao)
@@ -1677,7 +1688,10 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         try
         {
-            noPara.getIncremento().aceitar(this);
+            if (noPara.getIncremento() != null) 
+            {
+                noPara.getIncremento().aceitar(this);
+            }
         }
         catch (ExcecaoVisitaASA excecao)
         {

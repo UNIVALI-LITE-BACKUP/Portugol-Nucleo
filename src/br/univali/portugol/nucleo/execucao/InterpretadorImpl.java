@@ -830,7 +830,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         {
             noPara.getInicializacao().aceitar(this);
         }
-        
+            
         NoExpressao condicao = noPara.getCondicao();
         try
         {
@@ -841,7 +841,10 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     break;
                 }
 
-                noPara.getIncremento().aceitar(this);
+                if (noPara.getIncremento() != null) 
+                {
+                    noPara.getIncremento().aceitar(this);
+                }
             }
         }
         catch (PareException pe)
