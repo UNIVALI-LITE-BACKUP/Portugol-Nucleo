@@ -35,49 +35,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Esta classe percorre a ASA gerada a partir do código fonte para detectar erros de semântica.
- * 
- * 
+ * Esta classe percorre a ASA gerada a partir do código fonte para detectar
+ * erros de semântica.
+ *
+ *
  * @version 2.0
- * 
+ *
  * @see AnalisadorSintatico
  * @see ObservadorAnaliseSemantica
  */
 public final class AnalisadorSemantico implements VisitanteASA
 {
     private boolean declarandoSimbolosGlobais;
-    
     private Memoria memoria;
     private List<ObservadorAnaliseSemantica> observadores;
-    
     private static final List<String> funcoesReservadas = getLista();
-    
     private TabelaCompatibilidadeTipos tabelaCompatibilidadeTipos = TabelaCompatibilidadeTiposPortugol.INSTANCE;
     private ArvoreSintaticaAbstrata asa;
     private Map<String, MetaDadosBiblioteca> metaDadosBibliotecas;
-    
     private Funcao funcaoAtual;
     private TipoDado tipoDadoEscolha;
     private boolean declarandoVetor;
     private boolean declarandoMatriz;
     private boolean passandoReferencia = false;
     private boolean passandoParametro = false;
-    
+
     public AnalisadorSemantico()
     {
         memoria = new Memoria();
         metaDadosBibliotecas = new TreeMap<String, MetaDadosBiblioteca>();
         observadores = new ArrayList<ObservadorAnaliseSemantica>();
-    }   
-        
-    /** 
-     * Permite adicionar um observador à análise semântica. Os observadores serão notificados sobre cada
-     * erro semântico encontrado no código fonte e deverão tratá-los apropriadamente, exibindo-os em uma 
-     * IDE, por exemplo.
-     * 
-     * @param observadorAnaliseSemantica     o observador da análise semântica a ser registrado.
+    }
+
+    /**
+     * Permite adicionar um observador à análise semântica. Os observadores
+     * serão notificados sobre cada erro semântico encontrado no código fonte e
+     * deverão tratá-los apropriadamente, exibindo-os em uma IDE, por exemplo.
+     *
+     * @param observadorAnaliseSemantica o observador da análise semântica a ser
+     * registrado.
      * @since 1.0
      */
     public void adicionarObservador(ObservadorAnaliseSemantica observadorAnaliseSemantica)
@@ -87,43 +87,47 @@ public final class AnalisadorSemantico implements VisitanteASA
             observadores.add(observadorAnaliseSemantica);
         }
     }
-    
+
     /**
-     * Remove um observador da análise previamente registrado utilizando o método 
+     * Remove um observador da análise previamente registrado utilizando o
+     * método 
      * {@link AnalisadorSemantico#adicionarObservador(br.univali.portugol.nucleo.analise.semantica.ObservadorAnaliseSemantica) }.
-     * Uma vez removido, o observador não será mais notificado dos erros semânticos encontrados durante a análise.
-     * 
-     * @param observadorAnaliseSemantica     um observador de análise semântica previamente registrado.
+     * Uma vez removido, o observador não será mais notificado dos erros
+     * semânticos encontrados durante a análise.
+     *
+     * @param observadorAnaliseSemantica um observador de análise semântica
+     * previamente registrado.
      * @since 1.0
      */
     public void removerObservador(ObservadorAnaliseSemantica observadorAnaliseSemantica)
     {
         observadores.remove(observadorAnaliseSemantica);
     }
-    
+
     private void notificarAviso(AvisoAnalise aviso)
     {
-        for (ObservadorAnaliseSemantica observadorAnaliseSemantica: observadores)
+        for (ObservadorAnaliseSemantica observadorAnaliseSemantica : observadores)
         {
             observadorAnaliseSemantica.tratarAviso(aviso);
         }
     }
-    
+
     private void notificarErroSemantico(ErroSemantico erroSemantico)
     {
-        for (ObservadorAnaliseSemantica observadorAnaliseSemantica: observadores)
+        for (ObservadorAnaliseSemantica observadorAnaliseSemantica : observadores)
         {
             observadorAnaliseSemantica.tratarErroSemantico(erroSemantico);
         }
     }
-    
+
     /**
-     * Realiza a análise semântica de uma ASA. Este método não retorna valor e não gera exceções.
-     * Para capturar os erros semânticos gerados durante a análise, deve-se registrar um ou mais
-     * obsrvadores de análise utilizando o método 
+     * Realiza a análise semântica de uma ASA. Este método não retorna valor e
+     * não gera exceções. Para capturar os erros semânticos gerados durante a
+     * análise, deve-se registrar um ou mais obsrvadores de análise utilizando o
+     * método 
      * {@link AnalisadorSemantico#adicionarObservador(br.univali.portugol.nucleo.analise.semantica.ObservadorAnaliseSemantica) }.
-     * 
-     * @param asa     a ASA que será percorrida em busca de erros semânticos.
+     *
+     * @param asa a ASA que será percorrida em busca de erros semânticos.
      * @since 1.0
      */
     public void analisar(ArvoreSintaticaAbstrata asa)
@@ -132,7 +136,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         if (asa != null)
         {
             try
-            {                
+            {
                 asa.aceitar(this);
             }
             catch (Exception excecao)
@@ -149,25 +153,25 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             inclusao.aceitar(this);
         }
-        
+
         // Executa a primeira vez para declarar as funções na tabela de símbolos
-        
+
         declarandoSimbolosGlobais = true;
-                
+
         for (NoDeclaracao declaracao : asap.getListaDeclaracoesGlobais())
         {
             declaracao.aceitar(this);
         }
-        
+
         declarandoSimbolosGlobais = false;
-        
+
         // Executa a segunda vez para analizar os blocos das funções
-        
+
         for (NoDeclaracao declaracao : asap.getListaDeclaracoesGlobais())
         {
             declaracao.aceitar(this);
-        }        
-        
+        }
+
         return null;
     }
 
@@ -186,22 +190,28 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA
     {
-        if (noCaso.getExpressao() != null) {
+        if (noCaso.getExpressao() != null)
+        {
             TipoDado tipoDado = (TipoDado) noCaso.getExpressao().aceitar(this);
 
-            if ((tipoDadoEscolha == TipoDado.INTEIRO) || (tipoDadoEscolha == TipoDado.CARACTER)){
-               if (tipoDado != tipoDadoEscolha){
-                   notificarErroSemantico(new ErroTiposIncompativeis(noCaso, tipoDado, tipoDadoEscolha));
-               } 
-            } else {
-                if ((tipoDado != TipoDado.INTEIRO) && (tipoDado != TipoDado.CARACTER)){
+            if ((tipoDadoEscolha == TipoDado.INTEIRO) || (tipoDadoEscolha == TipoDado.CARACTER))
+            {
+                if (tipoDado != tipoDadoEscolha)
+                {
+                    notificarErroSemantico(new ErroTiposIncompativeis(noCaso, tipoDado, tipoDadoEscolha));
+                }
+            }
+            else
+            {
+                if ((tipoDado != TipoDado.INTEIRO) && (tipoDado != TipoDado.CARACTER))
+                {
                     notificarErroSemantico(new ErroTiposIncompativeis(noCaso, tipoDado, TipoDado.INTEIRO, TipoDado.CARACTER));
                 }
             }
         }
-        
+
         analisarListaBlocos(noCaso.getBlocos());
-        
+
         return null;
     }
 
@@ -210,45 +220,45 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         if (funcaoExiste(chamadaFuncao))
         {
-            verificarQuantidadeParametros(chamadaFuncao);            
+            verificarQuantidadeParametros(chamadaFuncao);
             verificarTiposParametros(chamadaFuncao);
             verificarQuantificador(chamadaFuncao);
             verificarModoAcesso(chamadaFuncao);
             verificarParametrosObsoletos(chamadaFuncao);
-            
+
             return obterTipoRetornoFuncao(chamadaFuncao);
         }
         else
         {
             notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
-            
+
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
         }
-    }    
-    
+    }
+
     private void verificarModoAcesso(NoChamadaFuncao chamadaFuncao)
     {
         List<ModoAcesso> modosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
         List<ModoAcesso> modosAcessoPassados = obterModosAcessoPassados(chamadaFuncao);
-        
+
         int cont = Math.min(modosAcessoEsperados.size(), modosAcessoPassados.size());
-        
+
         for (int indice = 0; indice < cont; indice++)
         {
             ModoAcesso modoAcessoEsperado = modosAcessoEsperados.get(indice);
             ModoAcesso modoAcessoPassado = modosAcessoPassados.get(indice);
-            
+
             if (modoAcessoEsperado == ModoAcesso.POR_REFERENCIA && modoAcessoPassado == ModoAcesso.POR_VALOR)
             {
                 notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome()));
             }
         }
     }
-    
+
     private List<ModoAcesso> obterModosAcessoPassados(NoChamadaFuncao chamadaFuncao)
     {
         List<ModoAcesso> modosAcesso = new ArrayList<ModoAcesso>();
-        
+
         if (chamadaFuncao.getParametros() != null)
         {
             for (NoExpressao parametro : chamadaFuncao.getParametros())
@@ -256,18 +266,21 @@ public final class AnalisadorSemantico implements VisitanteASA
                 if (parametro instanceof NoReferenciaVariavel)
                 {
                     NoReferenciaVariavel noReferenciaVariavel = (NoReferenciaVariavel) parametro;
-                    
+
                     if (noReferenciaVariavel.getEscopo() == null)
                     {
                         try
                         {
                             Simbolo simbolo = memoria.getSimbolo(noReferenciaVariavel.getNome());
-                            
+
                             if (simbolo.constante())
                             {
                                 modosAcesso.add(ModoAcesso.POR_VALOR);
                             }
-                            else modosAcesso.add(ModoAcesso.POR_REFERENCIA);
+                            else
+                            {
+                                modosAcesso.add(ModoAcesso.POR_REFERENCIA);
+                            }
                         }
                         catch (ExcecaoSimboloNaoDeclarado excecao)
                         {
@@ -285,14 +298,14 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             }
         }
-        
+
         return modosAcesso;
     }
-    
+
     private List<ModoAcesso> obterModosAcessoEsperados(NoChamadaFuncao chamadaFuncao)
     {
         List<ModoAcesso> modosAcesso = new ArrayList<ModoAcesso>();
-        
+
         if (chamadaFuncao.getEscopo() == null)
         {
             if (!funcoesReservadas.contains(chamadaFuncao.getNome()))
@@ -317,16 +330,16 @@ public final class AnalisadorSemantico implements VisitanteASA
             MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
             MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
             MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
-            
+
             for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
             {
                 modosAcesso.add(metaDadosParametro.getModoAcesso());
             }
         }
-        
+
         return modosAcesso;
     }
-            
+
     private TipoDado obterTipoRetornoFuncao(NoChamadaFuncao chamadaFuncao)
     {
         if (chamadaFuncao.getEscopo() == null)
@@ -340,7 +353,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 try
                 {
                     Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
-                
+
                     return funcao.getTipoDado();
                 }
                 catch (ExcecaoSimboloNaoDeclarado excecao)
@@ -353,26 +366,26 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
             MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
-            
+
             return metaDadosFuncao.getTipoDado();
         }
-        
+
         return null;
     }
-    
+
     private void verificarParametrosObsoletos(final NoChamadaFuncao chamadaFuncao)
     {
         int parametrosEsperados = obterNumeroParametrosEsperados(chamadaFuncao);
-        int parametrosPassados = (chamadaFuncao.getParametros() != null)? chamadaFuncao.getParametros().size() : 0;
-        
+        int parametrosPassados = (chamadaFuncao.getParametros() != null) ? chamadaFuncao.getParametros().size() : 0;
+
         int inicio = Math.min(parametrosEsperados, parametrosPassados);
-        
+
         if (chamadaFuncao.getParametros() != null)
         {
             for (int indice = inicio; indice < parametrosPassados; indice++)
             {
                 NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
-                        
+
                 notificarErroSemantico(new ErroSemantico(parametro.getTrechoCodigoFonte())
                 {
                     @Override
@@ -384,30 +397,30 @@ public final class AnalisadorSemantico implements VisitanteASA
             }
         }
     }
-    
+
     private void verificarQuantificador(NoChamadaFuncao chamadaFuncao)
     {
         List<Quantificador> quantificadoresEsperados = obterQuantificadoresEsperados(chamadaFuncao);
         List<Quantificador> quantificadoresPassados = obterQuantificadoresPassados(chamadaFuncao);
-        
-        int cont = Math.min(quantificadoresEsperados.size(), quantificadoresPassados.size());        
-        
+
+        int cont = Math.min(quantificadoresEsperados.size(), quantificadoresPassados.size());
+
         for (int indice = 0; indice < cont; indice++)
         {
             Quantificador quantificadorPassado = quantificadoresPassados.get(indice);
             Quantificador quantificadorEsperado = quantificadoresEsperados.get(indice);
-                    
+
             if (quantificadorPassado != quantificadorEsperado)
             {
                 notificarErroSemantico(new ErroQuantificadorParametroFuncao(chamadaFuncao, indice, obterNomeParametro(chamadaFuncao, indice), quantificadorEsperado, quantificadorPassado));
             }
         }
     }
-    
+
     private List<Quantificador> obterQuantificadoresEsperados(NoChamadaFuncao chamadaFuncao)
     {
         List<Quantificador> quantificadores = new ArrayList<Quantificador>();
-        
+
         if (chamadaFuncao.getEscopo() == null)
         {
             if (!funcoesReservadas.contains(chamadaFuncao.getNome()))
@@ -421,7 +434,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                         quantificadores.add(declaracaoParametro.getQuantificador());
                     }
                 }
-                catch(ExcecaoSimboloNaoDeclarado ex)                    
+                catch (ExcecaoSimboloNaoDeclarado ex)
                 {
                     // Não faz nada aqui
                 }
@@ -432,55 +445,67 @@ public final class AnalisadorSemantico implements VisitanteASA
             MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
             MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
             MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
-            
+
             for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
             {
                 quantificadores.add(metaDadosParametro.getQuantificador());
             }
         }
-        
+
         return quantificadores;
     }
-    
+
     private List<Quantificador> obterQuantificadoresPassados(NoChamadaFuncao chamadaFuncao)
     {
         List<Quantificador> quantificadores = new ArrayList<Quantificador>();
-        
+
         if (chamadaFuncao.getParametros() != null)
         {
             for (NoExpressao parametroPassado : chamadaFuncao.getParametros())
-            {            
+            {
                 try
-                {            
-                    if (parametroPassado instanceof NoReferenciaVariavel) 
+                {
+                    if (parametroPassado instanceof NoReferenciaVariavel)
                     {
                         String nome = ((NoReferenciaVariavel) parametroPassado).getNome();
                         Simbolo simbolo = memoria.getSimbolo(nome);
-                        
+
                         if (simbolo instanceof Variavel)
                         {
                             quantificadores.add(Quantificador.VALOR);
                         }
-                        else if (simbolo instanceof  Vetor)
+                        else
                         {
-                            quantificadores.add(Quantificador.VETOR);
+                            if (simbolo instanceof Vetor)
+                            {
+                                quantificadores.add(Quantificador.VETOR);
+                            }
+                            else
+                            {
+                                if (simbolo instanceof Matriz)
+                                {
+                                    quantificadores.add(Quantificador.MATRIZ);
+                                }
+                            }
                         }
-                        else if (simbolo instanceof Matriz)
-                        {
-                            quantificadores.add(Quantificador.MATRIZ);
-                        }
-                    }
-                    else if (parametroPassado instanceof NoVetor)
-                    {                        
-                        quantificadores.add(Quantificador.VETOR);
-                    }
-                    else if (parametroPassado instanceof NoMatriz)
-                    {
-                        quantificadores.add(Quantificador.MATRIZ);
                     }
                     else
                     {
-                        quantificadores.add(Quantificador.VALOR);
+                        if (parametroPassado instanceof NoVetor)
+                        {
+                            quantificadores.add(Quantificador.VETOR);
+                        }
+                        else
+                        {
+                            if (parametroPassado instanceof NoMatriz)
+                            {
+                                quantificadores.add(Quantificador.MATRIZ);
+                            }
+                            else
+                            {
+                                quantificadores.add(Quantificador.VALOR);
+                            }
+                        }
                     }
                 }
                 catch (ExcecaoSimboloNaoDeclarado ex)
@@ -489,27 +514,27 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             }
         }
-        
+
         return quantificadores;
     }
-    
+
     private void verificarTiposParametros(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         List<ModoAcesso> modosAcesso = obterModosAcessoEsperados(chamadaFuncao);
         List<TipoDado> tiposEsperados = obterTiposParametrosEsperados(chamadaFuncao);
         List<TipoDado> tiposPassado = obterTiposParametrosPassados(chamadaFuncao, modosAcesso);
-        
-        int cont = Math.min(tiposEsperados.size(),tiposPassado.size());
-        
+
+        int cont = Math.min(tiposEsperados.size(), tiposPassado.size());
+
         for (int indice = 0; indice < cont; indice++)
         {
             TipoDado tipoPassado = tiposPassado.get(indice);
             TipoDado tipoEsperado = tiposEsperados.get(indice);
-            ModoAcesso modoAcesso = modosAcesso.get(indice);            
-            
+            ModoAcesso modoAcesso = modosAcesso.get(indice);
+
             if (tipoPassado != null)
             {
-                try 
+                try
                 {
                     tabelaCompatibilidadeTipos.obterTipoRetornoPassagemParametro(tipoEsperado, tipoPassado);
                 }
@@ -518,7 +543,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     if (modoAcesso == ModoAcesso.POR_REFERENCIA)
                     {
                         notificarErroSemantico(new ErroTipoParametroIncompativel(chamadaFuncao.getNome(), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getParametros().get(indice), tipoEsperado, tipoPassado));
-                    }                    
+                    }
                     else
                     {
                         notificarAviso(new AvisoValorExpressaoSeraConvertido(chamadaFuncao.getParametros().get(indice).getTrechoCodigoFonte(), chamadaFuncao, tipoPassado, tipoEsperado, obterNomeParametro(chamadaFuncao, indice)));
@@ -531,7 +556,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             }
         }
     }
-    
+
     private String obterNomeParametro(NoChamadaFuncao chamadaFuncao, int indice)
     {
         if (chamadaFuncao.getEscopo() == null)
@@ -539,10 +564,10 @@ public final class AnalisadorSemantico implements VisitanteASA
             try
             {
                 Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
-                
+
                 return funcao.getParametros().get(indice).getNome();
             }
-            catch(ExcecaoSimboloNaoDeclarado ex)
+            catch (ExcecaoSimboloNaoDeclarado ex)
             {
                 // Não deve cair aqui nunca
             }
@@ -552,16 +577,16 @@ public final class AnalisadorSemantico implements VisitanteASA
             MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
             MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
             MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
-            
+
             return metaDadosParametros.obter(indice).getNome();
         }
         return "";
     }
-    
+
     private List<TipoDado> obterTiposParametrosEsperados(NoChamadaFuncao chamadaFuncao)
     {
         List<TipoDado> tipos = new ArrayList<TipoDado>();
-        
+
         if (chamadaFuncao.getEscopo() == null)
         {
             if (!funcoesReservadas.contains(chamadaFuncao.getNome()))
@@ -570,7 +595,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                     Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
                     List<NoDeclaracaoParametro> parametros = funcao.getParametros();
-                    
+
                     if (parametros != null)
                     {
                         for (NoDeclaracaoParametro parametro : parametros)
@@ -579,7 +604,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                         }
                     }
                 }
-                catch(ExcecaoSimboloNaoDeclarado ex)
+                catch (ExcecaoSimboloNaoDeclarado ex)
                 {
                     // Não deve cair aqui nunca
                 }
@@ -590,26 +615,26 @@ public final class AnalisadorSemantico implements VisitanteASA
             MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
             MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
             MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
-            
+
             for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
             {
                 tipos.add(metaDadosParametro.getTipoDado());
             }
         }
-        
+
         return tipos;
     }
-    
+
     private List<TipoDado> obterTiposParametrosPassados(NoChamadaFuncao chamadaFuncao, List<ModoAcesso> modosAcesso) throws ExcecaoVisitaASA
     {
         List<TipoDado> tipos = new ArrayList<TipoDado>();
-        
+
         if (chamadaFuncao.getParametros() != null)
         {
             for (int indice = 0; indice < chamadaFuncao.getParametros().size(); indice++)
             {
                 NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
-                
+
                 if (chamadaFuncao.getEscopo() == null && funcoesReservadas.contains(chamadaFuncao.getNome()))
                 {
                     passandoReferencia = false;
@@ -620,16 +645,18 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         passandoReferencia = modosAcesso.get(indice) == ModoAcesso.POR_REFERENCIA;
                     }
-                    
-                    else passandoReferencia = false;
+                    else
+                    {
+                        passandoReferencia = false;
+                    }
                 }
-                
+
                 try
-                {                    
+                {
                     if (parametro instanceof NoReferenciaVariavel && chamadaFuncao.getNome().equals("leia"))
                     {
                         String nome = ((NoReferenciaVariavel) parametro).getNome();
-                        
+
                         try
                         {
                             Simbolo variavel = memoria.getSimbolo(nome);
@@ -641,10 +668,10 @@ public final class AnalisadorSemantico implements VisitanteASA
                         }
                     }
                     passandoParametro = (chamadaFuncao.getEscopo() == null && !funcoesReservadas.contains(chamadaFuncao.getNome()));
-                    tipos.add( (TipoDado) parametro.aceitar(this));
+                    tipos.add((TipoDado) parametro.aceitar(this));
                     passandoParametro = false;
                 }
-                catch(ExcecaoVisitaASA ex)
+                catch (ExcecaoVisitaASA ex)
                 {
                     if (ex.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)
                     {
@@ -655,25 +682,25 @@ public final class AnalisadorSemantico implements VisitanteASA
                         throw ex;
                     }
                 }
-                
+
                 passandoReferencia = false;
             }
         }
-        
+
         return tipos;
     }
-    
+
     private void verificarQuantidadeParametros(NoChamadaFuncao chamadaFuncao)
-    {        
+    {
         int esperados = obterNumeroParametrosEsperados(chamadaFuncao);
-        int passados = (chamadaFuncao.getParametros() != null)? chamadaFuncao.getParametros().size() : 0;
-        
+        int passados = (chamadaFuncao.getParametros() != null) ? chamadaFuncao.getParametros().size() : 0;
+
         if ((esperados == Integer.MAX_VALUE && passados == 0) || (esperados != Integer.MAX_VALUE && passados != esperados))
         {
             notificarErroSemantico(new ErroNumeroParametrosFuncao(passados, esperados, chamadaFuncao));
         }
     }
-    
+
     private int obterNumeroParametrosEsperados(NoChamadaFuncao chamadaFuncao)
     {
         if (chamadaFuncao.getEscopo() == null)
@@ -683,7 +710,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 if (chamadaFuncao.getNome().equals("limpa"))
                 {
                     return 0;
-                }                
+                }
                 else
                 {
                     return Integer.MAX_VALUE;
@@ -712,7 +739,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
             MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
-        
+
             return metaDadosFuncao.obterMetaDadosParametros().quantidade();
         }
     }
@@ -732,7 +759,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     memoria.getSimbolo(chamadaFuncao.getNome());
                     return true;
                 }
-                catch(ExcecaoSimboloNaoDeclarado ex)
+                catch (ExcecaoSimboloNaoDeclarado ex)
                 {
                     return false;
                 }
@@ -741,11 +768,11 @@ public final class AnalisadorSemantico implements VisitanteASA
         else
         {
             MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(chamadaFuncao.getEscopo());
-            
+
             if (metaDadosBiblioteca != null)
             {
                 MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
-            
+
                 return (metaDadosFuncao != null);
             }
             else
@@ -755,7 +782,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             }
         }
     }
-    
+
     @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
     {
@@ -768,21 +795,21 @@ public final class AnalisadorSemantico implements VisitanteASA
             Funcao funcao = new Funcao(nome, tipoDado, quantificador, declaracaoFuncao.getParametros(), declaracaoFuncao);
             funcao.setTrechoCodigoFonteNome(declaracaoFuncao.getTrechoCodigoFonteNome());
             funcao.setTrechoCodigoFonteTipoDado(declaracaoFuncao.getTrechoCodigoFonteTipoDado());
-        
+
             try
             {
                 Simbolo simbolo = memoria.getSimbolo(nome);
                 notificarErroSemantico(new ErroSimboloRedeclarado(funcao, simbolo));
-                
+
                 funcao.setRedeclarado(true);
             }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
-                 memoria.adicionarSimbolo(funcao);
+                memoria.adicionarSimbolo(funcao);
             }
         }
         else
-        {   
+        {
             try
             {
                 funcaoAtual = (Funcao) memoria.getSimbolo(declaracaoFuncao.getNome());
@@ -803,7 +830,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 memoria.desempilharFuncao();
             }
         }
-        
+
         return null;
     }
 
@@ -816,25 +843,32 @@ public final class AnalisadorSemantico implements VisitanteASA
             TipoDado tipoDados = noDeclaracaoMatriz.getTipoDado();
             Integer linhas = null;
             Integer colunas = null;
-            
-            if ((noDeclaracaoMatriz.getNumeroLinhas() != null && !(noDeclaracaoMatriz.getNumeroLinhas()instanceof NoInteiro))
-                    && (noDeclaracaoMatriz.getNumeroColunas()) != null && !(noDeclaracaoMatriz.getNumeroColunas()instanceof NoInteiro)){
-                                
-                    notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte()) {
 
+            if ((noDeclaracaoMatriz.getNumeroLinhas() != null && !(noDeclaracaoMatriz.getNumeroLinhas() instanceof NoInteiro))
+                    && (noDeclaracaoMatriz.getNumeroColunas()) != null && !(noDeclaracaoMatriz.getNumeroColunas() instanceof NoInteiro))
+            {
+
+                notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte())
+                {
                     @Override
                     protected String construirMensagem()
                     {
                         return "A número de linhas ou colunas da matriz deve ser um valor inteiro constante";
                     }
                 });
-            } else {
-                if (noDeclaracaoMatriz.getNumeroLinhas()!= null)
-                    linhas = ((NoInteiro)noDeclaracaoMatriz.getNumeroLinhas()).getValor();
-                if (noDeclaracaoMatriz.getNumeroColunas() != null)
-                    colunas = ((NoInteiro)noDeclaracaoMatriz.getNumeroColunas()).getValor();
             }
-                  
+            else
+            {
+                if (noDeclaracaoMatriz.getNumeroLinhas() != null)
+                {
+                    linhas = ((NoInteiro) noDeclaracaoMatriz.getNumeroLinhas()).getValor();
+                }
+                if (noDeclaracaoMatriz.getNumeroColunas() != null)
+                {
+                    colunas = ((NoInteiro) noDeclaracaoMatriz.getNumeroColunas()).getValor();
+                }
+            }
+
             Matriz matriz = new Matriz(nome, tipoDados, noDeclaracaoMatriz, 1, 1);
             matriz.setTrechoCodigoFonteNome(noDeclaracaoMatriz.getTrechoCodigoFonteNome());
             matriz.setTrechoCodigoFonteTipoDado(noDeclaracaoMatriz.getTrechoCodigoFonteTipoDado());
@@ -848,10 +882,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 memoria.adicionarSimbolo(matriz);
                 final boolean global1 = memoria.isGlobal(matriz);
                 final boolean local1 = memoria.isLocal(matriz);
-                if 
-                (
-                    (global && global1) || (local && local1)
-                )
+                if ((global && global1) || (local && local1))
                 {
                     matriz.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(matriz, simboloExistente));
@@ -861,13 +892,13 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                     memoria.desempilharEscopo();
                     memoria.adicionarSimbolo(matriz);
-                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : matriz;
-                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? matriz : simboloExistente;
-                    
+                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente) ? simboloExistente : matriz;
+                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente) ? matriz : simboloExistente;
+
                     notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, noDeclaracaoMatriz));
                 }
-                
-            } 
+
+            }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
                 if (funcoesReservadas.contains(nome))
@@ -881,30 +912,31 @@ public final class AnalisadorSemantico implements VisitanteASA
                     memoria.adicionarSimbolo(matriz);
                 }
             }
-            
+
             if (noDeclaracaoMatriz.constante() && noDeclaracaoMatriz.getInicializacao() == null)
             {
                 NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                 referencia.setTrechoCodigoFonteNome(noDeclaracaoMatriz.getTrechoCodigoFonteNome());
-                    
+
                 notificarErroSemantico(new ErroSimboloNaoInicializado(referencia, matriz));
             }
-            
+
             if (noDeclaracaoMatriz.getInicializacao() != null)
-            {                
+            {
                 if (noDeclaracaoMatriz.getInicializacao() instanceof NoMatriz)
                 {
                     NoExpressao inicializacao = noDeclaracaoMatriz.getInicializacao();
                     NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                     referencia.setTrechoCodigoFonteNome(noDeclaracaoMatriz.getTrechoCodigoFonteNome());
                     NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
-                           
-                    if (linhas != null){
-                        if (linhas != ((NoMatriz)inicializacao).getValores().size())
+
+                    if (linhas != null)
+                    {
+                        if (linhas != ((NoMatriz) inicializacao).getValores().size())
                         {
                             final int pLinhas = linhas;
                             final String pNome = nome;
-                            
+
                             notificarErroSemantico(new ErroSemantico(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte())
                             {
                                 @Override
@@ -915,12 +947,12 @@ public final class AnalisadorSemantico implements VisitanteASA
                             });
                         }
                     }
-                    
-                     if (colunas != null)
-                     {
-                        for (int lin = 0; lin < ((NoMatriz)inicializacao).getValores().size(); lin++)
+
+                    if (colunas != null)
+                    {
+                        for (int lin = 0; lin < ((NoMatriz) inicializacao).getValores().size(); lin++)
                         {
-                            if (colunas != ((NoMatriz)inicializacao).getValores().get(lin).size())
+                            if (colunas != ((NoMatriz) inicializacao).getValores().get(lin).size())
                             {
                                 final int pColunas = colunas;
                                 final String pNome = nome;
@@ -936,9 +968,9 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 });
                             }
                         }
-                     }
-                    
-                    try 
+                    }
+
+                    try
                     {
                         this.declarandoMatriz = true;
                         operacao.aceitar(this);
@@ -951,23 +983,23 @@ public final class AnalisadorSemantico implements VisitanteASA
                             throw excecao;
                         }
                     }
-                    
+
                 }
                 else
                 {
                     notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoMatriz));
                 }
             }
-            
+
             matriz.setConstante(noDeclaracaoMatriz.constante());
         }
-        
+
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVariavel declaracaoVariavel) throws ExcecaoVisitaASA
-    {        
+    {
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = declaracaoVariavel.getNome();
@@ -986,25 +1018,22 @@ public final class AnalisadorSemantico implements VisitanteASA
                 memoria.adicionarSimbolo(variavel);
                 final boolean global1 = memoria.isGlobal(variavel);
                 final boolean local1 = memoria.isLocal(variavel);
-                if 
-                (
-                    (global && global1) || (local && local1)
-                )                
+                if ((global && global1) || (local && local1))
                 {
                     variavel.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(variavel, simboloExistente));
                     memoria.desempilharEscopo();
                 }
-                else 
+                else
                 {
-                   memoria.desempilharEscopo();
-                   memoria.adicionarSimbolo(variavel);
-                   Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : variavel;
-                   Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? variavel : simboloExistente;
+                    memoria.desempilharEscopo();
+                    memoria.adicionarSimbolo(variavel);
+                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente) ? simboloExistente : variavel;
+                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente) ? variavel : simboloExistente;
 
-                   notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, declaracaoVariavel));
+                    notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, declaracaoVariavel));
                 }
-            } 
+            }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
                 if (funcoesReservadas.contains(nome))
@@ -1017,31 +1046,31 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                     memoria.adicionarSimbolo(variavel);
                 }
-            }            
-            
+            }
+
             if (declaracaoVariavel.constante() && declaracaoVariavel.getInicializacao() == null)
             {
                 NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                 referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
-                    
+
                 notificarErroSemantico(new ErroSimboloNaoInicializado(referencia, variavel));
             }
-            
+
             if (declaracaoVariavel.getInicializacao() != null)
             {
                 // Posteriormente restringir na gramática para não permitir atribuir vetor ou matriz a uma variável comum
-                
+
                 if (!(declaracaoVariavel.getInicializacao() instanceof NoVetor) && !(declaracaoVariavel.getInicializacao() instanceof NoMatriz))
                 {
                     NoExpressao inicializacao = declaracaoVariavel.getInicializacao();
                     NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                     referencia.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
                     NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
-                    
+
                     memoria.empilharEscopo();
                     memoria.adicionarSimbolo(variavel);
-                    
-                    try 
+
+                    try
                     {
                         operacao.aceitar(this);
                     }
@@ -1052,46 +1081,51 @@ public final class AnalisadorSemantico implements VisitanteASA
                             throw excecao;
                         }
                     }
-                    
-                    memoria.desempilharEscopo();                
+
+                    memoria.desempilharEscopo();
                 }
                 else
                 {
                     notificarErroSemantico(new ErroInicializacaoInvalida(declaracaoVariavel));
                 }
             }
-            
+
             variavel.setConstante(declaracaoVariavel.constante());
-            
+
         }
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
-    {     
+    {
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = noDeclaracaoVetor.getNome();
             TipoDado tipoDados = noDeclaracaoVetor.getTipoDado();
             Integer tamanho = null;
-            
-            if (noDeclaracaoVetor.getTamanho() != null && !(noDeclaracaoVetor.getTamanho() instanceof NoInteiro)){
-                                
-                notificarErroSemantico(new ErroSemantico() {
 
+            if (noDeclaracaoVetor.getTamanho() != null && !(noDeclaracaoVetor.getTamanho() instanceof NoInteiro))
+            {
+
+                notificarErroSemantico(new ErroSemantico()
+                {
                     @Override
                     protected String construirMensagem()
                     {
                         return "O tamanho do vetor deve ser um valor inteiro constante";
                     }
                 });
-            } else {
-                if (noDeclaracaoVetor.getTamanho() != null)
-                    tamanho = ((NoInteiro)noDeclaracaoVetor.getTamanho()).getValor();
             }
-                  
-            Vetor vetor = new Vetor(nome, tipoDados, noDeclaracaoVetor,1);
+            else
+            {
+                if (noDeclaracaoVetor.getTamanho() != null)
+                {
+                    tamanho = ((NoInteiro) noDeclaracaoVetor.getTamanho()).getValor();
+                }
+            }
+
+            Vetor vetor = new Vetor(nome, tipoDados, noDeclaracaoVetor, 1);
             vetor.setTrechoCodigoFonteNome(noDeclaracaoVetor.getTrechoCodigoFonteNome());
             vetor.setTrechoCodigoFonteTipoDado(noDeclaracaoVetor.getTrechoCodigoFonteTipoDado());
 
@@ -1104,10 +1138,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 memoria.adicionarSimbolo(vetor);
                 final boolean global1 = memoria.isGlobal(vetor);
                 final boolean local1 = memoria.isLocal(vetor);
-                if 
-                (
-                    (global && global1) || (local && local1)
-                )                
+                if ((global && global1) || (local && local1))
                 {
                     vetor.setRedeclarado(true);
                     notificarErroSemantico(new ErroSimboloRedeclarado(vetor, simboloExistente));
@@ -1117,12 +1148,12 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                     memoria.desempilharEscopo();
                     memoria.adicionarSimbolo(vetor);
-                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : vetor;
-                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? vetor : simboloExistente;
+                    Simbolo simboloGlobal = memoria.isGlobal(simboloExistente) ? simboloExistente : vetor;
+                    Simbolo simboloLocal = memoria.isGlobal(simboloExistente) ? vetor : simboloExistente;
 
                     notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, noDeclaracaoVetor));
                 }
-            } 
+            }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
                 if (funcoesReservadas.contains(nome))
@@ -1133,34 +1164,36 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
                 else
                 {
-                     memoria.adicionarSimbolo(vetor);
+                    memoria.adicionarSimbolo(vetor);
                 }
             }
-            
+
             if (noDeclaracaoVetor.constante() && noDeclaracaoVetor.getInicializacao() == null)
             {
                 NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                 referencia.setTrechoCodigoFonteNome(noDeclaracaoVetor.getTrechoCodigoFonteNome());
-                    
+
                 notificarErroSemantico(new ErroSimboloNaoInicializado(referencia, vetor));
             }
 
-            
+
             if (noDeclaracaoVetor.getInicializacao() != null)
             {
-            
+
                 if (noDeclaracaoVetor.getInicializacao() instanceof NoVetor)
                 {
                     NoExpressao inicializacao = noDeclaracaoVetor.getInicializacao();
                     NoReferenciaVariavel referencia = new NoReferenciaVariavel(null, nome);
                     referencia.setTrechoCodigoFonteNome(noDeclaracaoVetor.getTrechoCodigoFonteNome());
                     NoOperacao operacao = new NoOperacaoAtribuicao(referencia, inicializacao);
-                    
-                    if (tamanho != null){
-                        if (tamanho != ((NoVetor)inicializacao).getValores().size()){
+
+                    if (tamanho != null)
+                    {
+                        if (tamanho != ((NoVetor) inicializacao).getValores().size())
+                        {
                             final int pTamanho = tamanho;
                             final String pNome = nome;
-                            
+
                             notificarErroSemantico(new ErroSemantico(noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte())
                             {
                                 @Override
@@ -1171,8 +1204,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                             });
                         }
                     }
-                   
-                    try 
+
+                    try
                     {
                         this.declarandoVetor = true;
                         operacao.aceitar(this);
@@ -1184,33 +1217,33 @@ public final class AnalisadorSemantico implements VisitanteASA
                         {
                             throw excecao;
                         }
-                    }                    
+                    }
                 }
                 else
                 {
                     notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoVetor));
                 }
             }
-            
+
             vetor.setConstante(noDeclaracaoVetor.constante());
         }
-        
+
         return null;
-        
+
     }
 
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
         TipoDado tipoDadoCondicao = (TipoDado) noEnquanto.getCondicao().aceitar(this);
-        
-        if (tipoDadoCondicao != TipoDado.LOGICO) 
+
+        if (tipoDadoCondicao != TipoDado.LOGICO)
         {
             notificarErroSemantico(new ErroTiposIncompativeis(noEnquanto, tipoDadoCondicao));
         }
-        
+
         analisarListaBlocos(noEnquanto.getBlocos());
-        
+
         return null;
     }
 
@@ -1218,9 +1251,10 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
     {
         tipoDadoEscolha = (TipoDado) noEscolha.getExpressao().aceitar(this);
-        
-        if ((tipoDadoEscolha != TipoDado.INTEIRO) && (tipoDadoEscolha != TipoDado.CARACTER)){
-            notificarErroSemantico(new ErroTiposIncompativeis(noEscolha, tipoDadoEscolha,TipoDado.INTEIRO,TipoDado.CARACTER));
+
+        if ((tipoDadoEscolha != TipoDado.INTEIRO) && (tipoDadoEscolha != TipoDado.CARACTER))
+        {
+            notificarErroSemantico(new ErroTiposIncompativeis(noEscolha, tipoDadoEscolha, TipoDado.INTEIRO, TipoDado.CARACTER));
         }
         List<NoCaso> casos = noEscolha.getCasos();
         for (NoCaso noCaso : casos)
@@ -1234,18 +1268,17 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA
     {
         analisarListaBlocos(noFacaEnquanto.getBlocos());
-        
+
         TipoDado tipoDadoCondicao = (TipoDado) noFacaEnquanto.getCondicao().aceitar(this);
-        
-        if (tipoDadoCondicao != TipoDado.LOGICO) 
+
+        if (tipoDadoCondicao != TipoDado.LOGICO)
         {
             notificarErroSemantico(new ErroTiposIncompativeis(noFacaEnquanto, tipoDadoCondicao));
         }
-        
+
         return null;
     }
 
-   
     @Override
     public Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
     {
@@ -1262,9 +1295,10 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
     {
         List<List<Object>> valores = noMatriz.getValores();
-        
-        if (valores != null && !valores.isEmpty()){
-            
+
+        if (valores != null && !valores.isEmpty())
+        {
+
             try
             {
                 TipoDado tipoMatriz = (TipoDado) ((NoExpressao) valores.get(0).get(0)).aceitar(this);
@@ -1283,29 +1317,31 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 {
                                     return "A inicialização da matriz possui mais de um tipo de dado";
                                 }
-                            });                        
-                            
+                            });
+
                             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noMatriz);
                         }
                     }
                 }
-                return tipoMatriz;    
+                return tipoMatriz;
             }
             catch (Exception excecao)
             {
                 //excecao.printStackTrace(System.out);
                 throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noMatriz);
             }
-            
-        } else {
-            
+
+        }
+        else
+        {
+
             notificarErroSemantico(new ErroSemantico(noMatriz.getTrechoCodigoFonte())
             {
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return "A inicialização da matriz não possui elementos";
-                    }
+                @Override
+                protected String construirMensagem()
+                {
+                    return "A inicialização da matriz não possui elementos";
+                }
             });
 
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noMatriz);
@@ -1316,11 +1352,12 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA
     {
         TipoDado tipo = (TipoDado) noMenosUnario.getExpressao().aceitar(this);
-        if (!tipo.equals(TipoDado.INTEIRO) && !tipo.equals(TipoDado.REAL)){
+        if (!tipo.equals(TipoDado.INTEIRO) && !tipo.equals(TipoDado.REAL))
+        {
             notificarErroSemantico(new ErroTiposIncompativeis(noMenosUnario, tipo, TipoDado.INTEIRO, TipoDado.REAL));
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noMenosUnario);
         }
-        
+
         return tipo;
     }
 
@@ -1328,16 +1365,17 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoNao noNao) throws ExcecaoVisitaASA
     {
         TipoDado tipo = (TipoDado) noNao.getExpressao().aceitar(this);
-        if (tipo != TipoDado.LOGICO){
+        if (tipo != TipoDado.LOGICO)
+        {
             notificarErroSemantico(new ErroTiposIncompativeis(noNao, tipo, TipoDado.LOGICO));
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noNao);
-        }        
+        }
         return tipo;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA
-    {        
+    {
         return recuperaTipoNoOperacao(noOperacao);
     }
 
@@ -1351,128 +1389,179 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(final NoOperacaoAtribuicao noOperacao) throws ExcecaoVisitaASA
     {
         TipoDado tipoDadoRetorno;
-        
+
         TipoDado operandoEsquerdo = null;
         TipoDado operandoDireito = null;
-        
+
         Simbolo simbolo = null;
         boolean inicializadoAnterior = false;
-        if (!(noOperacao.getOperandoEsquerdo() instanceof NoReferencia)){
+        if (!(noOperacao.getOperandoEsquerdo() instanceof NoReferencia))
+        {
             notificarErroSemantico(new ErroOperacaoComExpressaoConstante(noOperacao, noOperacao.getOperandoEsquerdo()));
-        }  else  {
+        }
+        else
+        {
             try
             {
-                if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVariavel) {
-                    simbolo = memoria.getSimbolo(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
-
-                    inicializadoAnterior = simbolo.inicializado();
-                    simbolo.setInicializado(true);            
-                    if (simbolo instanceof Variavel){
-
-                        if (simbolo.constante())
-                        {
-                            final Simbolo pSimbolo = simbolo;
-
-                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                            {
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    StringBuilder sb = new StringBuilder();
-
-                                    if (pSimbolo instanceof Variavel)
-                                    {
-                                        sb.append("\"");
-                                        sb.append(pSimbolo.getNome());
-                                        sb.append("\" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização");
-                                    }
-                                    else if (pSimbolo instanceof Vetor)
-                                    {
-                                        sb.append("O vetor \"");
-                                        sb.append(pSimbolo.getNome());
-                                        sb.append("\" é constante e, portanto, não pode ter seus valores alterados após a inicialização");
-                                    }
-                                    else if (pSimbolo instanceof Matriz)
-                                    {
-                                        sb.append("A matriz \"");
-                                        sb.append(pSimbolo.getNome());
-                                        sb.append("\" é constante e, portanto, não pode ter seu valor alterado após a inicialização");
-                                    }
-
-                                    return sb.toString();
-                                }
-                            });
-                        }
-                    
-                    if ((noOperacao.getOperandoDireito() instanceof NoMatriz) || 
-                            (noOperacao.getOperandoDireito() instanceof NoVetor))
-                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
-
-                        @Override
-                        protected String construirMensagem()
-                        {
-                            return "não é possível atribuir uma matriz ou um vetor a uma variável";
-                        }
-                    });
-                } else if (simbolo instanceof Vetor) {
-                    if (!(noOperacao.getOperandoDireito() instanceof NoVetor)){
-                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte()) {
-
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    return "O vetor deve ser inicializado com um vetor literal";
-                                }
-                            });
-                        }
-                    } else if (simbolo instanceof Matriz) {
-                        if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz)){
-                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
-                            {
-                                @Override
-                                protected String construirMensagem()
-                                {
-                                    return "A matriz deve ser inicializada com uma matriz literal";
-                                }
-                            });
-                        }
-                    }
-                }
-                else if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaMatriz ||
-                        noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVetor)
+                if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVariavel)
                 {
-                    if (noOperacao.getOperandoDireito() instanceof NoVetor)
+                    final NoReferenciaVariavel referencia = (NoReferenciaVariavel) noOperacao.getOperandoEsquerdo();
+                    
+                    if (referencia.getEscopo() == null)
                     {
-                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                        simbolo = memoria.getSimbolo(referencia.getNome());
+
+                        inicializadoAnterior = simbolo.inicializado();
+                        simbolo.setInicializado(true);
+                        if (simbolo instanceof Variavel)
                         {
-                            @Override
-                            protected String construirMensagem()
+
+                            if (simbolo.constante())
                             {
-                                return "Deve-se atribuir um valor à uma posição do vetor";
+                                final Simbolo pSimbolo = simbolo;
+
+                                notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                                {
+                                    @Override
+                                    protected String construirMensagem()
+                                    {
+                                        StringBuilder sb = new StringBuilder();
+
+                                        if (pSimbolo instanceof Variavel)
+                                        {
+                                            sb.append("\"");
+                                            sb.append(pSimbolo.getNome());
+                                            sb.append("\" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização");
+                                        }
+                                        else
+                                        {
+                                            if (pSimbolo instanceof Vetor)
+                                            {
+                                                sb.append("O vetor \"");
+                                                sb.append(pSimbolo.getNome());
+                                                sb.append("\" é constante e, portanto, não pode ter seus valores alterados após a inicialização");
+                                            }
+                                            else
+                                            {
+                                                if (pSimbolo instanceof Matriz)
+                                                {
+                                                    sb.append("A matriz \"");
+                                                    sb.append(pSimbolo.getNome());
+                                                    sb.append("\" é constante e, portanto, não pode ter seu valor alterado após a inicialização");
+                                                }
+                                            }
+                                        }
+
+                                        return sb.toString();
+                                    }
+                                });
                             }
-                        });
-                    }
-                    else if (noOperacao.getOperandoDireito() instanceof NoMatriz )
-                    {
-                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+
+                            if ((noOperacao.getOperandoDireito() instanceof NoMatriz)
+                                    || (noOperacao.getOperandoDireito() instanceof NoVetor))
+                            {
+                                notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                                {
+                                    @Override
+                                    protected String construirMensagem()
+                                    {
+                                        return "não é possível atribuir uma matriz ou um vetor a uma variável";
+                                    }
+                                });
+                            }
+                        }
+                        else
                         {
-                            @Override
-                            protected String construirMensagem()
+                            if (simbolo instanceof Vetor)
                             {
-                                return "Deve-se atribuir um valor à uma posição da matriz";
+                                if (!(noOperacao.getOperandoDireito() instanceof NoVetor))
+                                {
+                                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                                    {
+                                        @Override
+                                        protected String construirMensagem()
+                                        {
+                                            return "O vetor deve ser inicializado com um vetor literal";
+                                        }
+                                    });
+                                }
                             }
-                        });
+                            else
+                            {
+                                if (simbolo instanceof Matriz)
+                                {
+                                    if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz))
+                                    {
+                                        notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                                        {
+                                            @Override
+                                            protected String construirMensagem()
+                                            {
+                                                return "A matriz deve ser inicializada com uma matriz literal";
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        try
+                        {
+                            MetaDadosBiblioteca metaDadosBiblioteca =  GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(referencia.getEscopo());
+                            MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(referencia.getNome());
+                        }
+                        catch (ErroCarregamentoBiblioteca ex)
+                        {
+                            Logger.getLogger(AnalisadorSemantico.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
                     }
                 }
-                else if (noOperacao.getOperandoEsquerdo() instanceof NoChamadaFuncao) {
-                    notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte())
+                else
+                {
+                    if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaMatriz
+                            || noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVetor)
                     {
-                        @Override
-                        protected String construirMensagem()
+                        if (noOperacao.getOperandoDireito() instanceof NoVetor)
                         {
-                            return "Não é possível atribuir uma expressão a uma chamada de função.";
+                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                            {
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "Deve-se atribuir um valor à uma posição do vetor";
+                                }
+                            });
                         }
-                    });
+                        else
+                        {
+                            if (noOperacao.getOperandoDireito() instanceof NoMatriz)
+                            {
+                                notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoDireito().getTrechoCodigoFonte())
+                                {
+                                    @Override
+                                    protected String construirMensagem()
+                                    {
+                                        return "Deve-se atribuir um valor à uma posição da matriz";
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (noOperacao.getOperandoEsquerdo() instanceof NoChamadaFuncao)
+                        {
+                            notificarErroSemantico(new ErroSemantico(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte())
+                            {
+                                @Override
+                                protected String construirMensagem()
+                                {
+                                    return "Não é possível atribuir uma expressão a uma chamada de função.";
+                                }
+                            });
+                        }
+                    }
                 }
             }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
@@ -1480,39 +1569,46 @@ public final class AnalisadorSemantico implements VisitanteASA
                 // Não faz nada
             }
         }
-        
-        try { operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this); }
-        catch (ExcecaoVisitaASA excecao) 
-        { 
-            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
+
+        try
+        {
+            operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this);
+        }
+        catch (ExcecaoVisitaASA excecao)
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
             {
                 throw excecao;
             }
         }
-        
-        if (simbolo != null) {
+
+        if (simbolo != null)
+        {
             simbolo.setInicializado(inicializadoAnterior);
         }
-        
-        try { operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this); }
-        catch (ExcecaoVisitaASA excecao) 
+
+        try
         {
-            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
+            operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this);
+        }
+        catch (ExcecaoVisitaASA excecao)
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
             {
                 throw excecao;
             }
         }
-        
+
         if (operandoEsquerdo != null && operandoDireito != null)
         {
             try
             {
-                 tipoDadoRetorno = tabelaCompatibilidadeTipos.obterTipoRetornoOperacao(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
+                tipoDadoRetorno = tabelaCompatibilidadeTipos.obterTipoRetornoOperacao(noOperacao.getClass(), operandoEsquerdo, operandoDireito);
             }
             catch (ExcecaoValorSeraConvertido excecao)
             {
                 notificarAviso(new AvisoValorExpressaoSeraConvertido(noOperacao.getOperandoDireito().getTrechoCodigoFonte(), noOperacao, excecao.getTipoEntrada(), excecao.getTipoSaida()));
-                
+
                 tipoDadoRetorno = excecao.getTipoSaida();
             }
             catch (ExcecaoImpossivelDeterminarTipoDado excecao)
@@ -1525,13 +1621,14 @@ public final class AnalisadorSemantico implements VisitanteASA
         else
         {
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noOperacao);
-        }       
-        
-        
-        if (simbolo != null) {
+        }
+
+
+        if (simbolo != null)
+        {
             simbolo.setInicializado(true);
         }
-        
+
         return tipoDadoRetorno;
     }
 
@@ -1598,55 +1695,56 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoModulo noOperacao) throws ExcecaoVisitaASA
     {
-        return recuperaTipoNoOperacao(noOperacao); 
+        return recuperaTipoNoOperacao(noOperacao);
     }
-    
+
     @Override
     public Object visitar(NoOperacaoBitwiseLeftShift noOperacao) throws ExcecaoVisitaASA
     {
-        return recuperaTipoNoOperacao(noOperacao); 
+        return recuperaTipoNoOperacao(noOperacao);
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseRightShift noOperacao) throws ExcecaoVisitaASA
     {
-        return recuperaTipoNoOperacao(noOperacao); 
+        return recuperaTipoNoOperacao(noOperacao);
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseE noOperacao) throws ExcecaoVisitaASA
     {
-        return recuperaTipoNoOperacao(noOperacao); 
+        return recuperaTipoNoOperacao(noOperacao);
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseOu noOperacao) throws ExcecaoVisitaASA
     {
-        return recuperaTipoNoOperacao(noOperacao); 
+        return recuperaTipoNoOperacao(noOperacao);
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseXOR noOperacao) throws ExcecaoVisitaASA
     {
-        return recuperaTipoNoOperacao(noOperacao); 
+        return recuperaTipoNoOperacao(noOperacao);
     }
-    
+
     @Override
     public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA
     {
         TipoDado tipo = (TipoDado) noOperacaoBitwiseNao.getExpressao().aceitar(this);
-        if (tipo != TipoDado.INTEIRO){
+        if (tipo != TipoDado.INTEIRO)
+        {
             notificarErroSemantico(new ErroTiposIncompativeis(noOperacaoBitwiseNao, tipo, TipoDado.LOGICO));
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noOperacaoBitwiseNao);
-        }        
+        }
         return tipo;
     }
-    
+
     @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
         memoria.empilharEscopo();
-         
+
         try
         {
             if (noPara.getInicializacao() != null)
@@ -1657,12 +1755,15 @@ public final class AnalisadorSemantico implements VisitanteASA
         catch (ExcecaoVisitaASA excecao)
         {
             if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+            {
                 throw excecao;
+            }
         }
-        
+
         try
-        {        
-            if (noPara.getCondicao() == null){
+        {
+            if (noPara.getCondicao() == null)
+            {
                 notificarErroSemantico(new ErroSemantico()
                 {
                     @Override
@@ -1671,7 +1772,9 @@ public final class AnalisadorSemantico implements VisitanteASA
                         return "É obrigatório a utilização de uma expressão de condição no comando para";
                     }
                 });
-            } else {
+            }
+            else
+            {
                 TipoDado tipoDadoCondicao = (TipoDado) noPara.getCondicao().aceitar(this);
 
                 if (tipoDadoCondicao != TipoDado.LOGICO)
@@ -1683,12 +1786,14 @@ public final class AnalisadorSemantico implements VisitanteASA
         catch (ExcecaoVisitaASA excecao)
         {
             if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+            {
                 throw excecao;
+            }
         }
-        
+
         try
         {
-            if (noPara.getIncremento() != null) 
+            if (noPara.getIncremento() != null)
             {
                 noPara.getIncremento().aceitar(this);
             }
@@ -1696,13 +1801,15 @@ public final class AnalisadorSemantico implements VisitanteASA
         catch (ExcecaoVisitaASA excecao)
         {
             if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+            {
                 throw excecao;
+            }
         }
-        
+
         analisarListaBlocos(noPara.getBlocos());
-        
+
         memoria.desempilharEscopo();
-        
+
         return null;
     }
 
@@ -1726,42 +1833,42 @@ public final class AnalisadorSemantico implements VisitanteASA
 
     @Override
     public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA
-    {        
-        try 
-        { 
-            TipoDado tipoLinha = (TipoDado) noReferenciaMatriz.getLinha().aceitar(this); 
-            TipoDado tipoColuna = (TipoDado) noReferenciaMatriz.getColuna().aceitar(this); 
-            
-            
+    {
+        try
+        {
+            TipoDado tipoLinha = (TipoDado) noReferenciaMatriz.getLinha().aceitar(this);
+            TipoDado tipoColuna = (TipoDado) noReferenciaMatriz.getColuna().aceitar(this);
+
+
             if (tipoLinha != TipoDado.INTEIRO && tipoColuna != TipoDado.INTEIRO)
             {
                 notificarErroSemantico(new ErroTiposIncompativeis(noReferenciaMatriz, tipoLinha, TipoDado.INTEIRO, tipoColuna, TipoDado.INTEIRO));
             }
         }
-        catch (ExcecaoVisitaASA excecao) 
+        catch (ExcecaoVisitaASA excecao)
         {
             if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
             {
                 throw excecao;
             }
-        }        
-        
+        }
+
         try
         {
             Simbolo simbolo = memoria.getSimbolo(noReferenciaMatriz.getNome());
-         
+
             if (!(simbolo instanceof Matriz))
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaMatriz, simbolo));
             }
-            
+
             return simbolo.getTipoDado();
         }
-        catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado) 
+        catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
             notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaMatriz));
         }
-        
+
         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaMatriz);
     }
 
@@ -1788,39 +1895,39 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA
     {
-        try 
-        { 
-            TipoDado tipoIndice = (TipoDado) noReferenciaVetor.getIndice().aceitar(this); 
-            
+        try
+        {
+            TipoDado tipoIndice = (TipoDado) noReferenciaVetor.getIndice().aceitar(this);
+
             if (tipoIndice != TipoDado.INTEIRO)
             {
                 notificarErroSemantico(new ErroTiposIncompativeis(noReferenciaVetor, tipoIndice, TipoDado.INTEIRO));
             }
         }
-        catch (ExcecaoVisitaASA excecao) 
+        catch (ExcecaoVisitaASA excecao)
         {
             if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
             {
                 throw excecao;
             }
-        }        
-        
+        }
+
         try
         {
             Simbolo simbolo = memoria.getSimbolo(noReferenciaVetor.getNome());
-                    
+
             if (!(simbolo instanceof Vetor))
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVetor, simbolo));
             }
-            
+
             return simbolo.getTipoDado();
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
             notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaVetor));
         }
-        
+
         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaVetor);
     }
 
@@ -1828,17 +1935,20 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
         TipoDado tipoDadoRetorno = TipoDado.VAZIO;
-        
-        if (noRetorne.getExpressao() != null) 
+
+        if (noRetorne.getExpressao() != null)
         {
-             tipoDadoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
+            tipoDadoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
         }
-        
+
         if (funcaoAtual.getTipoDado() != tipoDadoRetorno)
         {
-            notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, new String[] { funcaoAtual.getNome() }, funcaoAtual.getTipoDado(), tipoDadoRetorno));
+            notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, new String[]
+            {
+                funcaoAtual.getNome()
+            }, funcaoAtual.getTipoDado(), tipoDadoRetorno));
         }
-        
+
         return null;
     }
 
@@ -1846,15 +1956,15 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoSe noSe) throws ExcecaoVisitaASA
     {
         TipoDado tipoDadoCondicao = (TipoDado) noSe.getCondicao().aceitar(this);
-        
+
         if (tipoDadoCondicao != TipoDado.LOGICO)
         {
             notificarErroSemantico(new ErroTiposIncompativeis(noSe, tipoDadoCondicao));
         }
-        
+
         analisarListaBlocos(noSe.getBlocosVerdadeiros());
         analisarListaBlocos(noSe.getBlocosFalsos());
-        
+
         return null;
     }
 
@@ -1864,16 +1974,16 @@ public final class AnalisadorSemantico implements VisitanteASA
         List<NoExpressao> valores = (List) noVetor.getValores();
 
         if (valores != null && !valores.isEmpty())
-        {        
+        {
             try
-            {                
+            {
                 TipoDado tipoDadoVetor = (TipoDado) ((NoExpressao) valores.get(0)).aceitar(this);
 
                 for (int i = 1; i < valores.size(); i++)
-                {                                    
+                {
                     TipoDado tipoDadoElemento = (TipoDado) ((NoExpressao) valores.get(i)).aceitar(this);
 
-                    if (tipoDadoElemento != tipoDadoVetor) 
+                    if (tipoDadoElemento != tipoDadoVetor)
                     {
                         notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte())
                         {
@@ -1883,11 +1993,11 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 return "A inicialização do vetor possui mais de um tipo de dado";
                             }
                         });
-                        
+
                         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noVetor);
                     }
-                }      
-                return tipoDadoVetor;   
+                }
+                return tipoDadoVetor;
             }
             catch (Exception excecao)
             {
@@ -1900,13 +2010,13 @@ public final class AnalisadorSemantico implements VisitanteASA
             //TODO Fazer essa verificaçao no Sintatico (Portugol.g)
             notificarErroSemantico(new ErroSemantico(noVetor.getTrechoCodigoFonte())
             {
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return "A inicialização do vetor não possui elementos";
-                    }
+                @Override
+                protected String construirMensagem()
+                {
+                    return "A inicialização do vetor não possui elementos";
+                }
             });
-            
+
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noVetor);
         }
     }
@@ -1923,23 +2033,23 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             simbolo = new Variavel(nome, tipoDado, noDeclaracaoParametro);
         }
-        
-        else 
-        
-        if (quantificador == Quantificador.VETOR)
+        else
         {
-            simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro, 0, new ArrayList<Object>());
+            if (quantificador == Quantificador.VETOR)
+            {
+                simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro, 0, new ArrayList<Object>());
+            }
+            else
+            {
+                if (quantificador == Quantificador.MATRIZ)
+                {
+                    simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro, 0, 0, new ArrayList<List<Object>>());
+                }
+            }
         }
-        
-        else 
-            
-        if (quantificador == Quantificador.MATRIZ)
-        {
-            simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro, 0, 0, new ArrayList<List<Object>>());
-        }
-        
+
         try
-        {            
+        {
             Simbolo simboloExistente = memoria.getSimbolo(nome);
             final boolean global = memoria.isGlobal(simboloExistente);
             final boolean local = memoria.isLocal(simboloExistente);
@@ -1947,10 +2057,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             memoria.adicionarSimbolo(simbolo);
             final boolean global1 = memoria.isGlobal(simbolo);
             final boolean local1 = memoria.isLocal(simbolo);
-            if 
-            (
-                (global && global1) || (local && local1)
-            )                
+            if ((global && global1) || (local && local1))
             {
                 simbolo.setRedeclarado(true);
                 notificarErroSemantico(new ErroParametroRedeclarado(noDeclaracaoParametro, funcaoAtual));
@@ -1961,10 +2068,10 @@ public final class AnalisadorSemantico implements VisitanteASA
                 memoria.desempilharEscopo();
                 memoria.adicionarSimbolo(simbolo);
                 simbolo.setInicializado(true);
-                
-                Simbolo simboloGlobal = memoria.isGlobal(simboloExistente)? simboloExistente : simbolo;
-                Simbolo simboloLocal = memoria.isGlobal(simboloExistente)? simbolo : simboloExistente;
-                
+
+                Simbolo simboloGlobal = memoria.isGlobal(simboloExistente) ? simboloExistente : simbolo;
+                Simbolo simboloLocal = memoria.isGlobal(simboloExistente) ? simbolo : simboloExistente;
+
                 notificarAviso(new AvisoSimboloGlobalOcultado(simboloGlobal, simboloLocal, noDeclaracaoParametro));
             }
         }
@@ -1973,44 +2080,50 @@ public final class AnalisadorSemantico implements VisitanteASA
             simbolo.setInicializado(true);
             memoria.adicionarSimbolo(simbolo);
         }
-        
+
         return null;
     }
-    
+
     private static List<String> getLista()
     {
         List<String> funcoes = new ArrayList<String>();
-        
+
         funcoes.add("leia");
         funcoes.add("escreva");
         funcoes.add("limpa");
-        
+
         return funcoes;
     }
-    
+
     private TipoDado recuperaTipoNoOperacao(NoOperacao noOperacao) throws ExcecaoVisitaASA
     {
         TipoDado operandoEsquerdo = null;
         TipoDado operandoDireito = null;
-        
-        try { operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this); }
-        catch (ExcecaoVisitaASA excecao) 
-        { 
-            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
-            {
-                throw excecao;
-            }
-        }
-        
-        try { operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this); }
-        catch (ExcecaoVisitaASA excecao) 
+
+        try
         {
-            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado)) 
+            operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this);
+        }
+        catch (ExcecaoVisitaASA excecao)
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
             {
                 throw excecao;
             }
         }
-        
+
+        try
+        {
+            operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this);
+        }
+        catch (ExcecaoVisitaASA excecao)
+        {
+            if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
+            {
+                throw excecao;
+            }
+        }
+
         if (operandoEsquerdo != null && operandoDireito != null)
         {
             try
@@ -2020,7 +2133,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             catch (ExcecaoValorSeraConvertido excecao)
             {
                 notificarAviso(new AvisoValorExpressaoSeraConvertido(noOperacao, excecao.getTipoEntrada(), excecao.getTipoSaida()));
-                
+
                 return excecao.getTipoSaida();
             }
             catch (ExcecaoImpossivelDeterminarTipoDado excecao)
@@ -2035,16 +2148,16 @@ public final class AnalisadorSemantico implements VisitanteASA
             throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noOperacao);
         }
     }
-    
+
     private void analisarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
-    {    
+    {
         if (blocos == null)
         {
             return;
         }
-        
-        memoria.empilharEscopo();        
-        
+
+        memoria.empilharEscopo();
+
         for (NoBloco noBloco : blocos)
         {
             try
@@ -2059,16 +2172,16 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             }
         }
-        
-        memoria.desempilharEscopo();        
-    } 
+
+        memoria.desempilharEscopo();
+    }
 
     @Override
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
         String nome = noInclusaoBiblioteca.getNome();
-        String alias = noInclusaoBiblioteca.getAlias();        
-        
+        String alias = noInclusaoBiblioteca.getAlias();
+
         try
         {
             try
@@ -2114,7 +2227,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             notificarErroSemantico(new ErroInclusaoBiblioteca(noInclusaoBiblioteca.getTrechoCodigoFonteNome(), erro));
         }
-        
+
         return null;
     }
 
@@ -2123,42 +2236,43 @@ public final class AnalisadorSemantico implements VisitanteASA
         try
         {
             Simbolo simbolo = memoria.getSimbolo(noReferenciaVariavel.getNome());
-            
-            if (!simbolo.inicializado()){
-                notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel,simbolo));
-            }      
-            
+
+            if (!simbolo.inicializado())
+            {
+                notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel, simbolo));
+            }
+
             if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passandoReferencia && !passandoParametro)
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
             }
-            
+
             return simbolo.getTipoDado();
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
             notificarErroSemantico(new ErroSimboloNaoDeclarado(noReferenciaVariavel));
         }
-        
+
         throw new ExcecaoImpossivelDeterminarTipoDado();
     }
 
     private TipoDado analisarReferenciaVariavelBiblioteca(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
         final String escopo = noReferenciaVariavel.getEscopo();
-        final String nome = noReferenciaVariavel.getNome();        
+        final String nome = noReferenciaVariavel.getNome();
         final MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(escopo);
-        
+
         if (metaDadosBiblioteca != null)
         {
             MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(nome);
-            
+
             if (metaDadosConstante != null)
             {
-                return metaDadosConstante.getTipoDado();            
+                return metaDadosConstante.getTipoDado();
             }
 
-            notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome()) 
+            notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome())
             {
                 @Override
                 protected String construirMensagem()
@@ -2166,8 +2280,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                     return String.format("A constante \"%s\" não existe na biblioteca \"%s\"", nome, metaDadosBiblioteca.getNome());
                 }
             });
-        }            
-        else 
+        }
+        else
         {
             notificarErroSemantico(new ErroSemantico(noReferenciaVariavel.getTrechoCodigoFonteNome())
             {
@@ -2178,7 +2292,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             });
         }
-        
+
         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaVariavel);
     }
 }
