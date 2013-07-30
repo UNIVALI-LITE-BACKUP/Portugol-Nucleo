@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirConstanteBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroExcedente;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosInicializacaoVetor;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoMatrizLiteral;
@@ -1424,8 +1425,10 @@ public final class AnalisadorSemantico implements VisitanteASA
                          * Por isso, ao trabalhar com as bibliotecas dentro do semântico, deve-se sempre utilizar
                          * o mapa interno, caso contrário vai dar NullPointerException.
                          */
-                        MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(referencia.getEscopo());
-                        MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(referencia.getNome());
+                        final MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(referencia.getEscopo());
+                        final MetaDadosConstante metaDadosConstante = metaDadosBiblioteca.getMetaDadosConstantes().obter(referencia.getNome());
+                        
+                        notificarErroSemantico(new ErroAtribuirConstanteBiblioteca(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte(), metaDadosConstante, metaDadosBiblioteca));
                     }
                 }
                 else
