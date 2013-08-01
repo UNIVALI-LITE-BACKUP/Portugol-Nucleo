@@ -17,4 +17,5 @@ public interface TabelaCompatibilidadeTipos
 {
     public TipoDado obterTipoRetornoOperacao(Class<? extends NoOperacao> operacao, TipoDado tipoDadoOperandoEsquerdo, TipoDado tipoDadoOperandoDireito) throws ExcecaoImpossivelDeterminarTipoDado, ExcecaoValorSeraConvertido;
     public TipoDado obterTipoRetornoPassagemParametro(TipoDado tipoDadoEsperado, TipoDado tipoDadoPassado) throws ExcecaoImpossivelDeterminarTipoDado, ExcecaoValorSeraConvertido;
+    public TipoDado obterTipoRetornoFuncao(TipoDado tipoDadoEsperado, TipoDado tipoDadoPassado) throws ExcecaoImpossivelDeterminarTipoDado, ExcecaoValorSeraConvertido;
 }

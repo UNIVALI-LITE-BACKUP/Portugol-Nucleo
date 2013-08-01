@@ -45,6 +45,7 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
     
     private Map<Class<? extends NoOperacao>, Object[][]> tabelas;
     private Object[][] tabelaChamadaFuncao;    
+    private Object[][] tabelaRetornoFuncao;
     
     public static final TabelaCompatibilidadeTiposPortugol INSTANCE = new TabelaCompatibilidadeTiposPortugol();
     
@@ -82,6 +83,7 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
         tabelas.put(NoOperacaoBitwiseXOR.class, criarTabelaCompatibilidadeBitwise());
         
         tabelaChamadaFuncao = criarTabelaCompatibilidadeChamadaFuncao();
+        tabelaRetornoFuncao = criarTabelaCompatibilidadeRetornoFuncao();
     }
 
     private TipoDado obterTipoDado(Object[][] tabela, TipoDado tipoDadoA, TipoDado tipoDadoB) throws ExcecaoImpossivelDeterminarTipoDado, ExcecaoValorSeraConvertido
@@ -110,6 +112,12 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
     public TipoDado obterTipoRetornoPassagemParametro(TipoDado tipoDadoEsperado, TipoDado tipoDadoPassado) throws ExcecaoImpossivelDeterminarTipoDado, ExcecaoValorSeraConvertido
     {
         return obterTipoDado(tabelaChamadaFuncao, tipoDadoEsperado, tipoDadoPassado);
+    }
+    
+    @Override
+    public TipoDado obterTipoRetornoFuncao(TipoDado tipoDadoEsperado, TipoDado tipoDadoPassado) throws ExcecaoImpossivelDeterminarTipoDado, ExcecaoValorSeraConvertido
+    {
+        return obterTipoDado(tabelaRetornoFuncao, tipoDadoEsperado, tipoDadoPassado);
     }
     
     private Object[][] criarTabelaCompatibilidadeChamadaFuncao()
@@ -175,6 +183,74 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
         
         return tabela;
     }
+    
+    
+     private Object[][] criarTabelaCompatibilidadeRetornoFuncao()
+    {
+        int tamanho = TipoDado.values().length;
+        Object[][] tabela = new Object[tamanho][tamanho];
+        
+        tabela[CADEIA.ordinal()][CADEIA.ordinal()] = CADEIA;
+        tabela[CADEIA.ordinal()][CARACTER.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CADEIA.ordinal()][INTEIRO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CADEIA.ordinal()][LOGICO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CADEIA.ordinal()][REAL.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CADEIA.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CADEIA.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
+        
+        tabela[CARACTER.ordinal()][CADEIA.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CARACTER.ordinal()][CARACTER.ordinal()] = CARACTER;
+        tabela[CARACTER.ordinal()][INTEIRO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CARACTER.ordinal()][LOGICO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CARACTER.ordinal()][REAL.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CARACTER.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[CARACTER.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
+        
+        tabela[INTEIRO.ordinal()][CADEIA.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[INTEIRO.ordinal()][CARACTER.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[INTEIRO.ordinal()][INTEIRO.ordinal()] = INTEIRO;
+        tabela[INTEIRO.ordinal()][LOGICO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[INTEIRO.ordinal()][REAL.ordinal()] = OCORRE_CONVERSAO;
+        tabela[INTEIRO.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[INTEIRO.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
+                 
+        tabela[LOGICO.ordinal()][CADEIA.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[LOGICO.ordinal()][CARACTER.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[LOGICO.ordinal()][INTEIRO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[LOGICO.ordinal()][LOGICO.ordinal()] = LOGICO;
+        tabela[LOGICO.ordinal()][REAL.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[LOGICO.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[LOGICO.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
+        
+        tabela[REAL.ordinal()][CADEIA.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[REAL.ordinal()][CARACTER.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[REAL.ordinal()][INTEIRO.ordinal()] = OCORRE_CONVERSAO;
+        tabela[REAL.ordinal()][LOGICO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[REAL.ordinal()][REAL.ordinal()] = REAL;
+        tabela[REAL.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[REAL.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
+        
+        tabela[VAZIO.ordinal()][CADEIA.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[VAZIO.ordinal()][CARACTER.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[VAZIO.ordinal()][INTEIRO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[VAZIO.ordinal()][LOGICO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[VAZIO.ordinal()][REAL.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[VAZIO.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[VAZIO.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
+        
+        tabela[TODOS.ordinal()][CADEIA.ordinal()] = CADEIA;
+        tabela[TODOS.ordinal()][CARACTER.ordinal()] = CARACTER;
+        tabela[TODOS.ordinal()][INTEIRO.ordinal()] = INTEIRO;
+        tabela[TODOS.ordinal()][LOGICO.ordinal()] = LOGICO;
+        tabela[TODOS.ordinal()][REAL.ordinal()] = REAL;
+        tabela[TODOS.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
+        tabela[TODOS.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
+        
+        return tabela;
+    }
+    
+    
+    
 
     private Object[][] criarTabelaCompatibilidadeAtribuicao()
     {
@@ -265,7 +341,7 @@ public final class TabelaCompatibilidadeTiposPortugol implements TabelaCompatibi
         tabela[INTEIRO.ordinal()][CARACTER.ordinal()] = TIPOS_INCOMPATIVEIS;
         tabela[INTEIRO.ordinal()][INTEIRO.ordinal()] = INTEIRO;
         tabela[INTEIRO.ordinal()][LOGICO.ordinal()] = TIPOS_INCOMPATIVEIS;
-        tabela[INTEIRO.ordinal()][REAL.ordinal()] = INTEIRO;
+        tabela[INTEIRO.ordinal()][REAL.ordinal()] = REAL;
         tabela[INTEIRO.ordinal()][VAZIO.ordinal()] = TIPOS_INCOMPATIVEIS;
         tabela[INTEIRO.ordinal()][TODOS.ordinal()] = TIPOS_INCOMPATIVEIS;
                  

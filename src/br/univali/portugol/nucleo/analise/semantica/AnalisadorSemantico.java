@@ -1820,22 +1820,28 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
-        TipoDado tipoDadoRetorno = TipoDado.VAZIO;
-
+        TipoDado tipoRetornoFuncao = TipoDado.VAZIO;
+        
         if (noRetorne.getExpressao() != null)
         {
-            tipoDadoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
+            TipoDado tipoExpressaoRetorno = TipoDado.VAZIO;
+            
+            try {
+                tipoExpressaoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
+                tipoRetornoFuncao = tabelaCompatibilidadeTipos.obterTipoRetornoFuncao(funcaoAtual.getTipoDado(),tipoExpressaoRetorno);
+            } catch (ExcecaoValorSeraConvertido e) {
+                notificarAviso(new AvisoValorExpressaoSeraConvertido(noRetorne, e.getTipoEntrada(), e.getTipoSaida(),funcaoAtual.getNome()));
+                tipoRetornoFuncao =  e.getTipoSaida();
+            } catch (ExcecaoImpossivelDeterminarTipoDado ex) {
+                notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, new String[]
+                {
+                    funcaoAtual.getNome()
+                }, funcaoAtual.getTipoDado(), tipoExpressaoRetorno));
+                throw  new ExcecaoVisitaASA(ex, asa, noRetorne);
+            }
         }
 
-        if (funcaoAtual.getTipoDado() != tipoDadoRetorno)
-        {
-            notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, new String[]
-            {
-                funcaoAtual.getNome()
-            }, funcaoAtual.getTipoDado(), tipoDadoRetorno));
-        }
-
-        return null;
+        return tipoRetornoFuncao;
     }
 
     @Override

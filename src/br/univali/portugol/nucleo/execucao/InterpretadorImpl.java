@@ -46,7 +46,6 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private Entrada entrada;
     private boolean referencia = false;
     private ArvoreSintaticaAbstrata asa;
-    private Random random = new Random(System.currentTimeMillis());
     private String ultimaReferenciaAcessada;
     protected Memoria memoria = new Memoria();
     private Map<String, Biblioteca> bibliotecas = new TreeMap<String, Biblioteca>();
@@ -295,7 +294,20 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                             }
                         }
                         Object retorno = interpretarListaBlocos(funcao.getBlocos());
-
+                        
+                        if (retorno != null){
+                            if (retorno.getClass() != funcao.getTipoDado().getTipoJava()){
+                                try
+                                {
+                                    retorno = Conversor.converter(retorno, funcao.getTipoDado().getTipoJava());
+                                }
+                                catch (ErroImpossivelConverterTipos ex)
+                                {
+                                    throw new ExcecaoVisitaASA(ex, asa, noChamadaFuncao);
+                                }
+                            }
+                        }
+                        
                         memoria.desempilharFuncao();
                         return retorno;
                     } 

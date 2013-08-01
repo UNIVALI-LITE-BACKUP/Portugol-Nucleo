@@ -6,6 +6,7 @@ import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoMatriz;
 import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.NoRetorne;
 import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
@@ -30,7 +31,7 @@ public final class AvisoValorExpressaoSeraConvertido extends AvisoAnalise
     private NoExpressao expressao;
     private TipoDado tipoExpressao;
     private TipoDado tipoConversao;
-    
+    private NoRetorne noRetorne = null;
     private Object[] detalhes;
 
     /**
@@ -53,6 +54,16 @@ public final class AvisoValorExpressaoSeraConvertido extends AvisoAnalise
         super(trechoCodigoFonte);
         
         this.expressao = expressao;
+        this.tipoExpressao = tipoExpressao;
+        this.tipoConversao = tipoConversao;
+        this.detalhes = detalhes;                
+    }
+    
+    public AvisoValorExpressaoSeraConvertido(NoRetorne noRetorne, TipoDado tipoExpressao, TipoDado tipoConversao, Object...detalhes)
+    {
+        super(noRetorne.getExpressao().getTrechoCodigoFonte());
+        this.noRetorne = noRetorne;
+        this.expressao = noRetorne.getExpressao();
         this.tipoExpressao = tipoExpressao;
         this.tipoConversao = tipoConversao;
         this.detalhes = detalhes;                
@@ -110,12 +121,28 @@ public final class AvisoValorExpressaoSeraConvertido extends AvisoAnalise
         {
             try
             {
-                return (String) expressao.aceitar(this);
+                if (noRetorne == null) {
+                    return (String) expressao.aceitar(this);
+                } else {
+                    return (String) noRetorne.aceitar(this);
+                }
             }
             catch (ExcecaoVisitaASA e)
             {
                 return e.getMessage();
             }
+        }
+
+        @Override
+        public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
+        {
+            String nomeFuncao = (String) detalhes[0];
+                    
+            if (tipoExpressao == TipoDado.REAL && tipoConversao == TipoDado.INTEIRO)
+            {
+                return String.format("O valor da expressão retornada na função \"%s\" será truncado", nomeFuncao);
+            }
+            return String.format("O valor da expressão retornada na função \"%s\" será automaticamente convertido de \"%s\" para \"%s\"", nomeFuncao, tipoExpressao, tipoConversao);
         }
 
         @Override
@@ -158,7 +185,7 @@ public final class AvisoValorExpressaoSeraConvertido extends AvisoAnalise
                     
             if (tipoExpressao == TipoDado.REAL && tipoConversao == TipoDado.INTEIRO)
             {
-                return String.format("O valor da expressão passada para o parâmetro \"%s\" da função \"%s\" será turncado", nomeParametro, nomeFuncao);
+                return String.format("O valor da expressão passada para o parâmetro \"%s\" da função \"%s\" será truncado", nomeParametro, nomeFuncao);
             }
             
             return String.format("O valor da expressão passada para o parâmetro \"%s\" da função \"%s\" será automaticamente convertido de \"%s\" para \"%s\"", nomeParametro, nomeFuncao, tipoExpressao, tipoConversao);
