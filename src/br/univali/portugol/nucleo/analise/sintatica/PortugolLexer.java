@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-07-10 15:09:27
+// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-07-31 14:50:06
  
 	package br.univali.portugol.nucleo.analise.sintatica;
 
@@ -1749,31 +1749,40 @@ public class PortugolLexer extends Lexer {
         try {
             int _type = INTEIRO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:13: ( ( '0' .. '9' )+ | ( '0x' | '0X' ) ( DIGIT_HEX )+ )
-            int alt6=2;
-            int LA6_0 = input.LA(1);
+            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:13: ( ( '0' .. '9' )+ | ( '0x' | '0X' ) ( DIGIT_HEX )+ | ( '0b' | '0B' ) ( '0' | '1' )+ )
+            int alt8=3;
+            int LA8_0 = input.LA(1);
 
-            if ( (LA6_0=='0') ) {
-                int LA6_1 = input.LA(2);
+            if ( (LA8_0=='0') ) {
+                switch ( input.LA(2) ) {
+                case 'X':
+                case 'x':
+                    {
+                    alt8=2;
+                    }
+                    break;
+                case 'B':
+                case 'b':
+                    {
+                    alt8=3;
+                    }
+                    break;
+                default:
+                    alt8=1;
+                }
 
-                if ( (LA6_1=='X'||LA6_1=='x') ) {
-                    alt6=2;
-                }
-                else {
-                    alt6=1;
-                }
             }
-            else if ( ((LA6_0 >= '1' && LA6_0 <= '9')) ) {
-                alt6=1;
+            else if ( ((LA8_0 >= '1' && LA8_0 <= '9')) ) {
+                alt8=1;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 6, 0, input);
+                    new NoViableAltException("", 8, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt6) {
+            switch (alt8) {
                 case 1 :
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:15: ( '0' .. '9' )+
                     {
@@ -1913,6 +1922,101 @@ public class PortugolLexer extends Lexer {
 
                     }
                     break;
+                case 3 :
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:53: ( '0b' | '0B' ) ( '0' | '1' )+
+                    {
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:53: ( '0b' | '0B' )
+                    int alt6=2;
+                    int LA6_0 = input.LA(1);
+
+                    if ( (LA6_0=='0') ) {
+                        int LA6_1 = input.LA(2);
+
+                        if ( (LA6_1=='b') ) {
+                            alt6=1;
+                        }
+                        else if ( (LA6_1=='B') ) {
+                            alt6=2;
+                        }
+                        else {
+                            NoViableAltException nvae =
+                                new NoViableAltException("", 6, 1, input);
+
+                            throw nvae;
+
+                        }
+                    }
+                    else {
+                        NoViableAltException nvae =
+                            new NoViableAltException("", 6, 0, input);
+
+                        throw nvae;
+
+                    }
+                    switch (alt6) {
+                        case 1 :
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:54: '0b'
+                            {
+                            match("0b"); 
+
+
+
+                            }
+                            break;
+                        case 2 :
+                            // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:59: '0B'
+                            {
+                            match("0B"); 
+
+
+
+                            }
+                            break;
+
+                    }
+
+
+                    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:175:64: ( '0' | '1' )+
+                    int cnt7=0;
+                    loop7:
+                    do {
+                        int alt7=2;
+                        int LA7_0 = input.LA(1);
+
+                        if ( ((LA7_0 >= '0' && LA7_0 <= '1')) ) {
+                            alt7=1;
+                        }
+
+
+                        switch (alt7) {
+                    	case 1 :
+                    	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
+                    	    {
+                    	    if ( (input.LA(1) >= '0' && input.LA(1) <= '1') ) {
+                    	        input.consume();
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;
+                    	    }
+
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    if ( cnt7 >= 1 ) break loop7;
+                                EarlyExitException eee =
+                                    new EarlyExitException(7, input);
+                                throw eee;
+                        }
+                        cnt7++;
+                    } while (true);
+
+
+                    }
+                    break;
 
             }
             state.type = _type;
@@ -1933,18 +2037,18 @@ public class PortugolLexer extends Lexer {
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:177:13: ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:177:13: ( '0' .. '9' )+
-            int cnt7=0;
-            loop7:
+            int cnt9=0;
+            loop9:
             do {
-                int alt7=2;
-                int LA7_0 = input.LA(1);
+                int alt9=2;
+                int LA9_0 = input.LA(1);
 
-                if ( ((LA7_0 >= '0' && LA7_0 <= '9')) ) {
-                    alt7=1;
+                if ( ((LA9_0 >= '0' && LA9_0 <= '9')) ) {
+                    alt9=1;
                 }
 
 
-                switch (alt7) {
+                switch (alt9) {
             	case 1 :
             	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
             	    {
@@ -1962,30 +2066,30 @@ public class PortugolLexer extends Lexer {
             	    break;
 
             	default :
-            	    if ( cnt7 >= 1 ) break loop7;
+            	    if ( cnt9 >= 1 ) break loop9;
                         EarlyExitException eee =
-                            new EarlyExitException(7, input);
+                            new EarlyExitException(9, input);
                         throw eee;
                 }
-                cnt7++;
+                cnt9++;
             } while (true);
 
 
             match('.'); 
 
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:177:29: ( '0' .. '9' )+
-            int cnt8=0;
-            loop8:
+            int cnt10=0;
+            loop10:
             do {
-                int alt8=2;
-                int LA8_0 = input.LA(1);
+                int alt10=2;
+                int LA10_0 = input.LA(1);
 
-                if ( ((LA8_0 >= '0' && LA8_0 <= '9')) ) {
-                    alt8=1;
+                if ( ((LA10_0 >= '0' && LA10_0 <= '9')) ) {
+                    alt10=1;
                 }
 
 
-                switch (alt8) {
+                switch (alt10) {
             	case 1 :
             	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
             	    {
@@ -2003,12 +2107,12 @@ public class PortugolLexer extends Lexer {
             	    break;
 
             	default :
-            	    if ( cnt8 >= 1 ) break loop8;
+            	    if ( cnt10 >= 1 ) break loop10;
                         EarlyExitException eee =
-                            new EarlyExitException(8, input);
+                            new EarlyExitException(10, input);
                         throw eee;
                 }
-                cnt8++;
+                cnt10++;
             } while (true);
 
 
@@ -2034,20 +2138,20 @@ public class PortugolLexer extends Lexer {
             match('\"'); 
 
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:179:17: ( SEQ_ESC |~ ( '\\\\' | '\"' ) )*
-            loop9:
+            loop11:
             do {
-                int alt9=3;
-                int LA9_0 = input.LA(1);
+                int alt11=3;
+                int LA11_0 = input.LA(1);
 
-                if ( (LA9_0=='\\') ) {
-                    alt9=1;
+                if ( (LA11_0=='\\') ) {
+                    alt11=1;
                 }
-                else if ( ((LA9_0 >= '\u0000' && LA9_0 <= '!')||(LA9_0 >= '#' && LA9_0 <= '[')||(LA9_0 >= ']' && LA9_0 <= '\uFFFF')) ) {
-                    alt9=2;
+                else if ( ((LA11_0 >= '\u0000' && LA11_0 <= '!')||(LA11_0 >= '#' && LA11_0 <= '[')||(LA11_0 >= ']' && LA11_0 <= '\uFFFF')) ) {
+                    alt11=2;
                 }
 
 
-                switch (alt9) {
+                switch (alt11) {
             	case 1 :
             	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:179:19: SEQ_ESC
             	    {
@@ -2073,7 +2177,7 @@ public class PortugolLexer extends Lexer {
             	    break;
 
             	default :
-            	    break loop9;
+            	    break loop11;
                 }
             } while (true);
 
@@ -2102,23 +2206,23 @@ public class PortugolLexer extends Lexer {
             match('\''); 
 
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:181:22: ( SEQ_ESC |~ ( '\\'' | '\\\\' ) )
-            int alt10=2;
-            int LA10_0 = input.LA(1);
+            int alt12=2;
+            int LA12_0 = input.LA(1);
 
-            if ( (LA10_0=='\\') ) {
-                alt10=1;
+            if ( (LA12_0=='\\') ) {
+                alt12=1;
             }
-            else if ( ((LA10_0 >= '\u0000' && LA10_0 <= '&')||(LA10_0 >= '(' && LA10_0 <= '[')||(LA10_0 >= ']' && LA10_0 <= '\uFFFF')) ) {
-                alt10=2;
+            else if ( ((LA12_0 >= '\u0000' && LA12_0 <= '&')||(LA12_0 >= '(' && LA12_0 <= '[')||(LA12_0 >= ']' && LA12_0 <= '\uFFFF')) ) {
+                alt12=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 10, 0, input);
+                    new NoViableAltException("", 12, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt10) {
+            switch (alt12) {
                 case 1 :
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:181:24: SEQ_ESC
                     {
@@ -2220,10 +2324,10 @@ public class PortugolLexer extends Lexer {
     public final void mSEQ_ESC() throws RecognitionException {
         try {
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:188:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | ESC_UNICODE | ESC_OCTAL )
-            int alt11=3;
-            int LA11_0 = input.LA(1);
+            int alt13=3;
+            int LA13_0 = input.LA(1);
 
-            if ( (LA11_0=='\\') ) {
+            if ( (LA13_0=='\\') ) {
                 switch ( input.LA(2) ) {
                 case '\"':
                 case '\'':
@@ -2234,12 +2338,12 @@ public class PortugolLexer extends Lexer {
                 case 'r':
                 case 't':
                     {
-                    alt11=1;
+                    alt13=1;
                     }
                     break;
                 case 'u':
                     {
-                    alt11=2;
+                    alt13=2;
                     }
                     break;
                 case '0':
@@ -2251,12 +2355,12 @@ public class PortugolLexer extends Lexer {
                 case '6':
                 case '7':
                     {
-                    alt11=3;
+                    alt13=3;
                     }
                     break;
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("", 11, 1, input);
+                        new NoViableAltException("", 13, 1, input);
 
                     throw nvae;
 
@@ -2265,12 +2369,12 @@ public class PortugolLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 11, 0, input);
+                    new NoViableAltException("", 13, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt11) {
+            switch (alt13) {
                 case 1 :
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:188:23: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
@@ -2318,42 +2422,42 @@ public class PortugolLexer extends Lexer {
     public final void mESC_OCTAL() throws RecognitionException {
         try {
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:190:21: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
-            int alt12=3;
-            int LA12_0 = input.LA(1);
+            int alt14=3;
+            int LA14_0 = input.LA(1);
 
-            if ( (LA12_0=='\\') ) {
-                int LA12_1 = input.LA(2);
+            if ( (LA14_0=='\\') ) {
+                int LA14_1 = input.LA(2);
 
-                if ( ((LA12_1 >= '0' && LA12_1 <= '3')) ) {
-                    int LA12_2 = input.LA(3);
+                if ( ((LA14_1 >= '0' && LA14_1 <= '3')) ) {
+                    int LA14_2 = input.LA(3);
 
-                    if ( ((LA12_2 >= '0' && LA12_2 <= '7')) ) {
-                        int LA12_4 = input.LA(4);
+                    if ( ((LA14_2 >= '0' && LA14_2 <= '7')) ) {
+                        int LA14_4 = input.LA(4);
 
-                        if ( ((LA12_4 >= '0' && LA12_4 <= '7')) ) {
-                            alt12=1;
+                        if ( ((LA14_4 >= '0' && LA14_4 <= '7')) ) {
+                            alt14=1;
                         }
                         else {
-                            alt12=2;
+                            alt14=2;
                         }
                     }
                     else {
-                        alt12=3;
+                        alt14=3;
                     }
                 }
-                else if ( ((LA12_1 >= '4' && LA12_1 <= '7')) ) {
-                    int LA12_3 = input.LA(3);
+                else if ( ((LA14_1 >= '4' && LA14_1 <= '7')) ) {
+                    int LA14_3 = input.LA(3);
 
-                    if ( ((LA12_3 >= '0' && LA12_3 <= '7')) ) {
-                        alt12=2;
+                    if ( ((LA14_3 >= '0' && LA14_3 <= '7')) ) {
+                        alt14=2;
                     }
                     else {
-                        alt12=3;
+                        alt14=3;
                     }
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("", 12, 1, input);
+                        new NoViableAltException("", 14, 1, input);
 
                     throw nvae;
 
@@ -2361,12 +2465,12 @@ public class PortugolLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 12, 0, input);
+                    new NoViableAltException("", 14, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt12) {
+            switch (alt14) {
                 case 1 :
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:190:23: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
@@ -2496,21 +2600,21 @@ public class PortugolLexer extends Lexer {
             int _type = COMENTARIO;
             int _channel = DEFAULT_TOKEN_CHANNEL;
             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:194:14: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' | '/*' ( options {greedy=false; } : . )* '*/' )
-            int alt16=2;
-            int LA16_0 = input.LA(1);
+            int alt18=2;
+            int LA18_0 = input.LA(1);
 
-            if ( (LA16_0=='/') ) {
-                int LA16_1 = input.LA(2);
+            if ( (LA18_0=='/') ) {
+                int LA18_1 = input.LA(2);
 
-                if ( (LA16_1=='/') ) {
-                    alt16=1;
+                if ( (LA18_1=='/') ) {
+                    alt18=1;
                 }
-                else if ( (LA16_1=='*') ) {
-                    alt16=2;
+                else if ( (LA18_1=='*') ) {
+                    alt18=2;
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("", 16, 1, input);
+                        new NoViableAltException("", 18, 1, input);
 
                     throw nvae;
 
@@ -2518,12 +2622,12 @@ public class PortugolLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 16, 0, input);
+                    new NoViableAltException("", 18, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt16) {
+            switch (alt18) {
                 case 1 :
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:196:2: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
                     {
@@ -2532,17 +2636,17 @@ public class PortugolLexer extends Lexer {
 
 
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:196:7: (~ ( '\\n' | '\\r' ) )*
-                    loop13:
+                    loop15:
                     do {
-                        int alt13=2;
-                        int LA13_0 = input.LA(1);
+                        int alt15=2;
+                        int LA15_0 = input.LA(1);
 
-                        if ( ((LA13_0 >= '\u0000' && LA13_0 <= '\t')||(LA13_0 >= '\u000B' && LA13_0 <= '\f')||(LA13_0 >= '\u000E' && LA13_0 <= '\uFFFF')) ) {
-                            alt13=1;
+                        if ( ((LA15_0 >= '\u0000' && LA15_0 <= '\t')||(LA15_0 >= '\u000B' && LA15_0 <= '\f')||(LA15_0 >= '\u000E' && LA15_0 <= '\uFFFF')) ) {
+                            alt15=1;
                         }
 
 
-                        switch (alt13) {
+                        switch (alt15) {
                     	case 1 :
                     	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:
                     	    {
@@ -2560,19 +2664,19 @@ public class PortugolLexer extends Lexer {
                     	    break;
 
                     	default :
-                    	    break loop13;
+                    	    break loop15;
                         }
                     } while (true);
 
 
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:196:21: ( '\\r' )?
-                    int alt14=2;
-                    int LA14_0 = input.LA(1);
+                    int alt16=2;
+                    int LA16_0 = input.LA(1);
 
-                    if ( (LA14_0=='\r') ) {
-                        alt14=1;
+                    if ( (LA16_0=='\r') ) {
+                        alt16=1;
                     }
-                    switch (alt14) {
+                    switch (alt16) {
                         case 1 :
                             // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:196:21: '\\r'
                             {
@@ -2598,29 +2702,29 @@ public class PortugolLexer extends Lexer {
 
 
                     // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:198:8: ( options {greedy=false; } : . )*
-                    loop15:
+                    loop17:
                     do {
-                        int alt15=2;
-                        int LA15_0 = input.LA(1);
+                        int alt17=2;
+                        int LA17_0 = input.LA(1);
 
-                        if ( (LA15_0=='*') ) {
-                            int LA15_1 = input.LA(2);
+                        if ( (LA17_0=='*') ) {
+                            int LA17_1 = input.LA(2);
 
-                            if ( (LA15_1=='/') ) {
-                                alt15=2;
+                            if ( (LA17_1=='/') ) {
+                                alt17=2;
                             }
-                            else if ( ((LA15_1 >= '\u0000' && LA15_1 <= '.')||(LA15_1 >= '0' && LA15_1 <= '\uFFFF')) ) {
-                                alt15=1;
+                            else if ( ((LA17_1 >= '\u0000' && LA17_1 <= '.')||(LA17_1 >= '0' && LA17_1 <= '\uFFFF')) ) {
+                                alt17=1;
                             }
 
 
                         }
-                        else if ( ((LA15_0 >= '\u0000' && LA15_0 <= ')')||(LA15_0 >= '+' && LA15_0 <= '\uFFFF')) ) {
-                            alt15=1;
+                        else if ( ((LA17_0 >= '\u0000' && LA17_0 <= ')')||(LA17_0 >= '+' && LA17_0 <= '\uFFFF')) ) {
+                            alt17=1;
                         }
 
 
-                        switch (alt15) {
+                        switch (alt17) {
                     	case 1 :
                     	    // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:198:36: .
                     	    {
@@ -2630,7 +2734,7 @@ public class PortugolLexer extends Lexer {
                     	    break;
 
                     	default :
-                    	    break loop15;
+                    	    break loop17;
                         }
                     } while (true);
 
@@ -2656,9 +2760,9 @@ public class PortugolLexer extends Lexer {
 
     public void mTokens() throws RecognitionException {
         // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:8: ( T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | PR_INCLUA | PR_BIBLIOTECA | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | ID_BIBLIOTECA | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO )
-        int alt17=74;
-        alt17 = dfa17.predict(input);
-        switch (alt17) {
+        int alt19=74;
+        alt19 = dfa19.predict(input);
+        switch (alt19) {
             case 1 :
                 // /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g:1:10: T__42
                 {
@@ -3257,8 +3361,8 @@ public class PortugolLexer extends Lexer {
     }
 
 
-    protected DFA17 dfa17 = new DFA17(this);
-    static final String DFA17_eotS =
+    protected DFA19 dfa19 = new DFA19(this);
+    static final String DFA19_eotS =
         "\2\uffff\1\53\1\55\2\uffff\1\57\1\62\1\uffff\1\65\1\70\2\uffff\1"+
         "\73\1\75\1\100\2\uffff\1\102\1\105\1\111\1\uffff\1\113\2\uffff\11"+
         "\111\1\50\2\111\2\134\1\50\13\uffff\1\140\5\uffff\1\142\5\uffff"+
@@ -3271,9 +3375,9 @@ public class PortugolLexer extends Lexer {
         "\1\u00c7\2\111\1\u00ca\1\111\2\uffff\2\111\1\u00ce\2\uffff\1\111"+
         "\1\uffff\1\u00d0\1\u00d1\1\uffff\1\111\1\u00d3\1\111\1\uffff\1\111"+
         "\2\uffff\1\111\1\uffff\1\u00d7\1\111\1\u00b7\1\uffff\1\u00d9\1\uffff";
-    static final String DFA17_eofS =
+    static final String DFA19_eofS =
         "\u00da\uffff";
-    static final String DFA17_minS =
+    static final String DFA19_minS =
         "\1\11\1\uffff\2\75\2\uffff\1\75\1\53\1\uffff\1\55\1\52\2\uffff\1"+
         "\74\2\75\2\uffff\1\75\2\56\1\uffff\1\75\2\uffff\11\56\1\0\4\56\1"+
         "\0\13\uffff\1\76\5\uffff\1\75\5\uffff\1\75\3\uffff\2\56\1\uffff"+
@@ -3282,7 +3386,7 @@ public class PortugolLexer extends Lexer {
         "\7\56\1\uffff\5\56\1\uffff\3\56\2\uffff\6\56\2\uffff\3\56\2\uffff"+
         "\1\56\1\uffff\2\56\1\uffff\3\56\1\uffff\1\56\2\uffff\1\56\1\uffff"+
         "\3\56\1\uffff\1\56\1\uffff";
-    static final String DFA17_maxS =
+    static final String DFA19_maxS =
         "\1\u00fc\1\uffff\2\75\2\uffff\2\75\1\uffff\2\75\2\uffff\2\75\1\76"+
         "\2\uffff\1\75\2\172\1\uffff\1\75\2\uffff\11\172\1\uffff\2\172\2"+
         "\71\1\uffff\13\uffff\1\76\5\uffff\1\75\5\uffff\1\75\3\uffff\2\172"+
@@ -3291,7 +3395,7 @@ public class PortugolLexer extends Lexer {
         "\1\uffff\5\172\1\uffff\7\172\1\uffff\5\172\1\uffff\3\172\2\uffff"+
         "\6\172\2\uffff\3\172\2\uffff\1\172\1\uffff\2\172\1\uffff\3\172\1"+
         "\uffff\1\172\2\uffff\1\172\1\uffff\3\172\1\uffff\1\172\1\uffff";
-    static final String DFA17_acceptS =
+    static final String DFA19_acceptS =
         "\1\uffff\1\1\2\uffff\1\6\1\7\2\uffff\1\15\2\uffff\1\24\1\25\3\uffff"+
         "\1\40\1\41\3\uffff\1\46\1\uffff\1\51\1\52\17\uffff\1\100\1\111\1"+
         "\3\1\2\1\5\1\4\1\11\1\10\1\13\1\14\1\12\1\uffff\1\21\1\16\1\23\1"+
@@ -3303,9 +3407,9 @@ public class PortugolLexer extends Lexer {
         "\1\75\6\uffff\1\56\1\57\3\uffff\1\76\1\66\1\uffff\1\62\2\uffff\1"+
         "\67\3\uffff\1\60\1\uffff\1\73\1\53\1\uffff\1\61\3\uffff\1\64\1\uffff"+
         "\1\77";
-    static final String DFA17_specialS =
-        "\42\uffff\1\1\4\uffff\1\0\u00b2\uffff}>";
-    static final String[] DFA17_transitionS = {
+    static final String DFA19_specialS =
+        "\42\uffff\1\0\4\uffff\1\1\u00b2\uffff}>";
+    static final String[] DFA19_transitionS = {
             "\2\51\2\uffff\1\51\22\uffff\1\51\1\1\1\42\2\50\1\2\1\3\1\47"+
             "\1\4\1\5\1\6\1\7\1\10\1\11\1\50\1\12\1\45\11\46\1\13\1\14\1"+
             "\15\1\16\1\17\2\50\32\44\1\20\1\50\1\21\1\22\1\44\1\50\1\44"+
@@ -3659,34 +3763,34 @@ public class PortugolLexer extends Lexer {
             ""
     };
 
-    static final short[] DFA17_eot = DFA.unpackEncodedString(DFA17_eotS);
-    static final short[] DFA17_eof = DFA.unpackEncodedString(DFA17_eofS);
-    static final char[] DFA17_min = DFA.unpackEncodedStringToUnsignedChars(DFA17_minS);
-    static final char[] DFA17_max = DFA.unpackEncodedStringToUnsignedChars(DFA17_maxS);
-    static final short[] DFA17_accept = DFA.unpackEncodedString(DFA17_acceptS);
-    static final short[] DFA17_special = DFA.unpackEncodedString(DFA17_specialS);
-    static final short[][] DFA17_transition;
+    static final short[] DFA19_eot = DFA.unpackEncodedString(DFA19_eotS);
+    static final short[] DFA19_eof = DFA.unpackEncodedString(DFA19_eofS);
+    static final char[] DFA19_min = DFA.unpackEncodedStringToUnsignedChars(DFA19_minS);
+    static final char[] DFA19_max = DFA.unpackEncodedStringToUnsignedChars(DFA19_maxS);
+    static final short[] DFA19_accept = DFA.unpackEncodedString(DFA19_acceptS);
+    static final short[] DFA19_special = DFA.unpackEncodedString(DFA19_specialS);
+    static final short[][] DFA19_transition;
 
     static {
-        int numStates = DFA17_transitionS.length;
-        DFA17_transition = new short[numStates][];
+        int numStates = DFA19_transitionS.length;
+        DFA19_transition = new short[numStates][];
         for (int i=0; i<numStates; i++) {
-            DFA17_transition[i] = DFA.unpackEncodedString(DFA17_transitionS[i]);
+            DFA19_transition[i] = DFA.unpackEncodedString(DFA19_transitionS[i]);
         }
     }
 
-    class DFA17 extends DFA {
+    class DFA19 extends DFA {
 
-        public DFA17(BaseRecognizer recognizer) {
+        public DFA19(BaseRecognizer recognizer) {
             this.recognizer = recognizer;
-            this.decisionNumber = 17;
-            this.eot = DFA17_eot;
-            this.eof = DFA17_eof;
-            this.min = DFA17_min;
-            this.max = DFA17_max;
-            this.accept = DFA17_accept;
-            this.special = DFA17_special;
-            this.transition = DFA17_transition;
+            this.decisionNumber = 19;
+            this.eot = DFA19_eot;
+            this.eof = DFA19_eof;
+            this.min = DFA19_min;
+            this.max = DFA19_max;
+            this.accept = DFA19_accept;
+            this.special = DFA19_special;
+            this.transition = DFA19_transition;
         }
         public String getDescription() {
             return "1:1: Tokens : ( T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | PR_PROGRAMA | PR_REAL | PR_VAZIO | PR_LOGICO | PR_CADEIA | PR_INTEIRO | PR_CARACTER | PR_ESCOLHA | PR_CASO | PR_CONTRARIO | PR_CONST | PR_FUNCAO | PR_RETORNE | PR_PARA | PR_PARE | PR_FACA | PR_ENQUANTO | PR_SE | PR_SENAO | PR_INCLUA | PR_BIBLIOTECA | GAMBIARRA | OPERADOR_NAO | LOGICO | ID | ID_BIBLIOTECA | INTEIRO | REAL | CADEIA | CARACTER | ESPACO | COMENTARIO );";
@@ -3696,10 +3800,10 @@ public class PortugolLexer extends Lexer {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA17_39 = input.LA(1);
+                        int LA19_34 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA17_39 >= '\u0000' && LA17_39 <= '&')||(LA17_39 >= '(' && LA17_39 <= '\uFFFF')) ) {s = 94;}
+                        if ( ((LA19_34 >= '\u0000' && LA19_34 <= '\uFFFF')) ) {s = 90;}
 
                         else s = 40;
 
@@ -3707,10 +3811,10 @@ public class PortugolLexer extends Lexer {
                         break;
 
                     case 1 : 
-                        int LA17_34 = input.LA(1);
+                        int LA19_39 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA17_34 >= '\u0000' && LA17_34 <= '\uFFFF')) ) {s = 90;}
+                        if ( ((LA19_39 >= '\u0000' && LA19_39 <= '&')||(LA19_39 >= '(' && LA19_39 <= '\uFFFF')) ) {s = 94;}
 
                         else s = 40;
 
@@ -3718,7 +3822,7 @@ public class PortugolLexer extends Lexer {
                         break;
             }
             NoViableAltException nvae =
-                new NoViableAltException(getDescription(), 17, _s, input);
+                new NoViableAltException(getDescription(), 19, _s, input);
             error(nvae);
             throw nvae;
         }

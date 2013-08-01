@@ -172,7 +172,7 @@ ID 				:	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*  ;
 
 ID_BIBLIOTECA			:	ID '.' ID;
 
-INTEIRO 				:	'0'..'9'+ | ('0x'|'0X')(DIGIT_HEX)+ ;
+INTEIRO 				:	'0'..'9'+ | ('0x'|'0X')(DIGIT_HEX)+ | ('0b'|'0B')('0'|'1')+;
 
 REAL					: 	('0'..'9')+ '.' ('0'..'9')+ ;
     
@@ -1306,6 +1306,8 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 			NoInteiro inteiro = null;
 			if ($INTEIRO.text.matches("(0x|0X).+")){
 				inteiro = new NoInteiro(Integer.valueOf($INTEIRO.text.replaceAll("0x|0X", ""),16));
+			} else if ($INTEIRO.text.matches("(0b|0B).+")) {
+				inteiro = new NoInteiro(Integer.valueOf($INTEIRO.text.replaceAll("0b|0B", ""),2));
 			} else {
 				inteiro = new NoInteiro(Integer.parseInt($INTEIRO.text));
 			}
