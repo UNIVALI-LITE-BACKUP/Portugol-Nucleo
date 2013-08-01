@@ -237,22 +237,14 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
-        if (funcaoExiste(chamadaFuncao))
-        {
-            verificarQuantidadeParametros(chamadaFuncao);
-            verificarTiposParametros(chamadaFuncao);
-            verificarQuantificador(chamadaFuncao);
-            verificarModoAcesso(chamadaFuncao);
-            verificarParametrosObsoletos(chamadaFuncao);
-
-            return obterTipoRetornoFuncao(chamadaFuncao);
-        }
-        else
-        {
-            notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
-
-            throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
-        }
+        verificarFuncaoExiste(chamadaFuncao);
+        verificarQuantidadeParametros(chamadaFuncao);
+        verificarTiposParametros(chamadaFuncao);
+        verificarQuantificador(chamadaFuncao);
+        verificarModoAcesso(chamadaFuncao);
+        verificarParametrosObsoletos(chamadaFuncao);
+        
+        return obterTipoRetornoFuncao(chamadaFuncao);
     }
 
     private void verificarModoAcesso(NoChamadaFuncao chamadaFuncao)
@@ -756,24 +748,24 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
     }
 
-    private boolean funcaoExiste(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+    private void verificarFuncaoExiste(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         if (chamadaFuncao.getEscopo() == null)
         {
-            if (funcoesReservadas.contains(chamadaFuncao.getNome()))
-            {
-                return true;
-            }
-            else
+            if (!funcoesReservadas.contains(chamadaFuncao.getNome()))
             {
                 try
                 {
-                    memoria.getSimbolo(chamadaFuncao.getNome());
-                    return true;
+                    Simbolo simbolo = memoria.getSimbolo(chamadaFuncao.getNome());
+                    if (!(simbolo instanceof Funcao)){
+                         notificarErroSemantico(new ErroReferenciaInvalida(chamadaFuncao, simbolo));
+                         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
+                    }
                 }
                 catch (ExcecaoSimboloNaoDeclarado ex)
                 {
-                    return false;
+                    notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
+                    throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
                 }
             }
         }
@@ -785,7 +777,10 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
 
-                return (metaDadosFuncao != null);
+                if (metaDadosFuncao == null){
+                    notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
+                    throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
+                }
             }
             else
             {

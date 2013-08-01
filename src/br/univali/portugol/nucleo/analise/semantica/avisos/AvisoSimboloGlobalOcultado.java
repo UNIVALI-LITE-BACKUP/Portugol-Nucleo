@@ -9,6 +9,7 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
+import br.univali.portugol.nucleo.simbolos.Funcao;
 import br.univali.portugol.nucleo.simbolos.Matriz;
 import br.univali.portugol.nucleo.simbolos.Simbolo;
 import br.univali.portugol.nucleo.simbolos.Variavel;
@@ -97,7 +98,9 @@ public final class AvisoSimboloGlobalOcultado extends AvisoAnalise
             } else if (simboloGlobal instanceof Vetor){
                 builder.append("um vetor ");
             } else if (simboloGlobal instanceof Matriz) {
-                builder.append("uma matriz");
+                builder.append("uma matriz ");
+            } else if (simboloGlobal instanceof Funcao) {
+                builder.append("uma função ");
             }
             builder.append("do escopo global.");
             
