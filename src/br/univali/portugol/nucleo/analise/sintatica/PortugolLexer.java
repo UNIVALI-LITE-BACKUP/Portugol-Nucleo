@@ -1,4 +1,4 @@
-// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-07-31 14:50:06
+// $ANTLR 3.4 /home/fillipi/workspace/Portugol/Projetos/Portugol-Nucleo/src/br/univali/portugol/nucleo/analise/sintatica/Portugol.g 2013-08-02 18:10:00
  
 	package br.univali.portugol.nucleo.analise.sintatica;
 

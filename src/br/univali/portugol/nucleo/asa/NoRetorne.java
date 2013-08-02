@@ -54,13 +54,15 @@ package br.univali.portugol.nucleo.asa;
 public final class NoRetorne extends NoBloco
 {
     private NoExpressao expressao;
-
+    private TrechoCodigoFonte trechoRetorne = null;
+    private TrechoCodigoFonte trechoExpressao = null;
     /**
      * 
      * @param expressao     a expressão que será retornada.
      */
-    public NoRetorne(NoExpressao expressao)
+    public NoRetorne(TrechoCodigoFonte trechoCodigoFonte, NoExpressao expressao)
     {
+        this.trechoRetorne = trechoCodigoFonte;
         this.expressao = expressao;
     }
 
@@ -82,4 +84,32 @@ public final class NoRetorne extends NoBloco
     {
         return visitante.visitar(this);
     }
+    
+    /**
+     * Obtém o trecho do código fonte no qual esta expressão se encontra.
+     * 
+     * @return     o trecho do código fonte no qual esta expressão se encontra.
+     * @since 1.0
+     */    
+    public final TrechoCodigoFonte getTrechoCodigoFonte()
+    {
+        if (expressao != null && trechoExpressao == null)
+        {
+            int linha = trechoRetorne.getLinha();
+            int coluna = trechoRetorne.getColuna();
+            trechoExpressao = expressao.getTrechoCodigoFonte();
+        
+            int colunaOpDireito = trechoExpressao.getColuna();
+            int tamanhoOpDireito = trechoExpressao.getTamanhoTexto();
+            int terminoOpDireito = colunaOpDireito + tamanhoOpDireito;
+
+            int tamanhoTexto = terminoOpDireito - coluna;
+            
+            trechoRetorne = new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
+        }
+
+        return trechoRetorne;
+    }
+    
+    
 }

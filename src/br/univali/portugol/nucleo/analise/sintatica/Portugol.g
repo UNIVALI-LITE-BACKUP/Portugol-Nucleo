@@ -855,11 +855,11 @@ retorne returns[NoRetorne retorne] @init
 	pilhaContexto.push("retorne");
 }:
 	
-	PR_RETORNE vExpressao = expressao
+	PR_RETORNE vExpressao = expressao?
 	{
 		if (gerarArvore)
 		{
-			retorne = new NoRetorne(vExpressao);
+			retorne = new NoRetorne(criarTrechoCodigoFonte($PR_RETORNE),vExpressao);
 		}
 	}
 ;

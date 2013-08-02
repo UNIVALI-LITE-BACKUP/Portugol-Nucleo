@@ -664,9 +664,9 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         if (visitar.contains(no))
         {
             if (detalhado) {
-                disparaDestacar(no.getExpressao().getTrechoCodigoFonte());
+                disparaDestacar(no.getTrechoCodigoFonte());
             } else {
-                disparaDestacar(no.getExpressao().getTrechoCodigoFonte().getLinha());
+                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
             }
             synchronized (this)
             {

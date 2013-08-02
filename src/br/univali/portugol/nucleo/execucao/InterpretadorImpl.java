@@ -303,6 +303,10 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                                 }
                                 catch (ErroImpossivelConverterTipos ex)
                                 {
+                                    if (retorno instanceof TipoDado)
+                                    {
+                                        return null;
+                                    }
                                     throw new ExcecaoVisitaASA(ex, asa, noChamadaFuncao);
                                 }
                             }
@@ -1264,9 +1268,11 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
-        throw new RetorneException(noRetorne.getExpressao().aceitar(this));
-
-
+        Object retorno = TipoDado.VAZIO;
+        if (noRetorne.getExpressao() != null) {
+            retorno = noRetorne.getExpressao().aceitar(this);
+        }
+        throw new RetorneException(retorno);
     }
 
     private class RetorneException extends RuntimeException

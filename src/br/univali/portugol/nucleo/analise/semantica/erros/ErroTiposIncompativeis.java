@@ -724,10 +724,10 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
             
-            setLinha(noRetorne.getExpressao().getTrechoCodigoFonte().getLinha());
-            setColuna(noRetorne.getExpressao().getTrechoCodigoFonte().getColuna());
+            setLinha(noRetorne.getTrechoCodigoFonte().getLinha());
+            setColuna(noRetorne.getTrechoCodigoFonte().getColuna());
 
-            setTrechoCodigoFonte(noRetorne.getExpressao().getTrechoCodigoFonte());
+            setTrechoCodigoFonte(noRetorne.getTrechoCodigoFonte());
             return construtorString.toString();
         }
     }

@@ -61,7 +61,7 @@ public final class AvisoValorExpressaoSeraConvertido extends AvisoAnalise
     
     public AvisoValorExpressaoSeraConvertido(NoRetorne noRetorne, TipoDado tipoExpressao, TipoDado tipoConversao, Object...detalhes)
     {
-        super(noRetorne.getExpressao().getTrechoCodigoFonte());
+        super(noRetorne.getTrechoCodigoFonte());
         this.noRetorne = noRetorne;
         this.expressao = noRetorne.getExpressao();
         this.tipoExpressao = tipoExpressao;
