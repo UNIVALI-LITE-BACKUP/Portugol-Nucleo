@@ -29,7 +29,7 @@ public final class TradutorMismatchedTreeNodeException
      * @return                   o erro sintático traduzido.
      * @since 1.0
      */
-    public ErroSintatico traduzirErroParsing(MismatchedTreeNodeException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao)
+    public ErroSintatico traduzirErroParsing(MismatchedTreeNodeException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao, String codigoFonte)
     {
         int linha = erro.line;
         int coluna = erro.charPositionInLine;

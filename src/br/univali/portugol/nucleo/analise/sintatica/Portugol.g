@@ -638,7 +638,7 @@ para returns[NoPara para] @init
 	pilhaContexto.push("para");
 }:
 
-	PR_PARA '(' (inicializacao = inicializacaoPara)? ';' (condicao = expressao)? ';' (incremento = expressao)? ')' vBlocos = listaBlocos
+	PR_PARA '(' (inicializacao = inicializacaoPara)? ';' (condicao = expressao)? ';' (incremento = expressao)? fp = ')' vBlocos = listaBlocos
 	{
 		if (gerarArvore)
 		{
@@ -647,6 +647,12 @@ para returns[NoPara para] @init
 			para.setCondicao(condicao);
 			para.setIncremento(incremento);		
 			para.setBlocos(vBlocos);
+			
+			int linha =  $PR_PARA.getLine();
+    			int coluna =  $PR_PARA.getCharPositionInLine();
+    			int tamanhoTexto = $fp.getCharPositionInLine() - $PR_PARA.getCharPositionInLine();
+			
+			para.setTrechoCodigoFonte(new TrechoCodigoFonte(linha, coluna, tamanhoTexto));
 		}
 	}
 ;
@@ -1609,4 +1615,3 @@ finally
 {
 	pilhaContexto.pop();
 }
-

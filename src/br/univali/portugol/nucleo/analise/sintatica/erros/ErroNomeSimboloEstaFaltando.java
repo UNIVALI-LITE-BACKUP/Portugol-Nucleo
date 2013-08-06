@@ -51,9 +51,16 @@ public final class ErroNomeSimboloEstaFaltando extends ErroSintatico
     protected String construirMensagem()
     {
         if (contexto.equals("declaracaoParametro"))
-            return "Está faltando o nome do parâmetro da função.";
-        
-        else
-            return "Está faltando o nome da variável.";
+        {
+            return "O nome do parâmetro da função não foi informado";
+        }
+        else if (contexto.equals("declaracaoFuncao"))
+        {
+            return "O nome da função não foi informado";
+        }
+        else 
+        {
+            return "O nome da variável não foi informado";
+        }
     }
 }

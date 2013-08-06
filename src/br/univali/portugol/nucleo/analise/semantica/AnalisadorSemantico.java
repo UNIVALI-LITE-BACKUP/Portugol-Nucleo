@@ -1632,7 +1632,8 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
         memoria.empilharEscopo();
-
+        
+        
         try
         {
             if (noPara.getInicializacao() != null)
@@ -1652,7 +1653,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             if (noPara.getCondicao() == null)
             {
-                notificarErroSemantico(new ErroParaSemExpressaoComparacao());
+                notificarErroSemantico(new ErroParaSemExpressaoComparacao(noPara.getTrechoCodigoFonte()));
             }
             else
             {

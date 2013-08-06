@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.analise.sintatica.erros;
 
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
+import java.util.Stack;
 
 /**
  * Erro gerado pelo analisador sintático quando um escopo não foi fechado corretamente
@@ -28,7 +29,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSintatico;
  */
 public final class ErroEscopoNaoFoiFechadoCorretamente extends ErroSintatico
 {
-    private String contexto;
+    private Stack<String> pilhaContexto;
 
     /**
      * 
@@ -37,10 +38,10 @@ public final class ErroEscopoNaoFoiFechadoCorretamente extends ErroSintatico
      * @param contexto     o contexto/escopo em que o analisador sintático se encontrava quando o erro ocorreu.
      * @since 1.0
      */    
-    public ErroEscopoNaoFoiFechadoCorretamente(int linha, int coluna, String contexto)
+    public ErroEscopoNaoFoiFechadoCorretamente(int linha, int coluna, Stack<String> pilhaContexto, String codigoFonte)
     {
         super(linha, coluna);
-        this.contexto = contexto;
+        this.pilhaContexto = pilhaContexto;
     }
     
     /**
@@ -49,21 +50,29 @@ public final class ErroEscopoNaoFoiFechadoCorretamente extends ErroSintatico
     @Override
     protected String construirMensagem()
     {
+        String contexto = pilhaContexto.pop();
+        
         StringBuilder construtorTexto = new StringBuilder();
         
-        construtorTexto.append("O escopo ");
-        
         if (contexto.equals("programa"))
-            construtorTexto.append(" do programa ");
-        
+        {
+            construtorTexto.append("O escopo do programa não foi fechado corretamente. Insira o caracter '}' para corrigir o problema");
+        }
         else
+        {
+            construtorTexto.append("O escopo ");
             
-        if (contexto.equals("declaracaoFuncao"))
-            construtorTexto.append(" da função ");
+            if (contexto.equals("declaracaoFuncao"))
+            {
+                construtorTexto.append(" da função ");
+            }
+            else
+            {
+                construtorTexto.append(" do bloco ");
+            }
         
-        else construtorTexto.append(" do bloco ");
-        
-        construtorTexto.append("não foi fechado corretamente. Insira o caracter '}' para corrigir o problema.");
+            construtorTexto.append("não foi fechado corretamente. Insira o caracter '}' para corrigir o problema");
+        }
         
         return construtorTexto.toString();
     }

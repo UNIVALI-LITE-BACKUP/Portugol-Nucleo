@@ -44,6 +44,7 @@ public final class NoPara extends NoBloco
     private NoBloco inicializacao;
     private NoExpressao condicao;
     private NoExpressao incremento;
+    private TrechoCodigoFonte trechoCodigoFonte;
 
     public NoPara()
     {
@@ -144,5 +145,15 @@ public final class NoPara extends NoBloco
     public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         return visitante.visitar(this);
+    }
+
+    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
+    {
+        this.trechoCodigoFonte = trechoCodigoFonte;
+    }
+
+    public TrechoCodigoFonte getTrechoCodigoFonte()
+    {
+        return trechoCodigoFonte;
     }
 }

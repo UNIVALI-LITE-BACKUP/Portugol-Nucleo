@@ -4,6 +4,7 @@
  */
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
@@ -12,14 +13,15 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  */
 public class ErroParaSemExpressaoComparacao extends ErroSemantico {
 
-    public ErroParaSemExpressaoComparacao()
+    public ErroParaSemExpressaoComparacao(TrechoCodigoFonte trechoCodigoFonte)
     {
+        super(trechoCodigoFonte);
     }
 
     @Override
     protected String construirMensagem()
     {
-        return "É obrigatório a utilização de uma expressão de condição no comando para";
+        return "O comando 'para' necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: 'para( ; <condicao> ; ){ <comandos> }'";
     }
     
 }

@@ -1,12 +1,12 @@
 package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
-import br.univali.portugol.nucleo.analise.sintatica.PortugolLexer;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroAbreFechaParentesis;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopoNaoFoiAbertoCorretamente;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroFaltaDoisPontos;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroNomeSimboloEstaFaltando;
-import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParsingNaoTratado;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroPalavraReservadaEstaFaltando;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroTokenFaltando;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.Stack;
 import org.antlr.runtime.MissingTokenException;
@@ -34,45 +34,59 @@ public final class TradutorMissingTokenException
      * @return                   o erro sintático traduzido.
      * @since 1.0
      */
-    public ErroSintatico traduzirErroParsing(MissingTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao)
+    public ErroSintatico traduzirErroParsing(MissingTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao, String codigoFonte)
     {
         int linha = erro.line;
         int coluna = erro.charPositionInLine;
-        String contextoAtual = pilhaContexto.pop();
+        String contextoAtual = pilhaContexto.peek();
+        
+        final String token = AnalisadorSintatico.getToken(tokens, erro.getMissingType());
 
-        if (erro.getMissingType() == PortugolLexer.ID)
+        if (contextoAtual.equals("para"))
+        {
+            return traduzirErrosPara(linha, coluna, erro, tokens, pilhaContexto, codigoFonte);
+        }
+        else if (token.equals("ID"))
         {
             return new ErroNomeSimboloEstaFaltando(linha, coluna, contextoAtual);
         }
-        else
+        else if (token.equals("{"))
         {
-            if (erro.getMissingType() == PortugolLexer.T__68)
-            {
-                return new ErroEscopoNaoFoiAbertoCorretamente(linha, coluna, contextoAtual);
-            }
-            else
-            {
-                if (erro.getMissingType() == PortugolLexer.T__43)
-                {
-                    return new ErroAbreFechaParentesis(linha, coluna, "(");
-                }
-                else
-                {
-                    if (erro.getMissingType() == PortugolLexer.T__44)
-                    {
-                        return new ErroAbreFechaParentesis(linha, coluna, ")");
-                    }
-                     else
-                    {
-                        if (erro.expecting == PortugolLexer.T__56)
-                        {
-                            return new ErroFaltaDoisPontos(linha, coluna);
-                        }
-                    }
-                }
-            }
+            return new ErroEscopoNaoFoiAbertoCorretamente(linha, coluna, contextoAtual);
+        }
+        else if (token.equals("("))
+        {
+            return new ErroAbreFechaParentesis(linha, coluna, "(");
+        }
+        else if (token.equals(")"))
+        {
+            return new ErroAbreFechaParentesis(linha, coluna, ")");
+        }
+        else if (token.equals(":"))
+        {
+            return new ErroFaltaDoisPontos(linha, coluna);
+        }
+        else if (AnalisadorSintatico.getTipoToken(token) == AnalisadorSintatico.TipoToken.PALAVRA_RESERVADA)
+        {
+            return new ErroPalavraReservadaEstaFaltando(linha, coluna, token.replace("PR_", "").toLowerCase(), contextoAtual);
         }
 
-        return new ErroParsingNaoTratado(erro, mensagemPadrao, contextoAtual);
+        return new ErroTokenFaltando(linha, coluna, token);
     }
+    
+    private ErroSintatico traduzirErrosPara(int linha, int coluna, MissingTokenException erro, String[] tokens, Stack<String> pilhaContexto, String codigoFonte)
+    {
+        String tokenEsperado = AnalisadorSintatico.getToken(tokens, erro.getMissingType());
+
+        if (tokenEsperado.equals(")"))
+        {            
+            return new ErroAbreFechaParentesis(linha, coluna, ")");
+        }
+        else if (tokenEsperado.equals("("))
+        {
+            return new ErroAbreFechaParentesis(linha, coluna, "(");
+        }
+                
+        return new ErroTokenFaltando(linha, coluna, tokenEsperado);
+    }    
 }
