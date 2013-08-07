@@ -119,5 +119,48 @@ public final class Texto extends Biblioteca
         }
         
         else throw new ErroExecucaoBiblioteca("Erro ao copiar os caracteres da cadeia. A cadeia não possui caracteres");        
+    }  
+    
+    
+    @DocumentacaoFuncao
+    (
+        descricao = 
+            
+              "Concatena o <tipo>caracter</tipo> informado, à esquerda da <tipo>cadeia</tipo>, até que a "
+            + "<tipo>cadeia</tipo> fique do <param>tamanho</param> indicado.\n\n"
+            
+            + "Se o tamanho da <tipo>cadeia</tipo> for maior ou igual ao <param>tamanho</param> informado, "
+            + "nada é feito", 
+        
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "car", descricao = "o <tipo>caracter</tipo> que será concatenado á esquerda da <tipo>cadeia</tipo>"),
+            @DocumentacaoParametro(nome = "tamanho", descricao = "o tamanho final da <tipo>cadeia</tipo>"),
+            @DocumentacaoParametro(nome = "cad", descricao = "a <tipo>cadeia</tipo> que será transformada")
+        },
+        retorno = "a <tipo>cadeia</cadeia> transformada",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+            @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
+        }
+    )    
+    public String preenche_a_esquerda(Character car, Integer tamanho, String cad) throws ErroExecucao
+    {
+        if (cad.length() < tamanho)
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            int diferenca = tamanho - cad.length();
+            
+            for (int i = 1; i <= diferenca; i++)
+            {
+                sb.append(car);
+            }
+            
+            cad = sb.append(cad).toString();
+        }
+        
+        return cad;
     }    
 }
