@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
 import br.univali.portugol.nucleo.asa.No;
+import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,15 @@ import java.util.List;
 public final class Vetor extends Simbolo
 {
     private List<Object> valores;
+    private int ultimoIndiceModificado;
 
+    public int getUltimoIndiceModificado()
+    {
+        return ultimoIndiceModificado;
+    }
+
+    
+    
     /**
      * Aloca um vetor em memória sem definir seu tamanho nem seus valores.
      * 
@@ -23,7 +32,7 @@ public final class Vetor extends Simbolo
      * @param tipoDado     o tipo de dado armazenado por este vetor.
      * @since 1.0
      */
-    public Vetor(String nome, TipoDado tipoDado, No origem)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem)
     {
         super(nome, tipoDado, origem);
         setInicializado(true);
@@ -38,7 +47,7 @@ public final class Vetor extends Simbolo
      * @param tamanho           o tamamho que este vetor terá.
      * @since 1.0
      */
-    public Vetor(String nome, TipoDado tipoDado, No origem, int tamanho)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem, int tamanho)
     {
         this(nome, tipoDado, origem);
         valores = new ArrayList<Object>(tamanho);
@@ -57,7 +66,7 @@ public final class Vetor extends Simbolo
      * @param valores           os valores que serão armazenados neste vetor.
      * @since 1.0
      */    
-    public Vetor(String nome, TipoDado tipoDado, No origem, int tamanho, List<Object> valores)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem, int tamanho, List<Object> valores)
     {
         this(nome, tipoDado, origem, tamanho);
         for (int i = 0; i < this.valores.size(); i++) {
@@ -75,7 +84,7 @@ public final class Vetor extends Simbolo
      * @param valores           os valores que serão armazenados neste vetor.
      * @since 1.0
      */        
-    public Vetor(String nome, TipoDado tipoDado, No origem, List<Object> valores)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem, List<Object> valores)
     {
         this(nome, tipoDado, origem);
         this.valores = new ArrayList<Object>(valores);
@@ -116,6 +125,7 @@ public final class Vetor extends Simbolo
      */
     public void setValor(int indice, Object valor)
     {
+        ultimoIndiceModificado = indice;
         this.valores.set(indice, valor);
     }
     

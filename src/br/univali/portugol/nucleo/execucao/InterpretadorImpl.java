@@ -48,7 +48,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private ArvoreSintaticaAbstrata asa;
     private String ultimaReferenciaAcessada;
     protected Memoria memoria = new Memoria();
-    private Map<String, Biblioteca> bibliotecas = new TreeMap<String, Biblioteca>();
+    protected Map<String, Biblioteca> bibliotecas = new TreeMap<String, Biblioteca>();
     private OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
     private OperacaoLogicaIgualdade operacaoLogicaIgualdade = new OperacaoLogicaIgualdade();
     private OperacaoLogicaMaior operacaoLogicaMaior = new OperacaoLogicaMaior();
@@ -66,6 +66,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
     
     private String funcaoInicial;
+    private Object valorPassadoParametro;
     
     @Override
     public void setEntrada(Entrada entrada)
@@ -252,7 +253,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                             {   
                                 NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
 
-                                referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;                                                        
+                                referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;
                                 valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
                                 referencia = false;
                             }
@@ -263,34 +264,9 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                             for (int i = 0; i < listaParametrosEsperados.size(); i++)
                             {
                                 NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                                Simbolo simbolo = (Simbolo) declaracao.aceitar(this);
-                                Object valor = valoresParametrosPassados.get(i);
-
-                                if (simbolo instanceof Variavel)
-                                {
-                                    ((Variavel) simbolo).setValor(valor);
-                                }
-                                else
-                                {
-                                    if (simbolo instanceof Ponteiro)
-                                    {
-                                        ((Ponteiro) simbolo).setSimbolo((Simbolo) valor);
-                                    }
-                                    else
-                                    {
-                                        if (simbolo instanceof Vetor)
-                                        {
-                                            ((Vetor) simbolo).inicializarComValores((List<Object>) valor);
-                                        }
-                                        else
-                                        {
-                                            if (simbolo instanceof Matriz)
-                                            {
-                                                ((Matriz) simbolo).inicializarComValores((List<List<Object>>) valor);
-                                            }
-                                        }
-                                    }
-                                }
+                                this.valorPassadoParametro = valoresParametrosPassados.get(i);
+                                
+                                declaracao.aceitar(this);
                             }
                         }
                         Object retorno = interpretarListaBlocos(funcao.getBlocos());
@@ -1330,11 +1306,12 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     @Override
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
-        Simbolo simbolo = null;
+        Simbolo simbolo = null;        
+        
         switch (noDeclaracaoParametro.getModoAcesso())
         {
             case POR_REFERENCIA:
-                simbolo = new Ponteiro(noDeclaracaoParametro.getNome(), null);
+                simbolo = new Ponteiro(noDeclaracaoParametro.getNome(), noDeclaracaoParametro, (Simbolo) valorPassadoParametro);
                 break;
             case POR_VALOR:
                 String nome = noDeclaracaoParametro.getNome();
@@ -1344,17 +1321,17 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 {
                     case VALOR:
                     {
-                        simbolo = new Variavel(nome, tipoDado, noDeclaracaoParametro);
+                        simbolo = new Variavel(nome, tipoDado, noDeclaracaoParametro, valorPassadoParametro);
                         break;
                     }
                     case VETOR:
                     {
-                        simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro);
+                        simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro, (List<Object>) valorPassadoParametro);
                         break;
                     }
                     case MATRIZ:
                     {
-                        simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro);
+                        simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro, (List<List<Object>>) valorPassadoParametro);
                         break;
                     }
                 }

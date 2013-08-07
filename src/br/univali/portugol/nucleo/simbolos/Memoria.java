@@ -15,32 +15,27 @@ public class Memoria
 {
     private TabelaSimbolos escopoGlobal;
     private Stack<TabelaSimbolos> escoposLocais;
+    private List<ObservadorMemoria> observadores;    
 
     public Memoria()
     {
         escopoGlobal = new TabelaSimbolos();
         escoposLocais = new Stack<TabelaSimbolos>();
+        observadores = new ArrayList<>();
     }
     
-    public List<Simbolo> getSimbolosVisiveisEscopoAtual()
+    public void adicionarObservador(ObservadorMemoria observador)
     {
-        List<Simbolo> simbolos = new ArrayList<Simbolo>();
-        for (Map<String,Simbolo> escopo : escopoGlobal){
-            for (String nome : escopo.keySet()){
-                simbolos.add(escopo.get(nome));
-            }
+        if (!observadores.contains(observador))
+        {
+            observadores.add(observador);
         }
-        if (!escoposLocais.empty()){
-            TabelaSimbolos escopoAtual = escoposLocais.peek();
-            for (Map<String,Simbolo> escopo : escopoAtual){
-                for (String nome : escopo.keySet()){
-                    simbolos.add(escopo.get(nome));
-                }
-            }
-        }
-        
-        return simbolos;
     }
+    
+    public void removerObservador(ObservadorMemoria observador)
+    {
+        observadores.remove(observador);
+    }    
     
     public Simbolo getSimbolo(String nome) throws ExcecaoSimboloNaoDeclarado
     {        
@@ -69,6 +64,8 @@ public class Memoria
         {
             escopoGlobal.adicionar(simbolo);
         }
+        
+        notificarSimboloAdicionado(simbolo);
     }
     
     public void empilharFuncao()
@@ -78,7 +75,12 @@ public class Memoria
     
     public void desempilharFuncao() throws EmptyStackException
     {
-        escoposLocais.pop();
+        TabelaSimbolos simbolosFuncao = escoposLocais.pop();
+        for (Map<String, Simbolo> simbolos : simbolosFuncao ){
+            for (Simbolo simbolo : simbolos.values()) {
+                notificarSimboloRemovido(simbolo);
+            }
+        }
     }
     
     public void empilharEscopo() throws EmptyStackException
@@ -95,7 +97,13 @@ public class Memoria
     {
         if (!escoposLocais.isEmpty())
         {
-            escoposLocais.peek().desempilharEscopo();
+             Map<String, Simbolo> escopo = escoposLocais.peek().desempilharEscopo();
+             
+             for (Simbolo simbolo : escopo.values())
+             {
+                 notificarSimboloRemovido(simbolo);
+             }
+             
         } else {
             escopoGlobal.empilharEscopo();
         }
@@ -137,5 +145,21 @@ public class Memoria
         }
         
         return false;
+    }
+    
+    private void notificarSimboloAdicionado(Simbolo simbolo)
+    {
+        for (ObservadorMemoria observador : observadores)
+        {
+            observador.simboloAdicionado(simbolo);
+        }
+    }
+    
+    private void notificarSimboloRemovido(Simbolo simbolo)
+    {
+        for (ObservadorMemoria observador : observadores)
+        {
+            observador.simboloRemovido(simbolo);
+        }
     }
 }

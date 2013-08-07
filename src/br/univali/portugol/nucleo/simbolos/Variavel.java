@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
 import br.univali.portugol.nucleo.asa.No;
+import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 
 /**
@@ -20,7 +21,7 @@ public final class Variavel extends Simbolo
      * @param tipoDado     o tipo de dado armazenado por esta variável.
      * @since 1.0
      */
-    public Variavel(String nome, TipoDado tipoDado, No origem)
+    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao origem)
     {
         super(nome, tipoDado, origem);
         //setValor(tipoDado.getValorPadrao());
@@ -34,7 +35,7 @@ public final class Variavel extends Simbolo
      * @param valor        o valor que será armazenado na variável.
      * @since 1.0
      */
-    public Variavel(String nome, TipoDado tipoDado, No origem, Object valor)
+    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao origem, Object valor)
     {
         super(nome, tipoDado, origem);
         setValor(valor);

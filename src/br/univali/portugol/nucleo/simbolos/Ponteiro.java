@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
+
 /**
  * Representa um ponteiro para outro símbolo durante a execução de um programa.
  * 
@@ -15,9 +17,10 @@ public final class Ponteiro extends Simbolo
      * @param nome        o nome deste ponteiro.
      * @param simbolo     o símbolo que está sendo apontado por este ponteiro.
      */
-    public Ponteiro(String nome, Simbolo simbolo)
+    public Ponteiro(String nome, NoDeclaracaoParametro origemPonteiro, Simbolo simbolo)
     {
         super(nome, null, null);
+        setOrigemDoSimbolo(origemPonteiro);
         setSimbolo(simbolo);
     }
 
@@ -27,7 +30,6 @@ public final class Ponteiro extends Simbolo
         {
             this.simbolo = simbolo;
             this.tipoDado = simbolo.getTipoDado();
-            setOrigemDoSimbolo(simbolo.getOrigemDoSimbolo());
         }
         else
         {
@@ -57,6 +59,6 @@ public final class Ponteiro extends Simbolo
     @Override
     public Ponteiro copiar(String novoNome)
     {
-        return new Ponteiro(novoNome, simbolo);
+        return new Ponteiro(novoNome, (NoDeclaracaoParametro) getOrigemDoSimbolo(), simbolo);
     }
 }

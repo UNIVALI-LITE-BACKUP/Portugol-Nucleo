@@ -27,13 +27,13 @@ public abstract class Simbolo
     private boolean utilizado = false;
     private boolean inicializado = false;
     private boolean redeclarado = false;
-    private No origemDoSimbolo = null;
+    private NoDeclaracao origemDoSimbolo = null;
     /**
      * 
      * @param nome         o nome deste símbolo.
      * @param tipoDado     o tipo de dado armazenado/tratado por este símbolo.
      */
-    public Simbolo(String nome, TipoDado tipoDado, No noOrigem)
+    public Simbolo(String nome, TipoDado tipoDado, NoDeclaracao noOrigem)
     {
         setNome(nome);
         setTipoDado(tipoDado);
@@ -228,12 +228,12 @@ public abstract class Simbolo
         this.constante = constante;
     }
 
-    public No getOrigemDoSimbolo()
+    public NoDeclaracao getOrigemDoSimbolo()
     {
         return origemDoSimbolo;
     }
 
-    final void setOrigemDoSimbolo(No origemDoSimbolo)
+    final void setOrigemDoSimbolo(NoDeclaracao origemDoSimbolo)
     {
         this.origemDoSimbolo = origemDoSimbolo;
     }

@@ -43,9 +43,9 @@ public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
      * 
      * @since 1.0
      */
-    public void desempilharEscopo()
+    public Map<String, Simbolo> desempilharEscopo()
     {
-        escopos.pop();
+        return escopos.pop();
     }
 
     /**

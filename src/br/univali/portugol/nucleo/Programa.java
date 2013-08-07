@@ -142,11 +142,12 @@ public final class Programa
 
                             interpretador = new DepuradorImpl(nosParada,detalhado);
                             
-                            if (listener == null)
+                            if (listeners.isEmpty())
                             {
                                 throw new RuntimeException("A depuraçao depende de um ouvinte.");
                             }
-                            ((Depurador) interpretador).addListener(listener);
+                            
+                            ((Depurador) interpretador).addListeners(listeners);
                         }
                         else
                         {
@@ -219,11 +220,13 @@ public final class Programa
             }
         }
     }
-    private DepuradorListener listener = null;
+    private List<DepuradorListener> listeners = new ArrayList<>();
 
-    public void setDepuradorListener(DepuradorListener listener)
+    public void addDepuradorListener(DepuradorListener listener)
     {
-        this.listener = listener;
+        if (!listeners.contains(listener)){
+            this.listeners.add(listener);
+        }
     }
 
     public void depurar(final String[] parametros, boolean detalhado)

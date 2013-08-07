@@ -7,15 +7,12 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see NoDeclaracaoFuncao
  */
-public final class NoDeclaracaoParametro extends No
+public final class NoDeclaracaoParametro extends NoDeclaracao
 {
-    private String nome;
-    private TipoDado tipoDado;
     private int indice;
     private ModoAcesso modoAcesso;
     private Quantificador quantificador;
-    private TrechoCodigoFonte trechoCodigoFonteNome;
-    private TrechoCodigoFonte trechoCodigoFonteTipoDado;
+
 
     /**
      * @param nome              o nome deste parãmetro.
@@ -26,35 +23,10 @@ public final class NoDeclaracaoParametro extends No
      */
     public NoDeclaracaoParametro(String nome, TipoDado tipoDado, Quantificador quantificador, ModoAcesso modoAcesso)
     {
-        this.nome = nome;
-        this.tipoDado = tipoDado;
+        super(nome, tipoDado, false);
         this.quantificador = quantificador;
         this.modoAcesso = modoAcesso;
     }
-
-    /**
-     * Obtém o nome do símbolo que está sendo declarado. O nome definido na declaração do símbolo será
-     * o mesmo nome utilizado para acessá-lo em outros locais do código fonte.
-     * 
-     * @return     o nome do símbolo sendo declarado.
-     * @since 1.13
-     */    
-    public String getNome()
-    {
-        return nome;
-    }
-
-    /**
-     * Obtém o tipo de dado do símbolo que está sendo declarado. 
-     * 
-     * @return     o tipo de dado
-     * @since 1.13
-     */
-    public TipoDado getTipoDado()
-    {
-        return tipoDado;
-    }
-    
 
     /**
      * Obtém o índice do parâmetro na declaração da função iniciando em 0. Isto significa que, para uma função que espera 4 parâmetros, 
@@ -101,50 +73,7 @@ public final class NoDeclaracaoParametro extends No
     {
         this.indice = indice;
     }
-    
-        /**
-     * Obtém o trecho do código fonte no qual o nome do símbolo se encontra.
-     * 
-     * @return     o trecho do código fonte
-     * @since 1.0
-     */
-    public TrechoCodigoFonte getTrechoCodigoFonteNome()
-    {
-        return trechoCodigoFonteNome;
-    }
-
-    /**
-     * Define o trecho do código fonte no qual o nome do símbolo se encontra.
-     * 
-     * @param trechoCodigoFonteNome     Define o trecho do código fonte no qual o nome do símbolo se encontra.
-     * @since 1.0
-     */
-    public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
-    {
-        this.trechoCodigoFonteNome = trechoCodigoFonteNome;
-    }
-
-    /**
-     * Define o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
-     * 
-     * @param trechoCodigoFonteTipoDado    Define o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
-     * @since 1.0
-     */
-    public void setTrechoCodigoFonteTipoDado(TrechoCodigoFonte trechoCodigoFonteTipoDado)
-    {
-        this.trechoCodigoFonteTipoDado = trechoCodigoFonteTipoDado;
-    }
-
-    /**
-     * Obtém o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
-     * 
-     * @return     Obtém o trecho do código fonte no qual o tipo de dado do símbolo se encontra.
-     */
-    public TrechoCodigoFonte getTrechoCodigoFonteTipoDado()
-    {
-        return trechoCodigoFonteTipoDado;
-    }
-
+ 
     /**
      * {@inheritDoc }
      */
