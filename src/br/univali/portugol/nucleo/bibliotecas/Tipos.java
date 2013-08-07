@@ -328,9 +328,9 @@ public final class Tipos extends Biblioteca
             {
                 switch (base)
                 {   
-                    case 2: return Integer.toBinaryString(valor);
+                    case 2: return lpad(32, Integer.toBinaryString(valor));
                     case 10: return valor.toString();
-                    case 16: return Integer.toHexString(valor).toUpperCase();
+                    case 16: return lpad(8, Integer.toHexString(valor).toUpperCase());
                 }
             }
             catch (Exception ex)
@@ -595,4 +595,23 @@ public final class Tipos extends Biblioteca
     {        
         return valor.intValue();
     }
+    
+    private String lpad(Integer quantidade, String cadeia) throws ErroExecucao
+    {
+        if (cadeia.length() < quantidade)
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            int diferenca = quantidade - cadeia.length();
+            
+            for (int i = 1; i <= diferenca; i++)
+            {
+                sb.append("0");
+            }
+            
+            cadeia = sb.append(cadeia).toString();
+        }
+        
+        return cadeia;
+    }    
 }
