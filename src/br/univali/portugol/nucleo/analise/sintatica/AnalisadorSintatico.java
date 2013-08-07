@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.analise.sintatica;
 
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressoesForaEscopoPrograma;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParsingNaoTratado;
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorEarlyExitException;
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorFailedPredicateException;
@@ -12,14 +13,12 @@ import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorMissingTo
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorNoViableAltException;
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorUnwantedTokenException;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
-import br.univali.portugol.nucleo.asa.Quantificador;
-import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.EarlyExitException;
@@ -52,6 +51,34 @@ import org.antlr.runtime.UnwantedTokenException;
  */
 public final class AnalisadorSintatico implements ObservadorParsing
 {
+    private static final Pattern padraoEscopoPrograma = Pattern.compile("[^programa]*programa[^{]*\\{");
+    public static enum TipoToken { PALAVRA_RESERVADA, OPERADOR, TIPO_PRIMITIVO, OUTRO, NAO_MAPEADO };
+    
+    public static final String[] palavrasReservadas = 
+    {
+        "PR_BIBLIOTECA", "PR_CADEIA", "PR_CARACTER", "PR_CASO", "PR_CONST", "PR_CONTRARIO",
+        
+        "PR_ENQUANTO", "PR_ESCOLHA", "PR_FACA", "PR_FALSO", "PR_FUNCAO", "PR_INCLUA", "PR_INTEIRO",
+        
+        "PR_LOGICO", "PR_PARA", "PR_PARE", "PR_PROGRAMA", "PR_REAL", "PR_RETORNE", "PR_SE", "PR_SENAO",
+        
+        "PR_VAZIO", "PR_VERDADEIRO"
+            
+    };
+    public static final String[] operadores = 
+    {
+        "OPERADOR_NAO", "!=", "%", "%=", "&", "&=", "(", ")", "*", "*=", "+", "++", "+=", ",", "-", "--", "-->", 
+        
+        "-=", "/", "/=", ":", ";", "<", "<<", "<<=", "<=", "=", "==", ">", ">=", ">>", ">>=", "[", "]", "^", "^=", 
+        
+        "e", "ou", "{", "|", "|=", "}", "~"
+    };
+    
+    public static final String[] tiposPrimitivos = {"REAL", "CADEIA", "CARACTER", "INTEIRO", "LOGICO", "ID", "ID_BIBLIOTECA" };
+    
+    public static final String[] outros = {"SEQ_ESC", "ESC_OCTAL", "ESC_UNICODE", "COMENTARIO", "DIGIT_HEX", "ESPACO", "GAMBIARRA" };
+
+    private String codigoFonte;
     private List<ObservadorAnaliseSintatica> observadores;
     private TradutorEarlyExitException tradutorEarlyExitException;
     private TradutorFailedPredicateException tradutorFailedPredicateException;
@@ -81,15 +108,17 @@ public final class AnalisadorSintatico implements ObservadorParsing
 
     /**
      * 
-     * @param codigo     o código fonte no qual será realizado o parsing e a análise.
+     * @param codigoFonte     o código fonte no qual será realizado o parsing e a análise.
      * @return     a ASA resultante do parsing do código fonte.
      * @since 1.0
      */
-    public ArvoreSintaticaAbstrata analisar(String codigo)
+    public ArvoreSintaticaAbstrata analisar(String codigoFonte)
     {
         try
         {
-            ANTLRStringStream antlrStringStream = new ANTLRStringStream(codigo);
+            this.codigoFonte = codigoFonte;
+            
+            ANTLRStringStream antlrStringStream = new ANTLRStringStream(codigoFonte);
             PortugolLexer portugolLexer = new PortugolLexer(antlrStringStream);
             CommonTokenStream commonTokenStream = new CommonTokenStream(portugolLexer);
             PortugolParser portugolParser = new PortugolParser(commonTokenStream);
@@ -97,14 +126,55 @@ public final class AnalisadorSintatico implements ObservadorParsing
             portugolParser.adicionarObservadorParsing(this);
             ArvoreSintaticaAbstrata asa = portugolParser.parse();
             
+            verificarCaracteresAposEscopoPrograma(codigoFonte);
+            
             return asa;
         }
         catch (RecognitionException excecao)
         {
-            excecao.printStackTrace();
+            excecao.printStackTrace(System.out);
             return null;
         }
     }
+    
+    private void verificarCaracteresAposEscopoPrograma(String codigoFonte)
+    {
+        Matcher m = padraoEscopoPrograma.matcher(codigoFonte);
+        
+        if (m.find())
+        {
+            int escopo = 1;
+            int posicao = -1;            
+            
+            for (int i = m.end(); i < codigoFonte.length(); i++)
+            {
+                if (codigoFonte.charAt(i) == '{')
+                {
+                    escopo++;
+                }
+                else if (codigoFonte.charAt(i) == '}')
+                {
+                    escopo--;
+                    
+                    if (escopo == 0)
+                    {
+                        posicao = i + 1;
+                        break;
+                    }
+                }
+            }
+            
+            if (posicao > 0)
+            {                
+                String texto = codigoFonte.substring(posicao, codigoFonte.length());
+                
+                if (texto.trim().length() > 0)
+                {                
+                    notificarErroSintatico(new ErroExpressoesForaEscopoPrograma(texto, posicao, codigoFonte, ErroExpressoesForaEscopoPrograma.Local.DEPOIS));
+                }
+            }
+        }
+    }    
 
     /**
      * {@inheritDoc }
@@ -112,7 +182,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
     @Override
     public void tratarErroParsing(RecognitionException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao)
     {
-        notificarErroSintatico(traduzirErroParsing(erro, tokens, pilhaContexto, mensagemPadrao));
+        notificarErroSintatico(traduzirErroParsing(erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte));
     }
 
     /**
@@ -125,73 +195,78 @@ public final class AnalisadorSintatico implements ObservadorParsing
      * @return                   o erro sintático traduzido.
      * @since 1.0
      */
-    public ErroSintatico traduzirErroParsing(RecognitionException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao)
+    public ErroSintatico traduzirErroParsing(RecognitionException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao, String codigoFonte)
     {
+        System.out.println("Traduzindo erro sintático: " + erro.getClass().getName());
+        System.out.println(mensagemPadrao);
+        System.out.println("Contexto atual: " + pilhaContexto.peek());
+        System.out.println();
+        
         if (erro instanceof EarlyExitException)
         {
-            return tradutorEarlyExitException.traduzirErroParsing((EarlyExitException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorEarlyExitException.traduzirErroParsing((EarlyExitException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
         else
         
         if (erro instanceof FailedPredicateException)
         {
-            return tradutorFailedPredicateException.traduzirErroParsing((FailedPredicateException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorFailedPredicateException.traduzirErroParsing((FailedPredicateException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
             
         else
             
         if (erro instanceof MismatchedRangeException)
         {
-            return tradutorMismatchedRangeException.traduzirErroParsing((MismatchedRangeException) erro, tokens, pilhaContexto, mensagemPadrao);        
+            return tradutorMismatchedRangeException.traduzirErroParsing((MismatchedRangeException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);        
         }
         
         else
             
         if (erro instanceof MismatchedNotSetException)
         {
-            return tradutorMismatchedNotSetException.traduzirErroParsing((MismatchedNotSetException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorMismatchedNotSetException.traduzirErroParsing((MismatchedNotSetException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
         
         else
 
         if (erro instanceof MissingTokenException)
         {
-            return tradutorMissingTokenException.traduzirErroParsing((MissingTokenException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorMissingTokenException.traduzirErroParsing((MissingTokenException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
                         
         else
 
         if (erro instanceof UnwantedTokenException)
         {
-            return tradutorUnwantedTokenException.traduzirErroParsing((UnwantedTokenException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorUnwantedTokenException.traduzirErroParsing((UnwantedTokenException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
                             
         else
                     
         if (erro instanceof MismatchedTreeNodeException)
         {
-            return tradutorMismatchedTreeNodeException.traduzirErroParsing((MismatchedTreeNodeException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorMismatchedTreeNodeException.traduzirErroParsing((MismatchedTreeNodeException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
 
         else
 
         if (erro instanceof NoViableAltException)
         {
-            return tradutorNoViableAltException.traduzirErroParsing((NoViableAltException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorNoViableAltException.traduzirErroParsing((NoViableAltException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
         
         else
         
         if (erro instanceof MismatchedTokenException)
         {
-            return tradutorMismatchedTokenException.traduzirErroParsing((MismatchedTokenException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorMismatchedTokenException.traduzirErroParsing((MismatchedTokenException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
         
         else
         
         if (erro instanceof MismatchedSetException)
         {
-            return tradutorMismatchedSetException.traduzirErroParsing((MismatchedSetException) erro, tokens, pilhaContexto, mensagemPadrao);
+            return tradutorMismatchedSetException.traduzirErroParsing((MismatchedSetException) erro, tokens, pilhaContexto, mensagemPadrao, codigoFonte);
         }
         
         else
@@ -242,4 +317,89 @@ public final class AnalisadorSintatico implements ObservadorParsing
             observador.tratarErroSintatico(erroSintatico);
         }
     }
+    
+    public static TipoToken getTipoToken(String token)
+    {
+        for (String t : palavrasReservadas)
+        {
+            if (token.equals(t))
+            {
+                return TipoToken.PALAVRA_RESERVADA;
+            }
+        }
+        
+        for (String t : operadores)
+        {
+            if (token.equals(t))
+            {
+                return TipoToken.OPERADOR;
+            }                
+        }
+        
+        for (String t : tiposPrimitivos)
+        {
+            if (token.equals(t))
+            {
+                return TipoToken.TIPO_PRIMITIVO;
+            }
+        }
+        
+        for (String t : outros)
+        {
+            if (token.equals(t))
+            {
+                return TipoToken.OUTRO;
+            }
+        }
+        
+        return TipoToken.NAO_MAPEADO;
+    }
+    
+    public static String getToken(String[] tokens, int indice)
+    {
+        if (indice > 0)
+        {        
+            String token = tokens[indice];
+
+            if (token.startsWith("'") && token.endsWith("'"))
+            {
+                token = token.substring(1, token.length() - 1);
+            }
+
+            return token;
+        }
+        
+        return "}";
+    }
+    
+    public static int posicaoProximoCaracter(String codigoFonte, int posicaoIncial)
+    {
+        for (int i = posicaoIncial; i < codigoFonte.length(); i++)
+        {
+            char c = codigoFonte.charAt(i);
+            
+            if (c != '\r' && c != '\n' && c != ' ' && c != '\t' && c != '\0')
+            {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
+    
+    public static int posicaoCaracterAnterior(String codigoFonte, int posicaoIncial)
+    {
+        for (int i = posicaoIncial; i >= 0; i--)
+        {
+            char c = codigoFonte.charAt(i);
+            
+            if (c != '\r' && c != '\n' && c != ' ' && c != '\t' && c != '\0')
+            {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
+    //public static boolean lookAhead(String token, int posicao, int tamang)
 }

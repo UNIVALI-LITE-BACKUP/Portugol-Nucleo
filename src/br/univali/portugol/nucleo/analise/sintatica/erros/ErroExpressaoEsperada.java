@@ -51,6 +51,6 @@ public final class ErroExpressaoEsperada extends ErroSintatico
     @Override
     protected String construirMensagem()
     {
-        return "Esta construção espera uma condição ou uma expressão entre parêntesis.";
+        return "Este comando espera uma condição ou uma expressão entre parêntesis";
     }
 }

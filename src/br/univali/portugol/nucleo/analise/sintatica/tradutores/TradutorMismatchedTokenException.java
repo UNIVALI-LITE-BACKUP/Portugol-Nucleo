@@ -1,9 +1,10 @@
 package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
-import br.univali.portugol.nucleo.analise.sintatica.PortugolLexer;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroAbreFechaParentesis;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopoNaoFoiFechadoCorretamente;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressaoIncompleta;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressoesForaEscopoPrograma;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroFaltaDoisPontos;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroNomeSimboloEstaFaltando;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroPalavraReservadaEstaFaltando;
@@ -35,54 +36,96 @@ public final class TradutorMismatchedTokenException
      * @return                   o erro sintático traduzido.
      * @since 1.0
      */
-    public ErroSintatico traduzirErroParsing(MismatchedTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao)
+    public ErroSintatico traduzirErroParsing(MismatchedTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao, String codigoFonte)
     {
         int linha = erro.line;
         int coluna = erro.charPositionInLine;
-        String contextoAtual = pilhaContexto.pop();
-        int unexpectedType = erro.getUnexpectedType();
+        String contextoAtual = pilhaContexto.peek();
         
-        if (erro.expecting == PortugolLexer.ID)
+        String tokenEsperado = AnalisadorSintatico.getToken(tokens, erro.expecting);
+        String tokenEncontrado = AnalisadorSintatico.getToken(tokens, erro.getUnexpectedType());
+        
+        if (contextoAtual.equals("para"))
+        {
+            return traduzirErrosPara(linha, coluna, erro, tokens, pilhaContexto, codigoFonte);
+        }
+        else if (tokenEsperado.equals("ID"))
         {
             return new ErroNomeSimboloEstaFaltando(linha, coluna, contextoAtual);
         }
-        else
-        {
-            if (erro.expecting == PortugolLexer.T__69)
-            {  
-                return new ErroEscopoNaoFoiFechadoCorretamente(linha, coluna, contextoAtual);
-            }
-            else
-            {
-                if (erro.expecting == PortugolLexer.T__43)
-                {
-                    return new ErroAbreFechaParentesis(linha, coluna, "(");
-                }
-                else
-                {
-                    if (erro.expecting == PortugolLexer.T__44)
-                    {
-                        return new ErroAbreFechaParentesis(linha, coluna, ")");
-                    }
-                    else
-                    {
-                        if (erro.expecting == PortugolLexer.T__56)
-                        {
-                            return new ErroFaltaDoisPontos(linha, coluna);
-                        }
-                    }
-                }
-            }
+        else if (tokenEsperado.equals("}"))
+        {  
+            return new ErroEscopoNaoFoiFechadoCorretamente(linha, coluna, pilhaContexto, codigoFonte);
         }
-
-        if (tokens[((MismatchedTokenException) erro).expecting].startsWith("PR_"))
+        else if (tokenEsperado.equals("("))
         {
-            String palavraReservada = tokens[erro.expecting];
-            palavraReservada = palavraReservada.replace("PR_", "").toLowerCase();
-
-            return new ErroPalavraReservadaEstaFaltando(linha, coluna, palavraReservada);
+            return new ErroAbreFechaParentesis(linha, coluna, "(");
+        }
+        else if (tokenEsperado.equals(")"))
+        {
+            return new ErroAbreFechaParentesis(linha, coluna, ")");
+        }
+        else if (tokenEsperado.equals(":"))
+        {
+            return new ErroFaltaDoisPontos(linha, coluna);
+        }
+        else if (AnalisadorSintatico.getTipoToken(tokenEsperado) == AnalisadorSintatico.TipoToken.PALAVRA_RESERVADA)
+        {
+            if (tokenEsperado.equals("PR_PROGRAMA"))
+            {
+                if (codigoFonte.indexOf("programa") >= 0)
+                {
+                    String expressoes = codigoFonte.substring(0, codigoFonte.indexOf("programa"));
+                
+                    return new ErroExpressoesForaEscopoPrograma(expressoes, 0, codigoFonte, ErroExpressoesForaEscopoPrograma.Local.ANTES);
+                }
+                else if (codigoFonte.indexOf("{") >= 0)
+                {
+                    final String expressoes = codigoFonte.substring(0, codigoFonte.indexOf("{"));
+                    
+                    return new ErroSintatico(linha, coluna)
+                    {
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return String.format("A estrutura do algoritmo está incorreta. Para corrigir o problema, remova o seguinte trecho de código '%s', que está antes do caracter '{' e, inclua a palavra reservada 'programa' ", expressoes);
+                        }
+                    };
+                }                
+            }
+            
+            return new ErroPalavraReservadaEstaFaltando(linha, coluna, tokenEsperado.replace("PR_", "").toLowerCase(), contextoAtual);
         }
 
         return new ErroParsingNaoTratado(erro, mensagemPadrao, contextoAtual);
+    }
+    
+    private ErroSintatico traduzirErrosPara(int linha, int coluna, MismatchedTokenException erro, String[] tokens, Stack<String> pilhaContexto, String codigoFonte)
+    {
+        String tokenEsperado = AnalisadorSintatico.getToken(tokens, erro.expecting);
+        String tokenEncontrado = AnalisadorSintatico.getToken(tokens, erro.getUnexpectedType());
+        
+        if (tokenEsperado.equals(")"))
+        {
+            return new ErroAbreFechaParentesis(linha, coluna, ")");
+        }
+        else if (tokenEsperado.equals("("))
+        {
+            return new ErroAbreFechaParentesis(linha, coluna, "(");
+        }
+        else if (tokenEsperado.equals(";") && !tokenEncontrado.equals(")"))
+        {
+            return new ErroAbreFechaParentesis(linha, coluna, ")");
+        }
+        else
+        
+        return new ErroSintatico(linha, coluna)
+        {
+            @Override
+            protected String construirMensagem()
+            {
+                return "O comando 'para' necessita ao menos de uma condição de parada. Utilize a seguinte construção para corrigir o problema: 'para( ; <condicao> ; ){ <comandos> }'";
+            }
+        };
     }
 }
