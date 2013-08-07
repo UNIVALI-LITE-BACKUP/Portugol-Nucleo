@@ -83,7 +83,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         {
             bibliotecasDisponiveis = new ArrayList<String>();
             
-            bibliotecasDisponiveis.add("Utilitarios");
+            bibliotecasDisponiveis.add("Util");
             bibliotecasDisponiveis.add("Graficos");
             bibliotecasDisponiveis.add("Matematica");
             bibliotecasDisponiveis.add("Texto");

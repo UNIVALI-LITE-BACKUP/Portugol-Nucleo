@@ -19,7 +19,7 @@ import java.util.Random;
     descricao = "Esta biblioteca contém diversas funções utilitárias",
     versao = "1.0"
 )
-public final class Utilitarios extends Biblioteca
+public final class Util extends Biblioteca
 {
     private Random random = new Random(System.currentTimeMillis());
     
