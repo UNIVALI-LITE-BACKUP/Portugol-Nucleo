@@ -915,9 +915,11 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                     if (linhas != null)
                     {
-                        if (linhas != ((NoMatriz) inicializacao).getValores().size())
+                        int numeroLinhasDeclaradas = ((NoMatriz) inicializacao).getValores().size();
+                        
+                        if (linhas != numeroLinhasDeclaradas)
                         {
-                            notificarErroSemantico(new ErroQuantidadeLinhasIncializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), nome, linhas));
+                            notificarErroSemantico(new ErroQuantidadeLinhasIncializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), nome, linhas, numeroLinhasDeclaradas));
                         }
                     }
 
@@ -925,9 +927,11 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         for (int linha = 0; linha < ((NoMatriz) inicializacao).getValores().size(); linha++)
                         {
-                            if (colunas != ((NoMatriz) inicializacao).getValores().get(linha).size())
+                            List<List<Object>> valores = ((NoMatriz) noDeclaracaoMatriz.getInicializacao()).getValores();
+                            
+                            if (colunas != valores.get(linha).size())
                             {
-                                notificarErroSemantico(new ErroQuantidadeElementosColunaInicializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), linha, nome, colunas));
+                                notificarErroSemantico(new ErroQuantidadeElementosColunaInicializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), nome, linha, colunas, valores.get(linha).size()));
                             }
                         }
                     }

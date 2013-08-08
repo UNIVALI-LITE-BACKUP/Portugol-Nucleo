@@ -13,19 +13,58 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  */
 public final class ErroQuantidadeLinhasIncializacaoMatriz extends ErroSemantico
 {
-    private final String nome;
-    private final int linhas;
+    private String nome;
+    private int numeroLinhasEsperadas;
+    private int numeroLinhasDeclaradas;
 
-    public ErroQuantidadeLinhasIncializacaoMatriz(TrechoCodigoFonte trechoCodigoFonte, String nome, int linhas)
+    public ErroQuantidadeLinhasIncializacaoMatriz(TrechoCodigoFonte trechoCodigoFonte, String nome, int numeroLinhasEsperadas, int numeroLinhasDeclaracadas)
     {
         super(trechoCodigoFonte);
         this.nome = nome;
-        this.linhas = linhas;
+        this.numeroLinhasEsperadas = numeroLinhasEsperadas;
+        this.numeroLinhasDeclaradas = numeroLinhasDeclaracadas;
     }
 
     @Override
     protected String construirMensagem()
     {
-        return String.format("A inicialização da matriz \"%s\" deve possuir %d linhas", nome, linhas);
-    }    
+        StringBuilder construtorTexto = new StringBuilder();
+
+        construtorTexto.append("A inicialização da matriz \"");
+        construtorTexto.append(nome);
+        construtorTexto.append("\" deve possuir ");
+        construtorTexto.append(numeroLinhasEsperadas);
+        construtorTexto.append(" linha");
+        
+        if (numeroLinhasEsperadas > 1)
+        {
+            construtorTexto.append("s");
+        }
+        
+        int diferenca = 0;
+        
+        if (numeroLinhasDeclaradas > numeroLinhasEsperadas)
+        {
+            diferenca = numeroLinhasDeclaradas - numeroLinhasEsperadas;
+            construtorTexto.append(". Remova ");
+        }
+        else if (numeroLinhasDeclaradas < numeroLinhasEsperadas)
+        {
+            diferenca = numeroLinhasEsperadas - numeroLinhasDeclaradas;
+            construtorTexto.append(". Insira mais ");
+        }
+        
+        construtorTexto.append(diferenca);
+        construtorTexto.append(" linha");
+
+            
+        if (diferenca > 1)
+        {
+            construtorTexto.append("s");
+        }
+        
+        construtorTexto.append(" para corrigir o problema");
+        
+        return construtorTexto.toString();
+    }
 }

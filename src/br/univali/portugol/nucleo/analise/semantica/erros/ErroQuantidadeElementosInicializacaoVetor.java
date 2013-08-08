@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
@@ -9,9 +5,10 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
  *
- * @author fillipi
+ * @author Fillipi Domingos Pelz
+ * @author Luiz Fernando Noschang
  */
-public class ErroQuantidadeElementosInicializacaoVetor extends ErroSemantico
+public final class ErroQuantidadeElementosInicializacaoVetor extends ErroSemantico
 {
     private String nome;
     private int numeroElementosEsperados;
@@ -47,12 +44,12 @@ public class ErroQuantidadeElementosInicializacaoVetor extends ErroSemantico
         if (numeroElementosDeclarados > numeroElementosEsperados)
         {
             diferenca = numeroElementosDeclarados - numeroElementosEsperados;
-            construtorTexto.append(", remova ");
+            construtorTexto.append(". Remova ");
         }
         else if (numeroElementosDeclarados < numeroElementosEsperados)
         {
             diferenca = numeroElementosEsperados - numeroElementosDeclarados;            
-            construtorTexto.append(", insira mais ");
+            construtorTexto.append(". Insira mais ");
         }
         
         construtorTexto.append(diferenca);
@@ -67,6 +64,5 @@ public class ErroQuantidadeElementosInicializacaoVetor extends ErroSemantico
         construtorTexto.append(" para corrigir o problema");
         
         return construtorTexto.toString();
-    }
-    
+    }    
 }
