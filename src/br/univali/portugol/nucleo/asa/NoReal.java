@@ -7,11 +7,8 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see TipoDado
  */
-public final class NoReal extends NoExpressao
+public final class NoReal extends NoValor<Double>
 {
-    private double valor;
-    private TrechoCodigoFonte trechoCodigoFonte;
-
     /**
      * 
      * @param valor     o número real representado por este nó da árvore
@@ -19,36 +16,7 @@ public final class NoReal extends NoExpressao
      */
     public NoReal(double valor)
     {
-        this.valor = valor;
-    }
-
-    /**
-     * 
-     * @return     o número real representado por este nó da árvore
-     * @since 1.0
-     */
-    public double getValor()
-    {
-        return valor;
-    }
-
-    /**
-     * 
-     * @param trechoCodigoFonte     o trecho do código fonte no qual o número real se encontra
-     * @since 1.0
-     */
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-
-    /**
-     * {@inheritDoc }
-     */    
-    @Override
-    protected TrechoCodigoFonte montarTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
+        super(valor);
     }
     
     /**

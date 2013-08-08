@@ -2,7 +2,6 @@ package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.NoOperacao;
-import br.univali.portugol.nucleo.asa.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**

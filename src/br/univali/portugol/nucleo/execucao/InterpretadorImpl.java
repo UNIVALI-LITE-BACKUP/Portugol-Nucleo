@@ -1129,12 +1129,6 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     }
 
     @Override
-    public Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Object visitar(NoReal noReal) throws ExcecaoVisitaASA
     {
         return noReal.getValor();

@@ -6,8 +6,6 @@ package br.univali.portugol.nucleo.asa;
  */
 public abstract class VisitanteASABasico implements VisitanteASA
 {
-    private ArvoreSintaticaAbstrata asa;
-
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
     {
@@ -238,12 +236,6 @@ public abstract class VisitanteASABasico implements VisitanteASA
 
     @Override
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA
-    {
-        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
-    }
-
-    @Override
-    public Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
     }

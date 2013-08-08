@@ -8,11 +8,8 @@ package br.univali.portugol.nucleo.asa;
  * 
  * @see TipoDado
  */
-public final class NoCaracter extends NoExpressao
+public final class NoCaracter extends NoValor<Character>
 {
-    private char valor;
-    private TrechoCodigoFonte trechoCodigoFonte;
-
     /**
      * 
      * @param valor     o caracter representado por este nó da árvore
@@ -20,38 +17,9 @@ public final class NoCaracter extends NoExpressao
      */
     public NoCaracter(char valor)
     {
-        this.valor = valor;
+        super(valor);
     }
 
-    /**
-     * 
-     * @return     o caracter representado por este nó da árvore
-     * @since 1.0
-     */
-    public char getValor()
-    {
-        return valor;
-    }
-
-    /**
-     * 
-     * @param trechoCodigoFonte     o trecho do código fonte no qual o caracter se encontra
-     * @since 1.0
-     */
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-    
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    protected TrechoCodigoFonte montarTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
-    }
-    
     /**
      * {@inheritDoc }
      */

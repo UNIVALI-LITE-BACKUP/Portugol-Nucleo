@@ -33,7 +33,6 @@ package br.univali.portugol.nucleo.asa;
  */
 public abstract class NoExpressao extends NoBloco
 {
-    private boolean entreParentesis = false;
     private TrechoCodigoFonte trechoCodigoFonte = null;
 
     public NoExpressao()
@@ -56,28 +55,6 @@ public abstract class NoExpressao extends NoBloco
         return trechoCodigoFonte;
     }
 
-    /**
-     * Verifica se esta expressão está entre parentesis no código fonte.
-     * 
-     * @return     um flag indicando se esta expressão está entre parentesis.
-     * @since 1.0
-     */
-    public boolean estaEntreParentesis()
-    {
-        return entreParentesis;
-    }
-
-    /**
-     * Define se esta expressão está entre parentesis no código fonte.
-     * 
-     * @param entreParentesis     flag indicando se esta expressão está entre parentesis.
-     * @since 1.0
-     */
-    public void setEntreParentesis(boolean entreParentesis)
-    {
-        this.entreParentesis = entreParentesis;
-    }
-    
     /**
      * Este método cria e retorna um objeto contendo as informações referentes à
      * localização desta expressão no código fonte.

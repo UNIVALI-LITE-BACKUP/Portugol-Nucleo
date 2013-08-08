@@ -89,15 +89,6 @@ public interface VisitanteASA
 
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA;
 
-    /**
-     * @param noPercorra           nó da ASA.
-     * @return                     um objeto qualquer. 
-     * @throws ExcecaoVisitaASA
-     * @deprecated                 a classe NoPercora será removida nas versões futuras.
-     */
-    @Deprecated
-    public Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA;
-
     public Object visitar(NoReal noReal) throws ExcecaoVisitaASA;
 
     public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA;

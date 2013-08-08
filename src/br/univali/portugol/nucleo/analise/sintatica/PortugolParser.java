@@ -4112,11 +4112,7 @@ public class PortugolParser extends Parser {
               		if (gerarArvore)
               		{
               		
-              			if (parentesis != null)
-              			{
-              				vExpressao.setEntreParentesis(true);
-              			}
-              			
+                   			
               			if (operador != null)
               			{
               				NoInteiro inteiro = new NoInteiro(1);

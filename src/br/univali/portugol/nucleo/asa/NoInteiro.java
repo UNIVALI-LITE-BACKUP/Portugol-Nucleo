@@ -7,11 +7,8 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see TipoDado
  */
-public final class NoInteiro extends NoExpressao
+public final class NoInteiro extends NoValor<Integer>
 {
-    private int valor;
-    private TrechoCodigoFonte trechoCodigoFonte;
-
     /**
      * 
      * @param valor     o número inteiro representado por este nó da árvore
@@ -19,35 +16,9 @@ public final class NoInteiro extends NoExpressao
      */    
     public NoInteiro(int valor)
     {
-        this.valor = valor;
-    }
-    
-    /**
-     * @return     o número inteiro representado por este nó da árvore
-     * @since 1.0
-     */
-    public int getValor()
-    {
-        return valor;
+        super(valor);
     }
 
-    /**
-     * @param trechoCodigoFonte     o trecho do código fonte no qual o númeor inteiro se encontra
-     * @since 1.0
-     */
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;NoInteiro a;
-    }
-    
-    /**
-     * {@inheritDoc }
-     */   
-    @Override
-    protected TrechoCodigoFonte montarTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
-    }
     
     /**
      * {@inheritDoc }

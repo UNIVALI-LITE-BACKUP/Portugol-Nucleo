@@ -4,7 +4,7 @@ import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoOperacao;
-import br.univali.portugol.nucleo.asa.Operacao;
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**

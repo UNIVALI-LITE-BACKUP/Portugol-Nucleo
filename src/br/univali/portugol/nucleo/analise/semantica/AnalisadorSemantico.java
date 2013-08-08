@@ -9,8 +9,7 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroParaSemExpressaoCo
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeLinhasIncializacaoMatriz;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroBibliotecaNaoInserida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoMatrizEmBranco;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoVetor;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoVetorMatriz;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoVetorLiteral;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroVetorSemElementos;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosColunaInicializacaoMatriz;
@@ -24,6 +23,7 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmChamadaF
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmConstante;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirMatrizVetorEmVariavel;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInclusaoBiblioteca;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoConstante;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosFuncao;
@@ -46,6 +46,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstante;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstantes;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametros;
@@ -848,26 +849,8 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             String nome = noDeclaracaoMatriz.getNome();
             TipoDado tipoDados = noDeclaracaoMatriz.getTipoDado();
-            Integer linhas = null;
-            Integer colunas = null;
-
-            if ((noDeclaracaoMatriz.getNumeroLinhas() != null && !(noDeclaracaoMatriz.getNumeroLinhas() instanceof NoInteiro))
-                    && (noDeclaracaoMatriz.getNumeroColunas()) != null && !(noDeclaracaoMatriz.getNumeroColunas() instanceof NoInteiro))
-            {
-
-                notificarErroSemantico(new ErroTamanhoMatriz(noDeclaracaoMatriz.getNumeroLinhas().getTrechoCodigoFonte()));
-            }
-            else
-            {
-                if (noDeclaracaoMatriz.getNumeroLinhas() != null)
-                {
-                    linhas = ((NoInteiro) noDeclaracaoMatriz.getNumeroLinhas()).getValor();
-                }
-                if (noDeclaracaoMatriz.getNumeroColunas() != null)
-                {
-                    colunas = ((NoInteiro) noDeclaracaoMatriz.getNumeroColunas()).getValor();
-                }
-            }
+            Integer linhas = obterTamanhoVetorMatriz(noDeclaracaoMatriz.getNumeroLinhas(), noDeclaracaoMatriz);
+            Integer colunas = obterTamanhoVetorMatriz(noDeclaracaoMatriz.getNumeroColunas(), noDeclaracaoMatriz);
 
             Matriz matriz = new Matriz(nome, tipoDados, noDeclaracaoMatriz, 1, 1);
             matriz.setTrechoCodigoFonteNome(noDeclaracaoMatriz.getTrechoCodigoFonteNome());
@@ -934,24 +917,33 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         if (linhas != ((NoMatriz) inicializacao).getValores().size())
                         {
-                            final int pLinhas = linhas;
-                            final String pNome = nome;
-
-                            notificarErroSemantico(new ErroQuantidadeLinhasIncializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), pNome, pLinhas));
+                            notificarErroSemantico(new ErroQuantidadeLinhasIncializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), nome, linhas));
                         }
                     }
 
                     if (colunas != null)
                     {
-                        for (int lin = 0; lin < ((NoMatriz) inicializacao).getValores().size(); lin++)
+                        for (int linha = 0; linha < ((NoMatriz) inicializacao).getValores().size(); linha++)
                         {
-                            if (colunas != ((NoMatriz) inicializacao).getValores().get(lin).size())
+                            if (colunas != ((NoMatriz) inicializacao).getValores().get(linha).size())
                             {
-                                final int pColunas = colunas;
-                                final String pNome = nome;
-                                final int pLin = lin;
-
-                                notificarErroSemantico(new ErroQuantidadeElementosColunaInicializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), pLin, pNome, pColunas));
+                                notificarErroSemantico(new ErroQuantidadeElementosColunaInicializacaoMatriz(noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), linha, nome, colunas));
+                            }
+                        }
+                    }
+                    
+                    if (noDeclaracaoMatriz.constante() && linhas != null && colunas != null)
+                    {
+                        List<List<Object>> valores = ((NoMatriz) noDeclaracaoMatriz.getInicializacao()).getValores();
+                        
+                        for (int linha = 0; linha < valores.size(); linha++)
+                        {
+                            for (int coluna = 0; coluna < valores.get(linha).size(); coluna++)
+                            {
+                                if (!(valores.get(linha).get(coluna) instanceof NoValor))
+                                {
+                                    notificarErroSemantico(new ErroInicializacaoConstante(noDeclaracaoMatriz, linha, coluna));
+                                }
                             }
                         }
                     }
@@ -989,9 +981,9 @@ public final class AnalisadorSemantico implements VisitanteASA
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = declaracaoVariavel.getNome();
-            TipoDado tipoDados = declaracaoVariavel.getTipoDado();
+            TipoDado tipoDadoVariavel = declaracaoVariavel.getTipoDado();
 
-            Variavel variavel = new Variavel(nome, tipoDados, declaracaoVariavel);
+            Variavel variavel = new Variavel(nome, tipoDadoVariavel, declaracaoVariavel);
             variavel.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
             variavel.setTrechoCodigoFonteTipoDado(declaracaoVariavel.getTrechoCodigoFonteTipoDado());
 
@@ -1056,6 +1048,11 @@ public final class AnalisadorSemantico implements VisitanteASA
                     memoria.empilharEscopo();
                     memoria.adicionarSimbolo(variavel);
 
+                    if (declaracaoVariavel.constante() && !(inicializacao instanceof NoValor))
+                    {
+                        notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
+                    }
+                    
                     try
                     {
                         operacao.aceitar(this);
@@ -1090,18 +1087,9 @@ public final class AnalisadorSemantico implements VisitanteASA
             String nome = noDeclaracaoVetor.getNome();
             TipoDado tipoDados = noDeclaracaoVetor.getTipoDado();
             Integer tamanho = null;
-
-            if (noDeclaracaoVetor.getTamanho() != null && !(noDeclaracaoVetor.getTamanho() instanceof NoInteiro))
-            {
-                notificarErroSemantico(new ErroTamanhoVetor(noDeclaracaoVetor.getTrechoCodigoFonteNome()));
-            }
-            else
-            {
-                if (noDeclaracaoVetor.getTamanho() != null)
-                {
-                    tamanho = ((NoInteiro) noDeclaracaoVetor.getTamanho()).getValor();
-                }
-            }
+            final NoExpressao expTamanho = noDeclaracaoVetor.getTamanho();
+            
+            tamanho = obterTamanhoVetorMatriz(expTamanho, noDeclaracaoVetor);
 
             Vetor vetor = new Vetor(nome, tipoDados, noDeclaracaoVetor, 1);
             vetor.setTrechoCodigoFonteNome(noDeclaracaoVetor.getTrechoCodigoFonteNome());
@@ -1157,7 +1145,6 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             if (noDeclaracaoVetor.getInicializacao() != null)
             {
-
                 if (noDeclaracaoVetor.getInicializacao() instanceof NoVetor)
                 {
                     NoExpressao inicializacao = noDeclaracaoVetor.getInicializacao();
@@ -1167,12 +1154,24 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                     if (tamanho != null)
                     {
-                        if (tamanho != ((NoVetor) inicializacao).getValores().size())
+                        int numeroElementosDeclarados = ((NoVetor) inicializacao).getValores().size();
+                        
+                        if (tamanho != numeroElementosDeclarados)
                         {
-                            final int pTamanho = tamanho;
-                            final String pNome = nome;
-
-                            notificarErroSemantico(new ErroQuantidadeElementosInicializacaoVetor(noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte(), pNome, pTamanho));
+                            notificarErroSemantico(new ErroQuantidadeElementosInicializacaoVetor(noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte(), nome, tamanho, numeroElementosDeclarados));
+                        }
+                        
+                        if (noDeclaracaoVetor.constante())
+                        {
+                            NoVetor noVetor = (NoVetor) inicializacao;
+                            
+                            for (int indice = 0; indice < noVetor.getValores().size(); indice++)
+                            {
+                                if (!(noVetor.getValores().get(indice) instanceof NoValor))
+                                {
+                                    notificarErroSemantico(new ErroInicializacaoConstante(noDeclaracaoVetor, indice));
+                                }
+                            }
                         }
                     }
 
@@ -1376,7 +1375,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                             if (simbolo.constante())
                             {
                                 final Simbolo pSimbolo = simbolo;
-                                notificarErroSemantico(new ErroAtribuirEmConstante(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte(), pSimbolo));
+                                notificarErroSemantico(new ErroAtribuirEmConstante(noOperacao.getTrechoCodigoFonte(), pSimbolo));
                             }
 
                             if ((noOperacao.getOperandoDireito() instanceof NoMatriz)
@@ -1431,9 +1430,16 @@ public final class AnalisadorSemantico implements VisitanteASA
                     if (noOperacao.getOperandoEsquerdo() instanceof NoReferenciaMatriz
                             || noOperacao.getOperandoEsquerdo() instanceof NoReferenciaVetor)
                     {
+                        simbolo = memoria.getSimbolo(((NoReferencia)noOperacao.getOperandoEsquerdo()).getNome());
+                        if (simbolo.constante())
+                        {
+                            final Simbolo pSimbolo = simbolo;
+                            notificarErroSemantico(new ErroAtribuirEmConstante(noOperacao.getTrechoCodigoFonte(), pSimbolo));
+                        }
+                        
                         if (noOperacao.getOperandoDireito() instanceof NoVetor)
                         {
-                            notificarErroSemantico(new ErroAoAtribuirEmVetor(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
+                            notificarErroSemantico(new ErroAoAtribuirEmVetor(noOperacao.getTrechoCodigoFonte()));
                         }
                         else
                         {
@@ -1447,7 +1453,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         if (noOperacao.getOperandoEsquerdo() instanceof NoChamadaFuncao)
                         {
-                            notificarErroSemantico(new ErroAtribuirEmChamadaFuncao(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte()));
+                            notificarErroSemantico(new ErroAtribuirEmChamadaFuncao(noOperacao.getTrechoCodigoFonte()));
                         }
                     }
                 }
@@ -1699,12 +1705,6 @@ public final class AnalisadorSemantico implements VisitanteASA
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA
     {
         return null;
-    }
-
-    @Override
-    public Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -2154,5 +2154,77 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
 
         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, noReferenciaVariavel);
+    }
+
+    private Integer obterTamanhoVetorMatriz(final NoExpressao expTamanho, NoDeclaracao noDeclaracao) throws ExcecaoVisitaASA
+    {
+        if (expTamanho != null)                
+        {
+            TipoDado tipoTamanho = (TipoDado) expTamanho.aceitar(this);
+            
+            if (tipoTamanho == TipoDado.INTEIRO)
+            {                
+                if (!(expTamanho instanceof NoInteiro) && !(expTamanho instanceof NoReferenciaVariavel))
+                {
+                    notificarErroSemantico(new ErroTamanhoVetorMatriz(noDeclaracao, expTamanho));
+                }
+                else if (expTamanho instanceof NoReferenciaVariavel)
+                {
+                    NoReferenciaVariavel ref = (NoReferenciaVariavel) expTamanho;
+
+                    if (ref.getEscopo() == null)
+                    {
+                        try
+                        {
+                            Variavel variavel = (Variavel) memoria.getSimbolo(ref.getNome());
+                            NoDeclaracaoVariavel decl =(NoDeclaracaoVariavel) variavel.getOrigemDoSimbolo();
+                            
+                            if (variavel.constante())
+                            {
+                                
+                                return ((NoInteiro) decl.getInicializacao()).getValor();
+                            }
+                            else 
+                            {
+                                notificarErroSemantico(new ErroTamanhoVetorMatriz(noDeclaracao, expTamanho));
+                            }
+                        }
+                        catch (ExcecaoSimboloNaoDeclarado ex) 
+                        {
+                            // Não faz nada. Já notificou simbolo inexistente
+                        }
+                        catch (ClassCastException ex)
+                        {
+                            // Não faz nada. Já notificou uso indevido
+                        }
+                    }
+                    else
+                    {
+                        MetaDadosBiblioteca metaDadosBiblioteca = metaDadosBibliotecas.get(ref.getEscopo());
+                        MetaDadosConstantes metaDadosConstantes = metaDadosBiblioteca.getMetaDadosConstantes();
+                        MetaDadosConstante metaDadosConstante = metaDadosConstantes.obter(ref.getNome());
+                        
+                        if (metaDadosConstante.getTipoDado() == TipoDado.INTEIRO)
+                        {
+                            return (Integer) metaDadosConstante.getValor();
+                        }
+                        else
+                        {
+                            notificarErroSemantico(new ErroTamanhoVetorMatriz(noDeclaracao, expTamanho));
+                        }
+                    }
+                } 
+                else 
+                {
+                    return ((NoInteiro) expTamanho).getValor();
+                }
+            }
+            else
+            {
+                notificarErroSemantico(new ErroTamanhoVetorMatriz(noDeclaracao, expTamanho));
+            }
+        }
+        
+        return null;
     }
 }
