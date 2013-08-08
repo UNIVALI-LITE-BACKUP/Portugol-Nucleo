@@ -132,6 +132,35 @@ grammar Portugol;
 		
 		else return operandoEsquerdo;
 	}
+	
+	/**
+	     * Varre uma cadeia procurando por "sequências de escape" e substituindo por seus
+	     * valores equivalentes.
+	     * <p>
+	     * As sequências de escape representam caracteres ou valores especiais que não podem
+	     * ser escritos diretamente no código-fonte, pois são interpretados de forma diferente
+	     * pelo parser do Portugol.
+	     * 
+	     * @param      valor a cadeia em seu formato original, como foi declarada no código fonte.
+	     * @return     uma nova versão da cadeia com as sequências de escape já substituídas.
+	     * 
+	     * @since 1.0
+	     */
+	    private String traduzirSequenciasEscape(String valor)
+	    {
+		valor = valor.replace("\\b", "\b");
+		 valor = valor.replace("\\t", "\t");
+		valor = valor.replace("\\n", "\n");
+		 valor = valor.replace("\f", "\f");
+		 valor = valor.replace("\\r", "\r");
+		valor = valor.replace("\\\"", "\"");
+		valor = valor.replace("\\\'", "\'");
+		valor = valor.replace("\\\"", "\"");
+		valor = valor.replace("\\\\", "\\");
+
+		 return valor;
+	    }	
+	
 }
 
 
@@ -1224,7 +1253,7 @@ expressao8 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao8");
 }:	
 	
-	( parentesis = '(' vExpressao = expressao ')' 
+	( ab = '(' vExpressao = expressao fp = ')' 
 	| vExpressao = referencia
 	| vExpressao = tipoPrimitivo 
 	| vExpressao = matrizVetor) 
@@ -1234,11 +1263,6 @@ expressao8 returns[NoExpressao expressao] @init
 		if (gerarArvore)
 		{
 		
-			if (parentesis != null)
-			{
-				vExpressao.setEntreParentesis(true);
-			}
-			
 			if (operador != null)
 			{
 				NoInteiro inteiro = new NoInteiro(1);
@@ -1294,7 +1318,11 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 		if (gerarArvore)
 		{
 			String texto = $CADEIA.text;
-			NoCadeia cadeia = new NoCadeia(texto.substring(1, texto.length() - 1));
+			
+			texto = texto.substring(1, texto.length() - 1);
+			texto = traduzirSequenciasEscape(texto);
+			
+			NoCadeia cadeia = new NoCadeia(texto);
 			cadeia.setTrechoCodigoFonte(criarTrechoCodigoFonte($CADEIA));
 			expressao = cadeia;
 		}
@@ -1334,7 +1362,10 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 	{
 		if (gerarArvore)
 		{
-			NoCaracter caracter = new NoCaracter($CARACTER.text.charAt(1));
+			String car = $CARACTER.text;
+			car = traduzirSequenciasEscape(car);
+
+			NoCaracter caracter = new NoCaracter(car.charAt(1));
 			caracter.setTrechoCodigoFonte(criarTrechoCodigoFonte($CARACTER));
 			expressao = caracter;
 		}
@@ -1597,7 +1628,7 @@ listaExpressoes returns[List<Object> listaExpressoes] @init
 	listaExpressoes = new ArrayList<Object>();
 }:
 	({ vExpressao = null; }     (vExpressao = expressao)? 
-	 { 
+		 { 
 	 	if (gerarArvore)
 	 	{
 		 	listaExpressoes.add(vExpressao); 
