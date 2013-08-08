@@ -112,7 +112,7 @@ grammar Portugol;
 	      	{
 	      		int linha = abreEscopo.getLine();
 			int coluna = abreEscopo.getCharPositionInLine();			
-			int tamanhoTexto = fechaEscopo.getTokenIndex() - abreEscopo.getTokenIndex();
+			int tamanhoTexto = fechaEscopo.getTokenIndex() + 1 - abreEscopo.getTokenIndex();
 			
 			return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	      	}
@@ -1605,7 +1605,7 @@ listaListaExpressoes returns[List<List<Object>> listaListaExpressoes] @init
 				 listaListaExpressoes.add(vListaExpressoes); 
 			 }
 		}
-	)
+	)?
 	( { vListaExpressoes = null; } ','  '{' vListaExpressoes = listaExpressoes '}' 
 	
 	   { 
@@ -1627,14 +1627,14 @@ listaExpressoes returns[List<Object> listaExpressoes] @init
 	pilhaContexto.push("listaExpressoes");
 	listaExpressoes = new ArrayList<Object>();
 }:
-	({ vExpressao = null; }     (vExpressao = expressao)? 
+	({ vExpressao = null; }     (vExpressao = expressao)?
 		 { 
 	 	if (gerarArvore)
 	 	{
 		 	listaExpressoes.add(vExpressao); 
 	 	}
 	 })
-	({ vExpressao = null; } ',' (vExpressao = expressao)? 
+	({ vExpressao = null; } ',' (vExpressao = expressao)
 	{
 		if (gerarArvore)
 		{

@@ -43,6 +43,6 @@ public final class ErroCadeiaIncompleta extends ErroSintatico
     @Override
     protected String construirMensagem() 
     {
-        return "A expressão do tipo 'cadeia' não foi finalizada corretamente. Insira o caracter \" para corrigir o problema. ";
+        return "A expressão do tipo 'cadeia' não foi finalizada corretamente. Insira o caracter '\"' para corrigir o problema. ";
     }
 }

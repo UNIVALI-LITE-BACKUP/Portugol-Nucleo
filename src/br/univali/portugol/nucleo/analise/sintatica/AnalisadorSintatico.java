@@ -15,6 +15,7 @@ import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorUnwantedT
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -51,10 +52,11 @@ import org.antlr.runtime.UnwantedTokenException;
  */
 public final class AnalisadorSintatico implements ObservadorParsing
 {
-    private static final Pattern padraoEscopoPrograma = Pattern.compile("[^programa]*programa[^{]*\\{");
-    public static enum TipoToken { PALAVRA_RESERVADA, OPERADOR, TIPO_PRIMITIVO, OUTRO, NAO_MAPEADO };
+    public static enum TipoToken { PALAVRA_RESERVADA, OPERADOR, TIPO_PRIMITIVO, OUTRO, NAO_MAPEADO, ID };
     
-    public static final String[] palavrasReservadas = 
+    private static final Pattern padraoEscopoPrograma = Pattern.compile("[^programa]*programa[^{]*\\{");
+    
+    private static final List<String> palavrasReservadas = Arrays.asList(new String[]
     {
         "PR_BIBLIOTECA", "PR_CADEIA", "PR_CARACTER", "PR_CASO", "PR_CONST", "PR_CONTRARIO",
         
@@ -64,20 +66,37 @@ public final class AnalisadorSintatico implements ObservadorParsing
         
         "PR_VAZIO", "PR_VERDADEIRO"
             
-    };
-    public static final String[] operadores = 
+    });
+    
+    private static final List<String> operadores = Arrays.asList(new String[]
     {
         "OPERADOR_NAO", "!=", "%", "%=", "&", "&=", "(", ")", "*", "*=", "+", "++", "+=", ",", "-", "--", "-->", 
         
         "-=", "/", "/=", ":", ";", "<", "<<", "<<=", "<=", "=", "==", ">", ">=", ">>", ">>=", "[", "]", "^", "^=", 
         
         "e", "ou", "{", "|", "|=", "}", "~"
-    };
+    });
     
-    public static final String[] tiposPrimitivos = {"REAL", "CADEIA", "CARACTER", "INTEIRO", "LOGICO", "ID", "ID_BIBLIOTECA" };
+    private static final List<String> tiposPrimitivos =  Arrays.asList(new String[]
+    {
+        "REAL", "CADEIA", "CARACTER", "INTEIRO", "LOGICO" 
+    });
     
-    public static final String[] outros = {"SEQ_ESC", "ESC_OCTAL", "ESC_UNICODE", "COMENTARIO", "DIGIT_HEX", "ESPACO", "GAMBIARRA" };
+    private static final List<String> ids = Arrays.asList(new String[]
+    {
+        "ID", "ID_BIBLIOTECA"
+    });
+    
+    private static final List<String> outros =  Arrays.asList(new String[]
+    {
+        "SEQ_ESC", "ESC_OCTAL", "ESC_UNICODE", "COMENTARIO", "DIGIT_HEX", "ESPACO", "GAMBIARRA" 
+    });
 
+    private static final List<String> comandos = Arrays.asList(new String[]
+    { 
+        "se", "para", "enquanto", "facaEnquanto", "escolha"
+    });
+    
     private String codigoFonte;
     private List<ObservadorAnaliseSintatica> observadores;
     private TradutorEarlyExitException tradutorEarlyExitException;
@@ -93,7 +112,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
 
     public AnalisadorSintatico()
     {
-        observadores = new ArrayList<ObservadorAnaliseSintatica>();
+        observadores = new ArrayList<>();
         tradutorEarlyExitException = new TradutorEarlyExitException();
         tradutorFailedPredicateException = new TradutorFailedPredicateException();
         tradutorMismatchedRangeException = new TradutorMismatchedRangeException();
@@ -320,37 +339,15 @@ public final class AnalisadorSintatico implements ObservadorParsing
     
     public static TipoToken getTipoToken(String token)
     {
-        for (String t : palavrasReservadas)
-        {
-            if (token.equals(t))
-            {
-                return TipoToken.PALAVRA_RESERVADA;
-            }
-        }
+        if (palavrasReservadas.contains(token)) return TipoToken.PALAVRA_RESERVADA;
         
-        for (String t : operadores)
-        {
-            if (token.equals(t))
-            {
-                return TipoToken.OPERADOR;
-            }                
-        }
+        if (operadores.contains(token)) return TipoToken.OPERADOR;
         
-        for (String t : tiposPrimitivos)
-        {
-            if (token.equals(t))
-            {
-                return TipoToken.TIPO_PRIMITIVO;
-            }
-        }
+        if (tiposPrimitivos.contains(token)) return TipoToken.TIPO_PRIMITIVO;
         
-        for (String t : outros)
-        {
-            if (token.equals(t))
-            {
-                return TipoToken.OUTRO;
-            }
-        }
+        if (ids.contains(token)) return TipoToken.ID;
+        
+        if (outros.contains(token)) return TipoToken.OUTRO;
         
         return TipoToken.NAO_MAPEADO;
     }
@@ -387,19 +384,51 @@ public final class AnalisadorSintatico implements ObservadorParsing
         return -1;
     }
     
-    public static int posicaoCaracterAnterior(String codigoFonte, int posicaoIncial)
+    public static boolean estaNoContexto(String contexto, Stack<String> pilhaContexto)
     {
-        for (int i = posicaoIncial; i >= 0; i--)
+        return estaNoContexto(contexto, pilhaContexto.size(), pilhaContexto);
+    }     
+    
+    public static boolean estaNoContexto(String contexto, int profundidade, Stack<String> pilhaContexto)
+    {
+        int inicio = pilhaContexto.size() - 1;
+        
+        for (int i = inicio; i >= inicio - (profundidade - 1) ; i--)
         {
-            char c = codigoFonte.charAt(i);
-            
-            if (c != '\r' && c != '\n' && c != ' ' && c != '\t' && c != '\0')
+            if (pilhaContexto.get(i).equals(contexto))
             {
-                return i;
+                return true;
             }
         }
         
-        return -1;
+        return false;
     }
-    //public static boolean lookAhead(String token, int posicao, int tamang)
+    
+    public static boolean estaEmUmComando(Stack<String> pilhaContexto)
+    {
+        for (String comando : AnalisadorSintatico.comandos)
+        {
+            if (estaNoContexto(comando, pilhaContexto))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public static String extrairComando(Stack<String> pilhaContexto)
+    {
+        for (int i = pilhaContexto.size() - 1; i >= 0; i--)
+        {
+            String contexto = pilhaContexto.get(i);
+            
+            if (AnalisadorSintatico.comandos.contains(contexto))
+            {
+                return contexto;
+            }
+        }
+        
+        return null;
+    }
 }
