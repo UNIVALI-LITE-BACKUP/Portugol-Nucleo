@@ -3,18 +3,14 @@ package br.univali.portugol.nucleo.asa;
 
 /**
  * Representa uma operação de Bitwise Não no código fonte.
-    * Esta enumeração representa a operação de <code>Bitwise Não</code> no código fonte e é representada pelo operador "~".
-    * <p>
-    * Consulte o documento <a href='doc-files/compatibilidade_tipos.xls' target='blank'>Compatibilidade de tipos do Portugol</a> 
-    * para verificar os tipos de dados que podem ser utlizados com esta operação e o resultado para cada tipo de dado.
-    * 
- * </p>
+ * Esta enumeração representa a operação de <code>Bitwise Não</code> no código fonte e é representada pelo operador "~".
+ * 
+ * @author Fillipi Pelz
  * @version 2.0
  */
-public class NoBitwiseNao extends NoExpressao
+public final class NoBitwiseNao extends NoExpressao
 {
-
-    NoExpressao expressao;
+    private NoExpressao expressao;
     
     public NoBitwiseNao(NoExpressao expressao)
     {
@@ -31,12 +27,17 @@ public class NoBitwiseNao extends NoExpressao
         return expressao;
     }
     
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         return visitante.visitar(this);
     }
-
+    /**
+     * {@inheritDoc }
+     */
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
