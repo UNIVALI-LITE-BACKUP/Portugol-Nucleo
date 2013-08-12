@@ -94,6 +94,21 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         
         return new ArrayList<String>(bibliotecasDisponiveis);
     }
+    
+    public void registrarBibliotecaExterna(Class<? extends Biblioteca> biblioteca) throws ErroCarregamentoBiblioteca
+    {
+        final String nome = biblioteca.getSimpleName();
+        if (!bibliotecasCarregadas.containsKey(nome))
+        {
+            listarBibliotecasDisponiveis();
+            bibliotecasDisponiveis.add(nome);
+            bibliotecasCarregadas.put(nome, biblioteca);
+            MetaDadosBiblioteca metaDadosBiblioteca = obterMetaDadosBiblioteca(nome, biblioteca);
+            metaDadosBibliotecas.incluir(metaDadosBiblioteca);
+        } else {
+            throw new ErroCarregamentoBiblioteca(nome, "Uma biblioteca já foi registrada com este nome");
+        }
+    }
 
     /**
      * Obtém os metadados da biblioteca especificada. Os metadados contém
@@ -164,7 +179,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                 if (!memoriaPrograma.containsKey(nome))
                 {
                     Biblioteca biblioteca = bibliotecasCarregadas.get(nome).newInstance();
-                    biblioteca.inicializar();
+                    biblioteca.inicializar(programa);
                     
                     memoriaPrograma.put(nome, biblioteca);
                 }
