@@ -234,6 +234,11 @@ public abstract class Biblioteca
 
     }
     
+    protected void inicializar(Programa programa)
+    {
+    
+    }
+    
     /**
      * Este método será chamado automaticamente para finalizar a biblioteca no término 
      * da execução de cada {@link Programa}
