@@ -135,22 +135,26 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
             {
                 List<ModoAcesso> obterModosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
                 
-                for (int i = 0; i < chamadaFuncao.getParametros().size(); i++){
-                    if (obterModosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA){
-                        NoReferencia ref = (NoReferencia) chamadaFuncao.getParametros().get(i);
-                        try
-                        {
-                            Simbolo simbolo = memoria.getSimbolo(ref.getNome());
-                            simbolosAlterados.add(simbolo);
+                if (chamadaFuncao.getParametros() != null)
+                {
+                    for (int i = 0; i < chamadaFuncao.getParametros().size(); i++){
+                        if (obterModosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA){
+                            NoReferencia ref = (NoReferencia) chamadaFuncao.getParametros().get(i);
+                            try
+                            {
+                                Simbolo simbolo = memoria.getSimbolo(ref.getNome());
+                                simbolosAlterados.add(simbolo);
+                            }
+                            catch (ExcecaoSimboloNaoDeclarado ex)
+                            {
+                                Logger.getLogger(DepuradorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                        catch (ExcecaoSimboloNaoDeclarado ex)
-                        {
-                            Logger.getLogger(DepuradorImpl.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+
                     }
-                
                 }
-                return null; //To change body of generated methods, choose Tools | Templates.
+                
+                return null;
             }
             
             private List<ModoAcesso> obterModosAcessoEsperados(NoChamadaFuncao chamadaFuncao)
