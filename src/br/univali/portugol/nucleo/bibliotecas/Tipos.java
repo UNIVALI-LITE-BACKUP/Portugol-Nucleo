@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * @author Luiz Fernando Noschang
  */
 @PropriedadesBiblioteca(tipo = TipoBiblioteca.COMPARTILHADA)
-@DocumentacaoBiblioteca(descricao = "Esta biblioteca contém funções que permitem converter os tipos de dado do Portugol entre si", versao = "1.0.0")
+@DocumentacaoBiblioteca(descricao = "Esta biblioteca contém funções que permitem converter os tipos de dado do Portugol entre si", versao = "1.0")
 public final class Tipos extends Biblioteca
 {
     private static final Pattern padraoInteiroNotacaoHexadecimal = Pattern.compile("^(0x|0X)?([0-9]|[a-f]|[A-F])+$");
