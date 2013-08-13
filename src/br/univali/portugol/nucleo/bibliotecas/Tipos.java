@@ -169,7 +169,7 @@ public final class Tipos extends Biblioteca
                 
                 descricao = 
             
-                    "a notação em que o número <tipo>inteiro</tipo> está representado na <tipo>cadeia</cadeia>. Os valores "
+                    "a notação em que o número <tipo>inteiro</tipo> está representado na <tipo>cadeia</tipo>. Os valores "
                     +"possíveis são: 2, 10 e 16.\n\n"
 
                     + "O valor 2 assume que a <tipo>cadeia</tipo> representa um número <tipo>inteiro</tipo> escrito em notação binária.\n"
@@ -299,7 +299,7 @@ public final class Tipos extends Biblioteca
                 
                 descricao = 
             
-                    "a notação em que o número <tipo>inteiro</tipo> está representado na <tipo>cadeia</cadeia>. Os valores "
+                    "a notação em que o número <tipo>inteiro</tipo> está representado na <tipo>cadeia</tipo>. Os valores "
                     +"possíveis são: 2, 10 e 16.\n\n"
 
                     + "O valor 2 assume que a <tipo>cadeia</tipo> representa um número <tipo>inteiro</tipo> escrito em notação binária.\n"
