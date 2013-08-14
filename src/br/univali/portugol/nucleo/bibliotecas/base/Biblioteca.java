@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -218,23 +219,33 @@ public abstract class Biblioteca
     }
     
     /**
-     * Este método será chamado automaticamente para inicializar a biblioteca no 
-     * início da execução de cada {@link Programa}
-     * 
-     * <p>
-     *      Para as bibliotecas do tipo {@link TipoBiblioteca#COMPARTILHADA}, quando houver
-     *      um código de inicialização, a própria biblioteca fica responsável por garantir 
-     *      que o código de inicialização seja executado apenas uma vez
-     * </p>
+     * Este método será chamado automaticamente para inicializar as bibliotecas do tipo
+     * {@link TipoBiblioteca#COMPARTILHADA}. O método será chamado apenas uma vez, 
+     * na primeira vez em que a biblioteca for carregada em memória
      * 
      * @see TipoBiblioteca
      */
-    protected void inicializar()
+    protected void inicializar() throws ErroExecucao
     {
 
     }
     
-    protected void inicializar(Programa programa)
+    /**
+     * Este método será chamado automaticamente para inicializar as bibliotecas do tipo
+     * {@link TipoBiblioteca#RESERVADA}. O método será chamado no início da execução de 
+     * cada {@link Programa}
+     * 
+     * @param programa      o programa no qual a biblioteca está registrada e executando
+     *
+     * @param bibliotecasReservadas    a lista das bibliotecas reservadas que foram 
+     *                                 incluídas no programa antes da inlusão desta biblioteca. 
+     *                                 Para obter as demais bibliotecas, o método {@link Biblioteca#bibliotecaRegistrada(Biblioteca) }
+     *                                 deve ser sobrescrito.
+     *      
+     * 
+     * @see TipoBiblioteca
+     */    
+    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucao
     {
     
     }
@@ -252,8 +263,19 @@ public abstract class Biblioteca
      * @see GerenciadorBibliotecas
      * 
      */
-    protected void finalizar()
+    protected void finalizar() throws ErroExecucao
     {
 
+    }
+    
+    /**
+     * Método chamado automaticamente pelo {@link GerenciadorBibliotecas} todaz vez que 
+     * uma nova biblioteca do tipo {@link TipoBiblioteca#RESERVADA} é declarada no programa
+     * 
+     * @param biblioteca 
+     */    
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucao
+    {
+        
     }
 }

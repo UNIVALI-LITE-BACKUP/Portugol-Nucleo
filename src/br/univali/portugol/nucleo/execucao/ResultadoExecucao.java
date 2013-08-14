@@ -81,5 +81,6 @@ public final class ResultadoExecucao
     public void setErro(ErroExecucao erro)
     {
         this.erro = erro;
+        this.modoEncerramento = ModoEncerramento.ERRO;
     }
 }

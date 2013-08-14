@@ -9,6 +9,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBibliot
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.NaoExportar;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.awt.Canvas;
@@ -20,9 +21,11 @@ import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -40,7 +43,7 @@ import javax.swing.JPanel;
     
     versao = "1.0"
 )
-public final class Graficos extends Biblioteca
+public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado
 {
     private static final int NUMERO_MAXIMO_IMAGENS = 128;
     private static final int ALTURA_PADRAO = 480;
@@ -89,7 +92,6 @@ public final class Graficos extends Biblioteca
     {
         if (!ambienteGraficoInicializado())
         {
-            janela = new Janela();
             janela.setVisible(true);
             janela.setAlwaysOnTop(manter_visivel);
             janela.requestFocusInWindow();
@@ -125,7 +127,7 @@ public final class Graficos extends Biblioteca
     public void definir_dimensoes_janela(Integer largura, Integer altura) throws ErroExecucao
     {
         if (ambienteGraficoInicializado())
-        {            
+        {
             janela.definirDimensoes(largura, altura);
             janela.setLocationRelativeTo(null);
         }
@@ -255,6 +257,87 @@ public final class Graficos extends Biblioteca
     @DocumentacaoFuncao
     (
         descricao = 
+              "Prepara o ambiente grafico para começar a desenhar. Esta função deve ser chamada sempre antes da "
+            + "primeira operação de desenho",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public void iniciar_desenho() throws ErroExecucao
+    {
+        if (ambienteGraficoInicializado())
+        {
+            janela.superficieDesenho.iniciarDesenho();
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = 
+              "Informa ao ambiente gráfico que o desenho foi finalizado e, portanto, está pronto para ser renderizado."
+            + "Esta função deve ser chamada sempre após a última operação de desenho, e antes de chamar a função"
+            + "<b>renderizar()</b>",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public void finalizar_desenho() throws ErroExecucao
+    {
+        if (ambienteGraficoInicializado())
+        {
+            janela.superficieDesenho.finalizarDesenho();
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = 
+              "Verifica se houve alguma falha durante as operações de desenho. Se <tipo>verdadeiro</tipo>, "
+            + "o desenho precisará ser refeito antes de poder ser renderizado",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Boolean falhou_ao_desenhar() throws ErroExecucao
+    {
+        if (ambienteGraficoInicializado())
+        {
+            return janela.superficieDesenho.estrategiaBuffer.contentsRestored();
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = 
+              "Verifica se houve alguma falha durante a renderização do desenho. Se <tipo>verdadeiro</tipo>, "
+            + "o desenho precisará ser refeito e renderizado novamente",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Boolean falhou_ao_renderizar() throws ErroExecucao
+    {
+        if (ambienteGraficoInicializado())
+        {
+            return janela.superficieDesenho.estrategiaBuffer.contentsLost();
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+    }    
+    
+    @DocumentacaoFuncao
+    (
+        descricao = 
             
               "Desenha um retângulo com a <param>cor</param> e dimensões especificadas, na posição definida pelos "
             + "parâmetros <param>x</param> e <param>y</param>.<br><br>"
@@ -338,17 +421,16 @@ public final class Graficos extends Biblioteca
         if (ambienteGraficoInicializado())
         {
             Graphics2D buffer = janela.superficieDesenho.buffer;
-            int diametro = raio / 2;
 
             buffer.setColor(new Color(cor));
 
             if (preencher)
             {
-                buffer.fillOval(x - diametro, y - diametro, raio, raio);
+                buffer.fillOval(x, y, raio, raio);
             }
             else
             {
-                buffer.drawOval(x - diametro, y - diametro, raio, raio);
+                buffer.drawOval(x, y, raio, raio);
             }
         }
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
@@ -628,8 +710,6 @@ public final class Graficos extends Biblioteca
         if (ambienteGraficoInicializado())
         {
             janela.setVisible(false);
-            janela.superficieDesenho.buffer.dispose();
-            janela.dispose();
             janela = null;
             
             liberarImagens();
@@ -646,14 +726,20 @@ public final class Graficos extends Biblioteca
     }
 
     @Override
-    protected void inicializar(Programa programa)
+    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas)
     {
+        janela = new Janela();
         imagens = new Image[NUMERO_MAXIMO_IMAGENS];
     }
 
     private boolean ambienteGraficoInicializado()
     {
-        return janela != null;
+        if (janela != null)
+        {
+            return janela.isVisible();
+        }
+        
+        return false;
     }
 
     private int obterProximoIndiceLivre()
@@ -669,6 +755,13 @@ public final class Graficos extends Biblioteca
         return -1;
     }
 
+    @NaoExportar
+    @Override
+    public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucao
+    {
+        janela.addKeyListener(observadorTeclado);
+    }
+
     private final class Janela extends JFrame
     {
         private SuperficieDesenho superficieDesenho;
@@ -676,6 +769,8 @@ public final class Graficos extends Biblioteca
         public Janela() throws HeadlessException
         {
             superficieDesenho = new SuperficieDesenho();
+            superficieDesenho.setFocusable(false);
+
             
             setTitle("Sem título");
             setResizable(false);
@@ -685,6 +780,8 @@ public final class Graficos extends Biblioteca
             
             JPanel painelConteudo = (JPanel) getContentPane();
         
+            painelConteudo.setFocusable(false);
+            painelConteudo.setRequestFocusEnabled(false);
             painelConteudo.setLayout(null);
             painelConteudo.add(superficieDesenho);
             
@@ -699,12 +796,15 @@ public final class Graficos extends Biblioteca
             
             if (visivel)
             {
+                superficieDesenho.iniciarDesenho();
+                
                 Graphics2D buff = superficieDesenho.buffer;
-
+                
                 buff.setColor(Color.BLACK);
                 buff.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
                 buff.dispose();
-
+                
+                superficieDesenho.finalizarDesenho();
                 superficieDesenho.exibirBuffer();
             }            
         }
@@ -719,34 +819,43 @@ public final class Graficos extends Biblioteca
             pack();
             
             superficieDesenho.criarBuffer();
+            superficieDesenho.iniciarDesenho();
             superficieDesenho.buffer.setColor(Color.BLACK);
             superficieDesenho.buffer.fillRect(0, 0, largura, altura);
+            superficieDesenho.finalizarDesenho();
         }
     }
     
     private final class SuperficieDesenho extends Canvas
     {
-        private BufferStrategy estrategiaBuffer;
-        private Graphics2D buffer;
+        public BufferStrategy estrategiaBuffer;
+        public Graphics2D buffer;
         
         public SuperficieDesenho()
         {
             setIgnoreRepaint(true);
         }
         
-        public void exibirBuffer()
-        {
-            estrategiaBuffer.show();
-            buffer.dispose();
-            buffer = (Graphics2D) estrategiaBuffer.getDrawGraphics();
-        }
-
-        private void criarBuffer()
+        public void criarBuffer()
         {
             createBufferStrategy(2);
             estrategiaBuffer = getBufferStrategy();
+        }
+        
+        public void exibirBuffer()
+        {
+            estrategiaBuffer.show();
+        }
+        
+        public void iniciarDesenho()
+        {
             buffer = (Graphics2D) estrategiaBuffer.getDrawGraphics();
             buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        }
+        
+        public void finalizarDesenho()
+        {
+            buffer.dispose();
         }
     }
 }

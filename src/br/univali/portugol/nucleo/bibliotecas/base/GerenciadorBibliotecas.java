@@ -8,6 +8,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBibliot
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.NaoExportar;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
@@ -58,11 +59,11 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     
     private GerenciadorBibliotecas()
     {
-        bibliotecasCarregadas = new TreeMap<String, Class<? extends Biblioteca>>();
+        bibliotecasCarregadas = new TreeMap<>();
         metaDadosBibliotecas = new MetaDadosBibliotecas();
         
-        bibliotecasCompartilhadas = new TreeMap<String, Biblioteca>();        
-        bibliotecasReservadas = new TreeMap<Programa, Map<String, Biblioteca>>(new ComparadorPrograma());
+        bibliotecasCompartilhadas = new TreeMap<>();        
+        bibliotecasReservadas = new TreeMap<>(new ComparadorPrograma());
     }
     
     private class ComparadorPrograma implements Comparator<Programa>
@@ -81,18 +82,18 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     {
         if (bibliotecasDisponiveis == null)
         {
-            bibliotecasDisponiveis = new ArrayList<String>();
-            
+            bibliotecasDisponiveis = new ArrayList<>();            
             bibliotecasDisponiveis.add("Util");
             bibliotecasDisponiveis.add("Graficos");
             bibliotecasDisponiveis.add("Matematica");
+            bibliotecasDisponiveis.add("Teclado");
             bibliotecasDisponiveis.add("Texto");
             bibliotecasDisponiveis.add("Tipos");
             
             Collections.sort(bibliotecasDisponiveis);
         }
         
-        return new ArrayList<String>(bibliotecasDisponiveis);
+        return new ArrayList<>(bibliotecasDisponiveis);
     }
     
     public void registrarBibliotecaExterna(Class<? extends Biblioteca> biblioteca) throws ErroCarregamentoBiblioteca
@@ -179,7 +180,12 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                 if (!memoriaPrograma.containsKey(nome))
                 {
                     Biblioteca biblioteca = bibliotecasCarregadas.get(nome).newInstance();
-                    biblioteca.inicializar(programa);
+                    biblioteca.inicializar(programa, new ArrayList<>(memoriaPrograma.values()));
+                    
+                    for (Biblioteca bib : memoriaPrograma.values())
+                    {
+                        bib.bibliotecaRegistrada(biblioteca);
+                    }
                     
                     memoriaPrograma.put(nome, biblioteca);
                 }
@@ -301,7 +307,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         
         for (Method metodo : classeBiblioteca.getDeclaredMethods())
         {
-            if (Modifier.isPublic(metodo.getModifiers()))
+            if (Modifier.isPublic(metodo.getModifiers()) && metodo.getAnnotation(NaoExportar.class) == null)
             {
                 MetaDadosFuncao metaDadosFuncao = obterMetaDadosFuncao(nomeBiblioteca, metodo);
                 
@@ -689,13 +695,12 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     @Override
     public void execucaoIniciada(Programa programa)
     {
-        if (bibliotecasReservadas.containsKey(programa))
-        {
-            for (Biblioteca biblioteca : bibliotecasReservadas.get(programa).values())
-            {
-                biblioteca.inicializar();
-            }
-        }
+        /** 
+         * Neste ponto, nenhum nó NoInclusaoBiblioteca foi visitado ainda, portanto, 
+         * a lista de bibliotecas está vazia. A inicialização é feita no método
+         * registrarBiblioteca, chamado pelo Interpretador.
+         * 
+         **/
     }
 
     @Override
@@ -705,7 +710,14 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         {
             for (Biblioteca biblioteca : bibliotecasReservadas.get(programa).values())
             {
-                biblioteca.finalizar();
+                try
+                {
+                    biblioteca.finalizar();
+                }
+                catch (ErroExecucao e)
+                {
+                    resultadoExecucao.setErro(e);
+                }
             }
             
             bibliotecasReservadas.remove(programa);
