@@ -249,12 +249,17 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         {
             try
             {
+                if (!listarBibliotecasDisponiveis().contains(nome))
+                {
+                    throw new ClassNotFoundException();
+                }
+                
                 Class classeBiblioteca = Class.forName("br.univali.portugol.nucleo.bibliotecas.".concat(nome)).asSubclass(Biblioteca.class);
                 bibliotecasCarregadas.put(nome, classeBiblioteca);
                 
                 return classeBiblioteca;
             }
-            catch (ClassNotFoundException excecao)
+            catch (ClassNotFoundException | NoClassDefFoundError excecao)
             {
                 throw new ErroCarregamentoBiblioteca(nome, "a biblioteca não foi encontrada");
             }
