@@ -1,63 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.univali.portugol.nucleo.depuracao;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.NoBitwiseNao;
-import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.asa.NoCadeia;
-import br.univali.portugol.nucleo.asa.NoCaracter;
-import br.univali.portugol.nucleo.asa.NoCaso;
-import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
-import br.univali.portugol.nucleo.asa.NoEnquanto;
-import br.univali.portugol.nucleo.asa.NoEscolha;
-import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
-import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
-import br.univali.portugol.nucleo.asa.NoInteiro;
-import br.univali.portugol.nucleo.asa.NoLogico;
-import br.univali.portugol.nucleo.asa.NoMatriz;
-import br.univali.portugol.nucleo.asa.NoMenosUnario;
-import br.univali.portugol.nucleo.asa.NoNao;
-import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseE;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseOu;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseRightShift;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseXOR;
-import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaE;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaIgualdade;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMaior;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMaiorIgual;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMenor;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMenorIgual;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaOU;
-import br.univali.portugol.nucleo.asa.NoOperacaoModulo;
-import br.univali.portugol.nucleo.asa.NoOperacaoMultiplicacao;
-import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
-import br.univali.portugol.nucleo.asa.NoOperacaoSubtracao;
-import br.univali.portugol.nucleo.asa.NoPara;
-import br.univali.portugol.nucleo.asa.NoPare;
-import br.univali.portugol.nucleo.asa.NoReal;
-import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
-import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
-import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
-import br.univali.portugol.nucleo.asa.NoRetorne;
-import br.univali.portugol.nucleo.asa.NoSe;
-import br.univali.portugol.nucleo.asa.NoVetor;
-import br.univali.portugol.nucleo.asa.VisitanteASA;
+import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,15 +15,15 @@ import java.util.logging.Logger;
 public class DetectaNosParada implements VisitanteASA
 {
     private List<NoBloco> nosParada;
-    private NoBloco blocoAnterior = null;
+    
     private boolean depuracaoDetalhada = false;
 
+    private Integer linhaBlocoAnterior = null;
+    
     public DetectaNosParada(boolean depuracaoDetalhada)
     {
         this.depuracaoDetalhada = depuracaoDetalhada;
     }
-            
-    
     
     private Object interpretarListaBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {        
@@ -87,44 +31,7 @@ public class DetectaNosParada implements VisitanteASA
         {
             for (NoBloco noBloco : blocos)
             {
-                if (!(noBloco instanceof NoSe) &&
-                    !(noBloco instanceof NoPara) &&                        
-                    !(noBloco instanceof NoFacaEnquanto) &&
-                    !(noBloco instanceof NoEnquanto) &&
-                    !(noBloco instanceof NoEscolha) &&
-                    !(noBloco instanceof NoCaso) ) 
-                {
-                    if (depuracaoDetalhada) {
-                        nosParada.add(noBloco);
-                    } else {
-                        // verifica se noBloco esta nao mesma linha do blocoAnterior.
-                        if (blocoAnterior != null) {
-                            Integer linhaBlocoAnterior = null;
-                            if (blocoAnterior instanceof NoExpressao) {
-                                linhaBlocoAnterior = ((NoExpressao) blocoAnterior).getTrechoCodigoFonte().getLinha();
-                            } else if(blocoAnterior instanceof NoDeclaracao) {
-                                linhaBlocoAnterior = ((NoDeclaracao) blocoAnterior).getTrechoCodigoFonteTipoDado().getLinha();
-                            }
-                            if (linhaBlocoAnterior != null) {
-                                Integer linhaBlocoAtual = null;
-                                if (noBloco instanceof NoExpressao) {
-                                    linhaBlocoAtual = ((NoExpressao) noBloco).getTrechoCodigoFonte().getLinha();
-                                } else if(noBloco instanceof NoDeclaracao) {
-                                    linhaBlocoAtual = ((NoDeclaracao) noBloco).getTrechoCodigoFonteTipoDado().getLinha();
-                                }
-                                if (linhaBlocoAtual != null){
-                                    if (linhaBlocoAnterior != linhaBlocoAtual) {
-                                        nosParada.add(noBloco);
-                                    }
-                                }
-                            }
-                        } else {                    
-                            nosParada.add(noBloco);
-                        }
-                    }
-                }
                 noBloco.aceitar(this);
-                blocoAnterior = noBloco;
             }
         }
         return null;
@@ -132,11 +39,11 @@ public class DetectaNosParada implements VisitanteASA
     
     public List<NoBloco> executar(Programa programa, String[] parametros) throws ErroExecucao
     {
-        nosParada = new ArrayList<NoBloco>();
+        nosParada = new ArrayList<>();
         
         try
         {
-            visitar(programa.getArvoreSintaticaAbstrata());
+            programa.getArvoreSintaticaAbstrata().aceitar(this);
         }
         catch (ExcecaoVisitaASA ex)
         {
@@ -208,10 +115,11 @@ public class DetectaNosParada implements VisitanteASA
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
         NoExpressao condicao = noPara.getCondicao();
-        nosParada.add(condicao);
+        nosParada.add(noPara);
+        nosParada.add(noPara.getIncremento());  
         if (depuracaoDetalhada) {
             nosParada.add(noPara.getInicializacao());
-            nosParada.add(noPara.getIncremento());            
+            nosParada.add(condicao);
         }
         interpretarListaBlocos(noPara.getBlocos());
         return null;
@@ -244,24 +152,56 @@ public class DetectaNosParada implements VisitanteASA
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
+        if (depuracaoDetalhada) {
+            nosParada.add(chamadaFuncao);
+        } else { 
+            if (linhaBlocoAnterior == null || chamadaFuncao.getTrechoCodigoFonte().getLinha() != linhaBlocoAnterior) {
+                linhaBlocoAnterior = chamadaFuncao.getTrechoCodigoFonte().getLinha();
+                nosParada.add(chamadaFuncao);
+            }
+        }
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
     {
+        if (depuracaoDetalhada) {
+            nosParada.add(noDeclaracaoMatriz);
+        } else { 
+            if (linhaBlocoAnterior == null || noDeclaracaoMatriz.getTrechoCodigoFonteNome().getLinha() != linhaBlocoAnterior) {
+                linhaBlocoAnterior = noDeclaracaoMatriz.getTrechoCodigoFonteNome().getLinha();
+                nosParada.add(noDeclaracaoMatriz);
+            }
+        }
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
     {
+        if (depuracaoDetalhada) {
+            nosParada.add(noDeclaracaoVariavel);
+        } else { 
+            if (linhaBlocoAnterior == null || noDeclaracaoVariavel.getTrechoCodigoFonteNome().getLinha() != linhaBlocoAnterior) {
+                linhaBlocoAnterior = noDeclaracaoVariavel.getTrechoCodigoFonteNome().getLinha();
+                nosParada.add(noDeclaracaoVariavel);
+            }
+        }
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
     {
+        if (depuracaoDetalhada) {
+            nosParada.add(noDeclaracaoVetor);
+        } else { 
+            if (linhaBlocoAnterior == null || noDeclaracaoVetor.getTrechoCodigoFonteNome().getLinha() != linhaBlocoAnterior) {
+                linhaBlocoAnterior = noDeclaracaoVetor.getTrechoCodigoFonteNome().getLinha();
+                nosParada.add(noDeclaracaoVetor);
+            }
+        }
         return null;
     }
 
@@ -310,6 +250,14 @@ public class DetectaNosParada implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA
     {
+        if (depuracaoDetalhada) {
+            nosParada.add(noOperacaoAtribuicao);
+        } else { 
+            if (linhaBlocoAnterior == null || noOperacaoAtribuicao.getTrechoCodigoFonte().getLinha() != linhaBlocoAnterior) {
+                linhaBlocoAnterior = noOperacaoAtribuicao.getTrechoCodigoFonte().getLinha();
+                nosParada.add(noOperacaoAtribuicao);
+            }
+        }
         return null;
     }
 
@@ -436,12 +384,6 @@ public class DetectaNosParada implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
     public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
     {
         return null;
@@ -467,6 +409,12 @@ public class DetectaNosParada implements VisitanteASA
 
     @Override
     public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
     {
         return null;
     }

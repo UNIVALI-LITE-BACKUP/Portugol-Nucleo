@@ -1,68 +1,11 @@
 package br.univali.portugol.nucleo.depuracao;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.ModoAcesso;
-import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.asa.NoCadeia;
-import br.univali.portugol.nucleo.asa.NoCaracter;
-import br.univali.portugol.nucleo.asa.NoCaso;
-import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
-import br.univali.portugol.nucleo.asa.NoEnquanto;
-import br.univali.portugol.nucleo.asa.NoEscolha;
-import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
-import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
-import br.univali.portugol.nucleo.asa.NoInteiro;
-import br.univali.portugol.nucleo.asa.NoLogico;
-import br.univali.portugol.nucleo.asa.NoMatriz;
-import br.univali.portugol.nucleo.asa.NoMenosUnario;
-import br.univali.portugol.nucleo.asa.NoNao;
-import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
-import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaE;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaIgualdade;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMaior;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMaiorIgual;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMenor;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMenorIgual;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaOU;
-import br.univali.portugol.nucleo.asa.NoOperacaoModulo;
-import br.univali.portugol.nucleo.asa.NoOperacaoMultiplicacao;
-import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
-import br.univali.portugol.nucleo.asa.NoOperacaoSubtracao;
-import br.univali.portugol.nucleo.asa.NoPara;
-import br.univali.portugol.nucleo.asa.NoPare;
-import br.univali.portugol.nucleo.asa.NoReal;
-import br.univali.portugol.nucleo.asa.NoReferencia;
-import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
-import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
-import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
-import br.univali.portugol.nucleo.asa.NoRetorne;
-import br.univali.portugol.nucleo.asa.NoSe;
-import br.univali.portugol.nucleo.asa.NoVetor;
-import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
-import br.univali.portugol.nucleo.asa.VisitanteASA;
-import br.univali.portugol.nucleo.asa.VisitanteASABasico;
-import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametro;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametros;
+import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.bibliotecas.base.*;
 import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import br.univali.portugol.nucleo.simbolos.ExcecaoSimboloNaoDeclarado;
-import br.univali.portugol.nucleo.simbolos.Funcao;
-import br.univali.portugol.nucleo.simbolos.ObservadorMemoria;
-import br.univali.portugol.nucleo.simbolos.Ponteiro;
-import br.univali.portugol.nucleo.simbolos.Simbolo;
+import br.univali.portugol.nucleo.simbolos.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -800,20 +743,23 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     @Override
     public Object visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
     {
-        if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-        synchronized (this)
+        if (eleitos.contains(no))
         {
-            try
+            if (detalhado) {
+                    disparaDestacar(no.getTrechoCodigoFonte());
+                } else {
+                    disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+                }
+            synchronized (this)
             {
-                wait();
-            }
-            catch (InterruptedException ex)
-            {
-                throw new RuntimeException(ex);
+                try
+                {
+                    wait();
+                }
+                catch (InterruptedException ex)
+                {
+                    throw new RuntimeException(ex);
+                }
             }
         }
         return super.visitar(no);
@@ -1271,33 +1217,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
         }
         return super.visitar(no);
     }
-
-    @Override
-    public Object visitar(NoInclusaoBiblioteca no) throws ExcecaoVisitaASA
-    {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-        return super.visitar(no);
-    }
-
-    
+ 
     @Override
     public void simboloAdicionado(Simbolo simbolo)
     {
@@ -1315,6 +1235,4 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
             l.simboloRemovido(simbolo);
         }
     }
-
-   
 }
