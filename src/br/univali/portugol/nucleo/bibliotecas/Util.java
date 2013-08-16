@@ -22,6 +22,7 @@ import java.util.Random;
 public final class Util extends Biblioteca
 {
     private Random random = new Random(System.currentTimeMillis());
+    private long horaInicial = System.currentTimeMillis();
     
     @DocumentacaoFuncao
     (
@@ -127,5 +128,18 @@ public final class Util extends Biblioteca
         {
             throw new RuntimeException(e);
         }
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém o tempo decorrido (em milissegundos) desde que a biblioteca foi utilizada pela primeira vez",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }        
+    )      
+    public Integer tempo_decorrido() throws ErroExecucao
+    {
+        return (int) (System.currentTimeMillis() - horaInicial);
     }
 }
