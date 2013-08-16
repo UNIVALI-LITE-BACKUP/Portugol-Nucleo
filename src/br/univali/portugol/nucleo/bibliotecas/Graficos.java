@@ -4,27 +4,14 @@ import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.NaoExportar;
-import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.HeadlessException;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -51,6 +38,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     private Janela janela;
     private Image[] imagens;
+    private ArrayList<OperacaoDesenho> operacoesDesenho;
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'preto'")
     public static final Integer COR_PRETO = Color.BLACK.getRGB();
@@ -175,7 +163,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         if (ambienteGraficoInicializado())
         {
             SuperficieDesenho superficieDesenho = janela.superficieDesenho;
-            Graphics2D buffer = superficieDesenho.buffer;
+            Graphics2D buffer = superficieDesenho.getGraphics2D();
             
             buffer.setColor(new Color(cor));
             buffer.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
@@ -242,6 +230,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         },
         referencia = "http://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics"
     )
@@ -249,91 +238,42 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         if (ambienteGraficoInicializado())
         {
-            janela.superficieDesenho.exibirBuffer();
+            BufferStrategy strategy = janela.superficieDesenho.estrategiaBuffer;
+            // Render single frame
+            do {
+                // The following loop ensures that the contents of the drawing buffer
+                // are consistent in case the underlying surface was recreated
+                do {
+                    // Get a new graphics context every time through the loop
+                    // to make sure the strategy is validated
+                    Graphics2D graphics = (Graphics2D) strategy.getDrawGraphics();
+                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    
+                    // Render to graphics
+                    for (OperacaoDesenho op : operacoesDesenho)
+                    {
+                        op.desenhar(graphics);
+                    }
+                    
+                    // Dispose the graphics
+                    graphics.dispose();
+
+                    // Repeat the rendering if the drawing buffer contents 
+                    // were restored
+                } while (strategy.contentsRestored());
+
+                // Display the buffer
+                strategy.show();
+
+                // Repeat the rendering if the drawing buffer was lost
+            } while (strategy.contentsLost());
+            
+            operacoesDesenho.clear();
+            
+            
         }
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
-    
-    @DocumentacaoFuncao
-    (
-        descricao = 
-              "Prepara o ambiente grafico para começar a desenhar. Esta função deve ser chamada sempre antes da "
-            + "primeira operação de desenho",
-        
-        autores = 
-        {
-            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-        }
-    )
-    public void iniciar_desenho() throws ErroExecucao
-    {
-        if (ambienteGraficoInicializado())
-        {
-            janela.superficieDesenho.iniciarDesenho();
-        }
-        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-    }
-    
-    @DocumentacaoFuncao
-    (
-        descricao = 
-              "Informa ao ambiente gráfico que o desenho foi finalizado e, portanto, está pronto para ser renderizado."
-            + "Esta função deve ser chamada sempre após a última operação de desenho, e antes de chamar a função"
-            + "<b>renderizar()</b>",
-        
-        autores = 
-        {
-            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-        }
-    )
-    public void finalizar_desenho() throws ErroExecucao
-    {
-        if (ambienteGraficoInicializado())
-        {
-            janela.superficieDesenho.finalizarDesenho();
-        }
-        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-    }
-    
-    @DocumentacaoFuncao
-    (
-        descricao = 
-              "Verifica se houve alguma falha durante as operações de desenho. Se <tipo>verdadeiro</tipo>, "
-            + "o desenho precisará ser refeito antes de poder ser renderizado",
-        
-        autores = 
-        {
-            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-        }
-    )
-    public Boolean falhou_ao_desenhar() throws ErroExecucao
-    {
-        if (ambienteGraficoInicializado())
-        {
-            return janela.superficieDesenho.estrategiaBuffer.contentsRestored();
-        }
-        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-    }
-    
-    @DocumentacaoFuncao
-    (
-        descricao = 
-              "Verifica se houve alguma falha durante a renderização do desenho. Se <tipo>verdadeiro</tipo>, "
-            + "o desenho precisará ser refeito e renderizado novamente",
-        
-        autores = 
-        {
-            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-        }
-    )
-    public Boolean falhou_ao_renderizar() throws ErroExecucao
-    {
-        if (ambienteGraficoInicializado())
-        {
-            return janela.superficieDesenho.estrategiaBuffer.contentsLost();
-        }
-        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-    }    
     
     @DocumentacaoFuncao
     (
@@ -364,24 +304,30 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_retangulo(Integer x, Integer y, Integer largura, Integer altura, Integer cor, Boolean preencher) throws ErroExecucao
+    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Integer cor, final Boolean preencher) throws ErroExecucao
     {
         if (ambienteGraficoInicializado())
         {
-            Graphics2D buffer = janela.superficieDesenho.buffer;
+            operacoesDesenho.add(new OperacaoDesenho() {
 
-            buffer.setColor(new Color(cor));
+                @Override
+                public void desenhar(Graphics2D g2d)
+                {
+                    g2d.setColor(new Color(cor));
 
-            if (preencher)
-            {
-                buffer.fillRect(x, y, largura, altura);
-            }
-            else
-            {
-                buffer.drawRect(x, y, largura, altura);
-            }
+                    if (preencher)
+                    {
+                        g2d.fillRect(x, y, largura, altura);
+                    }
+                    else
+                    {
+                        g2d.drawRect(x, y, largura, altura);
+                    }
+                }
+            });
         }
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
@@ -414,24 +360,30 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_circulo(Integer x, Integer y, Integer raio, Integer cor, Boolean preencher) throws ErroExecucao
+    public void desenhar_circulo(final Integer x, final Integer y, final Integer raio, final Integer cor, final Boolean preencher) throws ErroExecucao
     {
         if (ambienteGraficoInicializado())
         {
-            Graphics2D buffer = janela.superficieDesenho.buffer;
+            operacoesDesenho.add(new OperacaoDesenho() {
 
-            buffer.setColor(new Color(cor));
+                @Override
+                public void desenhar(Graphics2D g2d)
+                {
+                    g2d.setColor(new Color(cor));
 
-            if (preencher)
-            {
-                buffer.fillOval(x, y, raio, raio);
-            }
-            else
-            {
-                buffer.drawOval(x, y, raio, raio);
-            }
+                    if (preencher)
+                    {
+                        g2d.fillOval(x, y, raio, raio);
+                    }
+                    else
+                    {
+                        g2d.drawOval(x, y, raio, raio);
+                    }
+                }
+            });
         }
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
@@ -454,16 +406,23 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_ponto(Integer x, Integer y, Integer cor) throws ErroExecucao
+    public void desenhar_ponto(final Integer x, final Integer y, final Integer cor) throws ErroExecucao
     {
         if (ambienteGraficoInicializado())
         {
-            Graphics2D buffer = janela.superficieDesenho.buffer;
+            
+            operacoesDesenho.add(new OperacaoDesenho() {
 
-            buffer.setColor(new Color(cor));
-            buffer.drawLine(x, y, x, y);
+                @Override
+                public void desenhar(Graphics2D g2d)
+                {
+                    g2d.setColor(new Color(cor));
+                    g2d.drawLine(x, y, x, y);
+                }
+            });
         }
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
@@ -487,14 +446,20 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_linha(Integer x1, Integer y1, Integer x2, Integer y2, Integer cor) throws ErroExecucao
+    public void desenhar_linha(final Integer x1, final Integer y1, final Integer x2, final Integer y2, final Integer cor) throws ErroExecucao
     {
-        Graphics2D buffer = janela.superficieDesenho.buffer;
-        
-        buffer.setColor(new Color(cor));
-        buffer.drawLine(x1, y1, x2, y2);
+        operacoesDesenho.add(new OperacaoDesenho() {
+
+            @Override
+            public void desenhar(Graphics2D g2d)
+            {   
+                g2d.setColor(new Color(cor));
+                g2d.drawLine(x1, y1, x2, y2);
+            }
+        });
     }    
     
     
@@ -576,14 +541,20 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_imagem(Integer x, Integer y, Integer endereco) throws ErroExecucao
+    public void desenhar_imagem(final Integer x, final Integer y, Integer endereco) throws ErroExecucao
     {
-        Image imagem = obterImagem(endereco);
-        Graphics2D buffer = janela.superficieDesenho.buffer;
-        
-        buffer.drawImage(imagem, x, y, null);
+        final Image imagem = obterImagem(endereco);
+        operacoesDesenho.add(new OperacaoDesenho() {
+
+            @Override
+            public void desenhar(Graphics2D g2d)
+            {
+                g2d.drawImage(imagem, x, y, null);
+            }
+        });
     }
     
     @DocumentacaoFuncao
@@ -605,14 +576,21 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+                , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_porcao_imagem(Integer x, Integer y, Integer xi, Integer yi, Integer largura, Integer altura, Integer endereco) throws ErroExecucao
+    public void desenhar_porcao_imagem(final Integer x, final Integer y, final Integer xi, final Integer yi, final Integer largura, final Integer altura, Integer endereco) throws ErroExecucao
     {
-        Image imagem = obterImagem(endereco);
-        Graphics2D buffer = janela.superficieDesenho.buffer;
-                
-        buffer.drawImage(imagem, x, y, x + largura, y + altura, xi, yi, xi + largura, yi + altura, null);
+        final Image imagem = obterImagem(endereco);
+        operacoesDesenho.add(new OperacaoDesenho() {
+
+            @Override
+            public void desenhar(Graphics2D g2d)
+            {
+                g2d.drawImage(imagem, x, y, x + largura, y + altura, xi, yi, xi + largura, yi + altura, null);
+            }
+        });        
+        
     }    
     
     @DocumentacaoFuncao
@@ -656,24 +634,32 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+                , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_texto(Integer x, Integer y, String texto, Integer tamanho, Integer cor_fonte, Integer cor_fundo) throws ErroExecucao
+    public void desenhar_texto(final Integer x, final Integer y, final String texto, final Integer tamanho, final Integer cor_fonte, final Integer cor_fundo) throws ErroExecucao
     {
-        Graphics2D buffer = janela.superficieDesenho.buffer;
-        Font fonteAtual = buffer.getFont();
+        operacoesDesenho.add(new OperacaoDesenho() {
 
-        buffer.setFont(fonteAtual.deriveFont(Font.PLAIN, tamanho));
+            @Override
+            public void desenhar(Graphics2D g2d)
+            {
+                Font fonteAtual = g2d.getFont();
 
-        FontMetrics dimensoesFonte = buffer.getFontMetrics();
+                g2d.setFont(fonteAtual.deriveFont(Font.PLAIN, tamanho));
 
-        int altura = dimensoesFonte.getAscent() + dimensoesFonte.getLeading();
-        int largura = dimensoesFonte.stringWidth(texto);
+                FontMetrics dimensoesFonte = g2d.getFontMetrics();
 
-        buffer.setColor(new Color(cor_fundo));
-        buffer.fillRect(x, y, largura, altura);
-        buffer.setColor(new Color(cor_fonte));
-        buffer.drawString(texto, x, y + dimensoesFonte.getAscent() - dimensoesFonte.getDescent() + dimensoesFonte.getLeading() + 1);
+                int altura = dimensoesFonte.getAscent() + dimensoesFonte.getLeading();
+                int largura = dimensoesFonte.stringWidth(texto);
+
+                g2d.setColor(new Color(cor_fundo));
+                g2d.fillRect(x, y, largura, altura);
+                g2d.setColor(new Color(cor_fonte));
+                g2d.drawString(texto, x, y + dimensoesFonte.getAscent() - dimensoesFonte.getDescent() + dimensoesFonte.getLeading() + 1);
+            }
+        });
+        
     }
     
     private Image obterImagem(Integer endereco) throws ErroExecucao
@@ -711,7 +697,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             janela.setVisible(false);
             janela = null;
-            
+            operacoesDesenho.clear();
             liberarImagens();
         }
     }
@@ -730,6 +716,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         janela = new Janela();
         imagens = new Image[NUMERO_MAXIMO_IMAGENS];
+        operacoesDesenho = new ArrayList<>(512);
     }
 
     private boolean ambienteGraficoInicializado()
@@ -762,6 +749,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         janela.addKeyListener(observadorTeclado);
     }
 
+    private interface OperacaoDesenho 
+    {
+        public void desenhar(Graphics2D g2d);
+    }
+    
     private final class Janela extends JFrame
     {
         private SuperficieDesenho superficieDesenho;
@@ -796,16 +788,13 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             
             if (visivel)
             {
-                superficieDesenho.iniciarDesenho();
                 
-                Graphics2D buff = superficieDesenho.buffer;
                 
-                buff.setColor(Color.BLACK);
-                buff.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
-                buff.dispose();
-                
-                superficieDesenho.finalizarDesenho();
-                superficieDesenho.exibirBuffer();
+                Graphics2D g2d = superficieDesenho.getGraphics2D();
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
+                g2d.dispose();
+                superficieDesenho.estrategiaBuffer.show();
             }            
         }
         
@@ -819,17 +808,16 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             pack();
             
             superficieDesenho.criarBuffer();
-            superficieDesenho.iniciarDesenho();
-            superficieDesenho.buffer.setColor(Color.BLACK);
-            superficieDesenho.buffer.fillRect(0, 0, largura, altura);
-            superficieDesenho.finalizarDesenho();
+            Graphics2D g2d = superficieDesenho.getGraphics2D();
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(0, 0, largura, altura);
+            g2d.dispose();
         }
     }
     
     private final class SuperficieDesenho extends Canvas
     {
         public BufferStrategy estrategiaBuffer;
-        public Graphics2D buffer;
         
         public SuperficieDesenho()
         {
@@ -842,20 +830,12 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             estrategiaBuffer = getBufferStrategy();
         }
         
-        public void exibirBuffer()
+        public Graphics2D getGraphics2D()
         {
-            estrategiaBuffer.show();
+            Graphics2D g2d = (Graphics2D) estrategiaBuffer.getDrawGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            return g2d;
         }
-        
-        public void iniciarDesenho()
-        {
-            buffer = (Graphics2D) estrategiaBuffer.getDrawGraphics();
-            buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        }
-        
-        public void finalizarDesenho()
-        {
-            buffer.dispose();
-        }
+       
     }
 }
