@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.bibliotecas;
 
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
@@ -131,5 +132,40 @@ public final class Texto extends Biblioteca
         }
         
         return cad;
+    }    
+    
+    @DocumentacaoFuncao
+    (
+        descricao = 
+            
+              "Obtém um <tipo>caracter</tipo> da <tipo>cadeia</tipo> a partir de seu <param>índice</param>.\n\n"
+            
+            + "O <param>índice</param> deve estar entre 0 e o número de caracteres da <tipo>cadeia</tipo>", 
+        
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "cad", descricao = "a <tipo>cadeia</tipo> da qual será obtido o caracater"),
+            @DocumentacaoParametro(nome = "indice", descricao = "o indice do caracter que se deseja obter")            
+        },
+        retorno = "o <tipo>caracater</tipo> no <param>índice</param> informado",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )    
+    public Character obter_caracter(String cad, Integer indice) throws ErroExecucao
+    {
+        if (indice < 0)
+        {
+            throw new ErroExecucaoBiblioteca(String.format("O índice do caracter (%d) é menor que 0", indice));
+        }
+        else if (indice > cad.length() - 1)
+        {
+            throw new ErroExecucaoBiblioteca(String.format("O índice do caracter (%d) é maior que o número de caracteres na cadeia (%d)", indice, cad.length()));
+        }
+        else
+        {
+            return cad.charAt(indice);
+        }
     }    
 }
