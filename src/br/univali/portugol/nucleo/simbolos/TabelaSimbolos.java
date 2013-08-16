@@ -24,7 +24,7 @@ public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
     
     public TabelaSimbolos()
     {
-        escopos = new Stack<Map<String, Simbolo>>();
+        escopos = new Stack<>();
         empilharEscopo();
     }
 
@@ -67,7 +67,7 @@ public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
      * @return         o símbolo com o nome específicado, ou null caso não seja encontrado.
      * @since 1.0
      */
-    public Simbolo obter(String nome) throws ExcecaoSimboloNaoDeclarado
+    public Simbolo obter(String nome)
     {
         Simbolo simbolo = null;
 
@@ -78,7 +78,7 @@ public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
                 return simbolo;
             }
         }
-        throw new ExcecaoSimboloNaoDeclarado(nome);
+        
+        return simbolo;
     }
-    
 }

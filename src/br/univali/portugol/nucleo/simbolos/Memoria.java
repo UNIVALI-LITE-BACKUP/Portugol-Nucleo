@@ -20,7 +20,7 @@ public class Memoria
     public Memoria()
     {
         escopoGlobal = new TabelaSimbolos();
-        escoposLocais = new Stack<TabelaSimbolos>();
+        escoposLocais = new Stack<>();
         observadores = new ArrayList<>();
     }
     
@@ -38,20 +38,23 @@ public class Memoria
     }    
     
     public Simbolo getSimbolo(String nome) throws ExcecaoSimboloNaoDeclarado
-    {        
+    {    
+        Simbolo simbolo = null;
+        
         if (!escoposLocais.isEmpty())
-        {
-            try
+        {   
+            if ((simbolo = escoposLocais.peek().obter(nome)) != null)
             {
-                return escoposLocais.peek().obter(nome);
-            }
-            catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
-            {
-                // Procura no escopo global
+                return simbolo;
             }
         }
         
-        return escopoGlobal.obter(nome);
+        if ((simbolo = escopoGlobal.obter(nome)) != null)
+        {
+            return simbolo;
+        }
+        
+        throw new ExcecaoSimboloNaoDeclarado(nome);
     }
     
     public void adicionarSimbolo(Simbolo simbolo)
@@ -116,32 +119,14 @@ public class Memoria
     
     public boolean isGlobal(Simbolo simbolo)
     {
-        try
-        {
-            Simbolo simboloExistente = escopoGlobal.obter(simbolo.getNome());
-            
-            return (simboloExistente == simbolo);
-        }
-        catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)        
-        {
-            return false;
-        }
+        return (escopoGlobal.obter(simbolo.getNome()) == simbolo);
     }
     
     public boolean isLocal(Simbolo simbolo)
     {
         if (!escoposLocais.isEmpty())
         {
-            try
-            {
-                Simbolo simboloExistente = escoposLocais.peek().obter(simbolo.getNome());
-
-                return (simboloExistente == simbolo);
-            }
-            catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)        
-            {
-                
-            }
+            return (escoposLocais.peek().obter(simbolo.getNome()) == simbolo);
         }
         
         return false;

@@ -271,7 +271,8 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                         }
                         Object retorno = interpretarListaBlocos(funcao.getBlocos());
                         
-                        if (retorno != null){
+                        if (retorno != null && !(retorno instanceof TipoDado))
+                        {
                             if (retorno.getClass() != funcao.getTipoDado().getTipoJava()){
                                 try
                                 {
@@ -279,15 +280,10 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                                 }
                                 catch (ErroImpossivelConverterTipos ex)
                                 {
-                                    if (retorno instanceof TipoDado)
-                                    {
-                                        return null;
-                                    }
                                     throw new ExcecaoVisitaASA(ex, asa, noChamadaFuncao);
                                 }
                             }
                         }
-                        
                         memoria.desempilharFuncao();
                         return retorno;
                     } 
