@@ -27,6 +27,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 public final class ErroPalavraReservadaEstaFaltando extends ErroSintatico
 {
     private String palavraReservada;
+    private String contexto;
 
     /**
      * 
@@ -34,9 +35,10 @@ public final class ErroPalavraReservadaEstaFaltando extends ErroSintatico
      * @param coluna               a coluna onde o erro ocorreu.
      * @param palavraReservada     a palavra reservada que está faltando.
      */
-    public ErroPalavraReservadaEstaFaltando(int linha, int coluna, String palavraReservada)
+    public ErroPalavraReservadaEstaFaltando(int linha, int coluna, String palavraReservada, String contexto)
     {
         super(linha, coluna);
+        this.contexto = contexto;
         this.palavraReservada = palavraReservada;
     }
 
@@ -46,6 +48,6 @@ public final class ErroPalavraReservadaEstaFaltando extends ErroSintatico
     @Override
     protected String construirMensagem()
     {
-        return "Está faltando a palavra reservada '" + palavraReservada + "'.";
+        return String.format("O algoritmo está incompleto, está faltando a palavra reservada '%s'", palavraReservada);
     }
 }

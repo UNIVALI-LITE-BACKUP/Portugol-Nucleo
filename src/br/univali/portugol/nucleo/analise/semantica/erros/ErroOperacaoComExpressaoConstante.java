@@ -2,11 +2,9 @@ package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.asa.NoDecremento;
 import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoIncremento;
 import br.univali.portugol.nucleo.asa.NoOperacao;
-import br.univali.portugol.nucleo.asa.Operacao;
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
@@ -51,11 +49,7 @@ public final class ErroOperacaoComExpressaoConstante extends ErroSemantico
      */
     public ErroOperacaoComExpressaoConstante(NoBloco operacao, NoExpressao expressao)
     {
-        super
-        (
-            expressao.getTrechoCodigoFonte().getLinha(),
-            expressao.getTrechoCodigoFonte().getColuna()
-        );
+        super(expressao.getTrechoCodigoFonte());
 
         this.operacao = operacao;
         this.expressao = expressao;
@@ -89,37 +83,9 @@ public final class ErroOperacaoComExpressaoConstante extends ErroSemantico
     @Override
     protected String construirMensagem()
     {
-        if (operacao instanceof NoIncremento) return construirMensagemIncremento();
-        if (operacao instanceof NoDecremento) return construirMensagemDecremento();
         if (operacao instanceof NoOperacao) return construirMensagemAtribuicao();
 
         return null;
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação de incremento.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoIncremento
-     */    
-    private String construirMensagemIncremento()
-    {
-        return "Não é possível incrementar a expressão pois ela é constante!";
-    }
-
-    /**
-     * Constrói uma mensagem de erro personalizada para a operação de decremento.
-     * 
-     * @return     a mensagem de erro personalizada.
-     * @since 1.0
-     * 
-     * @see NoDecremento
-     */
-    private String construirMensagemDecremento()
-    {
-        return "Não é possível decrementar a expressão pois ela é constante!";
     }
 
     /**

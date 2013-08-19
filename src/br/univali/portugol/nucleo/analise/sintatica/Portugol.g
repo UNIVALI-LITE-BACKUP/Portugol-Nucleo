@@ -112,7 +112,7 @@ grammar Portugol;
 	      	{
 	      		int linha = abreEscopo.getLine();
 			int coluna = abreEscopo.getCharPositionInLine();			
-			int tamanhoTexto = fechaEscopo.getTokenIndex() - abreEscopo.getTokenIndex();
+			int tamanhoTexto = fechaEscopo.getTokenIndex() + 1 - abreEscopo.getTokenIndex();
 			
 			return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
 	      	}
@@ -124,7 +124,7 @@ grammar Portugol;
 	{
 		if (operandoDireito != null) 
 		{
-			NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);			
+			NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);			
 			operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 			
 			return operacao;
@@ -132,6 +132,35 @@ grammar Portugol;
 		
 		else return operandoEsquerdo;
 	}
+	
+	/**
+	     * Varre uma cadeia procurando por "sequências de escape" e substituindo por seus
+	     * valores equivalentes.
+	     * <p>
+	     * As sequências de escape representam caracteres ou valores especiais que não podem
+	     * ser escritos diretamente no código-fonte, pois são interpretados de forma diferente
+	     * pelo parser do Portugol.
+	     * 
+	     * @param      valor a cadeia em seu formato original, como foi declarada no código fonte.
+	     * @return     uma nova versão da cadeia com as sequências de escape já substituídas.
+	     * 
+	     * @since 1.0
+	     */
+	    private String traduzirSequenciasEscape(String valor)
+	    {
+		valor = valor.replace("\\b", "\b");
+		 valor = valor.replace("\\t", "\t");
+		valor = valor.replace("\\n", "\n");
+		 valor = valor.replace("\f", "\f");
+		 valor = valor.replace("\\r", "\r");
+		valor = valor.replace("\\\"", "\"");
+		valor = valor.replace("\\\'", "\'");
+		valor = valor.replace("\\\"", "\"");
+		valor = valor.replace("\\\\", "\\");
+
+		 return valor;
+	    }	
+	
 }
 
 
@@ -143,20 +172,23 @@ PR_LOGICO				:	'logico'		;
 PR_CADEIA				:	'cadeia'		;
 PR_INTEIRO				:	'inteiro'		;
 PR_CARACTER			:	'caracter'		;    
-PR_ESCOLHA			:	'escolha'		;
+PR_ESCOLHA				:	'escolha'		;
 PR_CASO				:	'caso'		;
 PR_CONTRARIO			:	'contrario'	;
 PR_CONST				:	'const'		;
 PR_FUNCAO				:	'funcao'		;
-PR_RETORNE			:	'retorne'		;  
+PR_RETORNE				:	'retorne'		;  
 PR_PARA				:	'para'		;
 PR_PARE				:	'pare'		;
 PR_FACA				:	'faca'		;
 PR_ENQUANTO			:	'enquanto'		;
 PR_SE				:	'se'		;
 PR_SENAO				:	'senao'		;
+PR_INCLUA				:	'inclua'		;
+PR_BIBLIOTECA			:	'biblioteca'		;
 
-GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'^'|'\''|'`'|'|'|'&'|'\\'|'@';
+
+GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'\''|'`'|'\\'|'@';
  
 fragment PR_FALSO			:	'falso'		;
 fragment PR_VERDADEIRO		:	'verdadeiro'		;
@@ -167,7 +199,9 @@ LOGICO				: 	PR_VERDADEIRO | PR_FALSO  ;
 
 ID 				:	('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*  ;
 
-INTEIRO 				:	'0'..'9'* ;
+ID_BIBLIOTECA			:	ID '.' ID;
+
+INTEIRO 				:	'0'..'9'+ | ('0x'|'0X')(DIGIT_HEX)+ | ('0b'|'0B')('0'|'1')+;
 
 REAL					: 	('0'..'9')+ '.' ('0'..'9')+ ;
     
@@ -215,8 +249,11 @@ programa returns[ArvoreSintaticaAbstrata asa] @init
 			{
 		 		asa = new ArvoreSintaticaAbstrataPrograma();
 				asa.setListaDeclaracoesGlobais(new ArrayList<NoDeclaracao>());
+				((ArvoreSintaticaAbstrataPrograma) asa).setListaInclusoesBibliotecas(new ArrayList<NoInclusaoBiblioteca>());
 			}
 		 }
+		 
+		 inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa]*
 
 		(declaracoesGlobais[asa] | declaracaoFuncao[asa])*
 	'}'
@@ -226,6 +263,46 @@ finally
 	pilhaContexto.pop();
 }
 
+inclusaoBiblioteca[ArvoreSintaticaAbstrataPrograma asa] @init
+{
+	pilhaContexto.push("inclusaoBiblioteca");
+}:
+	incl = PR_INCLUA PR_BIBLIOTECA nome = ID ('-->'  alias = ID) ?
+	{
+		if (gerarArvore)
+		{
+			NoInclusaoBiblioteca noInclusaoBiblioteca = new NoInclusaoBiblioteca();
+
+			noInclusaoBiblioteca.setNome($nome.getText());
+			noInclusaoBiblioteca.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($nome));
+			
+			if ($alias != null)
+			{
+				noInclusaoBiblioteca.setAlias($alias.getText());
+				noInclusaoBiblioteca.setTrechoCodigoFonteAlias(criarTrechoCodigoFonte($alias));
+			}
+			
+			int linha = $incl.getLine();
+			int coluna = $incl.getCharPositionInLine();
+			int tamanho = coluna;
+			
+			if ($alias != null)
+			{
+				tamanho = tamanho - $alias.getCharPositionInLine() + $alias.getText().length();
+			}
+			
+			else tamanho = tamanho - $nome.getCharPositionInLine() + $nome.getText().length();
+			
+			noInclusaoBiblioteca.setTrechoCodigoFonte(new TrechoCodigoFonte(linha, coluna, tamanho));
+			
+			asa.getListaInclusoesBibliotecas().add(noInclusaoBiblioteca);
+		}
+	}
+;
+finally
+{
+	pilhaContexto.pop();
+}
 
 declaracoesGlobais [ArvoreSintaticaAbstrata asa] @init
 {
@@ -590,7 +667,7 @@ para returns[NoPara para] @init
 	pilhaContexto.push("para");
 }:
 
-	PR_PARA '(' (inicializacao = inicializacaoPara)? ';' (condicao = expressao)? ';' (incremento = expressao)? ')' vBlocos = listaBlocos
+	PR_PARA '(' (inicializacao = inicializacaoPara)? ';' (condicao = expressao)? ';' (incremento = expressao)? fp = ')' vBlocos = listaBlocos
 	{
 		if (gerarArvore)
 		{
@@ -599,6 +676,12 @@ para returns[NoPara para] @init
 			para.setCondicao(condicao);
 			para.setIncremento(incremento);		
 			para.setBlocos(vBlocos);
+			
+			int linha =  $PR_PARA.getLine();
+    			int coluna =  $PR_PARA.getCharPositionInLine();
+    			int tamanhoTexto = $fp.getCharPositionInLine() - $PR_PARA.getCharPositionInLine();
+			
+			para.setTrechoCodigoFonte(new TrechoCodigoFonte(linha, coluna, tamanhoTexto));
 		}
 	}
 ;
@@ -664,6 +747,7 @@ pare returns[NoPare pare] @init
 		if (gerarArvore)
 		{
 			pare = new NoPare();
+			pare.setTrechoCodigoFonte(criarTrechoCodigoFonte($PR_PARE));
 		}
 	}
 
@@ -806,11 +890,11 @@ retorne returns[NoRetorne retorne] @init
 	pilhaContexto.push("retorne");
 }:
 	
-	ret = PR_RETORNE (vExpressao = expressao)?
+	PR_RETORNE vExpressao = expressao?
 	{
 		if (gerarArvore)
 		{
-			retorne = new NoRetorne(criarTrechoCodigoFonte(ret), vExpressao);
+			retorne = new NoRetorne(criarTrechoCodigoFonte($PR_RETORNE),vExpressao);
 		}
 	}
 ;
@@ -834,7 +918,7 @@ expressao returns[NoExpressao expressao] @init
 
 	operandoEsquerdo = expressao2 vPilha = pilha { vPilha.push(operandoEsquerdo); }
 	(
-		(operador = '=' | operador = '+=' | operador = '-=' | operador = '/=' | operador = '*=' | operador = '%=')
+		(operador = '=' | operador = '+=' | operador = '-=' | operador = '/=' | operador = '*=' | operador = '%=' | operador = '>>=' | operador = '<<=' | operador = '|=' | operador = '&=' | operador = '^=') 
 		
 		operandoDireito = expressao2
 		{
@@ -854,10 +938,14 @@ expressao returns[NoExpressao expressao] @init
 				operador = ((Token) vPilha.pop());
 				operandoEsquerdo = (NoExpressao) vPilha.pop();
 				
-				Operacao tipoOperacao = Operacao.obterOperacaoPeloOperador(operador.getText());
+				if (!operador.getText().equals("="))
+				{				
+					operandoDireito = FabricaNoOperacao.novoNo(operador.getText().substring(0, 1), operandoEsquerdo, operandoDireito);				   
+				}
 				
-				NoOperacao operacao = new NoOperacao(tipoOperacao, operandoEsquerdo, operandoDireito);			
+				NoOperacao operacao = FabricaNoOperacao.novoNo("=", operandoEsquerdo, operandoDireito);			
 				operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+				
 				
 				vPilha.push(operacao);
 			}
@@ -878,7 +966,7 @@ expressao2 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao2");
 }:
 
-	operandoEsquerdo = expressao3
+	operandoEsquerdo = expressao2_5
 	( 	
 		{ 
 		
@@ -886,7 +974,7 @@ expressao2 returns[NoExpressao expressao] @init
 			{
 				if (operandoDireito != null)
 				{
-					NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				 	operandoEsquerdo = operacao; 
 				 }
@@ -895,7 +983,7 @@ expressao2 returns[NoExpressao expressao] @init
 			
 		(operador = 'e' | operador = 'ou')
 		
-		operandoDireito = expressao3
+		operandoDireito = expressao2_5
 	)*
 	{
 		if (gerarArvore)
@@ -909,6 +997,39 @@ finally
 	pilhaContexto.pop();
 }
 
+expressao2_5 returns[NoExpressao expressao] @init
+{
+	pilhaContexto.push("expressao2_5");
+}: 
+	operandoEsquerdo = expressao3
+   	(
+		{ 		
+			if (gerarArvore)
+			{
+				if (operandoDireito != null)
+				{
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
+					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+				 	operandoEsquerdo = operacao; 
+				 }
+			 }
+		}       
+		
+		(operador = '&' | operador = '|' | operador = '^')
+		
+		operandoDireito = expressao3
+	)*
+	{
+		if (gerarArvore)
+		{
+			expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
+		}
+	}
+;
+finally
+{
+	pilhaContexto.pop();
+} 
 
 expressao3 returns[NoExpressao expressao] @init
 {
@@ -923,7 +1044,7 @@ expressao3 returns[NoExpressao expressao] @init
 		
 				if (operandoDireito != null)
 				{
-					NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				 	operandoEsquerdo = operacao; 
 				 }
@@ -952,7 +1073,7 @@ expressao4 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao4");
 }:
 
-	operandoEsquerdo = expressao5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao5)?
+	operandoEsquerdo = expressao4_5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao4_5)?
 	{
 		if (gerarArvore)
 		{
@@ -965,6 +1086,38 @@ finally
 	pilhaContexto.pop();
 }
 
+expressao4_5 returns[NoExpressao expressao] @init
+{
+	pilhaContexto.push("expressao4_5");
+}: operandoEsquerdo = expressao5
+   	(
+		{ 		
+			if (gerarArvore)
+			{
+				if (operandoDireito != null)
+				{
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
+					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+				 	operandoEsquerdo = operacao; 
+				 }
+			 }
+		}       
+		
+		(operador = '<<' | operador = '>>')
+		
+		operandoDireito = expressao5
+	)*
+	{
+		if (gerarArvore)
+		{
+			expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
+		}
+	}
+;
+finally
+{
+	pilhaContexto.pop();
+} 
 
 expressao5 returns[NoExpressao expressao] @init
 {
@@ -980,7 +1133,7 @@ expressao5 returns[NoExpressao expressao] @init
 				{
 					if (operandoDireito != null)
 					{
-						NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+						NoOperacao operacao =  FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 						operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 					 	operandoEsquerdo = operacao; 
 					 }
@@ -1001,7 +1154,7 @@ expressao5 returns[NoExpressao expressao] @init
 				{
 					if (operandoDireito != null)
 					{
-						NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+						NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 						operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 					 	operandoEsquerdo = operacao; 
 					 }
@@ -1039,7 +1192,7 @@ expressao6 returns[NoExpressao expressao] @init
 			{
 				if (operandoDireito != null)
 				{
-					NoOperacao operacao = new NoOperacao(Operacao.obterOperacaoPeloOperador(operador.getText()), operandoEsquerdo, operandoDireito);
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
 					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
 				 	operandoEsquerdo = operacao; 
 				 }
@@ -1069,10 +1222,12 @@ expressao7 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao7");
 }:
 
-	(('-') => (listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)*)  vExpressao = expressao8
+	(('-') => (listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)* | listaTokenNot += '~' )  vExpressao = expressao8
 	{
 		if (gerarArvore)
 		{
+			if ($listaTokenNot != null) vExpressao = new NoBitwiseNao(vExpressao);
+			
 			if ($listaTokenNao != null)
 			{
 				for (int i = 0; i < $listaTokenNao.size(); i++)
@@ -1098,7 +1253,7 @@ expressao8 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao8");
 }:	
 	
-	( parentesis = '(' vExpressao = expressao ')' 
+	( ab = '(' vExpressao = expressao fp = ')' 
 	| vExpressao = referencia
 	| vExpressao = tipoPrimitivo 
 	| vExpressao = matrizVetor) 
@@ -1108,16 +1263,14 @@ expressao8 returns[NoExpressao expressao] @init
 		if (gerarArvore)
 		{
 		
-			if (parentesis != null)
-			{
-				vExpressao.setEntreParentesis(true);
-			}
-			
 			if (operador != null)
 			{
-				if (operador.getText().equals("++")) expressao = new NoIncremento(vExpressao);
-				else
-				if (operador.getText().equals("--")) expressao = new NoDecremento(vExpressao);
+				NoInteiro inteiro = new NoInteiro(1);
+				inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte(operador));			
+				NoOperacao operandoDireito = FabricaNoOperacao.novoNo(operador.getText().substring(0, 1), vExpressao, inteiro);				   
+				NoOperacao operacao = FabricaNoOperacao.novoNo("=", vExpressao, operandoDireito);			
+				operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+				expressao = operacao;
 			}
 			
 			else expressao = vExpressao;
@@ -1165,7 +1318,11 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 		if (gerarArvore)
 		{
 			String texto = $CADEIA.text;
-			NoCadeia cadeia = new NoCadeia(texto.substring(1, texto.length() - 1));
+			
+			texto = texto.substring(1, texto.length() - 1);
+			texto = traduzirSequenciasEscape(texto);
+			
+			NoCadeia cadeia = new NoCadeia(texto);
 			cadeia.setTrechoCodigoFonte(criarTrechoCodigoFonte($CADEIA));
 			expressao = cadeia;
 		}
@@ -1180,7 +1337,14 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 	
 		if (gerarArvore)
 		{
-			NoInteiro inteiro = new NoInteiro(Integer.parseInt($INTEIRO.text));
+			NoInteiro inteiro = null;
+			if ($INTEIRO.text.matches("(0x|0X).+")){
+				inteiro = new NoInteiro(Integer.valueOf($INTEIRO.text.replaceAll("0x|0X", ""),16));
+			} else if ($INTEIRO.text.matches("(0b|0B).+")) {
+				inteiro = new NoInteiro(Integer.valueOf($INTEIRO.text.replaceAll("0b|0B", ""),2));
+			} else {
+				inteiro = new NoInteiro(Integer.parseInt($INTEIRO.text));
+			}
 			inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte($INTEIRO));
 			expressao = inteiro;
 		}
@@ -1198,7 +1362,10 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 	{
 		if (gerarArvore)
 		{
-			NoCaracter caracter = new NoCaracter($CARACTER.text.charAt(1));
+			String car = $CARACTER.text;
+			car = traduzirSequenciasEscape(car);
+
+			NoCaracter caracter = new NoCaracter(car.charAt(1));
 			caracter.setTrechoCodigoFonte(criarTrechoCodigoFonte($CARACTER));
 			expressao = caracter;
 		}
@@ -1215,17 +1382,17 @@ referencia returns[NoReferencia referencia] @init
 	pilhaContexto.push("referencia");
 }:	
 
-	ID
+	(id = ID | id = ID_BIBLIOTECA)
 	(
-		('(') => vExpressao = chamadaFuncao[$ID.text] |
-		('[') => vExpressao = referenciaVetorMatriz[$ID.text] |
-			 vExpressao = referenciaId[$ID.text]
+		('(') => vExpressao = chamadaFuncao[$id.getText()] |
+		('[') => vExpressao = referenciaVetorMatriz[$id.getText()] |
+			 vExpressao = referenciaId[$id.getText()]
 	)
 	{
 		if (gerarArvore)
 		{
 			referencia = (NoReferencia) vExpressao;
-			referencia.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($ID));
+			referencia.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($id));
 		}
 	}
 ;
@@ -1236,7 +1403,7 @@ finally
 
 
 
-referenciaId [String nome] returns[NoExpressao expressao] @init
+referenciaId [String id] returns[NoExpressao expressao] @init
 {
 	pilhaContexto.push("referenciaId");
 }:	
@@ -1244,7 +1411,17 @@ referenciaId [String nome] returns[NoExpressao expressao] @init
 	{
 		if (gerarArvore)
 		{
-			expressao = new NoReferenciaVariavel(nome);
+			String nome = id;
+			String escopo = null;
+			
+			if (id.contains("."))
+			{
+				String[] ref = id.split("\\.");
+				escopo = ref[0];
+				nome = ref[1];
+			}
+			
+			expressao = new NoReferenciaVariavel(escopo, nome);
 		}
 	}
 
@@ -1255,7 +1432,7 @@ finally
 }
 
 
-referenciaVetorMatriz [ String nome] returns[NoExpressao expressao] @init
+referenciaVetorMatriz [ String id] returns[NoExpressao expressao] @init
 {
 	pilhaContexto.push("referenciaVetorMatriz");
 }:
@@ -1264,9 +1441,19 @@ referenciaVetorMatriz [ String nome] returns[NoExpressao expressao] @init
 	 {
 		if (gerarArvore)
 		{
-		 	if ((indice1 != null) && (indice2 == null)) expressao = new NoReferenciaVetor(nome, indice1);
+			String nome = id;
+			String escopo = null;
+			
+			if (id.contains("."))
+			{
+				String[] ref = id.split("\\.");
+				escopo = ref[0];
+				nome = ref[1];
+			}
+		
+		 	if ((indice1 != null) && (indice2 == null)) expressao = new NoReferenciaVetor(escopo, nome, indice1);
 			else		
-			if ((indice1 != null) && (indice2 != null)) expressao = new NoReferenciaMatriz(nome, indice1, indice2);		
+			if ((indice1 != null) && (indice2 != null)) expressao = new NoReferenciaMatriz(escopo, nome, indice1, indice2);		
 		}
 	 }
 ;
@@ -1276,7 +1463,7 @@ finally
 }
 
 
-chamadaFuncao [String nome] returns[NoExpressao expressao] @init
+chamadaFuncao [String id] returns[NoExpressao expressao] @init
 {
 	pilhaContexto.push("chamadaFuncao");
 }:
@@ -1285,7 +1472,18 @@ chamadaFuncao [String nome] returns[NoExpressao expressao] @init
 	 {
  		if (gerarArvore)
  		{
-			NoChamadaFuncao chamadaFuncao = new NoChamadaFuncao(nome);
+ 		
+ 			String nome = id;
+			String escopo = null;
+			
+			if (id.contains("."))
+			{
+				String[] ref = id.split("\\.");
+				escopo = ref[0];
+				nome = ref[1];
+			}
+			
+			NoChamadaFuncao chamadaFuncao = new NoChamadaFuncao(escopo, nome);
 			chamadaFuncao.setParametros(vListaParametros);
 			expressao = chamadaFuncao;
 		}
@@ -1340,7 +1538,7 @@ matrizVetor returns[NoExpressao expressao] @init
 			expressao = vExpressao;
 		}
 	}
-;
+	;
 finally
 {
 	pilhaContexto.pop();
@@ -1407,7 +1605,7 @@ listaListaExpressoes returns[List<List<Object>> listaListaExpressoes] @init
 				 listaListaExpressoes.add(vListaExpressoes); 
 			 }
 		}
-	)
+	)?
 	( { vListaExpressoes = null; } ','  '{' vListaExpressoes = listaExpressoes '}' 
 	
 	   { 
@@ -1429,14 +1627,14 @@ listaExpressoes returns[List<Object> listaExpressoes] @init
 	pilhaContexto.push("listaExpressoes");
 	listaExpressoes = new ArrayList<Object>();
 }:
-	({ vExpressao = null; }     (vExpressao = expressao)? 
-	 { 
+	({ vExpressao = null; }     (vExpressao = expressao)?
+		 { 
 	 	if (gerarArvore)
 	 	{
 		 	listaExpressoes.add(vExpressao); 
 	 	}
 	 })
-	({ vExpressao = null; } ',' (vExpressao = expressao)? 
+	({ vExpressao = null; } ',' (vExpressao = expressao)
 	{
 		if (gerarArvore)
 		{
@@ -1448,8 +1646,3 @@ finally
 {
 	pilhaContexto.pop();
 }
-
-
-
-
-                                    

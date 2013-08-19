@@ -3,9 +3,8 @@ package br.univali.portugol.nucleo.analise.semantica.erros;
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
+import br.univali.portugol.nucleo.asa.Quantificador;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
-import br.univali.portugol.nucleo.simbolos.Funcao;
 
 /**
  * Erro gerado pelo analisador semântico quando é realizada uma chamada de função passando
@@ -44,47 +43,32 @@ import br.univali.portugol.nucleo.simbolos.Funcao;
 
 public class ErroTipoParametroIncompativel extends ErroSemantico
 {
-    private TipoDado tipoDadoParametroEsperado;
-    private TipoDado tipoDadoParametroPassado;
+    private TipoDado tipoEsperado;
+    private TipoDado tipoPassado;
 
-    private NoDeclaracaoParametro parametroEsperado;
     private NoExpressao parametroPassado;
-    private Funcao funcao;
-
+    private final String nomeFuncao;
+    private final String nomeParametro;
+    
     /**
-     * 
-     * @param tipoDadoParametroEsperado     o tipo de dado esperado pelo parâmetro da função.
-     * @param tipoDadoParametroPassado      o tipo de dado da expressão que foi passada por parâmetro.
-     * @param parametroEsperado             o nó da ASA correspondente à declaração do parâmetro da função.
+     * @param nomeFuncao                    o nome da função que foi chamada.
+     * @param nomeParametro                 o nome do parâmetro da função.
+     * @param tipoEsperado     o tipo de dado esperado pelo parâmetro da função.
+     * @param tipoPassado      o tipo de dado da expressão que foi passada por parâmetro.
      * @param parametroPassado              a expressão que foi passada por parâmetro.
-     * @param funcao                        a função que foi chamada.
+     * @param quantificadorEsperado     o {@link Quantificador} do parâmetro esperado.
+     * @param quantificadorPassado      o {@link Quantificador} do parâmetro passado.
      */
-    public ErroTipoParametroIncompativel(TipoDado tipoDadoParametroEsperado, TipoDado tipoDadoParametroPassado, NoDeclaracaoParametro parametroEsperado, NoExpressao parametroPassado, Funcao funcao)
+    public ErroTipoParametroIncompativel(String nomeFuncao, String nomeParametro, NoExpressao parametroPassado, TipoDado tipoEsperado, TipoDado tipoPassado)
     {
-        super
-        (
-            parametroPassado.getTrechoCodigoFonte().getLinha(),
-            parametroPassado.getTrechoCodigoFonte().getColuna()
-        );
-
-        this.tipoDadoParametroEsperado = tipoDadoParametroEsperado;
-        this.tipoDadoParametroPassado = tipoDadoParametroPassado;
-        this.parametroEsperado = parametroEsperado;
+        super(parametroPassado.getTrechoCodigoFonte());
+        this.tipoEsperado = tipoEsperado;
+        this.tipoPassado = tipoPassado;
+        this.nomeFuncao = nomeFuncao;
+        this.nomeParametro = nomeParametro;
         this.parametroPassado= parametroPassado;
-        this.funcao = funcao;
-
     }
 
-    /**
-     * Obtém      o nó da ASA correspondente à declaração do parâmetro da função.
-     * 
-     * @return     o nó da ASA correspondente à declaração do parâmetro da função.
-     * @since 1.0
-     */
-    public NoDeclaracaoParametro getParametroEsperado()
-    {
-        return parametroEsperado;
-    }
 
     /**
      * Obtém a expressão que foi passada por parâmetro.
@@ -98,25 +82,14 @@ public class ErroTipoParametroIncompativel extends ErroSemantico
     }
     
     /**
-     * Obtém a função que foi chamada.
-     * 
-     * @return     a função que foi chamada.
-     * @since 1.0
-     */
-    public Funcao getFuncao()
-    {
-        return funcao;
-    }
-
-    /**
      * Obtém o tipo de dado esperado pelo parâmetro da função.
      * 
      * @return     o tipo de dado esperado pelo parâmetro da função.
      * @since 1.0
      */
-    public TipoDado getTipoDadoParametroEsperado()
+    public TipoDado getTipoEsperado()
     {
-        return tipoDadoParametroEsperado;
+        return tipoEsperado;
     }
 
     /**
@@ -125,9 +98,9 @@ public class ErroTipoParametroIncompativel extends ErroSemantico
      * @return     o tipo de dado da expressão que foi passada por parâmetro.
      * @since 1.0
      */
-    public TipoDado getTipoDadoParametroPassado()
+    public TipoDado getTipoPassado()
     {
-        return tipoDadoParametroPassado;
+        return tipoPassado;
     }
 
     /**
@@ -139,13 +112,13 @@ public class ErroTipoParametroIncompativel extends ErroSemantico
         StringBuilder construtorString = new StringBuilder();
 
         construtorString.append("Tipos incompatíveis! O parâmetro \"");
-        construtorString.append(parametroEsperado.getNome());
+        construtorString.append(nomeParametro);
         construtorString.append("\" da função \"");
-        construtorString.append(funcao.getNome());
-        construtorString.append("\" esperava uma expressão do tipo \"");
-        construtorString.append(tipoDadoParametroEsperado);
-        construtorString.append("\" mas foi passada uma expressão do tipo \"");
-        construtorString.append(tipoDadoParametroPassado);
+        construtorString.append(nomeFuncao);
+        construtorString.append("\" espera uma expressão do tipo \"");
+        construtorString.append(tipoEsperado);
+        construtorString.append("\", mas foi passada uma expressão do tipo \"");
+        construtorString.append(tipoPassado);
         construtorString.append("\".");
 
         return construtorString.toString();

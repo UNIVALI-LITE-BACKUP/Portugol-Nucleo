@@ -11,72 +11,99 @@ package br.univali.portugol.nucleo.asa;
  */
 public interface VisitanteASA
 {
-    Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA;
+    public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA;
 
-    Object visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA;
+    public Object visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA;
 
-    Object visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA;
+    public Object visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA;
 
-    Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA;
+    public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA;
 
-    Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA;
+    public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA;
 
-    Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA;
+    public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA;
 
-    Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA;
+    public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA;
 
-    Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA;
+    public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA;
 
-    Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA;
+    public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA;
 
-    Object visitar(NoDecremento noDecremento) throws ExcecaoVisitaASA;
+    public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA;
 
-    Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA;
+    public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA;
 
-    Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA;
+    public Object visitar(NoLogico noLogico) throws ExcecaoVisitaASA;
 
-    Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA;
+    public Object visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA;
 
-    Object visitar(NoIncremento noIncremento) throws ExcecaoVisitaASA;
+    public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA;
 
-    Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA;
+    public Object visitar(NoNao noNao) throws ExcecaoVisitaASA;
 
-    Object visitar(NoLogico noLogico) throws ExcecaoVisitaASA;
+    public Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA;
 
-    Object visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA;
+    public Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoSoma noOperacaoSoma) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoSubtracao noOperacaoSubtracao) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoDivisao noOperacaoDivisao) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoMultiplicacao noOperacaoMultiplicacao) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoModulo noOperacaoModulo) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA;
+       
+    public Object visitar(NoPara noPara) throws ExcecaoVisitaASA;
 
-    Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA;
+    public Object visitar(NoPare noPare) throws ExcecaoVisitaASA;
 
-    Object visitar(NoNao noNao) throws ExcecaoVisitaASA;
+    public Object visitar(NoReal noReal) throws ExcecaoVisitaASA;
 
-    Object visitar(NoOperacao noOperacao) throws ExcecaoVisitaASA;
+    public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA;
 
-    Object visitar(NoPara noPara) throws ExcecaoVisitaASA;
+    public Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA;
 
-    Object visitar(NoPare noPare) throws ExcecaoVisitaASA;
+    public Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA;
 
-    /**
-     * @param noPercorra           nó da ASA.
-     * @return                     um objeto qualquer. 
-     * @throws ExcecaoVisitaASA
-     * @deprecated                 a classe NoPercoraa será removida nas versões futuras.
-     */
-    @Deprecated
-    Object visitar(NoPercorra noPercorra) throws ExcecaoVisitaASA;
+    public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA;
 
-    Object visitar(NoReal noReal) throws ExcecaoVisitaASA;
+    public Object visitar(NoSe noSe) throws ExcecaoVisitaASA;
 
-    Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA;
+    public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA;
 
-    Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA;
-
-    Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA;
-
-    Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA;
-
-    Object visitar(NoSe noSe) throws ExcecaoVisitaASA;
-
-    Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA;
-
-    Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA;
+    public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA;
 }

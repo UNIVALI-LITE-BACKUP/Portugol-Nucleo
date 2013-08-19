@@ -1,20 +1,17 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.univali.portugol.nucleo.depuracao;
 
-import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.simbolos.Simbolo;
+import java.util.List;
 
-/**
- *
- * @author fillipipelz
- */
+
 public interface DepuradorListener
 {
-    public void linhaAtual(int linha);
-    public void simboloDeclarado(String nome, TipoDado tipoDado);
-    public void valorSimboloAlterado(String nome, Object valor);
-    public void novaTabelaSimbolos();
+    public void depuracaoInicializada(InterfaceDepurador depurador);
+    public void highlightLinha(int linha);
+    public void HighlightDetalhadoAtual(int linha, int coluna, int tamanho);
+    public void simbolosAlterados(List<Simbolo> simbolos);
+    public void simboloDeclarado(Simbolo simbolo);
+    public void simboloRemovido(Simbolo simbolo);
+    
     
 }

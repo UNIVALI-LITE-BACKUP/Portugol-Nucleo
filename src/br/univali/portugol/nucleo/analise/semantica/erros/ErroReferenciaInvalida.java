@@ -19,7 +19,7 @@ public class ErroReferenciaInvalida extends ErroSemantico
 
     public ErroReferenciaInvalida(NoExpressao expressao, Simbolo simbolo)
     {
-        super(expressao.getTrechoCodigoFonte().getLinha(),expressao.getTrechoCodigoFonte().getColuna());
+        super(expressao.getTrechoCodigoFonte());
         this.expressao = expressao;
         this.simbolo = simbolo;
     }

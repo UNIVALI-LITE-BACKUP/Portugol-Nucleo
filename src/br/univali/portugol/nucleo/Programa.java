@@ -1,9 +1,15 @@
 package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.execucao.Interpretador;
+import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.depuracao.Depurador;
+import br.univali.portugol.nucleo.depuracao.DepuradorImpl;
+import br.univali.portugol.nucleo.depuracao.DepuradorListener;
+import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
 import br.univali.portugol.nucleo.execucao.Entrada;
+import br.univali.portugol.nucleo.execucao.EntradaSaidaSistema;
 import br.univali.portugol.nucleo.execucao.Interpretador;
+import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ObservadorInterpretacao;
@@ -16,16 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Esta classe provê uma fachada (Facade) para abstrair os detalhes da execução dos programas que não interessam 
- * aos utilizadores do Portugol.
- * <p>
- * Ela se encarrega de instanciar um interpretador para o código fonte e de gerenciar o ciclo de vida (inicio, fim, interrupção)
- * da Thread na qual o interpretador irá executar.
- * 
- * 
+ * Esta classe provê uma fachada (Facade) para abstrair os detalhes da execução
+ * dos programas que não interessam aos utilizadores do Portugol. <p> Ela se
+ * encarrega de instanciar um interpretador para o código fonte e de gerenciar o
+ * ciclo de vida (inicio, fim, interrupção) da Thread na qual o interpretador
+ * irá executar.
+ *
+ *
  * @author Luiz Fernando Noschang
  * @author Fillipi Domingos Pelz
-
+ *
  * @version 1.0
  * @see Interpretador
  * @see Thread
@@ -36,25 +42,32 @@ public final class Programa
     private RelatorErros relatorErros;
     private Saida saida;
     private Entrada entrada;
-    private String funcaoInicial = Interpretador.funcaoInicialPadrao;
+    private String funcaoInicial;
     private Thread threadExecucao = null;
     private long horaInicialExecucao = 0L;
     private ResultadoExecucao resultadoExecucao = null;
     private List<ObservadorExecucao> observadores;
     private ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma;
+    private List<String> funcoes;
 
     public Programa()
     {
+        EntradaSaidaSistema es = new EntradaSaidaSistema();
+        
+        entrada = es;
+        saida = es;
+        funcoes = new ArrayList<String>();
         relatorErros = new RelatorErros();
         relatorErros.inicializar("Portugol Núcleo", "1.0");
         observadores = new ArrayList<ObservadorExecucao>();
     }
 
-    /** 
-     * Permite adicionar um observador à execução do programa. Os observadores serão notificados sobre o início e
-     * o término da execução, bem como erros em tempo de execução que vierem a ocorrer.
-     * 
-     * @param observador     o observador de execução a ser registrado.
+    /**
+     * Permite adicionar um observador à execução do programa. Os observadores
+     * serão notificados sobre o início e o término da execução, bem como erros
+     * em tempo de execução que vierem a ocorrer.
+     *
+     * @param observador o observador de execução a ser registrado.
      * @since 1.0
      */
     public void adicionarObservadorExecucao(ObservadorExecucao observador)
@@ -66,33 +79,51 @@ public final class Programa
     }
 
     /**
-     * Remove um observador de execução previamente registrado utilizando o método 
+     * Remove um observador de execução previamente registrado utilizando o
+     * método 
      * {@link Programa#adicionarObservadorExecucao(br.univali.portugol.nucleo.execucao.ObservadorExecucao) }.
-     * Uma vez removido, o observador não será mais notificado sobre o estado da execução do programa nem dos 
-     * erros em tempo de execução que vierem a ocorrer.
-     * 
-     * @param observador     um observador de execução previamente registrado.
+     * Uma vez removido, o observador não será mais notificado sobre o estado da
+     * execução do programa nem dos erros em tempo de execução que vierem a
+     * ocorrer.
+     *
+     * @param observador um observador de execução previamente registrado.
      * @since 1.0
      */
     public void removerObservadorExecucao(ObservadorExecucao observador)
     {
         observadores.remove(observador);
     }
-
     private List<ObservadorInterpretacao> observadoresInter = new ArrayList<ObservadorInterpretacao>();
-    public void addObservadorInterpretacao(ObservadorInterpretacao o) {
+
+    public void addObservadorInterpretacao(ObservadorInterpretacao o)
+    {
         observadoresInter.add(o);
     }
-    
+
     /**
-     * Executa este programa com os parâmetros especificados. Se o programa já estiver
-     * executando não faz nada.
-     * 
-     * @param parametros     lista de parâmetros que serão passados ao programa no
-     *                       momento da execução.
+     * Executa este programa com os parâmetros especificados. Se o programa já
+     * estiver executando não faz nada.
+     *
+     * @param parametros lista de parâmetros que serão passados ao programa no
+     * momento da execução.
      * @since 1.0
      */
     public void executar(final String[] parametros)
+    {
+        interpretar(parametros, false, false);
+    }
+
+    public List<String> getFuncoes()
+    {
+        return funcoes;
+    }
+
+    public void setFuncoes(List<String> funcoes)
+    {
+        this.funcoes = funcoes;
+    }
+
+    private void interpretar(final String[] parametros, final boolean depurar, final boolean detalhado)
     {
         if (!isExecutando())
         {
@@ -103,32 +134,53 @@ public final class Programa
                 {
                     try
                     {
-                        Interpretador interpretador = new Interpretador();
+                        Interpretador interpretador;
+
+                        if (depurar)
+                        {
+                            List<NoBloco> nosParada = new DetectaNosParada(detalhado).executar(Programa.this, parametros);
+
+                            interpretador = new DepuradorImpl(nosParada,detalhado);
+                            
+                            if (listeners.isEmpty())
+                            {
+                                throw new RuntimeException("A depuraçao depende de um ouvinte.");
+                            }
+                            
+                            ((Depurador) interpretador).addListeners(listeners);
+                        }
+                        else
+                        {
+                            interpretador = new InterpretadorImpl();
+                        }
+
                         interpretador.setEntrada(entrada);
                         interpretador.setSaida(saida);
-                        
+
+
                         notificarInicioExecucao();
-                        
+
                         resultadoExecucao = new ResultadoExecucao();
                         horaInicialExecucao = System.currentTimeMillis();
-                        
-                        resultadoExecucao.setRetorno(interpretador.interpretar(Programa.this, parametros));
-                        
+
+                        interpretador.executar(Programa.this, parametros);
+
                         threadExecucao = null;
                         resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-                        
+
                         notificarEncerramentoExecucao(resultadoExecucao);
-                        
                     }
                     catch (ErroExecucao erroExecucao)
-                    {                  
-                        if ( erroExecucao instanceof ErroExecucaoNaoTratado 
-                                && ((ErroExecucaoNaoTratado)erroExecucao).getCausa().getCause() != null 
-                                && ((ErroExecucaoNaoTratado)erroExecucao).getCausa().getCause() instanceof InterruptedException)
-                        {                           
+                    {
+                        if (erroExecucao instanceof ErroExecucaoNaoTratado
+                                && ((ErroExecucaoNaoTratado) erroExecucao).getCausa().getCause() != null
+                                && ((ErroExecucaoNaoTratado) erroExecucao).getCausa().getCause() instanceof InterruptedException)
+                        {
                             notificarEncerramentoExecucao(resultadoExecucao);
-                          
-                        } else { 
+
+                        }
+                        else
+                        {
                             if (resultadoExecucao == null)
                             {
                                 resultadoExecucao = new ResultadoExecucao();
@@ -145,19 +197,22 @@ public final class Programa
                         {
                             resultadoExecucao = new ResultadoExecucao();
                         }
-                       
+
                         resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                         resultadoExecucao.setErro(new ErroExecucaoNaoTratado(erro));
-                        
-                        relatorErros.relatarErro(erro, codigo);                  
+
+                        relatorErros.relatarErro(erro, codigo);
                         notificarEncerramentoExecucao(resultadoExecucao);
                     }
                 }
             });
 
-            try {
-                threadExecucao.start();            
-            } catch (RuntimeException ie){
+            try
+            {
+                threadExecucao.start();
+            }
+            catch (RuntimeException ie)
+            {
                 if (ie.getCause() instanceof InterruptedException)
                 {
                     notificarEncerramentoExecucao(resultadoExecucao);
@@ -165,17 +220,25 @@ public final class Programa
             }
         }
     }
+    private List<DepuradorListener> listeners = new ArrayList<>();
 
-    /*
-    public void depurar() throws Exception
+    public void addDepuradorListener(DepuradorListener listener)
     {
-    
+        if (!listeners.contains(listener)){
+            this.listeners.add(listener);
+        }
     }
-     */
+
+    public void depurar(final String[] parametros, boolean detalhado)
+    {
+        interpretar(parametros, true, detalhado);
+    }
+
+
     /**
      * Interrompe a execução deste programa. Não tem nenhum efeito se o programa
      * não estiver executando.
-     * 
+     *
      * @since 1.0
      */
     public void interromper()
@@ -192,7 +255,7 @@ public final class Programa
              */
             resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-            
+
             threadExecucao.interrupt();
             threadExecucao = null;
         }
@@ -200,8 +263,8 @@ public final class Programa
 
     /**
      * Obtém a ASA que representa este programa.
-     * 
-     * @return     a ASA que representa este programa
+     *
+     * @return a ASA que representa este programa
      * @since 1.0
      */
     public ArvoreSintaticaAbstrataPrograma getArvoreSintaticaAbstrata()
@@ -211,8 +274,9 @@ public final class Programa
 
     /**
      * Define a ASA que representa este programa.
-     * 
-     * @param arvoreSintaticaAbstrataPrograma     a ASA que representa este programa.
+     *
+     * @param arvoreSintaticaAbstrataPrograma a ASA que representa este
+     * programa.
      * @since 1.0
      */
     public void setArvoreSintaticaAbstrataPrograma(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma)
@@ -221,11 +285,12 @@ public final class Programa
     }
 
     /**
-     * Define o nome da função que deverá ser chamada para dar início à execução do programa.
-     * Caso não tenho sido declarada uma função com este nome no código fonte, será
-     * gerado um erro em tempo de execução.
-     * 
-     * @param funcaoInicial     o nome da função que será o ponto de partida do programa.
+     * Define o nome da função que deverá ser chamada para dar início à execução
+     * do programa. Caso não tenho sido declarada uma função com este nome no
+     * código fonte, será gerado um erro em tempo de execução.
+     *
+     * @param funcaoInicial o nome da função que será o ponto de partida do
+     * programa.
      * @since 1.0
      */
     public void setFuncaoInicial(String funcaoInicial)
@@ -236,8 +301,9 @@ public final class Programa
     /**
      * Obtém o nome da função que está atualmente definida como ponto de partida
      * para este programa.
-     * 
-     * @return     o nome da função que está atualmente definida como ponto de partida.
+     *
+     * @return o nome da função que está atualmente definida como ponto de
+     * partida.
      * @since 1.0
      */
     public String getFuncaoInicial()
@@ -248,8 +314,8 @@ public final class Programa
     /**
      * Obtém a interface para entrada de dados que está atualmente registrada
      * para este programa.
-     * 
-     * @return     a interface para entrada de dados que está atualmente registrada.
+     *
+     * @return a interface para entrada de dados que está atualmente registrada.
      * @since 1.0
      */
     public Entrada getEntrada()
@@ -258,10 +324,10 @@ public final class Programa
     }
 
     /**
-     * Obtém a interface para saída de dados que está atualmente registrada
-     * para este programa.
-     * 
-     * @return     a interface para saída de dados que está atualmente registrada.
+     * Obtém a interface para saída de dados que está atualmente registrada para
+     * este programa.
+     *
+     * @return a interface para saída de dados que está atualmente registrada.
      * @since 1.0
      */
     public Saida getSaida()
@@ -271,8 +337,9 @@ public final class Programa
 
     /**
      * Define a interface para entrada de dados deste programa.
-     * 
-     * @param entrada     a interface para entrada de dados a ser registrada para este programa.
+     *
+     * @param entrada a interface para entrada de dados a ser registrada para
+     * este programa.
      * @since 1.0
      */
     public void setEntrada(Entrada entrada)
@@ -282,8 +349,9 @@ public final class Programa
 
     /**
      * Define a interface para saída de dados deste programa.
-     * 
-     * @param saida     a interface para saída de dados a ser registrada para este programa.
+     *
+     * @param saida a interface para saída de dados a ser registrada para este
+     * programa.
      * @since 1.0
      */
     public void setSaida(Saida saida)
@@ -293,8 +361,8 @@ public final class Programa
 
     /**
      * Define o código fonte deste programa.
-     * 
-     * @param codigo     o código fonte que gerou este programa ao ser compilado.
+     *
+     * @param codigo o código fonte que gerou este programa ao ser compilado.
      * @since 1.0
      */
     public void setCodigo(String codigo)
@@ -304,8 +372,8 @@ public final class Programa
 
     /**
      * Obtém o código fonte que gerou este programa ao ser compilado.
-     * 
-     * @return     o código fonte que gerou este programa ao ser compilado.
+     *
+     * @return o código fonte que gerou este programa ao ser compilado.
      * @since 1.0
      */
     public String getCodigo()
@@ -315,9 +383,9 @@ public final class Programa
 
     /**
      * Verifica se este programa está em execução.
-     * 
-     * @return     <code>true</code> se o programa estiver executando, caso contrário 
-     *             retorna <code>false</code>.
+     *
+     * @return     <code>true</code> se o programa estiver executando, caso
+     * contrário retorna <code>false</code>.
      * @since 1.0
      */
     public boolean isExecutando()
@@ -340,9 +408,9 @@ public final class Programa
     /**
      * Notifica todos os observadores registrados sobre o término da execução
      * deste programa.
-     * 
-     * @param resultadoExecucao     objeto contendo informações sobre o motivo do encerramento
-     *                              do programa e eventos ocorridos durante a execução.
+     *
+     * @param resultadoExecucao objeto contendo informações sobre o motivo do
+     * encerramento do programa e eventos ocorridos durante a execução.
      * @since 1.0
      */
     private void notificarEncerramentoExecucao(ResultadoExecucao resultadoExecucao)
@@ -353,5 +421,22 @@ public final class Programa
         {
             observador.execucaoEncerrada(this, resultadoExecucao);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Programa)
+        {
+            return ((Programa) obj) == this;
+        }
+        
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return System.identityHashCode(this);
     }
 }

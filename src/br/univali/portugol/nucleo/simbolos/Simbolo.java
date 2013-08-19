@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.No;
+import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 
@@ -25,16 +27,17 @@ public abstract class Simbolo
     private boolean utilizado = false;
     private boolean inicializado = false;
     private boolean redeclarado = false;
-
+    private NoDeclaracao origemDoSimbolo = null;
     /**
      * 
      * @param nome         o nome deste símbolo.
      * @param tipoDado     o tipo de dado armazenado/tratado por este símbolo.
      */
-    public Simbolo(String nome, TipoDado tipoDado)
+    public Simbolo(String nome, TipoDado tipoDado, NoDeclaracao noOrigem)
     {
         setNome(nome);
         setTipoDado(tipoDado);
+        setOrigemDoSimbolo(noOrigem);
     }
 
     /**
@@ -110,7 +113,7 @@ public abstract class Simbolo
      *                  nas versões futuras este método será removido da classe base
      *                  e utilizado somente nas classes em que for necessário.
      */
-    public final boolean constante()
+    public boolean constante()
     {
         return constante;
     }
@@ -225,6 +228,18 @@ public abstract class Simbolo
         this.constante = constante;
     }
 
+    public NoDeclaracao getOrigemDoSimbolo()
+    {
+        return origemDoSimbolo;
+    }
+
+    final void setOrigemDoSimbolo(NoDeclaracao origemDoSimbolo)
+    {
+        this.origemDoSimbolo = origemDoSimbolo;
+    }
+
+    
+    
     /**
      * Cria uma cópia deste símbolo em memória. Este método é utilizado durante a chamada de funções 
      * para passar o símbolo por valor. A cópia terá os mesmos valores e características do símbolo

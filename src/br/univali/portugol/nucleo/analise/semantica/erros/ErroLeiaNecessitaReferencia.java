@@ -11,7 +11,7 @@ public class ErroLeiaNecessitaReferencia extends ErroSemantico
     
     public ErroLeiaNecessitaReferencia(NoChamadaFuncao chamadaFuncao, NoExpressao expressao)
     {
-        super(chamadaFuncao.getTrechoCodigoFonte().getLinha(), chamadaFuncao.getTrechoCodigoFonte().getColuna());
+        super(chamadaFuncao.getTrechoCodigoFonte());
     }
 
     @Override

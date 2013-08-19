@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.NoReferencia;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -11,13 +12,19 @@ import java.util.Stack;
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class TabelaSimbolos implements Iterable<Simbolo>
+public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
 {
     private Stack<Map<String, Simbolo>> escopos;
 
+    @Override
+    public Iterator<Map<String, Simbolo>> iterator()
+    {
+        return escopos.iterator();
+    }
+    
     public TabelaSimbolos()
     {
-        escopos = new Stack<Map<String, Simbolo>>();
+        escopos = new Stack<>();
         empilharEscopo();
     }
 
@@ -36,9 +43,9 @@ public final class TabelaSimbolos implements Iterable<Simbolo>
      * 
      * @since 1.0
      */
-    public void desempilharEscopo()
+    public Map<String, Simbolo> desempilharEscopo()
     {
-        escopos.pop();
+        return escopos.pop();
     }
 
     /**
@@ -71,36 +78,7 @@ public final class TabelaSimbolos implements Iterable<Simbolo>
                 return simbolo;
             }
         }
-
-        return null;
-    }
-
-    /**
-     * Verifica se existe um símbolo com o nome especificado, nesta tabela de símbolos.
-     * 
-     * @param nome     o nome do símbolo que está sendo procurado.
-     * @return         <code>true</code> se o símbolo for encontrado, caso contrário retorna <code>false</code>.
-     * @since 1.0
-     */
-    public boolean contem(String nome)
-    {
-        for (Map<String, Simbolo> escopo : escopos)
-        {
-            if (escopo.containsKey(nome))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override    
-    public Iterator<Simbolo> iterator()
-    {
-        return escopos.peek().values().iterator();
+        
+        return simbolo;
     }
 }

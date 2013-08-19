@@ -18,9 +18,8 @@ package br.univali.portugol.nucleo.asa;
  * @see NoNao
  * @see Operacao
  */
-public final class NoOperacao extends NoExpressao
-{
-    private Operacao operacao;
+public abstract class NoOperacao extends NoExpressao
+{ 
     private NoExpressao operandoEsquerdo;
     private NoExpressao operandoDireito;
     private TrechoCodigoFonte trechoCodigoFonteOperador;
@@ -32,22 +31,10 @@ public final class NoOperacao extends NoExpressao
      * @param operandoDireito      a expressão à direita do operador.
      * @since 1.0
      */
-    public NoOperacao(Operacao operacao, NoExpressao operandoEsquerdo, NoExpressao operandoDireito)
-    {
-        this.operacao = operacao;
+    public NoOperacao(NoExpressao operandoEsquerdo, NoExpressao operandoDireito)
+    {        
         this.operandoEsquerdo = operandoEsquerdo;
         this.operandoDireito = operandoDireito;
-    }
-
-    /**
-     * Obtém a operação que está sendo executada.
-     * 
-     * @return     a operação que está sendo executada.
-     * @since 1.0
-     */
-    public Operacao getOperacao()
-    {
-        return operacao;
     }
 
     /**
@@ -104,18 +91,14 @@ public final class NoOperacao extends NoExpressao
         TrechoCodigoFonte trechoCodigoFonte = operandoEsquerdo.getTrechoCodigoFonte();
 
         int linha = trechoCodigoFonte.getLinha();
-        int coluna = trechoCodigoFonte.getColuna();
-        int tamanhoTexto = trechoCodigoFonte.getTamanhoTexto() + ((getTrechoCodigoFonteOperador() != null) ? getTrechoCodigoFonteOperador().getTamanhoTexto() : 0) + operandoDireito.getTrechoCodigoFonte().getTamanhoTexto();
+        int inicioOpEsquerdo = trechoCodigoFonte.getColuna();
+        
+        int colunaOpDireito = operandoDireito.getTrechoCodigoFonte().getColuna();
+        int tamanhoOpDireito = operandoDireito.getTrechoCodigoFonte().getTamanhoTexto();
+        int terminoOpDireito = colunaOpDireito + tamanhoOpDireito;
+        
+        int tamanhoTexto = terminoOpDireito - inicioOpEsquerdo;
 
-        return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
-    {
-        return visitante.visitar(this);
-    }
+        return new TrechoCodigoFonte(linha, inicioOpEsquerdo, tamanhoTexto);
+    }    
 }

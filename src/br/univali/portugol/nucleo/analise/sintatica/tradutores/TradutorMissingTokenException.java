@@ -1,12 +1,13 @@
 package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
-import br.univali.portugol.nucleo.analise.sintatica.PortugolLexer;
-import br.univali.portugol.nucleo.analise.sintatica.erros.ErroAbreFechaParentesis;
-import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopoNaoFoiAbertoCorretamente;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroEscopo;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressaoEsperada;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParentesis;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroFaltaDoisPontos;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroNomeSimboloEstaFaltando;
-import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParsingNaoTratado;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroPalavraReservadaEstaFaltando;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroTokenFaltando;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.Stack;
 import org.antlr.runtime.MissingTokenException;
@@ -34,45 +35,59 @@ public final class TradutorMissingTokenException
      * @return                   o erro sintático traduzido.
      * @since 1.0
      */
-    public ErroSintatico traduzirErroParsing(MissingTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao)
+    public ErroSintatico traduzirErroParsing(MissingTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao, String codigoFonte)
     {
         int linha = erro.line;
         int coluna = erro.charPositionInLine;
-        String contextoAtual = pilhaContexto.pop();
+        
+        String contextoAtual = pilhaContexto.peek();        
+        String tokenEsperado = AnalisadorSintatico.getToken(tokens, erro.getMissingType());
 
-        if (erro.getMissingType() == PortugolLexer.ID)
+        switch (contextoAtual)
         {
-            return new ErroNomeSimboloEstaFaltando(linha, coluna, contextoAtual);
+            case "para": return traduzirErrosPara(linha, coluna, erro, tokens, pilhaContexto, codigoFonte);
+            case "listaListaExpressoes" : return traduzirErrosMatriz(linha, coluna, erro, tokens, pilhaContexto, codigoFonte, mensagemPadrao);
         }
-        else
+        
+        switch (tokenEsperado)
         {
-            if (erro.getMissingType() == PortugolLexer.T__68)
-            {
-                return new ErroEscopoNaoFoiAbertoCorretamente(linha, coluna, contextoAtual);
-            }
-            else
-            {
-                if (erro.getMissingType() == PortugolLexer.T__43)
-                {
-                    return new ErroAbreFechaParentesis(linha, coluna, "(");
-                }
-                else
-                {
-                    if (erro.getMissingType() == PortugolLexer.T__44)
-                    {
-                        return new ErroAbreFechaParentesis(linha, coluna, ")");
-                    }
-                     else
-                    {
-                        if (erro.expecting == PortugolLexer.T__56)
-                        {
-                            return new ErroFaltaDoisPontos(linha, coluna);
-                        }
-                    }
-                }
-            }
+            case "ID": return new ErroNomeSimboloEstaFaltando(linha, coluna, contextoAtual);
+            case "{": return new ErroEscopo(linha, coluna, ErroEscopo.Tipo.ABERTURA, pilhaContexto);
+            case "(": return new ErroParentesis(linha, coluna, ErroParentesis.Tipo.ABERTURA);
+            case ")": return new ErroParentesis(linha, coluna, ErroParentesis.Tipo.FECHAMENTO);
+            case ":": return new ErroFaltaDoisPontos(linha, coluna);
+        }
+        
+        switch (AnalisadorSintatico.getTipoToken(tokenEsperado))
+        {
+            case PALAVRA_RESERVADA: return new ErroPalavraReservadaEstaFaltando(linha, coluna, tokenEsperado.replace("PR_", "").toLowerCase(), contextoAtual);
         }
 
-        return new ErroParsingNaoTratado(erro, mensagemPadrao, contextoAtual);
+        return new ErroTokenFaltando(linha, coluna, tokenEsperado);
+    }
+    
+    private ErroSintatico traduzirErrosPara(int linha, int coluna, MissingTokenException erro, String[] tokens, Stack<String> pilhaContexto, String codigoFonte)
+    {
+        String tokenEsperado = AnalisadorSintatico.getToken(tokens, erro.getMissingType());
+        
+        switch (tokenEsperado)
+        {
+            case ")": return new ErroParentesis(linha, coluna, ErroParentesis.Tipo.ABERTURA);
+            case "(": return new ErroParentesis(linha, coluna, ErroParentesis.Tipo.FECHAMENTO);
+        }
+
+        return new ErroTokenFaltando(linha, coluna, tokenEsperado);
+    }
+
+    private ErroSintatico traduzirErrosMatriz(int linha, int coluna, MissingTokenException erro, String[] tokens, Stack<String> pilhaContexto, String codigoFonte, String mensagemPadrao)
+    {
+        String tokenEsperado = AnalisadorSintatico.getToken(tokens, erro.getMissingType());
+        
+        switch (tokenEsperado)
+        {
+            case "{": return new ErroExpressaoEsperada(linha, coluna, pilhaContexto);
+        }
+        
+        return new ErroTokenFaltando(linha, coluna, tokenEsperado);
     }
 }

@@ -1,6 +1,7 @@
 
 package br.univali.portugol.nucleo.analise;
 
+import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
 import br.univali.portugol.nucleo.mensagens.Aviso;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.Erro;
@@ -29,6 +30,17 @@ public final class ResultadoAnalise
     private List<ErroSemantico> errosSemanticos = null;
     
     private List<AvisoAnalise> avisos = null;
+    private ArvoreSintaticaAbstrata asa;
+
+    public ArvoreSintaticaAbstrata getAsa()
+    {
+        return asa;
+    }
+
+    public void setAsa(ArvoreSintaticaAbstrata asa)
+    {
+        this.asa = asa;
+    }
     
     public ResultadoAnalise()
     {
@@ -37,7 +49,7 @@ public final class ResultadoAnalise
         errosSemanticos = new ArrayList<ErroSemantico>();
         
         avisos = new ArrayList<AvisoAnalise>();
-    }
+    }    
     
     /**
      * Permite adicionar um aviso ao resultado da análise

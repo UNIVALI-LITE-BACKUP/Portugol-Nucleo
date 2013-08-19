@@ -39,7 +39,7 @@ import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
  * 
  * @see AnalisadorSemantico
  */
-public class ExcecaoImpossivelDeterminarTipoDado extends Exception
+public final class ExcecaoImpossivelDeterminarTipoDado extends Exception
 {
 
 }

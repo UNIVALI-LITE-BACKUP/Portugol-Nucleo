@@ -13,16 +13,17 @@ public final class ErroInicializacaoInvalida extends ErroSemantico
     private final NoDeclaracao declaracao;
     private Simbolo simbolo;
 
-    public ErroInicializacaoInvalida(NoDeclaracao declaracao, NoExpressao inicializacao, int linha, int coluna)
+    public ErroInicializacaoInvalida(NoDeclaracao declaracao)
     {
-        super(linha, coluna);
+       
+        super(declaracao.getInicializacao().getTrechoCodigoFonte());
         this.declaracao = declaracao;
-        this.inicializacao = inicializacao;
+        this.inicializacao = declaracao.getInicializacao();
     }
 
-    public ErroInicializacaoInvalida(Simbolo simbolo, NoDeclaracao declaracao, NoExpressao inicializacao, int linha, int coluna)
+    public ErroInicializacaoInvalida(Simbolo simbolo, NoDeclaracao declaracao)
     {
-        this(declaracao,inicializacao,linha, coluna);
+        this(declaracao);
         this.simbolo = simbolo;
     }
     
@@ -35,15 +36,23 @@ public final class ErroInicializacaoInvalida extends ErroSemantico
         
         if (declaracao instanceof NoDeclaracaoVariavel)
         {
-            direito = "a variável '%s' ";
+            if (declaracao.constante())
+            {
+                direito = "a constante \"%s\" ";
+            }
+            else
+            {
+                direito = "a variável \"%s\" ";
+            }
+            
         }
         else if (declaracao instanceof NoDeclaracaoVetor)
         {
-            direito = "o vetor '%s' ";
+            direito = "o vetor \"%s\" ";
         }
         else if (declaracao instanceof NoDeclaracaoMatriz)
         {
-            direito = "a matriz '%s' ";
+            direito = "a matriz \"%s\" ";
         }
         
         builder.append(String.format(direito, declaracao.getNome()));
@@ -62,15 +71,15 @@ public final class ErroInicializacaoInvalida extends ErroSemantico
             if (simbolo != null){
                 if (simbolo instanceof Variavel)
                 {
-                    esquerdo = "com o valor da variável '%s'";
+                    esquerdo = "com o valor da variável \"%s\"";
                 }
                 else if (simbolo instanceof Vetor)
                 {
-                    esquerdo = "com os valores do vetor '%s'";
+                    esquerdo = "com os valores do vetor \"%s\"";
                 }
                 else if (simbolo instanceof Matriz)
                 {
-                    esquerdo ="os valores da matriz '%s'";
+                    esquerdo ="os valores da matriz \"%s\"";
                 }
                 builder.append(String.format(esquerdo,simbolo.getNome()));
             }

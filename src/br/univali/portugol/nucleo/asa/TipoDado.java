@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
+
 /**
  * Esta enumeração define todos os tipos de dado existentes no Portugol.
  * <p>
@@ -31,7 +33,7 @@ public enum TipoDado
      *
      * @since 1.0
      */
-    INTEIRO("inteiro", "inteiro", 0),
+    INTEIRO("inteiro", "inteiro", 0, Integer.class),
     
     /**
      * Representa os valores reais no Portugol. Os valores reais são todos os números fracionários positivos
@@ -52,7 +54,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    REAL("real", "real", 0.0),
+    REAL("real", "real", 0.0, Double.class),
     
     /**
      * Representa os valores lógicos (verdadeiro ou falso) no Portugol. 
@@ -70,7 +72,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    LOGICO("logico", "lógico", false),
+    LOGICO("logico", "lógico", false, Boolean.class),
     
     /**
      * Representa as cadeias de carcateres, ou seja, os valores textuais, no Portugol.
@@ -90,7 +92,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    CADEIA("cadeia", "cadeia", null),
+    CADEIA("cadeia", "cadeia", null, String.class),
     
     /**
      * Representa um único caracter no Portugol. Os caracteres são declarados entre aspas simples ''.
@@ -112,11 +114,11 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    CARACTER("caracter", "caracter", '\0'),
+    CARACTER("caracter", "caracter", '\0', Character.class),
     
     /**
      * Este é um tipo de dados especial utilizado apenas nas declarações de função para indicar
-     * que a função não irá retornar valores. Ss o tipo de dado da função for omitido, assume-se
+     * que a função não irá retornar valores. Se o tipo de dado da função for omitido, assume-se
      * automaticamente um retorno vazio.
      * <p>
      * Exemplo:
@@ -137,11 +139,19 @@ public enum TipoDado
      * @since 1.0
      * 
      */
-    VAZIO("vazio", "vazio", null);
+    VAZIO("vazio", "vazio", null, Void.TYPE),
+    
+    /**
+     * Este é um tipo de dados especial utilizado apenas com os parâmetros 
+     * das funções de bibliotecas. Este tipo de dado indica ao {@link AnalisadorSemantico}
+     * que o parâmetro da função aceita qualquer tipo de dado.
+     */ 
+    TODOS("todos", "todos", null, Object.class);
     
     private String nome;
     private String descricao;
     private Object valorPadrao;
+    private Class tipoJava;
 
     /**
      * 
@@ -149,11 +159,12 @@ public enum TipoDado
      * @param descricao   
      * @param valorPadrao
      */    
-    private TipoDado(String nome, String descricao, Object valorPadrao)
+    private TipoDado(String nome, String descricao, Object valorPadrao, Class tipoJava)
     {
         this.nome = nome;
         this.descricao = descricao;
         this.valorPadrao = valorPadrao;
+        this.tipoJava = tipoJava;
     }
 
     /**
@@ -184,6 +195,18 @@ public enum TipoDado
         return valorPadrao;
     }
 
+    public String getNome()
+    {
+        return nome;
+    }
+
+    
+    
+    public Class getTipoJava()
+    {
+        return tipoJava;
+    }
+    
     @Override
     public String toString()
     {
@@ -194,7 +217,7 @@ public enum TipoDado
      * Obtém um tipo de dado a partir de seu nome.
      * 
      * @param nome     o nome do tipo de dado desejado.
-     * @return         o tipo de dado correspondente ao nome informado. Retorna o tipo {@link TipoDado#VAZIO} 
+     * @return         o tipo de dado correspondente ao nome informado. Retorna <code>null</code>
      *                 se não for encontrado um tipo correspondente ao nome informado.
      * 
      * @since 1.0
@@ -211,6 +234,21 @@ public enum TipoDado
             }
         }
 
-        return TipoDado.VAZIO;
+        return null;
+    }
+    
+    public static TipoDado obterTipoDadoPeloTipoJava(Class tipoJava)
+    {
+        TipoDado[] tiposDado = values();
+ 
+        for (TipoDado tipoDado : tiposDado)
+        {
+            if (tipoDado.getTipoJava().equals(tipoJava))
+            {
+                return tipoDado;
+            }
+        }
+
+        return null;
     }
 }

@@ -13,6 +13,7 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
     private ModoAcesso modoAcesso;
     private Quantificador quantificador;
 
+
     /**
      * @param nome              o nome deste parãmetro.
      * @param tipoDado          o tipo de dado deste parâmetro.
@@ -22,7 +23,7 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
      */
     public NoDeclaracaoParametro(String nome, TipoDado tipoDado, Quantificador quantificador, ModoAcesso modoAcesso)
     {
-        super(nome, tipoDado, true);
+        super(nome, tipoDado, false);
         this.quantificador = quantificador;
         this.modoAcesso = modoAcesso;
     }
@@ -72,7 +73,7 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
     {
         this.indice = indice;
     }
-
+ 
     /**
      * {@inheritDoc }
      */

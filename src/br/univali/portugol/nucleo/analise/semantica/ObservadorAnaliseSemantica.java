@@ -30,5 +30,5 @@ public interface ObservadorAnaliseSemantica
      * @param aviso     um aviso semântico encontrado durante a análise.
      * @since 1.0
      */
-    public void tratarAviso(AvisoAnalise aviso);
+    public void tratarAviso(AvisoAnalise aviso);    
 }

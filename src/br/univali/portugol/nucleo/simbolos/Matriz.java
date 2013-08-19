@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.No;
+import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,21 @@ public final class Matriz extends Simbolo
     private int numeroColunas;
     private Object[][] valores;
 
+    private int ultimaLinhaModificada;
+    private int ultimaColunaModificada;
+
+    public int getUltimaLinhaModificada()
+    {
+        return ultimaLinhaModificada;
+    }
+
+    public int getUltimaColunaModificada()
+    {
+        return ultimaColunaModificada;
+    }
+    
+    
+    
     /**
      * Aloca uma matriz em memória sem definir seu tamanho nem seus valores.
      * 
@@ -23,9 +40,9 @@ public final class Matriz extends Simbolo
      * @param tipoDado     o tipo de dado armazenado por esta matriz.
      * @since 1.0
      */
-    private Matriz(String nome, TipoDado tipoDado)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem)
     {
-        super(nome, tipoDado);
+        super(nome, tipoDado, origem);
         setInicializado(true);
     }
 
@@ -38,9 +55,9 @@ public final class Matriz extends Simbolo
      * @param numeroColunas     o número de colunas que esta matriz terá.
      * @since 1.0
      */
-    public Matriz(String nome, TipoDado tipoDado, int numeroLinhas, int numeroColunas)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem, int numeroLinhas, int numeroColunas)
     {
-        super(nome, tipoDado);
+        super(nome, tipoDado, origem);
         inicializarComDimensoes(numeroLinhas, numeroColunas);
         setInicializado(true);
     }
@@ -55,9 +72,9 @@ public final class Matriz extends Simbolo
      * @param valores           os valores que serão armazenados nesta matriz.
      * @since 1.0
      */
-    public Matriz(String nome, TipoDado tipoDado, int numeroLinhas, int numeroColunas, List<List<Object>> valores)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem, int numeroLinhas, int numeroColunas, List<List<Object>> valores)
     {
-        super(nome, tipoDado);
+        super(nome, tipoDado, origem);
         inicializarComDimensoesValores(numeroLinhas, numeroColunas, valores);
         setInicializado(true);
     }
@@ -71,9 +88,9 @@ public final class Matriz extends Simbolo
      * @param valores           os valores que serão armazenados nesta matriz.
      * @since 1.0
      */
-    public Matriz(String nome, TipoDado tipoDado, List<List<Object>> valores)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem, List<List<Object>> valores)
     {
-        super(nome, tipoDado);
+        super(nome, tipoDado, origem);
         if (valores != null)
         {
             inicializarComValores(valores);
@@ -128,6 +145,8 @@ public final class Matriz extends Simbolo
      */
     public void setValor(int linha, int coluna, Object valor)
     {
+        ultimaLinhaModificada = linha;
+        ultimaColunaModificada = coluna;
         this.valores[linha][coluna] = valor;
     }
 
@@ -143,7 +162,7 @@ public final class Matriz extends Simbolo
         {
             for (int j = 0; j < numeroColunas; j++)
             {
-                valores[i][j] = valorPadrao;
+                valores[i][j] = null;
             }
         }
     }
@@ -166,7 +185,7 @@ public final class Matriz extends Simbolo
                 }
                 catch (Exception e)
                 {
-                    this.valores[i][j] = valorPadrao;
+                    this.valores[i][j] = null;
                 }
             }
         }
@@ -208,7 +227,7 @@ public final class Matriz extends Simbolo
     @Override
     public Matriz copiar(String novoNome)
     {
-        Matriz matriz = new Matriz(novoNome, getTipoDado());
+        Matriz matriz = new Matriz(novoNome, getTipoDado(), getOrigemDoSimbolo());
         matriz.numeroLinhas = numeroLinhas;
         matriz.numeroColunas = numeroColunas;
         matriz.valores = copiarValores();

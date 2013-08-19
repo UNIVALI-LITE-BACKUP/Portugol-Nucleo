@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.No;
+import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +16,15 @@ import java.util.List;
 public final class Vetor extends Simbolo
 {
     private List<Object> valores;
+    private int ultimoIndiceModificado;
 
+    public int getUltimoIndiceModificado()
+    {
+        return ultimoIndiceModificado;
+    }
+
+    
+    
     /**
      * Aloca um vetor em memória sem definir seu tamanho nem seus valores.
      * 
@@ -22,9 +32,9 @@ public final class Vetor extends Simbolo
      * @param tipoDado     o tipo de dado armazenado por este vetor.
      * @since 1.0
      */
-    private Vetor(String nome, TipoDado tipoDado)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem)
     {
-        super(nome, tipoDado);
+        super(nome, tipoDado, origem);
         setInicializado(true);
     }
     
@@ -37,13 +47,13 @@ public final class Vetor extends Simbolo
      * @param tamanho           o tamamho que este vetor terá.
      * @since 1.0
      */
-    public Vetor(String nome, TipoDado tipoDado, int tamanho)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem, int tamanho)
     {
-        this(nome, tipoDado);
+        this(nome, tipoDado, origem);
         valores = new ArrayList<Object>(tamanho);
         for (int i = 0; i < tamanho; i ++)
         {
-            valores.add(tipoDado.getValorPadrao());
+            valores.add(null);
         }
     }
 
@@ -56,9 +66,9 @@ public final class Vetor extends Simbolo
      * @param valores           os valores que serão armazenados neste vetor.
      * @since 1.0
      */    
-    public Vetor(String nome, TipoDado tipoDado, int tamanho, List<Object> valores)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem, int tamanho, List<Object> valores)
     {
-        this(nome, tipoDado, tamanho);
+        this(nome, tipoDado, origem, tamanho);
         for (int i = 0; i < this.valores.size(); i++) {
             this.valores.set(i,valores.get(i));
         }
@@ -74,9 +84,9 @@ public final class Vetor extends Simbolo
      * @param valores           os valores que serão armazenados neste vetor.
      * @since 1.0
      */        
-    public Vetor(String nome, TipoDado tipoDado, List<Object> valores)
+    public Vetor(String nome, TipoDado tipoDado, NoDeclaracao origem, List<Object> valores)
     {
-        this(nome, tipoDado);
+        this(nome, tipoDado, origem);
         this.valores = new ArrayList<Object>(valores);
         setInicializado(true);
     }
@@ -115,6 +125,7 @@ public final class Vetor extends Simbolo
      */
     public void setValor(int indice, Object valor)
     {
+        ultimoIndiceModificado = indice;
         this.valores.set(indice, valor);
     }
     
@@ -129,7 +140,7 @@ public final class Vetor extends Simbolo
     @Override
     public Vetor copiar(String novoNome)
     {
-        Vetor vetor = new Vetor(novoNome, getTipoDado());
+        Vetor vetor = new Vetor(novoNome, getTipoDado(), getOrigemDoSimbolo());
         vetor.valores = new ArrayList<Object>(this.valores.size());
         Collections.copy(vetor.valores, this.valores);
         return vetor;
@@ -137,6 +148,11 @@ public final class Vetor extends Simbolo
 
     public List<Object> obterValores()
     {
-        return new ArrayList<Object>(valores);
+        if (valores != null)
+        {
+            return new ArrayList<Object>(valores);
+        }
+        
+        return new ArrayList<Object>();
     }
 }

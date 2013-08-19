@@ -35,9 +35,9 @@ public final class NoReferenciaMatriz extends NoReferencia
      * @param coluna     a expressão que define qual coluna da matriz está sendo acessada.
      * @since 1.0
      */
-    public NoReferenciaMatriz(String nome, NoExpressao linha, NoExpressao coluna)
+    public NoReferenciaMatriz(String escopo, String nome, NoExpressao linha, NoExpressao coluna)
     {
-        super(nome);
+        super(escopo, nome);
         this.linha = linha;
         this.coluna = coluna;
     }

@@ -11,6 +11,11 @@ public abstract class ErroAnalise extends Erro
     private int linha;
     private int coluna;
 
+    public ErroAnalise()
+    {
+        
+    }
+    
     /**
      * 
      * @param linha      a linha onde o erro ocorreu.
@@ -44,5 +49,15 @@ public abstract class ErroAnalise extends Erro
     public final int getColuna()
     {
         return coluna;
+    }
+
+    public void setLinha(int linha)
+    {
+        this.linha = linha;
+    }
+
+    public void setColuna(int coluna)
+    {
+        this.coluna = coluna;
     }
 }

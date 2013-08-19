@@ -1,8 +1,9 @@
 package br.univali.portugol.nucleo.analise.sintatica.tradutores;
 
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
-import br.univali.portugol.nucleo.analise.sintatica.erros.ErroCaracterInsperadoInvalido;
-import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParsingNaoTratado;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressaoInesperada;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroExpressoesForaEscopoPrograma;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroTipoDeDadoEstaFaltando;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.Stack;
 import org.antlr.runtime.UnwantedTokenException;
@@ -30,12 +31,31 @@ public final class TradutorUnwantedTokenException
      * @return                   o erro sintático traduzido.
      * @since 1.0
      */
-    public ErroSintatico traduzirErroParsing(UnwantedTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao)
+    public ErroSintatico traduzirErroParsing(UnwantedTokenException erro, String[] tokens, Stack<String> pilhaContexto, String mensagemPadrao, String codigoFonte)
     {
         int linha = erro.line;
         int coluna = erro.charPositionInLine;
         
+        String tokenEncontrado = AnalisadorSintatico.getToken(tokens, erro.getUnexpectedType());
+        AnalisadorSintatico.TipoToken tipo = AnalisadorSintatico.getTipoToken(tokenEncontrado);
+                
+        if (pilhaContexto.peek().equals("programa") && tipo == AnalisadorSintatico.TipoToken.ID)
+        {
+            return new ErroTipoDeDadoEstaFaltando(linha, coluna);
+        }
         
-       return new ErroCaracterInsperadoInvalido(linha, coluna, erro.getUnexpectedToken().getText());
+        if (erro.expecting >= 0)
+        {
+            String tokenEsperado = AnalisadorSintatico.getToken(tokens, erro.expecting);
+            
+            if (tokenEsperado.equals("PR_PROGRAMA"))
+            {
+                String expressoes = codigoFonte.substring(0, codigoFonte.indexOf("programa"));
+                
+                return new ErroExpressoesForaEscopoPrograma(expressoes, 0, codigoFonte, ErroExpressoesForaEscopoPrograma.Local.ANTES);
+            }
+        }
+        
+       return new ErroExpressaoInesperada(linha, coluna, AnalisadorSintatico.getToken(tokens, erro.getUnexpectedType()));
     }
 }
