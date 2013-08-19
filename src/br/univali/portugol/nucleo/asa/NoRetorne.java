@@ -76,27 +76,6 @@ public final class NoRetorne extends NoBloco
         return expressao;
     }
 
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-
-    public TrechoCodigoFonte getTrechoCodigoFonte()
-    {
-        if (expressao != null)
-        {
-            int linha = trechoCodigoFonte.getLinha();
-            int coluna = trechoCodigoFonte.getColuna();
-            int tamanhoTexto = "retorne".length() + (expressao.getTrechoCodigoFonte().getColuna() - (coluna + "retorne".length())) + expressao.getTrechoCodigoFonte().getTamanhoTexto();
-            
-            return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
-        }
-        else
-        {
-            return trechoCodigoFonte;
-        }
-    }
-
     /**
      * {@inheritDoc }
      */
