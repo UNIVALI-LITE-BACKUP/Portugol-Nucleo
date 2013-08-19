@@ -287,7 +287,7 @@ public final class Tipos extends Biblioteca
     (
         descricao = 
             
-              "Converte um valor do tipo <tipo>inteiro</tipo> em um valor do tipo <tipo>cadeia</tipo>"
+              "Converte um valor do tipo <tipo>inteiro</tipo> em um valor do tipo <tipo>cadeia</tipo> "
             + "utilizando a <param>base</param> informada",
         
         parametros = 
