@@ -100,5 +100,119 @@ public final class Matematica extends Biblioteca
         decimal = decimal.setScale(casas, BigDecimal.ROUND_HALF_UP);
 
         return decimal.doubleValue();
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Calcula o seno do <param>ângulo</param> informado",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "angulo", descricao = "o ângulo para o qual será calculado o seno")
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o seno do <param>ângulo</param> informado",
+        referencia = "http://pt.wikipedia.org/wiki/Seno"            
+    )
+    public Double seno(Double angulo) throws ErroExecucao
+    {
+        return Math.sin(angulo);
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Calcula o cosseno do <param>ângulo</param> informado",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "angulo", descricao = "o ângulo para o qual será calculado o cosseno")
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o cosseno do <param>ângulo</param> informado",
+        referencia = "http://pt.wikipedia.org/wiki/Cosseno"            
+    )
+    public Double cosseno(Double angulo) throws ErroExecucao
+    {
+        return Math.cos(angulo);
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Calcula a tangente do <param>ângulo</param> informado",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "angulo", descricao = "o ângulo para o qual será calculada a tangente")
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "a tagente do <param>ângulo</param> informado",
+        referencia = "http://pt.wikipedia.org/wiki/Tangente"            
+    )
+    public Double tangente(Double angulo) throws ErroExecucao
+    {
+        return Math.tan(angulo);
+    }   
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Calcula o valor absoluto do <param>número</param> informado",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "numero", descricao = "o número para o qual será calculado o valor absoluto")
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o valor absoluto do <param>número</param> informado",
+        referencia = "http://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_modular"            
+    )
+    public Double valor_absoluto(Double numero) throws ErroExecucao
+    {
+        return Math.abs(numero);
     }    
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Identifica o maior número entre os números informados",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "numeroA", descricao = "um número qualquer"),
+            @DocumentacaoParametro(nome = "numeroB", descricao = "um número qualquer")
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o maior número"
+    )    
+    public Double maior_numero(Double numeroA, Double numeroB) throws ErroExecucao
+    {
+        return Math.max(numeroA, numeroB);
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Identifica o menor número entre os números informados",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "numeroA", descricao = "um número qualquer"),
+            @DocumentacaoParametro(nome = "numeroB", descricao = "um número qualquer")
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o menor número"
+    )      
+    public Double menor_numero(Double numeroA, Double numeroB) throws ErroExecucao
+    {
+        return Math.min(numeroA, numeroB);
+    }
 }
