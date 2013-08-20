@@ -1,0 +1,313 @@
+package br.univali.portugol.nucleo.bibliotecas;
+
+import br.univali.portugol.nucleo.Programa;
+import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
+import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.SwingUtilities;
+
+
+@PropriedadesBiblioteca(tipo = TipoBiblioteca.RESERVADA)
+@DocumentacaoBiblioteca
+(
+    descricao = "Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do mouse do computador", 
+    versao = "1.0"
+)
+public final class Mouse extends Biblioteca
+{
+    private static final Cursor cursorPadrao = Cursor.getDefaultCursor();
+    private static final Cursor cursorTransparente = criarCursorTransparente();
+            
+    private boolean[] buffer = new boolean[3];
+    private final MouseAdapter observador;
+    private int x;
+    private int y;
+    private int botoesPressionados = 0;
+    private boolean aguardandoBotao = false;
+    private int ultimoBotao = -1;
+    private List<InstaladorMouse> instaladores;
+        
+    @DocumentacaoConstante(descricao = "Código numérico do botão esquerdo do mouse")
+    public static final Integer BOTAO_ESQUERDO = 0;
+    
+    @DocumentacaoConstante(descricao = "Código numérico do botão direito do mouse")
+    public static final Integer BOTAO_DIREITO = 1;
+    
+    @DocumentacaoConstante(descricao = "Código numérico do botão do meio do mouse")
+    public static final Integer BOTAO_MEIO = 2;
+
+    public Mouse()
+    {
+        instaladores = new ArrayList<>();
+        
+        observador = new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    buffer[BOTAO_ESQUERDO] = true;
+                    botoesPressionados += 1;
+                }
+                
+                if (SwingUtilities.isRightMouseButton(e))
+                {
+                    buffer[BOTAO_DIREITO] = true;
+                    botoesPressionados += 1;
+                }
+                
+                if (SwingUtilities.isMiddleMouseButton(e))
+                {
+                    buffer[BOTAO_MEIO] = true;
+                    botoesPressionados += 1;
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    buffer[BOTAO_ESQUERDO] = false;
+                    botoesPressionados -= 1;
+                    ultimoBotao = BOTAO_ESQUERDO;
+                }
+                
+                if (SwingUtilities.isRightMouseButton(e))
+                {
+                    buffer[BOTAO_DIREITO] = false;
+                    botoesPressionados -= 1;
+                    ultimoBotao = BOTAO_DIREITO;
+                }
+                
+                if (SwingUtilities.isMiddleMouseButton(e))
+                {
+                    buffer[BOTAO_MEIO] = false;
+                    botoesPressionados -= 1;
+                    ultimoBotao = BOTAO_MEIO;
+                }
+                
+                if (aguardandoBotao)
+                {
+                    acordarThread();
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e)
+            {
+                x = e.getX();
+                y = e.getY();
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e)
+            {
+                x = e.getX();
+                y = e.getY();
+            }
+        };
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Testa se um determinado <param>botão</param> do mouse está pressionado neste instante",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "botao", descricao = "o código do botão que será testado")
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se o <param>botão</param> estiver pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
+    )
+    public Boolean botao_pressionado(Integer botao) throws ErroExecucao
+    {
+        if ((botao >= 0) && (botao < buffer.length))
+        {
+            return buffer[botao];
+        }
+        else throw new ErroExecucaoBiblioteca(String.format("O código '%d' não é um código de botão válido", botao));
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Testa se existe algum botão do mouse pressionado neste instante",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se houver um botão do mouse pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
+    )    
+    public Boolean algum_botao_pressionado() throws ErroExecucao
+    {
+        return botoesPressionados > 0;
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Aguarda até que um botão seja clicado (isto é, foi pressionado e depois solto), e captura o seu código",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "o código do botão lido"
+    )
+    public Integer ler_botao() throws ErroExecucao
+    {
+        synchronized (Mouse.this)
+        {
+            try
+            {
+                aguardandoBotao = true;
+                wait();
+                aguardandoBotao = false;
+            }
+            catch (InterruptedException ex)
+            {
+                throw new RuntimeException(ex);
+            }
+        }
+        
+        return ultimoBotao;
+    }
+
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém a coordenada X do mouse neste instante",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "a coordenada X do mouse neste instante"            
+    )
+    public Integer posicao_x() throws ErroExecucao
+    {
+        return x;
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém a coordenada Y do mouse neste instante",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        },
+        retorno = "a coordenada Y do mouse neste instante"
+    )    
+    public Integer posicao_y() throws ErroExecucao
+    {
+        return y;
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Oculta o cursor do mouse",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    ) 
+    public void ocultar_cursor() throws ErroExecucao
+    {
+        for (InstaladorMouse instaladorMouse : instaladores)
+        {
+            instaladorMouse.definirCursor(cursorTransparente);
+        }
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Exibe novamente o cursor do mouse caso ele esteja oculto",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )     
+    public void exibir_cursor() throws ErroExecucao
+    {
+        for (InstaladorMouse instaladorMouse : instaladores)
+        {
+            instaladorMouse.definirCursor(cursorPadrao);
+        }
+    }    
+    
+    private synchronized void acordarThread()
+    {
+        notifyAll();
+    }
+    
+    private static Cursor criarCursorTransparente()
+    {
+        try
+        {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension dim = toolkit.getBestCursorSize(1, 1);
+
+            BufferedImage cursorImg = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = cursorImg.createGraphics();
+
+            g2d.setBackground(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+            g2d.clearRect(0, 0, dim.width, dim.height);
+
+            g2d.dispose();
+
+            return toolkit.createCustomCursor(cursorImg, new Point(0,0), "hiddenCursor");
+        }
+        catch (Exception ex)
+        {
+            return Cursor.getDefaultCursor();
+        }
+    }
+    
+    @Override
+    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucao
+    {
+        for (Biblioteca biblioteca : bibliotecasReservadas)
+        {
+            instalarMouse(biblioteca);
+        }
+    }
+    
+    @Override
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucao
+    {
+        instalarMouse(biblioteca);
+    }
+    
+    private void instalarMouse(Biblioteca biblioteca) throws ErroExecucao
+    {
+        if (biblioteca instanceof InstaladorMouse)
+        {
+            ((InstaladorMouse) biblioteca).instalarMouse(observador);
+            instaladores.add((InstaladorMouse) biblioteca);
+        }
+    }
+    
+    public interface InstaladorMouse
+    {
+        public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucao;
+        public void definirCursor(Cursor cursor) throws ErroExecucao;
+    }
+}

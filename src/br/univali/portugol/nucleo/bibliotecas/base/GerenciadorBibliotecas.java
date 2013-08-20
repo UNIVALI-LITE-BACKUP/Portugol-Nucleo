@@ -89,6 +89,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
             bibliotecasDisponiveis.add("Teclado");
             bibliotecasDisponiveis.add("Texto");
             bibliotecasDisponiveis.add("Tipos");
+            bibliotecasDisponiveis.add("Mouse");
             
             Collections.sort(bibliotecasDisponiveis);
         }

@@ -8,6 +8,8 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.awt.*;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +32,7 @@ import javax.swing.JPanel;
     
     versao = "1.0"
 )
-public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado
+public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
     private static final int NUMERO_MAXIMO_IMAGENS = 128;
     private static final int ALTURA_PADRAO = 480;
@@ -747,6 +749,21 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucao
     {
         janela.addKeyListener(observadorTeclado);
+    }
+
+    @NaoExportar
+    @Override
+    public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucao
+    {
+        janela.superficieDesenho.addMouseListener(observadorMouse);
+        janela.superficieDesenho.addMouseMotionListener(observadorMouse);
+    }
+
+    @NaoExportar
+    @Override
+    public void definirCursor(Cursor cursor) throws ErroExecucao
+    {
+        janela.setCursor(cursor);
     }
 
     private interface OperacaoDesenho 
