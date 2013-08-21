@@ -1325,7 +1325,14 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 }
                 catch (IndexOutOfBoundsException ie)
                 {
-                    throw new ExcecaoVisitaASA(new ErroIndiceMatrizInvalido(matriz, linha, coluna), asa, noReferenciaMatriz);
+                    int linhaErro = noReferenciaMatriz.getTrechoCodigoFonteNome().getLinha();
+                    int colunaErro = noReferenciaMatriz.getTrechoCodigoFonteNome().getColuna();
+            
+                    ErroIndiceMatrizInvalido erroIndiceMatrizInvalido = new ErroIndiceMatrizInvalido(matriz, linha, coluna);
+                    erroIndiceMatrizInvalido.setLinha(linhaErro);
+                    erroIndiceMatrizInvalido.setColuna(colunaErro);
+                    
+                    throw new ExcecaoVisitaASA(erroIndiceMatrizInvalido, asa, noReferenciaMatriz);
                 }
 
                 while (valor instanceof NoExpressao)
@@ -1371,19 +1378,20 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                 Vetor vetor = (Vetor) simbolo;
                 int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
 
-                if (indice >= vetor.getTamanho())
-                {
-                    throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome()), asa, noReferenciaVetor);
-                }
-
+                
                 Object valor;
                 try
                 {
                     valor = vetor.getValor(indice);
                 }
-                catch (ArrayIndexOutOfBoundsException aioobe)
+                catch (IndexOutOfBoundsException aioobe)
                 {
-                    throw new ExcecaoVisitaASA(new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, ultimaReferenciaAcessada), null, noReferenciaVetor);
+                    ErroIndiceVetorInvalido erroIndiceVetorInvalido = new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, noReferenciaVetor.getNome());
+                    
+                    erroIndiceVetorInvalido.setLinha(noReferenciaVetor.getIndice().getTrechoCodigoFonte().getLinha());
+                    erroIndiceVetorInvalido.setColuna(noReferenciaVetor.getIndice().getTrechoCodigoFonte().getColuna());
+                    
+                    throw new ExcecaoVisitaASA(erroIndiceVetorInvalido, null, noReferenciaVetor);
                 }
 
                 while (valor instanceof NoExpressao)

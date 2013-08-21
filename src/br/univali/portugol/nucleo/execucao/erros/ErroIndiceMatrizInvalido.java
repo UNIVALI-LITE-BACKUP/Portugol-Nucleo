@@ -67,7 +67,7 @@ public final class ErroIndiceMatrizInvalido extends ErroExecucao
         construtorTexto.append(linhaAcessada);
         construtorTexto.append("][");
         construtorTexto.append(colunaAcessada);
-        construtorTexto.append("] é inválido para a matriz \"");
+        construtorTexto.append("] é inválida para a matriz \"");
         construtorTexto.append(nomeMatriz);
         construtorTexto.append("\". A matriz ");
         

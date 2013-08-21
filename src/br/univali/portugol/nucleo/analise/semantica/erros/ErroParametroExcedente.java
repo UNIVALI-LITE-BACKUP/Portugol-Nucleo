@@ -12,7 +12,8 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  *
  * @author fillipi
  */
-public class ErroParametroExcedente extends ErroSemantico {
+public class ErroParametroExcedente extends ErroSemantico
+{
     private final NoChamadaFuncao chamadaFuncao;
 
     public ErroParametroExcedente(TrechoCodigoFonte trechoCodigoFonte, NoChamadaFuncao chamadaFuncao)
@@ -24,7 +25,6 @@ public class ErroParametroExcedente extends ErroSemantico {
     @Override
     protected String construirMensagem()
     {
-        return String.format("A expressão é obsoleta na chamada da função \"%s\", pois extrapola o número de parâmetros esperados pela função", chamadaFuncao.getNome());
+        return String.format("A expressão está sobrando na chamada da função \"%s\", pois extrapola o número de parâmetros esperados", chamadaFuncao.getNome());
     }
-    
 }
