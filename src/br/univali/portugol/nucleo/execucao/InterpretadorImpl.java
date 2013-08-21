@@ -1313,10 +1313,10 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
             }
             else 
             {            
-                int linha = (Integer) noReferenciaMatriz.getLinha().aceitar(this);
-                int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
+                final int linha = (Integer) noReferenciaMatriz.getLinha().aceitar(this);
+                final int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
                 
-                Matriz matriz = (Matriz) simbolo;
+                final Matriz matriz = (Matriz) simbolo;
 
                 Object valor;
                 try
@@ -1335,6 +1335,20 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     throw new ExcecaoVisitaASA(erroIndiceMatrizInvalido, asa, noReferenciaMatriz);
                 }
 
+                 if (valor == null){
+                    ErroExecucao erroExecucao = new ErroExecucao() {
+
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return String.format("O elemento da matriz '%s', na linha [%d] e coluna [%d] não foi inicializado",matriz.getNome(),linha,coluna);
+                        }
+                    };
+                    erroExecucao.setLinha(noReferenciaMatriz.getTrechoCodigoFonte().getLinha());
+                    erroExecucao.setColuna(noReferenciaMatriz.getTrechoCodigoFonte().getColuna());
+                    throw new ExcecaoVisitaASA(erroExecucao, asa, noReferenciaMatriz);
+                }
+                
                 while (valor instanceof NoExpressao)
                 {
                     valor = ((NoExpressao) valor).aceitar(this);
@@ -1375,8 +1389,8 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
             }
             else
             {            
-                Vetor vetor = (Vetor) simbolo;
-                int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
+                final Vetor vetor = (Vetor) simbolo;
+                final int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
 
                 
                 Object valor;
@@ -1393,7 +1407,21 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     
                     throw new ExcecaoVisitaASA(erroIndiceVetorInvalido, null, noReferenciaVetor);
                 }
+                
+                if (valor == null){
+                    ErroExecucao erroExecucao = new ErroExecucao() {
 
+                        @Override
+                        protected String construirMensagem()
+                        {
+                            return String.format("O elemento do vetor '%s', na posição [%d] não foi inicializado",vetor.getNome(),indice);
+                        }
+                    };
+                    erroExecucao.setLinha(noReferenciaVetor.getTrechoCodigoFonte().getLinha());
+                    erroExecucao.setColuna(noReferenciaVetor.getTrechoCodigoFonte().getColuna());
+                    throw new ExcecaoVisitaASA(erroExecucao, asa, noReferenciaVetor);
+                }
+                
                 while (valor instanceof NoExpressao)
                 {
                     valor = ((NoExpressao) valor).aceitar(this);

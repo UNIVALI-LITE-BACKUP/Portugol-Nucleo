@@ -131,8 +131,7 @@ public final class Matriz extends Simbolo
     public Object getValor(int linha, int coluna)
     {
         setUtilizado(true);
-        final Object valor = valores[linha][coluna];
-        return valor != null ? valor : tipoDado.getValorPadrao();
+        return valores[linha][coluna];
     }
 
     /**
