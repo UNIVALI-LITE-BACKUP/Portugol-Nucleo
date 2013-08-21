@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.execucao.erros.ErroImpossivelConverterTipos;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -18,7 +19,7 @@ public final class Conversor
             
             return metodo.invoke(null, objeto, null);
         }
-        catch (Exception excecao)
+        catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException excecao)
         {
             excecao.printStackTrace(System.out);
             

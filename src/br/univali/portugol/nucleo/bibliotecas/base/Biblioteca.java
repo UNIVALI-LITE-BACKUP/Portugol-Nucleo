@@ -1,6 +1,8 @@
 package br.univali.portugol.nucleo.bibliotecas.base;
 
 import br.univali.portugol.nucleo.Programa;
+import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
+import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
@@ -107,7 +109,7 @@ public abstract class Biblioteca
     
     public Biblioteca()
     {
-        cacheFuncoes = new TreeMap<String, Method>();
+        cacheFuncoes = new TreeMap<>();
     }
     
     public final String getNome()
@@ -125,64 +127,33 @@ public abstract class Biblioteca
         this.tipo = tipo;
     }
     
-    public final Object getValorVariavel(String nome) throws ErroExecucao
+    public final Object getValorVariavel(NoReferenciaVariavel noReferencia) throws ErroExecucao
     {
+        int linha = noReferencia.getTrechoCodigoFonteNome().getLinha();
+        int coluna = noReferencia.getTrechoCodigoFonte().getColuna();
+        
         try
         {
-            Field variavel = this.getClass().getDeclaredField(nome);
+            Field variavel = this.getClass().getDeclaredField(noReferencia.getNome());
                 
             return variavel.get(this);
         }
-        catch (Exception excecao)
+        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException excecao)
         {
-            if (!(excecao instanceof ErroExecucao))
-            {
-                excecao = new ErroExecucaoNaoTratado(excecao);
-            }
-            
-            throw (ErroExecucao) excecao;
+            throw traduzirExcecao(excecao, linha, coluna);
         }
     }
     
-    public final Object chamarFuncao(String nome, Object... parametros) throws ErroExecucao
+    public final Object chamarFuncao(NoChamadaFuncao noChamadaFuncao, Object... parametros) throws ErroExecucao
     {
+        String nome = noChamadaFuncao.getNome();
+        int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
+        int coluna = noChamadaFuncao.getTrechoCodigoFonteNome().getColuna();
+        
         try
         {
             if (!cacheFuncoes.containsKey(nome))
             {
-                //Method funcao;
-                /*
-                if (parametros != null && parametros.length > 0)
-                {
-                    Class[] tiposParametros = new Class[parametros.length];
-
-                    for (int i = 0; i < parametros.length; i++)
-                    {
-                        Class classe = parametros[i].getClass();
-
-                        if (ReferenciaVariavel.class.isAssignableFrom(classe))
-                        {
-                            classe = ReferenciaVariavel.class;
-                        }
-                        else if (ReferenciaVetor.class.isAssignableFrom(classe))
-                        {
-                            classe = ReferenciaVetor.class;
-                        }
-                        else if (ReferenciaMatriz.class.isAssignableFrom(classe))
-                        {
-                            classe = ReferenciaMatriz.class;
-                        }
-
-                        tiposParametros[i] = classe;
-                    }
-
-                    funcao = this.getClass().getDeclaredMethod(nome, tiposParametros);
-                }
-                else
-                {
-                    funcao = this.getClass().getDeclaredMethod(nome);
-                }*/
-                
                 for (Method funcao : this.getClass().getDeclaredMethods())
                 {
                     if (Modifier.isPublic(funcao.getModifiers()) && funcao.getName().equals(nome))
@@ -190,32 +161,33 @@ public abstract class Biblioteca
                         cacheFuncoes.put(nome, funcao);
                     }
                 }
-                
-                //cacheFuncoes.put(nome, funcao);
             }
             
             return cacheFuncoes.get(nome).invoke(this, parametros);
         }
         catch (InvocationTargetException ex)
         {
-            Exception excecao = (Exception) ex.getCause();
-            
-            if (!(excecao instanceof ErroExecucao))
-            {
-                excecao = new ErroExecucaoNaoTratado(excecao);
-            }
-            
-            throw (ErroExecucao) excecao;            
+            throw traduzirExcecao((Exception) ex.getCause(), linha, coluna);
         }
         catch (Exception excecao)
         {
-            if (!(excecao instanceof ErroExecucao))
-            {
-                excecao = new ErroExecucaoNaoTratado(excecao);
-            }
-            
-            throw (ErroExecucao) excecao;
+            throw traduzirExcecao(excecao, linha, coluna);
         }
+    }
+    
+    private ErroExecucao traduzirExcecao(Exception excecao, int linha, int coluna)
+    {
+        if (!(excecao instanceof ErroExecucao))
+        {
+            excecao = new ErroExecucaoNaoTratado(excecao);
+        }
+        
+        ErroExecucao erroExecucao = (ErroExecucao) excecao;
+        
+        erroExecucao.setLinha(linha);
+        erroExecucao.setColuna(coluna);
+        
+        return erroExecucao;
     }
     
     /**
@@ -277,5 +249,5 @@ public abstract class Biblioteca
     protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucao
     {
         
-    }
+    }    
 }

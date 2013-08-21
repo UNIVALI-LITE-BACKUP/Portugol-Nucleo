@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.bibliotecas;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
@@ -9,7 +10,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -476,7 +476,7 @@ public final class Teclado extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se a <param>tecla</param> estiver pressionada no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )
-    public Boolean tecla_pressionada(Integer tecla) throws ErroExecucao
+    public Boolean tecla_pressionada(Integer tecla) throws ErroExecucaoBiblioteca
     {
         return buffer[tecla];
     }
@@ -491,7 +491,7 @@ public final class Teclado extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se houver uma tecla pressionada no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )    
-    public Boolean alguma_tecla_pressionada() throws ErroExecucao
+    public Boolean alguma_tecla_pressionada() throws ErroExecucaoBiblioteca
     {
         return temTeclaPressionada;
     }
@@ -506,7 +506,7 @@ public final class Teclado extends Biblioteca
         },
         retorno = "o código da tecla lida"
     )
-    public Integer ler_tecla() throws ErroExecucao
+    public Integer ler_tecla() throws ErroExecucaoBiblioteca
     {
         synchronized (Teclado.this)
         {
@@ -531,7 +531,7 @@ public final class Teclado extends Biblioteca
     }
     
     @Override
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucao
+    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
         for (Biblioteca biblioteca : bibliotecasReservadas)
         {
@@ -540,12 +540,12 @@ public final class Teclado extends Biblioteca
     }
     
     @Override
-    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucao
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
     {
         instalarTeclado(biblioteca);
     }
     
-    private void instalarTeclado(Biblioteca biblioteca) throws ErroExecucao
+    private void instalarTeclado(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
     {
         if (biblioteca instanceof InstaladorTeclado)
         {
@@ -555,6 +555,6 @@ public final class Teclado extends Biblioteca
     
     public interface InstaladorTeclado
     {
-        public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucao;
+        public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucaoBiblioteca;
     }
 }

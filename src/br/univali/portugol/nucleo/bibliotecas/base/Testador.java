@@ -31,7 +31,7 @@ final class Testador
                 try
                 {
                     JFrame janela = new JFrame("Testar biblioteca");
-                    janela.setSize(350, 250);
+                    janela.setSize(550, 250);
                     janela.setLocationRelativeTo(null);
                     janela.setResizable(false);
                     janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -8,7 +8,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBibliot
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 
 /**
  *
@@ -31,7 +30,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public Integer numero_caracteres(String cadeia) throws ErroExecucao
+    public Integer numero_caracteres(String cadeia) throws ErroExecucaoBiblioteca
     {
         return cadeia.length();
     }
@@ -49,7 +48,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caracteres_maiusculos(String cad) throws ErroExecucao
+    public String caracteres_maiusculos(String cad) throws ErroExecucaoBiblioteca
     {
         return cad.toUpperCase();
     }    
@@ -67,7 +66,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caracteres_minusculos(String cad) throws ErroExecucao
+    public String caracteres_minusculos(String cad) throws ErroExecucaoBiblioteca
     {
         return cad.toLowerCase();
     }
@@ -87,7 +86,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String substituir(String cad, String texto_pesquisa, String texto_substituto) throws ErroExecucao
+    public String substituir(String cad, String texto_pesquisa, String texto_substituto) throws ErroExecucaoBiblioteca
     {
         return cad.replace(texto_pesquisa, texto_substituto);
     }
@@ -115,7 +114,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )    
-    public String preencher_a_esquerda(Character car, Integer tamanho, String cad) throws ErroExecucao
+    public String preencher_a_esquerda(Character car, Integer tamanho, String cad) throws ErroExecucaoBiblioteca
     {
         if (cad.length() < tamanho)
         {
@@ -153,7 +152,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )    
-    public Character obter_caracter(String cad, Integer indice) throws ErroExecucao
+    public Character obter_caracter(String cad, Integer indice) throws ErroExecucaoBiblioteca
     {
         if (indice < 0)
         {

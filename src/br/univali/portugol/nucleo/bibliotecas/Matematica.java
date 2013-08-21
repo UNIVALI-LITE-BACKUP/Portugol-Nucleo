@@ -2,13 +2,13 @@ package br.univali.portugol.nucleo.bibliotecas;
 
 import static br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca.*;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.math.BigDecimal;
 
 /**
@@ -50,7 +50,7 @@ public final class Matematica extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )    
-    public Double potencia(Double base, Double expoente) throws ErroExecucao
+    public Double potencia(Double base, Double expoente) throws ErroExecucaoBiblioteca
     {
         return Math.pow(base, expoente);
     }
@@ -70,7 +70,7 @@ public final class Matematica extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Double raiz(Double radicando, Double indice) throws ErroExecucao
+    public Double raiz(Double radicando, Double indice) throws ErroExecucaoBiblioteca
     {
         return Math.pow(radicando, 1.0 / indice);
     }
@@ -94,7 +94,7 @@ public final class Matematica extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Double arredondar(Double numero, Integer casas) throws ErroExecucao
+    public Double arredondar(Double numero, Integer casas) throws ErroExecucaoBiblioteca
     {
         BigDecimal decimal = new BigDecimal(numero);
         decimal = decimal.setScale(casas, BigDecimal.ROUND_HALF_UP);
@@ -116,7 +116,7 @@ public final class Matematica extends Biblioteca
         retorno = "o seno do <param>ângulo</param> informado",
         referencia = "http://pt.wikipedia.org/wiki/Seno"            
     )
-    public Double seno(Double angulo) throws ErroExecucao
+    public Double seno(Double angulo) throws ErroExecucaoBiblioteca
     {
         return Math.sin(angulo);
     }
@@ -135,7 +135,7 @@ public final class Matematica extends Biblioteca
         retorno = "o cosseno do <param>ângulo</param> informado",
         referencia = "http://pt.wikipedia.org/wiki/Cosseno"            
     )
-    public Double cosseno(Double angulo) throws ErroExecucao
+    public Double cosseno(Double angulo) throws ErroExecucaoBiblioteca
     {
         return Math.cos(angulo);
     }
@@ -154,7 +154,7 @@ public final class Matematica extends Biblioteca
         retorno = "a tagente do <param>ângulo</param> informado",
         referencia = "http://pt.wikipedia.org/wiki/Tangente"            
     )
-    public Double tangente(Double angulo) throws ErroExecucao
+    public Double tangente(Double angulo) throws ErroExecucaoBiblioteca
     {
         return Math.tan(angulo);
     }   
@@ -173,7 +173,7 @@ public final class Matematica extends Biblioteca
         retorno = "o valor absoluto do <param>número</param> informado",
         referencia = "http://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_modular"            
     )
-    public Double valor_absoluto(Double numero) throws ErroExecucao
+    public Double valor_absoluto(Double numero) throws ErroExecucaoBiblioteca
     {
         return Math.abs(numero);
     }    
@@ -192,7 +192,7 @@ public final class Matematica extends Biblioteca
         },
         retorno = "o maior número"
     )    
-    public Double maior_numero(Double numeroA, Double numeroB) throws ErroExecucao
+    public Double maior_numero(Double numeroA, Double numeroB) throws ErroExecucaoBiblioteca
     {
         return Math.max(numeroA, numeroB);
     }
@@ -211,7 +211,7 @@ public final class Matematica extends Biblioteca
         },
         retorno = "o menor número"
     )      
-    public Double menor_numero(Double numeroA, Double numeroB) throws ErroExecucao
+    public Double menor_numero(Double numeroA, Double numeroB) throws ErroExecucaoBiblioteca
     {
         return Math.min(numeroA, numeroB);
     }

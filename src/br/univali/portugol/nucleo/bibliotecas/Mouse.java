@@ -10,7 +10,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -19,7 +18,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,7 +140,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se o <param>botão</param> estiver pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )
-    public Boolean botao_pressionado(Integer botao) throws ErroExecucao
+    public Boolean botao_pressionado(Integer botao) throws ErroExecucaoBiblioteca
     {
         if ((botao >= 0) && (botao < buffer.length))
         {
@@ -160,7 +158,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se houver um botão do mouse pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )    
-    public Boolean algum_botao_pressionado() throws ErroExecucao
+    public Boolean algum_botao_pressionado() throws ErroExecucaoBiblioteca
     {
         return botoesPressionados > 0;
     }
@@ -174,7 +172,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o código do botão lido"
     )
-    public Integer ler_botao() throws ErroExecucao
+    public Integer ler_botao() throws ErroExecucaoBiblioteca
     {
         synchronized (Mouse.this)
         {
@@ -202,7 +200,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "a coordenada X do mouse neste instante"            
     )
-    public Integer posicao_x() throws ErroExecucao
+    public Integer posicao_x() throws ErroExecucaoBiblioteca
     {
         return x;
     }
@@ -216,7 +214,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "a coordenada Y do mouse neste instante"
     )    
-    public Integer posicao_y() throws ErroExecucao
+    public Integer posicao_y() throws ErroExecucaoBiblioteca
     {
         return y;
     }
@@ -229,7 +227,7 @@ public final class Mouse extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     ) 
-    public void ocultar_cursor() throws ErroExecucao
+    public void ocultar_cursor() throws ErroExecucaoBiblioteca
     {
         for (InstaladorMouse instaladorMouse : instaladores)
         {
@@ -245,7 +243,7 @@ public final class Mouse extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )     
-    public void exibir_cursor() throws ErroExecucao
+    public void exibir_cursor() throws ErroExecucaoBiblioteca
     {
         for (InstaladorMouse instaladorMouse : instaladores)
         {
@@ -282,7 +280,7 @@ public final class Mouse extends Biblioteca
     }
     
     @Override
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucao
+    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
         for (Biblioteca biblioteca : bibliotecasReservadas)
         {
@@ -291,12 +289,12 @@ public final class Mouse extends Biblioteca
     }
     
     @Override
-    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucao
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
     {
         instalarMouse(biblioteca);
     }
     
-    private void instalarMouse(Biblioteca biblioteca) throws ErroExecucao
+    private void instalarMouse(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
     {
         if (biblioteca instanceof InstaladorMouse)
         {
@@ -307,7 +305,7 @@ public final class Mouse extends Biblioteca
     
     public interface InstaladorMouse
     {
-        public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucao;
-        public void definirCursor(Cursor cursor) throws ErroExecucao;
+        public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucaoBiblioteca;
+        public void definirCursor(Cursor cursor) throws ErroExecucaoBiblioteca;
     }
 }

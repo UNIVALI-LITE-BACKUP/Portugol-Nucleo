@@ -9,7 +9,6 @@ import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +77,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public void iniciar_modo_grafico(Boolean manter_visivel) throws ErroExecucao
+    public void iniciar_modo_grafico(Boolean manter_visivel) throws ErroExecucaoBiblioteca
     {
         if (!ambienteGraficoInicializado())
         {
@@ -96,7 +95,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )    
-    public void encerrar_modo_grafico() throws ErroExecucao
+    public void encerrar_modo_grafico() throws ErroExecucaoBiblioteca
     {
         encerrar();
     }
@@ -114,7 +113,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public void definir_dimensoes_janela(Integer largura, Integer altura) throws ErroExecucao
+    public void definir_dimensoes_janela(Integer largura, Integer altura) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
@@ -137,7 +136,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public void definir_titulo_janela(String titulo) throws ErroExecucao
+    public void definir_titulo_janela(String titulo) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
@@ -160,7 +159,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public void limpar(Integer cor) throws ErroExecucao
+    public void limpar(Integer cor) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
@@ -190,7 +189,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         },
         referencia = "http://pt.wikipedia.org/wiki/RGB"
     )
-    public Integer criar_cor(Integer vermelho, Integer verde, Integer azul) throws ErroExecucao
+    public Integer criar_cor(Integer vermelho, Integer verde, Integer azul) throws ErroExecucaoBiblioteca
     {
         try
         {
@@ -236,7 +235,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         },
         referencia = "http://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_in_computer_graphics"
     )
-    public void renderizar() throws ErroExecucao
+    public void renderizar() throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
@@ -309,7 +308,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Integer cor, final Boolean preencher) throws ErroExecucao
+    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Integer cor, final Boolean preencher) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
@@ -365,7 +364,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_circulo(final Integer x, final Integer y, final Integer raio, final Integer cor, final Boolean preencher) throws ErroExecucao
+    public void desenhar_circulo(final Integer x, final Integer y, final Integer raio, final Integer cor, final Boolean preencher) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
@@ -411,7 +410,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_ponto(final Integer x, final Integer y, final Integer cor) throws ErroExecucao
+    public void desenhar_ponto(final Integer x, final Integer y, final Integer cor) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
@@ -451,7 +450,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_linha(final Integer x1, final Integer y1, final Integer x2, final Integer y2, final Integer cor) throws ErroExecucao
+    public void desenhar_linha(final Integer x1, final Integer y1, final Integer x2, final Integer y2, final Integer cor) throws ErroExecucaoBiblioteca
     {
         operacoesDesenho.add(new OperacaoDesenho() {
 
@@ -481,7 +480,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Integer carregar_imagem(String caminho) throws ErroExecucao
+    public Integer carregar_imagem(String caminho) throws ErroExecucaoBiblioteca
     {        
         File arquivo = new File(caminho);
         int indiceImagem = obterProximoIndiceLivre();
@@ -546,7 +545,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_imagem(final Integer x, final Integer y, Integer endereco) throws ErroExecucao
+    public void desenhar_imagem(final Integer x, final Integer y, Integer endereco) throws ErroExecucaoBiblioteca
     {
         final Image imagem = obterImagem(endereco);
         operacoesDesenho.add(new OperacaoDesenho() {
@@ -581,7 +580,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_porcao_imagem(final Integer x, final Integer y, final Integer xi, final Integer yi, final Integer largura, final Integer altura, Integer endereco) throws ErroExecucao
+    public void desenhar_porcao_imagem(final Integer x, final Integer y, final Integer xi, final Integer yi, final Integer largura, final Integer altura, Integer endereco) throws ErroExecucaoBiblioteca
     {
         final Image imagem = obterImagem(endereco);
         operacoesDesenho.add(new OperacaoDesenho() {
@@ -608,7 +607,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public void liberar_imagem(Integer endereco) throws ErroExecucao
+    public void liberar_imagem(Integer endereco) throws ErroExecucaoBiblioteca
     {        
         if (obterImagem(endereco) != null)
         {
@@ -639,7 +638,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_texto(final Integer x, final Integer y, final String texto, final Integer tamanho, final Integer cor_fonte, final Integer cor_fundo) throws ErroExecucao
+    public void desenhar_texto(final Integer x, final Integer y, final String texto, final Integer tamanho, final Integer cor_fonte, final Integer cor_fundo) throws ErroExecucaoBiblioteca
     {
         operacoesDesenho.add(new OperacaoDesenho() {
 
@@ -664,7 +663,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         
     }
     
-    private Image obterImagem(Integer endereco) throws ErroExecucao
+    private Image obterImagem(Integer endereco) throws ErroExecucaoBiblioteca
     {
         if (endereco >= 0 && endereco < NUMERO_MAXIMO_IMAGENS)
         {
@@ -746,14 +745,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     @NaoExportar
     @Override
-    public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucao
+    public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucaoBiblioteca
     {
         janela.addKeyListener(observadorTeclado);
     }
 
     @NaoExportar
     @Override
-    public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucao
+    public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucaoBiblioteca
     {
         janela.superficieDesenho.addMouseListener(observadorMouse);
         janela.superficieDesenho.addMouseMotionListener(observadorMouse);
@@ -761,7 +760,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     @NaoExportar
     @Override
-    public void definirCursor(Cursor cursor) throws ErroExecucao
+    public void definirCursor(Cursor cursor) throws ErroExecucaoBiblioteca
     {
         janela.setCursor(cursor);
     }

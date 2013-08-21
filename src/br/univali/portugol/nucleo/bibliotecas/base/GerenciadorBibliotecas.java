@@ -333,7 +333,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     {
         if (!Modifier.isStatic(metodo.getModifiers()))
         {
-            if (jogaExcecao(metodo, ErroExecucao.class))
+            if (jogaExcecao(metodo, ErroExecucaoBiblioteca.class))
             {
                 if (!metodo.getReturnType().isArray())
                 {                            
@@ -352,7 +352,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                 else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o retorno do método '%s' não pode ser um vetor nem uma matriz para ser exportado como uma função", metodo.getName()));
             }
             
-            else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o método '%s' deve jogar uma exceção do tipo '%s' para ser exportado como uma função", metodo.getName(), ErroExecucao.class.getName()));
+            else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o método '%s' deve jogar uma exceção do tipo '%s' para ser exportado como uma função", metodo.getName(), ErroExecucaoBiblioteca.class.getName()));
         }
         
         else throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o método '%s' não pode ser estático para ser exportado como uma função", metodo.getName()));

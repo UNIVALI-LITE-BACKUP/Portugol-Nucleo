@@ -9,5 +9,31 @@ package br.univali.portugol.nucleo.mensagens;
  */
 public abstract class ErroExecucao extends Erro
 {
+    private int linha = 0;
+    private int coluna = 0;
+
+    public ErroExecucao()
+    {
     
+    }
+    
+    public int getLinha()
+    {
+        return linha;
+    }
+
+    public int getColuna()
+    {
+        return coluna;
+    }
+
+    public void setLinha(int linha)
+    {
+        this.linha = linha;
+    }
+
+    public void setColuna(int coluna)
+    {
+        this.coluna = coluna;
+    }
 }

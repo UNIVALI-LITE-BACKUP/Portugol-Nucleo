@@ -56,10 +56,10 @@ public final class Programa
         
         entrada = es;
         saida = es;
-        funcoes = new ArrayList<String>();
+        funcoes = new ArrayList<>();
         relatorErros = new RelatorErros();
         relatorErros.inicializar("Portugol Núcleo", "1.0");
-        observadores = new ArrayList<ObservadorExecucao>();
+        observadores = new ArrayList<>();
     }
 
     /**
@@ -93,7 +93,7 @@ public final class Programa
     {
         observadores.remove(observador);
     }
-    private List<ObservadorInterpretacao> observadoresInter = new ArrayList<ObservadorInterpretacao>();
+    private List<ObservadorInterpretacao> observadoresInter = new ArrayList<>();
 
     public void addObservadorInterpretacao(ObservadorInterpretacao o)
     {
