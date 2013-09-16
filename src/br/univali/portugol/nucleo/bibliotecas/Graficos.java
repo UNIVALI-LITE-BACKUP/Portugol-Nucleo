@@ -32,7 +32,7 @@ import sun.misc.FloatingDecimal;
                 "suporte ao desenho de primitivas gráficas e de imagens carregadas do " +
                 "sistema de arquivos",
     
-    versao = "1.1"
+    versao = "1.2"
 )
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
@@ -795,6 +795,56 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         Font fonte = janela.superficieDesenho.getUltimaFonte();
         
         return new FloatingDecimal(fonte.getSize2D()).doubleValue();
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém a altura de uma imagem previamente carregada no ambiente gráfico",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço da imagem para a qual se quer obter a largura")
+        },
+        retorno = "a largura da imagem",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Integer largura_imagem(Integer endereco) throws ErroExecucaoBiblioteca
+    {
+        Image imagem = obterImagem(endereco);
+        
+        if (imagem != null)
+        {
+            return imagem.getWidth(null);
+        }
+        
+        return 0;
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém a altura de uma imagem previamente carregada no ambiente gráfico",
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço da imagem para a qual se quer obter a altura")
+        },
+        retorno = "a altura da imagem",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Integer altura_imagem(Integer endereco) throws ErroExecucaoBiblioteca
+    {
+        Image imagem = obterImagem(endereco);
+        
+        if (imagem != null)
+        {
+            return imagem.getHeight(null);
+        }
+        
+        return 0;
     }
     
     /*
