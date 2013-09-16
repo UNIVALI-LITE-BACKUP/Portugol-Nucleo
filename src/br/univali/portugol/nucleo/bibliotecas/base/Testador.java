@@ -4,16 +4,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JComboBox;
+import java.awt.HeadlessException;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -27,54 +32,85 @@ final class Testador
         {
             @Override
             public void run()
-            {
+            {                
                 try
                 {
-                    JFrame janela = new JFrame("Testar biblioteca");
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    
+                    JFrame janela = new JFrame("Testar bibliotecas");
                     janela.setSize(550, 250);
                     janela.setLocationRelativeTo(null);
                     janela.setResizable(false);
                     janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-                    final JLabel rotuloResultado = new JLabel("Selecione uma biblioteca para testar");
-                    rotuloResultado.setBorder(new CompoundBorder(new EmptyBorder(15, 0, 0, 0), rotuloResultado.getBorder()));
-                    rotuloResultado.setVerticalAlignment(JLabel.TOP);
-                    rotuloResultado.setOpaque(true);
+                    final JEditorPane editorLog = new JEditorPane();
+                    editorLog.setEditable(false);
+                    editorLog.setContentType("text/html");
                     
-                    final JComboBox comboBox = new JComboBox(GerenciadorBibliotecas.getInstance().listarBibliotecasDisponiveis().toArray());
-                    comboBox.setPreferredSize(new Dimension(10, 30));
-                    comboBox.addActionListener(new ActionListener()
+                    JScrollPane painelRolagem = new JScrollPane();
+                    painelRolagem.setViewportView(editorLog);
+                    painelRolagem.setBorder(new LineBorder(new Color(210, 210, 210), 1));
+
+                    final JLabel rotuloStatus = new JLabel("Não foram encontrados erros");
+                    rotuloStatus.setPreferredSize(new Dimension(10, 30));
+                    rotuloStatus.setFont(rotuloStatus.getFont().deriveFont(20.0f));
+                    rotuloStatus.setVerticalAlignment(JLabel.CENTER);
+                    
+                    JPanel painelConteudo = new JPanel(new BorderLayout());
+                    painelConteudo.setBorder(new CompoundBorder(new EmptyBorder(8, 8, 8, 8), painelConteudo.getBorder()));
+                    painelConteudo.add(painelRolagem, BorderLayout.CENTER);
+                    painelConteudo.add(rotuloStatus, BorderLayout.SOUTH);
+
+                    janela.getContentPane().setLayout(new GridLayout(1, 1));
+                    janela.getContentPane().add(painelConteudo);
+                    
+                    janela.addComponentListener(new ComponentAdapter() 
                     {
+                        private boolean primeiraVez = true;
+                        
                         @Override
-                        public void actionPerformed(ActionEvent e)
+                        public void componentShown(ComponentEvent e)
                         {
-                            try
+                            if (primeiraVez)
                             {
-                                GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca((String) comboBox.getSelectedItem());
-                                rotuloResultado.setText(String.format("A biblioteca '%s' não possui erros!", (String) comboBox.getSelectedItem()));
-                                rotuloResultado.setForeground(Color.BLACK);
-                            }
-                            catch(Exception excecao)
-                            {
-                                rotuloResultado.setText(String.format("<html><p style='text-align: justify;'>%s</p></html>", excecao.getMessage()));
-                                rotuloResultado.setForeground(Color.RED);
+                                primeiraVez = false;
+                                int erros = 0;
+                                
+                                StringBuilder log = new StringBuilder();
+                                GerenciadorBibliotecas gerenciadorBibliotecas = GerenciadorBibliotecas.getInstance();
+                                
+                                log.append("<html><body><div>");
+                                    
+                                for (String biblioteca : gerenciadorBibliotecas.listarBibliotecasDisponiveis())
+                                {
+                                    try
+                                    {
+                                        gerenciadorBibliotecas.obterMetaDadosBiblioteca(biblioteca);
+                                        log.append(String.format("<p>A biblioteca '%s' não possui erros!</p><br>", biblioteca));
+                                    }
+                                    catch(Exception excecao)
+                                    {
+                                        erros++;
+                                        log.append(String.format("<p style='text-align: justify; color : red;'>%s</p><br><br>", excecao.getMessage()));
+                                    }                                    
+                                }
+                                
+                                log.append("</div></body></html>");
+                                
+                                editorLog.setText(log.toString());
+                                
+                                if (erros > 0)
+                                {
+                                    rotuloStatus.setText(String.format("%d erro(s)", erros));
+                                    rotuloStatus.setForeground(Color.RED);
+                                }
                             }
                         }
                     });
                     
-                    comboBox.setSelectedIndex(0);
-
-                    JPanel painelConteudo = new JPanel(new BorderLayout());
-                    painelConteudo.setBorder(new CompoundBorder(new EmptyBorder(8, 8, 8, 8), painelConteudo.getBorder()));
-                    painelConteudo.add(comboBox, BorderLayout.NORTH);
-                    painelConteudo.add(rotuloResultado, BorderLayout.CENTER);
-
-                    janela.getContentPane().setLayout(new GridLayout(1, 1));
-                    janela.getContentPane().add(painelConteudo);
-
                     janela.setVisible(true);
                 }
-                catch(Exception excecao)
+                catch(ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | HeadlessException excecao)
                 {
                     JOptionPane.showMessageDialog(null, excecao.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                     excecao.printStackTrace(System.out);

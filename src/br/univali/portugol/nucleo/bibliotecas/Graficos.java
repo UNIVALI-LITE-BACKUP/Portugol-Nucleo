@@ -5,18 +5,21 @@ import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
+import java.awt.font.TextAttribute;
 import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import sun.misc.FloatingDecimal;
 
 /**
  *
@@ -29,7 +32,7 @@ import javax.swing.JPanel;
                 "suporte ao desenho de primitivas gráficas e de imagens carregadas do " +
                 "sistema de arquivos",
     
-    versao = "1.0"
+    versao = "1.1"
 )
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
@@ -39,6 +42,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     private Janela janela;
     private Image[] imagens;
+
     private ArrayList<OperacaoDesenho> operacoesDesenho;
     
     @DocumentacaoConstante(descricao = "constante que representa a cor 'preto'")
@@ -119,8 +123,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             janela.definirDimensoes(largura, altura);
             janela.setLocationRelativeTo(null);
-        }
-        
+        }        
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
     
@@ -145,31 +148,30 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
-
     
     @DocumentacaoFuncao
     (
-        descricao = "limpa o desenho atual do ambiente e gráfico e preenche o fundo com a cor especificada",
-        parametros = 
-        {
-            @DocumentacaoParametro(nome = "cor", descricao = "a cor com a qual o fundo do ambiente gráfico será preenchido")
-        },
+        descricao = "limpa o desenho do ambiente e gráfico e preenche o fundo com a cor atual",
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public void limpar(Integer cor) throws ErroExecucaoBiblioteca
+    public void limpar() throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
-        {
-            SuperficieDesenho superficieDesenho = janela.superficieDesenho;
-            Graphics2D buffer = superficieDesenho.getGraphics2D();
-            
-            buffer.setColor(new Color(cor));
-            buffer.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
+        {       
+            operacoesDesenho.add(new OperacaoDesenho()
+            {
+                @Override
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
+                {
+                    SuperficieDesenho superficieDesenho = janela.superficieDesenho;
+
+                    g2d.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
+                }
+            });
         }
-        
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
     
@@ -239,39 +241,28 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         if (ambienteGraficoInicializado())
         {
-            BufferStrategy strategy = janela.superficieDesenho.estrategiaBuffer;
-            // Render single frame
-            do {
-                // The following loop ensures that the contents of the drawing buffer
-                // are consistent in case the underlying surface was recreated
-                do {
-                    // Get a new graphics context every time through the loop
-                    // to make sure the strategy is validated
-                    Graphics2D graphics = (Graphics2D) strategy.getDrawGraphics();
-                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            BufferStrategy estrategia = janela.superficieDesenho.estrategiaBuffer;
+            
+            do 
+            {
+                do
+                {
+                    Graphics2D graphics = janela.superficieDesenho.getGraphics2D();
                     
-                    // Render to graphics
                     for (OperacaoDesenho op : operacoesDesenho)
                     {
                         op.desenhar(graphics);
                     }
-                    
-                    // Dispose the graphics
+
                     graphics.dispose();
+                }
+                while (estrategia.contentsRestored());
 
-                    // Repeat the rendering if the drawing buffer contents 
-                    // were restored
-                } while (strategy.contentsRestored());
-
-                // Display the buffer
-                strategy.show();
-
-                // Repeat the rendering if the drawing buffer was lost
-            } while (strategy.contentsLost());
+                estrategia.show();
+            }
+            while (estrategia.contentsLost());
             
             operacoesDesenho.clear();
-            
-            
         }
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
@@ -280,10 +271,10 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     (
         descricao = 
             
-              "Desenha um retângulo com a <param>cor</param> e dimensões especificadas, na posição definida pelos "
-            + "parâmetros <param>x</param> e <param>y</param>.<br><br>"
+              "Desenha um retângulo na posição definida pelos parâmetros <param>x</param> e <param>y</param> " 
+            + "e com as dimensões especificadas pelos parâmetros <param>largura</param> e <param>altura</param>. <br><br>"
             
-            + "O retângulo é posicionado na tela a partir do seu canto superior esquerdo",
+            + "O retângulo é desenhado na tela a partir do seu canto superior esquerdo ",
         
         parametros = 
         {
@@ -291,13 +282,12 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) do retângulo no eixo vertical, em relação ao topo da janela"),
             @DocumentacaoParametro(nome = "largura", descricao = "a largura do retângulo em pixels"),
             @DocumentacaoParametro(nome = "altura", descricao = "a altura do retângulo em pixels"),
-            @DocumentacaoParametro(nome = "cor", descricao = "a cor do retângulo"),
             @DocumentacaoParametro
             (
                 nome = "preencher", 
                 descricao = 
             
-                      "define se o retângulo será preenchido com a <param>cor</param> especificada. "
+                      "define se o retângulo será preenchido com a cor do ambiente gráfico. "
                     + "Se o valor for <tipo>verdadeiro</tipo>, o retângulo será preenchido. Se o valor for "
                     + "<tipo>falso</tipo>, somente o contorno do retângulo será desenhado"
             )
@@ -308,17 +298,15 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Integer cor, final Boolean preencher) throws ErroExecucaoBiblioteca
+    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Boolean preencher) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
-            operacoesDesenho.add(new OperacaoDesenho() {
-
+            operacoesDesenho.add(new OperacaoDesenho()
+            {
                 @Override
-                public void desenhar(Graphics2D g2d)
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
                 {
-                    g2d.setColor(new Color(cor));
-
                     if (preencher)
                     {
                         g2d.fillRect(x, y, largura, altura);
@@ -337,25 +325,25 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     (
         descricao = 
             
-              "Desenha um círculo com a <param>cor</param> e dimensões especificadas, na posição definida pelos "
-            + "parâmetros <param>x</param> e <param>y</param>.<br><br>"
+              "Desenha uma elipse na posição definida pelos parâmetros <param>x</param> e <param>y</param> "
+            + "e com as dimensões especificadas pelos parâmetros <param>largura</param> e <param>altura</param>, .<br><br>"
             
-            + "O círculo é posicionado na tela a partir do seu centro",
+            + "A elipse é desenhada na tela a partir do seu canto superior esquerdo",
         
         parametros = 
         {
             @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) do círculo no eixo horizontal, em relação ao lado esquerdo da janela"),
             @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) do círculo no eixo vertical, em relação ao topo da janela"),
-            @DocumentacaoParametro(nome = "raio", descricao = "o raio do círculo em pixels"),
-            @DocumentacaoParametro(nome = "cor", descricao = "a cor do círculo"),
+            @DocumentacaoParametro(nome = "largura", descricao = "a largura da elipse em pixels"),
+            @DocumentacaoParametro(nome = "altura", descricao = "a altura da elipse em pixels"),
             @DocumentacaoParametro
             (
                 nome = "preencher", 
                 descricao = 
             
-                      "define se o círculo será preenchido com a <param>cor</param> especificada. "
-                    + "Se o valor for <tipo>verdadeiro</tipo>, o círculo será preenchido. Se o valor for "
-                    + "<tipo>falso</tipo>, somente o contorno do círculo será desenhado"
+                      "define se a elipse será preenchida com a cor do ambiente gráfico. "
+                    + "Se o valor for <tipo>verdadeiro</tipo>, a elipse será preenchida. Se o valor for "
+                    + "<tipo>falso</tipo>, somente o contorno da elipse será desenhado"
             )
         },
         autores = 
@@ -364,24 +352,22 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_circulo(final Integer x, final Integer y, final Integer raio, final Integer cor, final Boolean preencher) throws ErroExecucaoBiblioteca
+    public void desenhar_elipse(final Integer x, final Integer y, final Integer largura, final Integer altura, final Boolean preencher) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
-            operacoesDesenho.add(new OperacaoDesenho() {
-
+            operacoesDesenho.add(new OperacaoDesenho() 
+            {
                 @Override
-                public void desenhar(Graphics2D g2d)
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
                 {
-                    g2d.setColor(new Color(cor));
-
                     if (preencher)
                     {
-                        g2d.fillOval(x, y, raio, raio);
+                        g2d.fillOval(x, y, largura, largura);
                     }
                     else
                     {
-                        g2d.drawOval(x, y, raio, raio);
+                        g2d.drawOval(x, y, largura, largura);
                     }
                 }
             });
@@ -393,16 +379,13 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     (
         descricao = 
             
-              "Desenha um ponto com a <param>cor</param> especificada, na posição definida pelos "
-            + "parâmetros <param>x</param> e <param>y</param>."
-            
+              "Desenha um ponto na posição definida pelos parâmetros <param>x</param> e <param>y</param>.<br><br>"
             + "O ponto desenhado ocupa um único pixel na tela",
         
         parametros = 
         {
             @DocumentacaoParametro(nome = "x", descricao = "a coordenada (distância) do ponto no eixo horizontal, em relação ao lado esquerdo da janela"),
             @DocumentacaoParametro(nome = "y", descricao = "a coordenada (distância) do ponto no eixo vertical, em relação ao topo da janela"),
-            @DocumentacaoParametro(nome = "cor", descricao = "a cor do ponto")
         },
         autores = 
         {
@@ -410,17 +393,15 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_ponto(final Integer x, final Integer y, final Integer cor) throws ErroExecucaoBiblioteca
+    public void desenhar_ponto(final Integer x, final Integer y) throws ErroExecucaoBiblioteca
     {
         if (ambienteGraficoInicializado())
         {
-            
-            operacoesDesenho.add(new OperacaoDesenho() {
-
+            operacoesDesenho.add(new OperacaoDesenho()
+            {
                 @Override
-                public void desenhar(Graphics2D g2d)
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
                 {
-                    g2d.setColor(new Color(cor));
                     g2d.drawLine(x, y, x, y);
                 }
             });
@@ -432,9 +413,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     (
         descricao = 
             
-              "Desenha uma linha com a <param>cor</param> especificada, de um ponto 'A' (definido pelos parâmetros "
-            + "<param>x1</param> e <param>y1</param>) até um ponto 'B' (definido pelos parâmetros "
-            + "<param>x2</param> e <param>y2</param>)",
+              "Desenha uma linha de um ponto 'A' (definido pelos parâmetros <param>x1</param> e <param>y1</param>) "
+            + "até um ponto 'B' (definido pelos parâmetros <param>x2</param> e <param>y2</param>)",
         
         parametros = 
         {
@@ -442,7 +422,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @DocumentacaoParametro(nome = "y1", descricao = "a coordenada (distância) do ponto 'A' no eixo vertical, em relação ao topo da janela"),
             @DocumentacaoParametro(nome = "x2", descricao = "a coordenada (distância) do ponto 'B' no eixo horizontal, em relação ao lado esquerdo da janela"),
             @DocumentacaoParametro(nome = "y2", descricao = "a coordenada (distância) do ponto 'B' no eixo vertical, em relação ao topo da janela"),            
-            @DocumentacaoParametro(nome = "cor", descricao = "a cor da linha")
         },
         autores = 
         {
@@ -450,17 +429,20 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_linha(final Integer x1, final Integer y1, final Integer x2, final Integer y2, final Integer cor) throws ErroExecucaoBiblioteca
+    public void desenhar_linha(final Integer x1, final Integer y1, final Integer x2, final Integer y2) throws ErroExecucaoBiblioteca
     {
-        operacoesDesenho.add(new OperacaoDesenho() {
-
-            @Override
-            public void desenhar(Graphics2D g2d)
-            {   
-                g2d.setColor(new Color(cor));
-                g2d.drawLine(x1, y1, x2, y2);
-            }
-        });
+        if (ambienteGraficoInicializado())
+        {
+            operacoesDesenho.add(new OperacaoDesenho() 
+            {
+                @Override
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
+                {   
+                    g2d.drawLine(x1, y1, x2, y2);
+                }
+            });
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }    
     
     
@@ -547,15 +529,20 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_imagem(final Integer x, final Integer y, Integer endereco) throws ErroExecucaoBiblioteca
     {
-        final Image imagem = obterImagem(endereco);
-        operacoesDesenho.add(new OperacaoDesenho() {
-
-            @Override
-            public void desenhar(Graphics2D g2d)
+        if (ambienteGraficoInicializado())
+        {
+            final Image imagem = obterImagem(endereco);
+            
+            operacoesDesenho.add(new OperacaoDesenho()
             {
-                g2d.drawImage(imagem, x, y, null);
-            }
-        });
+                @Override
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
+                {
+                    g2d.drawImage(imagem, x, y, null);
+                }
+            });
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
     
     @DocumentacaoFuncao
@@ -582,16 +569,20 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_porcao_imagem(final Integer x, final Integer y, final Integer xi, final Integer yi, final Integer largura, final Integer altura, Integer endereco) throws ErroExecucaoBiblioteca
     {
-        final Image imagem = obterImagem(endereco);
-        operacoesDesenho.add(new OperacaoDesenho() {
+        if (ambienteGraficoInicializado())
+        {
+            final Image imagem = obterImagem(endereco);
 
-            @Override
-            public void desenhar(Graphics2D g2d)
+            operacoesDesenho.add(new OperacaoDesenho()
             {
-                g2d.drawImage(imagem, x, y, x + largura, y + altura, xi, yi, xi + largura, yi + altura, null);
-            }
-        });        
-        
+                @Override
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
+                {
+                    g2d.drawImage(imagem, x, y, x + largura, y + altura, xi, yi, xi + largura, yi + altura, null);
+                }
+            });        
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }    
     
     @DocumentacaoFuncao
@@ -627,41 +618,204 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) do texto no eixo horizontal, em relação ao lado esquerdo da janela"),
             @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) do ponto no eixo vertical, em relação ao topo da janela"),
             @DocumentacaoParametro(nome = "texto", descricao = "o texto (<tipo>cadeia</tipo>) a ser desenhado"),
-            @DocumentacaoParametro(nome = "tamanho", descricao = "o tamanho da fonte utilizada para desenhar o texto"),
-            @DocumentacaoParametro(nome = "cor_fonte", descricao = "a cor da fonte utilizada para desenhar o texto"),
-            @DocumentacaoParametro(nome = "cor_fundo", descricao = "a cor de fundo do texto")
+            @DocumentacaoParametro
+            (
+                nome = "preencher_fundo", 
+                
+                descricao = 
+            
+                      "define se o fundo do texto deve ser preenchido. Se <tipo>verdadeiro</tipo> preenche "
+                    + "o fundo do texto com a cor atual do ambiente gráfico. Se <tipo>falso</tipo> o fundo do "
+                    + "texto será transparente"
+            ),
+        },
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+            @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
+        }
+    )
+    public void desenhar_texto(final Integer x, final Integer y, final String texto, final Boolean preencher_fundo) throws ErroExecucaoBiblioteca
+    {
+        if (ambienteGraficoInicializado())
+        {
+            operacoesDesenho.add(new OperacaoDesenho()
+            {
+                @Override
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
+                {
+                    FontMetrics dimensoesFonte = g2d.getFontMetrics();
+
+                    int altura = dimensoesFonte.getAscent() + dimensoesFonte.getLeading();
+                    int largura = dimensoesFonte.stringWidth(texto);
+                    
+                    if (preencher_fundo)
+                    {
+                        g2d.fillRect(x, y, largura, altura);
+                    }
+                    
+                    Color corAtual = g2d.getColor();
+
+                    g2d.setColor(janela.superficieDesenho.ultimaCorTexto);
+                    g2d.drawString(texto, x, y + dimensoesFonte.getAscent() - dimensoesFonte.getDescent() + dimensoesFonte.getLeading() + 1);
+                    g2d.setColor(corAtual);
+                }
+            });        
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = 
+            
+              "Define a cor atual do ambiente gráfico. Esta cor será utilizada para desenhar e preencher "
+            + "as primitivas gráficas (ponto, linha, retângulo, etc.) e, como cor de fundo ao limpar "
+            + "o ambiente gráfico ou desenhar um texto",
+        
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "cor", descricao = "a nova cor do ambiente gráfico")    
         },
         
         autores = 
         {
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-                , @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )
-    public void desenhar_texto(final Integer x, final Integer y, final String texto, final Integer tamanho, final Integer cor_fonte, final Integer cor_fundo) throws ErroExecucaoBiblioteca
+    public void definir_cor(final Integer cor) throws ErroExecucaoBiblioteca
     {
-        operacoesDesenho.add(new OperacaoDesenho() {
-
-            @Override
-            public void desenhar(Graphics2D g2d)
+        if (ambienteGraficoInicializado())
+        {
+            operacoesDesenho.add(new OperacaoDesenho()
             {
-                Font fonteAtual = g2d.getFont();
-
-                g2d.setFont(fonteAtual.deriveFont(Font.PLAIN, tamanho));
-
-                FontMetrics dimensoesFonte = g2d.getFontMetrics();
-
-                int altura = dimensoesFonte.getAscent() + dimensoesFonte.getLeading();
-                int largura = dimensoesFonte.stringWidth(texto);
-
-                g2d.setColor(new Color(cor_fundo));
-                g2d.fillRect(x, y, largura, altura);
-                g2d.setColor(new Color(cor_fonte));
-                g2d.drawString(texto, x, y + dimensoesFonte.getAscent() - dimensoesFonte.getDescent() + dimensoesFonte.getLeading() + 1);
-            }
-        });
-        
+                @Override
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
+                {
+                    janela.superficieDesenho.ultimaCorDesenho = new Color(cor);
+                    g2d.setColor(janela.superficieDesenho.ultimaCorDesenho);
+                }
+            });
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
     }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Define a fonte que será utilizada para desenhar um texto no ambiente gráfico",
+        
+        parametros = 
+        {
+            @DocumentacaoParametro
+            (
+                nome = "nome", 
+                descricao = 
+                
+                      "o nome da fonte a ser utilizada (Ex.: Arial, Times New Roman, Tahoma). Se a fonte informada " 
+                    + "não existir no sistema operacional do computador, será utilizada a fonte padrão"            
+            ),            
+            @DocumentacaoParametro(nome = "tamanho", descricao = "o tamanho da fonte em pontos (pt)"),
+            @DocumentacaoParametro(nome = "cor", descricao = "a cor da fonte"),
+            @DocumentacaoParametro(nome = "italico", descricao = "define se a fonte terá o estilo itálico"),
+            @DocumentacaoParametro(nome = "negrito", descricao = "define se a fonte terá o estilo negrito"),
+            @DocumentacaoParametro(nome = "sublinhado", descricao = "define se a fonte terá o estilo sublinhado")                
+        },
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public void definir_fonte(final String nome, final Double tamanho, final Integer cor, final Boolean italico, final Boolean negrito, final Boolean sublinhado) throws ErroExecucaoBiblioteca
+    {
+        if (ambienteGraficoInicializado())
+        {
+            operacoesDesenho.add(new OperacaoDesenho()
+            {
+                @Override
+                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
+                {
+                    Font fonte = new Font(nome, 12, Font.PLAIN);
+                    
+                    fonte = fonte.deriveFont(tamanho.floatValue());        
+                    
+                    if (sublinhado)
+                    {
+                        Map<TextAttribute, Integer> atributos = new HashMap<>();
+                        atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+
+                        fonte = fonte.deriveFont(atributos);
+                    }
+                    
+                    if (italico)
+                    {
+                        fonte = fonte.deriveFont(fonte.getStyle() | Font.ITALIC);
+                    }
+                    
+                    if (negrito)
+                    {
+                        fonte = fonte.deriveFont(fonte.getStyle() | Font.BOLD);
+                    }
+                    
+                    janela.superficieDesenho.ultimaFonte = fonte;
+                    janela.superficieDesenho.ultimaCorTexto = new Color(cor);
+                    
+                    g2d.setFont(fonte);
+                }
+            });
+        }
+        else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém o nome da fonte atual",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public String nome_fonte() throws ErroExecucaoBiblioteca
+    {
+        Font fonte = janela.superficieDesenho.getUltimaFonte();
+        
+        return fonte.getName();
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém tamanho da fonte atual",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Double tamanho_fonte() throws ErroExecucaoBiblioteca
+    {
+        Font fonte = janela.superficieDesenho.getUltimaFonte();
+        
+        return new FloatingDecimal(fonte.getSize2D()).doubleValue();
+    }
+    
+    /*
+    @DocumentacaoFuncao
+    (
+        descricao = "Define em quantos <param>graus</param> os desenhos deverão ser rotacionados.",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public void definir_rotacao(Integer graus)
+    {
+        janela.superficieDesenho.rotacao = graus;
+    }
+    
+    private void rotacionar(Graphics2D graficos)
+    {
+        
+    }*/
     
     private Image obterImagem(Integer endereco) throws ErroExecucaoBiblioteca
     {
@@ -767,7 +921,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     private interface OperacaoDesenho 
     {
-        public void desenhar(Graphics2D g2d);
+        public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca;
     }
     
     private final class Janela extends JFrame
@@ -778,7 +932,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             superficieDesenho = new SuperficieDesenho();
             superficieDesenho.setFocusable(false);
-
             
             setTitle("Sem título");
             setResizable(false);
@@ -803,9 +956,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             super.setVisible(visivel);
             
             if (visivel)
-            {
-                
-                
+            {               
                 Graphics2D g2d = superficieDesenho.getGraphics2D();
                 g2d.setColor(Color.BLACK);
                 g2d.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
@@ -834,10 +985,28 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     private final class SuperficieDesenho extends Canvas
     {
         public BufferStrategy estrategiaBuffer;
+        public Color ultimaCorDesenho = Color.BLACK;
+        public Color ultimaCorTexto = Color.BLACK;
+        private Font ultimaFonte = null;
         
         public SuperficieDesenho()
         {
             setIgnoreRepaint(true);
+        }
+
+        public Font getUltimaFonte()
+        {
+            if (ultimaFonte == null)
+            {
+                ultimaFonte = getFont();
+            }
+            
+            return ultimaFonte;
+        }
+
+        public void setUltimaFonte(Font ultimaFonte)
+        {
+            this.ultimaFonte = ultimaFonte;
         }
         
         public void criarBuffer()
@@ -850,8 +1019,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             Graphics2D g2d = (Graphics2D) estrategiaBuffer.getDrawGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setColor(ultimaCorDesenho);
+            g2d.setFont(getUltimaFonte());
             return g2d;
-        }
-       
+        }      
     }
 }
