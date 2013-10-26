@@ -10,18 +10,40 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBibliot
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import java.io.File;
 import java.util.Random;
 
 @PropriedadesBiblioteca(tipo = TipoBiblioteca.COMPARTILHADA)
 @DocumentacaoBiblioteca
 (
     descricao = "Esta biblioteca contém diversas funções utilitárias",
-    versao = "1.0"
+    versao = "1.1"
 )
 public final class Util extends Biblioteca
 {
     private Random random = new Random(System.currentTimeMillis());
     private long horaInicial = System.currentTimeMillis();
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém o caminho utilizado pelo Sistema Operacional como diretório do usuário atual",
+        retorno = "O diretório do usuário",
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }            
+    )
+    public String obter_diretorio_usuario() throws ErroExecucaoBiblioteca
+    {
+        try
+        {                
+            return new File(System.getProperty("user.home")).getAbsolutePath();
+        }
+        catch (Exception excecao)
+        {
+            throw new ErroExecucaoBiblioteca("Não foi possível obter o diretório do usuário");
+        }
+    }    
     
     @DocumentacaoFuncao
     (
