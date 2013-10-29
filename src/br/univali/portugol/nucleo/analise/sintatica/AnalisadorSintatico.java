@@ -131,7 +131,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
      * @return     a ASA resultante do parsing do código fonte.
      * @since 1.0
      */
-    public ArvoreSintaticaAbstrata analisar(String codigoFonte)
+    public synchronized ArvoreSintaticaAbstrata analisar(String codigoFonte)
     {
         try
         {
