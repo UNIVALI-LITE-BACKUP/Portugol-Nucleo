@@ -1669,12 +1669,13 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                             
                             InputHandler mediador = new InputHandler();
                             entrada.solicitaEntrada(tipoDado, mediador);
-                            
-                            System.out.println("Wait: " + Thread.currentThread().getName());
-                            
-                            synchronized (this)
+
+                            if (mediador.getValor() == null)
                             {
-                                wait();
+                                synchronized (this)
+                                {
+                                    wait();
+                                }
                             }
                             
                             valor = mediador.getValor();
@@ -1726,7 +1727,7 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         private Object valor;
         
         @Override
-        public Object getValor()
+        public synchronized Object getValor()
         {
             return valor;
         }
@@ -1734,11 +1735,9 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         @Override
         public void setValor(Object valor)
         {
-            this.valor = valor;
-            System.out.println("Notify: " + Thread.currentThread().getName());
-            
             synchronized (InterpretadorImpl.this)
             {
+                this.valor = valor;
                 InterpretadorImpl.this.notifyAll();
             }
         }        
