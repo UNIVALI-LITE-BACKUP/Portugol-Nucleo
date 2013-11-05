@@ -11,24 +11,35 @@ public final class EntradaSaidaSistema implements Entrada, Saida
 {
     public EntradaSaidaSistema()
     {
-        
+
     }
-    
+
     @Override
-    public Object ler(TipoDado tipoDado) throws Exception
+    public void solicitaEntrada(TipoDado tipoDado, Armazenador armazenador) throws Exception
     {
         Scanner in = new Scanner(System.in);
-        
+
         switch (tipoDado)
         {
-            case CADEIA : return in.next();
-            case CARACTER : return in.next().charAt(0);
-            case INTEIRO : return in.nextInt();
-            case LOGICO : String s = in.next(); return s.equals("verdadeiro")? true : s.equals("falso")? false : null;
-            case REAL : in.nextDouble();
+            case CADEIA:
+                armazenador.setValor(in.next());
+                break;
+            case CARACTER:
+                armazenador.setValor(in.next().charAt(0));
+                break;
+            case INTEIRO:
+                armazenador.setValor(in.nextInt());
+                break;
+            case LOGICO:
+                String s = in.next();
+
+                armazenador.setValor(s.equals("verdadeiro") ? true : s.equals("falso") ? false : null);
+                break;
+            case REAL:
+                armazenador.setValor(in.nextDouble());
         }
-        
-        return null;
+
+        armazenador.setValor(null);
     }
 
     @Override
@@ -49,7 +60,7 @@ public final class EntradaSaidaSistema implements Entrada, Saida
     @Override
     public void escrever(boolean valor) throws Exception
     {
-        System.out.print(valor? "verdadeiro" : "falso");
+        System.out.print(valor ? "verdadeiro" : "falso");
     }
 
     @Override
@@ -68,5 +79,5 @@ public final class EntradaSaidaSistema implements Entrada, Saida
     public void escrever(char valor) throws Exception
     {
         System.out.print(valor);
-    }    
+    }
 }

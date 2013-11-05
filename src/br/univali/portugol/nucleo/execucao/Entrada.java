@@ -27,8 +27,7 @@ public interface Entrada
      * Lê um dado da entrada de dados.
      * 
      * @param tipoDado       o tipo de dado que está sendo lido.
-     * @return               o dado que foi lido.
      * @throws Exception     a exceção que ocorreu durante a leitura do dado (quando ocorrer).
      */
-    public Object ler(TipoDado tipoDado) throws Exception;
+    public void solicitaEntrada(TipoDado tipoDado, Armazenador armazenador) throws Exception;
 }

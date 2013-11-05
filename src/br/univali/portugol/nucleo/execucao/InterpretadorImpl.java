@@ -64,7 +64,8 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
     private OperacaoBitwiseE operacaoBitwiseE = new OperacaoBitwiseE();
     private OperacaoBitwiseOu operacaoBitwiseOu = new OperacaoBitwiseOu();
     private OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
-    
+    private InputMediator valueHolder;
+            
     private String funcaoInicial;
     private Object valorPassadoParametro;
     
@@ -1665,8 +1666,19 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
                     {
                         try
                         {
-                            valor = entrada.ler(tipoDado);
-
+                            
+                            InputHandler mediador = new InputHandler();
+                            entrada.solicitaEntrada(tipoDado, mediador);
+                            
+                            System.out.println("Wait: " + Thread.currentThread().getName());
+                            
+                            synchronized (this)
+                            {
+                                wait();
+                            }
+                            
+                            valor = mediador.getValor();
+                            
                             if (valor == null)
                             {
                                 valor = tipoDado.getValorPadrao();
@@ -1707,5 +1719,28 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         {
             throw new ExcecaoVisitaASA(excecaoSimboloNaoDeclarado, asa, chamadaFuncao);
         }
+    }
+    
+    private class InputHandler implements InputMediator, Armazenador
+    {
+        private Object valor;
+        
+        @Override
+        public Object getValor()
+        {
+            return valor;
+        }
+
+        @Override
+        public void setValor(Object valor)
+        {
+            this.valor = valor;
+            System.out.println("Notify: " + Thread.currentThread().getName());
+            
+            synchronized (InterpretadorImpl.this)
+            {
+                InterpretadorImpl.this.notifyAll();
+            }
+        }        
     }
 }
