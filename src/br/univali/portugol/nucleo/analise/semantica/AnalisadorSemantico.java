@@ -1052,9 +1052,19 @@ public final class AnalisadorSemantico implements VisitanteASA
                     memoria.empilharEscopo();
                     memoria.adicionarSimbolo(variavel);
 
-                    if (declaracaoVariavel.constante() && !(inicializacao instanceof NoValor))
+                    if (declaracaoVariavel.constante())
                     {
-                        notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
+                        if (inicializacao instanceof NoMenosUnario) 
+                        {
+                            if (! (((NoMenosUnario) inicializacao).getExpressao() instanceof NoValor))
+                            {
+                                notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
+                            }
+                        }
+                        else if (!(inicializacao instanceof NoValor))
+                        {                        
+                            notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
+                        }
                     }
                     
                     try
