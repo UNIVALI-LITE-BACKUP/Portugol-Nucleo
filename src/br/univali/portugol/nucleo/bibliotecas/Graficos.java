@@ -19,7 +19,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import sun.misc.FloatingDecimal;
 
 /**
  *
@@ -793,8 +792,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public Double tamanho_fonte() throws ErroExecucaoBiblioteca
     {
         Font fonte = janela.superficieDesenho.getUltimaFonte();
+        Float tamanho = fonte.getSize2D();
         
-        return new FloatingDecimal(fonte.getSize2D()).doubleValue();
+        return tamanho.doubleValue();
     }
     
     @DocumentacaoFuncao
