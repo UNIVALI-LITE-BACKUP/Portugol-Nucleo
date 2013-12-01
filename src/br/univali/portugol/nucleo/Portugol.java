@@ -1,8 +1,6 @@
 
 package br.univali.portugol.nucleo;
 
-import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
-import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 
 /**
@@ -12,20 +10,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
  */
 
 public final class Portugol
-{ 
-    public static ResultadoAnalise analisar(String codigo)
-    {
-        final AnalisadorAlgoritmo analizador = new AnalisadorAlgoritmo();
-        final ResultadoAnalise resultado = analizador.analisar(codigo);
-        
-        if (resultado.getNumeroErrosSintaticos() <= 0)
-        {
-            resultado.setAsa(analizador.getArvoreSintaticaAbstrata());
-        }
-                    
-        return resultado;
-    }
-    
+{    
     public static Programa compilar(String codigo) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();
@@ -34,7 +19,7 @@ public final class Portugol
         return programa;
     }
     
-    public static GerenciadorBibliotecas getGerenciadoBibliotecas()
+    public static GerenciadorBibliotecas getGerenciadorBibliotecas()
     {
         return GerenciadorBibliotecas.getInstance();
     }

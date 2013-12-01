@@ -139,16 +139,9 @@ public final class Util extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public void aguarde(Integer intervalo) throws ErroExecucaoBiblioteca
+    public void aguarde(Integer intervalo) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        try
-        {
-            Thread.sleep(intervalo);
-        }
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        Thread.sleep(intervalo);
     }
     
     @DocumentacaoFuncao

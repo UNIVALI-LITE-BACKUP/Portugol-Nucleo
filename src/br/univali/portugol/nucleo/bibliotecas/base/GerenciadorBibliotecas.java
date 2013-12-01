@@ -12,7 +12,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.NaoExportar;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -40,11 +39,11 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
 
     private List<String> bibliotecasDisponiveis;
     
-    private MetaDadosBibliotecas metaDadosBibliotecas;
-    private Map<String, Class<? extends Biblioteca>> bibliotecasCarregadas;
+    private final MetaDadosBibliotecas metaDadosBibliotecas;
+    private final Map<String, Class<? extends Biblioteca>> bibliotecasCarregadas;
     
-    private Map<String, Biblioteca> bibliotecasCompartilhadas;
-    private Map<Programa, Map<String, Biblioteca>> bibliotecasReservadas;
+    private final Map<String, Biblioteca> bibliotecasCompartilhadas;
+    private final Map<Programa, Map<String, Biblioteca>> bibliotecasReservadas;
     
     
     public static GerenciadorBibliotecas getInstance()
@@ -195,22 +194,22 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                 return memoriaPrograma.get(nome);
             }
         }
-        catch (Exception excecao)
+        catch (ErroCarregamentoBiblioteca | InstantiationException | IllegalAccessException | ErroExecucaoBiblioteca excecao)
         {
-            if (!(excecao instanceof ErroCarregamentoBiblioteca))
+            if (excecao instanceof ErroCarregamentoBiblioteca)
             {
-                throw new ErroCarregamentoBiblioteca(nome, excecao);
+                throw (ErroCarregamentoBiblioteca) excecao;
             }
             else
             {
-                throw (ErroCarregamentoBiblioteca) excecao;
+                throw new ErroCarregamentoBiblioteca(nome, excecao);
             }
         }
         
         return null;
     }
     
-    public void desregistrarBiblioteca(Biblioteca biblioteca, Programa programa) throws ErroCarregamentoBiblioteca
+    public void desregistrarBiblioteca(Biblioteca biblioteca, Programa programa)
     {
         try
         {
@@ -232,16 +231,11 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                 }
             }
         }
-        catch (Exception excecao)
+        catch (ErroCarregamentoBiblioteca | ErroExecucaoBiblioteca excecao)
         {
-            if (!(excecao instanceof ErroCarregamentoBiblioteca))
-            {
-                throw new ErroCarregamentoBiblioteca(biblioteca.getNome(), excecao);
-            }
-            else
-            {
-                throw (ErroCarregamentoBiblioteca) excecao;
-            }
+            System.out.println("Erro ao desregistrar a biblioteca");
+            
+            excecao.printStackTrace(System.out);
         }            
     }
     
@@ -268,10 +262,6 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
             catch (ClassCastException excecao)
             {
                 throw new ErroCarregamentoBiblioteca(nome, "a biblioteca não estende a classe base");
-            }
-            catch (Exception excecao)
-            {
-                throw new ErroCarregamentoBiblioteca(nome, excecao);
             }
         }
         
@@ -361,9 +351,9 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
     
     private boolean jogaExcecao(Method metodo, Class<? extends Exception> classeExcecao)
     {
-        for (int i = 0; i < metodo.getExceptionTypes().length; i++)
+        for (Class<?> tipoExcecao : metodo.getExceptionTypes())
         {
-            if (metodo.getExceptionTypes()[i] == classeExcecao)
+            if (tipoExcecao == classeExcecao)
             {
                 return true;
             }
@@ -478,7 +468,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                                 {
                                     metaDadosConstante.setValor(atributo.get(null));
                                 }
-                                catch (Exception excecao)
+                                catch (IllegalArgumentException | IllegalAccessException excecao)
                                 {
                                     metaDadosConstante.setValor("indefinido");
                                 }
@@ -721,7 +711,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                 {
                     biblioteca.finalizar();
                 }
-                catch (ErroExecucao e)
+                catch (ErroExecucaoBiblioteca e)
                 {
                     resultadoExecucao.setErro(e);
                 }

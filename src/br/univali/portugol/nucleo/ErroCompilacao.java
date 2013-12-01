@@ -12,7 +12,7 @@ import br.univali.portugol.nucleo.mensagens.Erro;
  */
 public final class ErroCompilacao extends Erro
 {
-    private ResultadoAnalise resultadoAnalise;
+    private final ResultadoAnalise resultadoAnalise;
 
     /**
      * 

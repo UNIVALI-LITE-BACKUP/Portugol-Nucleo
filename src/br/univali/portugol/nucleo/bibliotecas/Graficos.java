@@ -8,6 +8,8 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferStrategy;
 import java.io.File;
@@ -39,6 +41,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     private static final int ALTURA_PADRAO = 480;
     private static final int LARGURA_PADRAO = 640;
     
+    private Programa programa;
     private Janela janela;
     private Image[] imagens;
 
@@ -87,6 +90,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             janela.setVisible(true);
             janela.setAlwaysOnTop(manter_visivel);
             janela.requestFocusInWindow();
+            
+            while (!janela.isVisible())
+            {
+                
+            }
         }
     }
     
@@ -919,9 +927,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas)
     {
+        this.programa = programa;
+        
         janela = new Janela();
         imagens = new Image[NUMERO_MAXIMO_IMAGENS];
-        operacoesDesenho = new ArrayList<>(512);
+        operacoesDesenho = new ArrayList<>(512);        
     }
 
     private boolean ambienteGraficoInicializado()
@@ -998,6 +1008,15 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             
             definirDimensoes(LARGURA_PADRAO, ALTURA_PADRAO);
             setLocationRelativeTo(null);
+            
+            addWindowListener(new WindowAdapter()
+            {
+                @Override
+                public void windowClosing(WindowEvent e)
+                {
+                    programa.interromper();
+                }                
+            });
         }
 
         @Override

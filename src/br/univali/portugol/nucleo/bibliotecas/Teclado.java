@@ -506,20 +506,13 @@ public final class Teclado extends Biblioteca
         },
         retorno = "o código da tecla lida"
     )
-    public Integer ler_tecla() throws ErroExecucaoBiblioteca
+    public Integer ler_tecla() throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (Teclado.this)
         {
-            try
-            {
-                aguardandoTecla = true;
-                wait();
-                aguardandoTecla = false;
-            }
-            catch (InterruptedException ex)
-            {
-                throw new RuntimeException(ex);
-            }
+            aguardandoTecla = true;
+            wait();
+            aguardandoTecla = false;
         }
         
         return ultimaTecla;

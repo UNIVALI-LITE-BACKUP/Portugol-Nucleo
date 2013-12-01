@@ -4,13 +4,13 @@
  * and open the template in the editor.
  */
 
-package br.univali.portugol.nucleo.execucao;
+package br.univali.portugol.nucleo.execucao.es;
 
 /**
  *
  * @author Elieser
  */
-public interface Armazenador
+public interface InputMediator
 {
-    public void setValor(Object valor);
+    public Object getValor();    
 }

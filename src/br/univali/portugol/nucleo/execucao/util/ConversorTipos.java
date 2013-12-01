@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao;
+package br.univali.portugol.nucleo.execucao.util;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.execucao.erros.ErroImpossivelConverterTipos;
@@ -9,13 +9,13 @@ import java.lang.reflect.Method;
  *
  * @author Luiz Fernando Noschang
  */
-public final class Conversor
+public final class ConversorTipos
 {
     public static Object converter(Object objeto, Class para) throws ErroImpossivelConverterTipos
     {
         try
         {
-            Method metodo = Conversor.class.getMethod("converter", objeto.getClass(), para);
+            Method metodo = ConversorTipos.class.getMethod("converter", objeto.getClass(), para);
             
             return metodo.invoke(null, objeto, null);
         }

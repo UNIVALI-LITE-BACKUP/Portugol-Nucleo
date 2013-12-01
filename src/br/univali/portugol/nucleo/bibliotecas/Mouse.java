@@ -172,20 +172,13 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o código do botão lido"
     )
-    public Integer ler_botao() throws ErroExecucaoBiblioteca
+    public Integer ler_botao() throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (Mouse.this)
         {
-            try
-            {
-                aguardandoBotao = true;
-                wait();
-                aguardandoBotao = false;
-            }
-            catch (InterruptedException ex)
-            {
-                throw new RuntimeException(ex);
-            }
+            aguardandoBotao = true;
+            wait();
+            aguardandoBotao = false;
         }
         
         return ultimoBotao;

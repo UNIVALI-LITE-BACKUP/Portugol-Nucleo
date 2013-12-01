@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.simbolos;
 
-import br.univali.portugol.nucleo.asa.NoReferencia;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.Stack;
  */
 public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
 {
-    private Stack<Map<String, Simbolo>> escopos;
+    private final Stack<Map<String, Simbolo>> escopos;
 
     @Override
     public Iterator<Map<String, Simbolo>> iterator()
@@ -42,10 +41,16 @@ public final class TabelaSimbolos implements Iterable<Map<String, Simbolo>>
      * Remove o escopo mais recente desta tabela de símbolos.
      * 
      * @since 1.0
+     * @return  o escopo atual
      */
     public Map<String, Simbolo> desempilharEscopo()
     {
-        return escopos.pop();
+        if (!escopos.isEmpty())
+        {
+            return escopos.pop();
+        }
+        
+        return null;
     }
 
     /**
