@@ -10,7 +10,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -182,13 +181,13 @@ public final class Arquivos extends Biblioteca
     }
     
     @Override
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucao
+    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
         arquivos = new Arquivo[NUMERO_MAXIMO_ARQUIVOS];
     }    
 
     @Override
-    protected void finalizar() throws ErroExecucao
+    protected void finalizar() throws ErroExecucaoBiblioteca
     {
         for (int indice = NUMERO_MAXIMO_ARQUIVOS - 1; indice >= 0; indice--)
         {
