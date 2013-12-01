@@ -14,7 +14,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBibliot
  * @author Luiz Fernando Noschang
  */
 @PropriedadesBiblioteca(tipo = TipoBiblioteca.COMPARTILHADA)
-@DocumentacaoBiblioteca(descricao = "Esta biblioteca contém funções para manipulação de texto (dados do tipo <tipo>cadeia</tipo>)", versao = "1.0")
+@DocumentacaoBiblioteca(descricao = "Esta biblioteca contém funções para manipulação de texto (dados do tipo <tipo>cadeia</tipo>)", versao = "1.1")
 public final class Texto extends Biblioteca
 {
     @DocumentacaoFuncao
@@ -166,5 +166,67 @@ public final class Texto extends Biblioteca
         {
             return cad.charAt(indice);
         }
-    }    
+    }
+
+    @DocumentacaoFuncao
+    (
+        descricao = "Procura por um texto dentro de uma cadeia e, caso encontrado, retorna a posição da primeira ocorrência",
+            
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "texto", descricao = "o texto que será procurarado na cadeia"),
+            @DocumentacaoParametro(nome = "cad", descricao = "a cadeia dentro da qual o texto será procurado"),
+            
+            @DocumentacaoParametro
+            (
+                nome = "posicao_incial", 
+                    
+                descricao = "a posição inicial a partir da qual o texto será procurado. Para procurar a partir do início da cadeia " +
+                            "deve-se informar a posição 0"
+            )
+        },
+          
+        retorno = "a posição da primeira ocorrência do texto, caso ele seja encontrado. Caso o texto não seja encontrado na cadeia " +
+                  "o valor retornado é -1",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Integer posicao_texto(String texto, String cadeia, Integer posicao_inicial) throws ErroExecucaoBiblioteca
+    {
+        return cadeia.indexOf(texto, posicao_inicial);
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Extrai uma parte da cadeia delimitada pela posição inicial e final. Exemplos: <br><br>" +
+                    "extrair_subtexto(\"salgado\", 0, 3) // resultado: \"sal\"<br><br>" +
+                    "extrair_subtexto(\"salgado\", 3, 7) // resultado: \"gado\"<br><br>" +
+                    "extrair_subtexto(\"salgado\", 1, 5) // resultado: \"alga\"",
+
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "cad", descricao = "a cadeia a partir da qual será extraído o subtexto"),
+            @DocumentacaoParametro(nome = "posicao_inicial", descricao = "a posição dentro da cadeia onde começará o subtexto"),
+            @DocumentacaoParametro(nome = "posicao_final", descricao = "a posição dentro da cadeia onde terminará o subtexto")
+        },
+        
+        autores = 
+        {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public String extrair_subtexto(String cadeia, Integer posicao_inicial, Integer posicao_final) throws ErroExecucaoBiblioteca
+    {
+        try
+        {
+            return cadeia.substring(posicao_inicial, posicao_final);
+        }
+        catch (IndexOutOfBoundsException excecao)
+        {
+            throw new ErroExecucaoBiblioteca("Posição inicial ou final inválida: %d. A posição deve estar entre 0 e o tamanho da cadeia");
+        }
+    }
 }
