@@ -1,13 +1,11 @@
 package br.univali.portugol.nucleo.depuracao;
 
-import br.univali.portugol.nucleo.execucao.Interpretador;
 import java.util.List;
 
-public interface Depurador extends Interpretador
+public interface Depurador
 {
-    public void addListeners(List<DepuradorListener> listeners);
-    public void addListener(DepuradorListener listener);
+    void addListeners(List<DepuradorListener> listeners);
+    void addListener(DepuradorListener listener);
     
-    public void removeListener(DepuradorListener listener);
-    
+    public void removeListener(DepuradorListener listener);    
 }

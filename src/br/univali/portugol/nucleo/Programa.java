@@ -1,25 +1,26 @@
 package br.univali.portugol.nucleo;
 
+import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.depuracao.Depurador;
 import br.univali.portugol.nucleo.depuracao.DepuradorImpl;
 import br.univali.portugol.nucleo.depuracao.DepuradorListener;
 import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
-import br.univali.portugol.nucleo.execucao.Entrada;
-import br.univali.portugol.nucleo.execucao.EntradaSaidaSistema;
+import br.univali.portugol.nucleo.execucao.es.Entrada;
+import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
 import br.univali.portugol.nucleo.execucao.Interpretador;
-import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
-import br.univali.portugol.nucleo.execucao.ObservadorInterpretacao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
-import br.univali.portugol.nucleo.execucao.Saida;
-import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
+import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import br.univali.portugol.relator.erros.RelatorErros;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Esta classe provê uma fachada (Facade) para abstrair os detalhes da execução
@@ -38,27 +39,42 @@ import java.util.List;
  */
 public final class Programa
 {
-    private String codigo;
-    private RelatorErros relatorErros;
+    /*
+     * Optei por criar manualmente o pool de threads ao invés de usar um método da classe Executors.
+     * 
+     * O pool criado aqui é idêntico ao criado pelo método newCachedThreadPool(), exceto pela propriedade
+     * keepAliveTime. Esta propriedade define quanto tempo a thread pode ficar inativa (sem ter uma tarefa submetida)
+     * antes de ser desalocada da memória.
+     *
+     * Na implementação da classe Executors, o keepAliveTime padrão é de 60 segundos, um tempo consideravelmente pequeno.
+     * Ao analisar a execução com o JVisualVM, foi possível perceber que com frequência, as threads que estavam aguardando
+     * tarefas no pool eram desalocadas e novas threads tinham que ser criadas.
+     *    
+     * Nesta implementação, o tempo foi aumentado (exageradamente) para 2 horas.
+     */ 
+    private static final ExecutorService servicoExecucao = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.HOURS, new SynchronousQueue<Runnable>());
+    
     private Saida saida;
     private Entrada entrada;
     private String funcaoInicial;
-    private Thread threadExecucao = null;
-    private long horaInicialExecucao = 0L;
-    private ResultadoExecucao resultadoExecucao = null;
-    private List<ObservadorExecucao> observadores;
+    
+    private TarefaExecucao tarefaExecucao = null;
+    private Future controleTarefaExecucao = null;
+    
     private ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma;
     private List<String> funcoes;
+    private ResultadoAnalise resultadoAnalise;
+    
+    private final List<DepuradorListener> listeners = new ArrayList<>();
+    private final ArrayList<ObservadorExecucao> observadores;
 
     public Programa()
     {
-        EntradaSaidaSistema es = new EntradaSaidaSistema();
-        
+        EntradaSaidaPadrao es = new EntradaSaidaPadrao();
+
         entrada = es;
         saida = es;
         funcoes = new ArrayList<>();
-        relatorErros = new RelatorErros();
-        relatorErros.inicializar("Portugol Núcleo", "1.0");
         observadores = new ArrayList<>();
     }
 
@@ -93,148 +109,160 @@ public final class Programa
     {
         observadores.remove(observador);
     }
-    private List<ObservadorInterpretacao> observadoresInter = new ArrayList<>();
-
-    public void addObservadorInterpretacao(ObservadorInterpretacao o)
-    {
-        observadoresInter.add(o);
-    }
 
     /**
      * Executa este programa com os parâmetros especificados. Se o programa já
-     * estiver executando não faz nada.
+     * estiver executando/depurando não faz nada.
      *
      * @param parametros lista de parâmetros que serão passados ao programa no
      * momento da execução.
      * @since 1.0
      */
-    public void executar(final String[] parametros)
+    public void executar(String[] parametros)
     {
-        interpretar(parametros, false, false);
+        executar(new EstrategiaInterpretacao(), parametros);
     }
-
-    public List<String> getFuncoes()
+    
+    /**
+     * Depura este programa com os parâmetros especificados. Se o programa já
+     * estiver executando/depurando não faz nada.
+     *
+     * @param parametros lista de parâmetros que serão passados ao programa no
+     * momento da execução.
+     * 
+     * @param detalhado define se a depuração executará em modo simples ou detalhado.
+     * 
+     * @since 2.0
+     */
+    public void depurar(String[] parametros, boolean detalhado)
     {
-        return funcoes;
+        executar(new EstrategiaDepuracao(listeners, detalhado), parametros);
     }
-
-    public void setFuncoes(List<String> funcoes)
-    {
-        this.funcoes = funcoes;
-    }
-
-    private void interpretar(final String[] parametros, final boolean depurar, final boolean detalhado)
+    
+    /**
+     * Executa o programa utilizando os parâmetros e a estratégia selecionada. A execução ocorre de forma
+     * assíncrona em sua própria thread, garantindo que vários programas possam ser executados ao mesmo tempo
+     * pelo núcleo.
+     * 
+     * @param estrategiaExecucao  a estratégia utilizada para executar o programa
+     * @param parametros  os parâmetros que serão passados ao programa durante a execução
+     */
+    private void executar(EstrategiaExecucao estrategiaExecucao, String[] parametros)
     {
         if (!isExecutando())
         {
-            threadExecucao = new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        Interpretador interpretador;
+            tarefaExecucao = new TarefaExecucao(estrategiaExecucao, parametros);
+            controleTarefaExecucao = servicoExecucao.submit(tarefaExecucao);
+        }
+    }
 
-                        if (depurar)
-                        {
-                            List<NoBloco> nosParada = new DetectaNosParada(detalhado).executar(Programa.this, parametros);
-
-                            interpretador = new DepuradorImpl(nosParada,detalhado);
-                            
-                            if (listeners.isEmpty())
-                            {
-                                throw new RuntimeException("A depuraçao depende de um ouvinte.");
-                            }
-                            
-                            ((Depurador) interpretador).addListeners(listeners);
-                        }
-                        else
-                        {
-                            interpretador = new InterpretadorImpl();
-                        }
-
-                        interpretador.setEntrada(entrada);
-                        interpretador.setSaida(saida);
+    public void addDepuradorListener(DepuradorListener aThis)
+    {
+        listeners.add(aThis);
+    }
 
 
-                        notificarInicioExecucao();
+    /**
+     * Implementa uma tarefa para disparar a execução do programa com os parâmetros e a estratégia selecionada.
+     * Futuramente podemos refatorar para executar a partir de um pool de threads.
+     */
+    private final class TarefaExecucao implements Runnable
+    {
+        private final String[] parametros;
+        private final EstrategiaExecucao estrategiaExecucao;
+        private final ResultadoExecucao resultadoExecucao;
 
-                        resultadoExecucao = new ResultadoExecucao();
-                        horaInicialExecucao = System.currentTimeMillis();
+        public TarefaExecucao(EstrategiaExecucao estrategiaExecucao, String[] parametros)
+        {
+            this.estrategiaExecucao = estrategiaExecucao;
+            this.parametros = parametros;
+            this.resultadoExecucao = new ResultadoExecucao();
+        }
 
-                        interpretador.executar(Programa.this, parametros);
-
-                        threadExecucao = null;
-                        resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-
-                        notificarEncerramentoExecucao(resultadoExecucao);
-                    }
-                    catch (ErroExecucao erroExecucao)
-                    {
-                        if (erroExecucao instanceof ErroExecucaoNaoTratado
-                                && ((ErroExecucaoNaoTratado) erroExecucao).getCausa().getCause() != null
-                                && ((ErroExecucaoNaoTratado) erroExecucao).getCausa().getCause() instanceof InterruptedException)
-                        {
-                            notificarEncerramentoExecucao(resultadoExecucao);
-
-                        }
-                        else
-                        {
-                            if (resultadoExecucao == null)
-                            {
-                                resultadoExecucao = new ResultadoExecucao();
-                            }
-
-                            resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
-                            resultadoExecucao.setErro(erroExecucao);
-                            notificarEncerramentoExecucao(resultadoExecucao);
-                        }
-                    }
-                    catch (Exception erro)
-                    {
-                        if (resultadoExecucao == null)
-                        {
-                            resultadoExecucao = new ResultadoExecucao();
-                        }
-
-                        resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
-                        resultadoExecucao.setErro(new ErroExecucaoNaoTratado(erro));
-
-                        relatorErros.relatarErro(erro, codigo);
-                        notificarEncerramentoExecucao(resultadoExecucao);
-                    }
-                }
-            });
-
+        public ResultadoExecucao getResultadoExecucao()
+        {
+            return resultadoExecucao;
+        }
+        
+        @Override
+        public void run()
+        {   
+            long horaInicialExecucao = System.currentTimeMillis();
+            
+            notificarInicioExecucao();
+            
             try
-            {
-                threadExecucao.start();
+            {                
+                estrategiaExecucao.executar(Programa.this, parametros);
             }
-            catch (RuntimeException ie)
+            catch (ErroExecucao erroExecucao)
             {
-                if (ie.getCause() instanceof InterruptedException)
-                {
-                    notificarEncerramentoExecucao(resultadoExecucao);
-                }
+                resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
+                resultadoExecucao.setErro(erroExecucao);
             }
+            catch (InterruptedException excecao)
+            {
+                resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
+            }
+
+            resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
+            
+            notificarEncerramentoExecucao(resultadoExecucao);
         }
     }
-    private List<DepuradorListener> listeners = new ArrayList<>();
-
-    public void addDepuradorListener(DepuradorListener listener)
+    
+    /**
+    * Define uma interface para criar diferentes estratégias de execução para o programa
+    * 
+    * @author Luiz Fernando Noschang
+    */
+    interface EstrategiaExecucao 
+    {    
+        public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException;
+    }
+    
+    /**
+     * Estratégia para interpretar o programa
+     * 
+     * @author Luiz Fernando Noschang
+     */
+    private final class EstrategiaInterpretacao implements EstrategiaExecucao
     {
-        if (!listeners.contains(listener)){
-            this.listeners.add(listener);
+        @Override
+        public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
+        {
+            Interpretador interpretador = new Interpretador();
+            interpretador.executar(programa, parametros);
+        }        
+    }
+    
+    /**
+     * Estratégia para depurar o programa
+     * 
+     * @author Luiz Fernando Noschang
+     */
+    private final class EstrategiaDepuracao implements EstrategiaExecucao
+    {
+        private final List<DepuradorListener> listeners;
+        private final boolean detalhado;
+
+        public EstrategiaDepuracao(List<DepuradorListener> listeners, boolean detalhado)
+        {
+            this.listeners = listeners;
+            this.detalhado = detalhado;
+        }
+        
+        @Override
+        public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
+        {
+            List<NoBloco> nosParada = new DetectaNosParada(detalhado).executar(Programa.this, parametros);
+            DepuradorImpl depurador = new DepuradorImpl(nosParada,detalhado);
+
+            depurador.addListeners(listeners);
+            depurador.executar(programa, parametros);
         }
     }
-
-    public void depurar(final String[] parametros, boolean detalhado)
-    {
-        interpretar(parametros, true, detalhado);
-    }
-
-
+    
     /**
      * Interrompe a execução deste programa. Não tem nenhum efeito se o programa
      * não estiver executando.
@@ -244,21 +272,29 @@ public final class Programa
     public void interromper()
     {
         if (isExecutando())
-        {
-            /*
-             * Se estiver no meio de um escreva, esibe uma exception no console do netbeans.
-             * A exception é referente ao JTextArea do console.
-             * 
-             * Parece ser um bug da JVM. No entanto, este bug não parece impedir
-             * a interrupção da thread e nem causa outros efeitos colaterais (será?)
-             * 
-             */
-            resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
-            resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-
-            threadExecucao.interrupt();
-            threadExecucao = null;
+        {            
+            controleTarefaExecucao.cancel(true);
         }
+    }
+    
+    /**
+     * Obtém a lista de funções declaradas atualmente no programa
+     * 
+     * @return  a lista de funções
+     */
+    public List<String> getFuncoes()
+    {
+        return funcoes;
+    }
+
+    /**
+     * Define a lista de funções declaradas atualmente no programa
+     * 
+     * @param funcoes  a lista de funções
+     */
+    void setFuncoes(List<String> funcoes)
+    {
+        this.funcoes = funcoes;
     }
 
     /**
@@ -279,7 +315,7 @@ public final class Programa
      * programa.
      * @since 1.0
      */
-    public void setArvoreSintaticaAbstrataPrograma(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma)
+    void setArvoreSintaticaAbstrata(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma)
     {
         this.arvoreSintaticaAbstrataPrograma = arvoreSintaticaAbstrataPrograma;
     }
@@ -359,26 +395,14 @@ public final class Programa
         this.saida = saida;
     }
 
-    /**
-     * Define o código fonte deste programa.
-     *
-     * @param codigo o código fonte que gerou este programa ao ser compilado.
-     * @since 1.0
-     */
-    public void setCodigo(String codigo)
+    void setResultadoAnalise(ResultadoAnalise resultadoAnalise)
     {
-        this.codigo = codigo;
+        this.resultadoAnalise = resultadoAnalise;
     }
 
-    /**
-     * Obtém o código fonte que gerou este programa ao ser compilado.
-     *
-     * @return o código fonte que gerou este programa ao ser compilado.
-     * @since 1.0
-     */
-    public String getCodigo()
+    public ResultadoAnalise getResultadoAnalise()
     {
-        return codigo;
+        return resultadoAnalise;
     }
 
     /**
@@ -390,7 +414,7 @@ public final class Programa
      */
     public boolean isExecutando()
     {
-        return threadExecucao != null;
+        return (tarefaExecucao != null && controleTarefaExecucao != null && !controleTarefaExecucao.isDone());
     }
 
     /**
@@ -415,7 +439,8 @@ public final class Programa
      */
     private void notificarEncerramentoExecucao(ResultadoExecucao resultadoExecucao)
     {
-        threadExecucao = null;
+        tarefaExecucao = null;
+        controleTarefaExecucao = null;
 
         for (ObservadorExecucao observador : observadores)
         {

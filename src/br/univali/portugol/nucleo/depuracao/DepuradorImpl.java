@@ -3,7 +3,8 @@ package br.univali.portugol.nucleo.depuracao;
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.*;
-import br.univali.portugol.nucleo.execucao.InterpretadorImpl;
+import br.univali.portugol.nucleo.execucao.Interpretador;
+import br.univali.portugol.nucleo.execucao.erros.ErroObservadorDepuracao;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.ArrayList;
@@ -11,12 +12,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DepuradorImpl extends InterpretadorImpl implements Depurador, InterfaceDepurador, ObservadorMemoria
+public class DepuradorImpl extends Interpretador implements Depurador, InterfaceDepurador, ObservadorMemoria
 {
-    private List<NoBloco> eleitos;
-    private List<DepuradorListener> listeners = new ArrayList<DepuradorListener>();
     private final boolean detalhado;
+    private final List<DepuradorListener> listeners = new ArrayList<>();
     
+    private Programa programa;
+    private List<NoBloco> eleitos;
     
     @Override
     public synchronized void proximo()
@@ -102,7 +104,7 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
             
             private List<ModoAcesso> obterModosAcessoEsperados(NoChamadaFuncao chamadaFuncao)
             {
-                List<ModoAcesso> modosAcesso = new ArrayList<ModoAcesso>();
+                List<ModoAcesso> modosAcesso = new ArrayList<>();
 
                 if (chamadaFuncao.getEscopo() == null)
                 {
@@ -206,10 +208,19 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
     }
 
     @Override
-    public void executar(Programa programa, String[] parametros) throws ErroExecucao
+    public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
     {
-        disparaDepuracaoInicializada();
-        super.executar(programa, parametros);
+        if (!listeners.isEmpty())
+        {
+            this.programa = programa;
+            
+            disparaDepuracaoInicializada();
+            super.executar(programa, parametros);
+        }
+       else
+       {
+           throw new ErroObservadorDepuracao();
+       }
     }
 
     @Override
@@ -220,988 +231,309 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
 
     public DepuradorImpl(List<NoBloco> nosParada, boolean detalhado)
     {
-        eleitos = nosParada;
-        this.detalhado = detalhado;
-        memoria.adicionarObservador(this);
+        this.eleitos = nosParada;
+        this.detalhado = detalhado;        
+        this.memoria.adicionarObservador(DepuradorImpl.this);
     }
     
     public DepuradorImpl(List<NoBloco> nosParada)
     {
-        this(nosParada,false);
+        this(nosParada, false);
     }
 
     @Override
     public Object visitar(NoCadeia no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {                
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoCaracter no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else { 
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha()); 
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoCaso no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {                
-                disparaDestacar(no.getExpressao().getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getExpressao().getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getExpressao().getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
+
         final Object value = super.visitar(no);
-        
+
         if (no.getEscopo() != null || (no.getEscopo() == null && no.getNome().equals("leia")))
         {
             disparaSimbolosAlterados(getSimbolosAlterados(no));
         }
-        
-        return value;
+
+        return value;        
     }
 
     @Override
     public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonteNome());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-        final Object result = super.visitar(no);
-        return result;
+        realizarParada(no, no.getTrechoCodigoFonteNome());
+        return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonteNome());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-        final Object result = super.visitar(no);
-        return result;
+        realizarParada(no, no.getTrechoCodigoFonteNome());
+        return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonteNome());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-        final Object result = super.visitar(no);
-        return result;
+        realizarParada(no, no.getTrechoCodigoFonteNome());
+        return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoEnquanto no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoEscolha no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-             if (detalhado) {
-                disparaDestacar(no.getExpressao().getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getExpressao().getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getExpressao().getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoInteiro no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-               disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoLogico no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-               disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoMatriz no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoMenosUnario no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoNao no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoPara no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-             if (detalhado) {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoPare no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoReal no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                    disparaDestacar(no.getTrechoCodigoFonte());
-                } else {
-                    disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-                }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoRetorne no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoSe no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getCondicao().getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoVetor no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoDeclaracaoParametro no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonteNome());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonteNome().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-        final Object result = super.visitar(no);
-        return result;
+        realizarParada(no, no.getTrechoCodigoFonteNome());
+        return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaDiferenca no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         final Object result = super.visitar(no);
+        
         disparaSimbolosAlterados(getSimbolosAlterados(no));
+        
         return result;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaE no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaOU no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMenor no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMenorIgual no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
-        {
-            if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
-            } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
+        realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
     public Object visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
     {
+        realizarParada(no, no.getTrechoCodigoFonte());
+        return super.visitar(no);
+    }
+ 
+    private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
+    {
         if (eleitos.contains(no))
         {
             if (detalhado) {
-                disparaDestacar(no.getTrechoCodigoFonte());
+                disparaDestacar(trechoCodigoFonte);
             } else {
-                disparaDestacar(no.getTrechoCodigoFonte().getLinha());
+                disparaDestacar(trechoCodigoFonte.getLinha());
             }
             synchronized (this)
             {
@@ -1211,13 +543,12 @@ public class DepuradorImpl extends InterpretadorImpl implements Depurador, Inter
                 }
                 catch (InterruptedException ex)
                 {
-                    throw new RuntimeException(ex);
+                    throw new ExcecaoVisitaASA(ex, this.programa.getArvoreSintaticaAbstrata(), no);
                 }
             }
         }
-        return super.visitar(no);
     }
- 
+    
     @Override
     public void simboloAdicionado(Simbolo simbolo)
     {

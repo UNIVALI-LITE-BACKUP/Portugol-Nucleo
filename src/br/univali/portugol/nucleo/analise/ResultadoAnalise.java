@@ -1,7 +1,6 @@
 
 package br.univali.portugol.nucleo.analise;
 
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
 import br.univali.portugol.nucleo.mensagens.Aviso;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.Erro;
@@ -27,28 +26,16 @@ public final class ResultadoAnalise
 {   
     private List<ErroAnalise> erros = null;
     private List<ErroSintatico> errosSintaticos = null;
-    private List<ErroSemantico> errosSemanticos = null;
-    
+    private List<ErroSemantico> errosSemanticos = null;    
     private List<AvisoAnalise> avisos = null;
-    private ArvoreSintaticaAbstrata asa;
 
-    public ArvoreSintaticaAbstrata getAsa()
-    {
-        return asa;
-    }
-
-    public void setAsa(ArvoreSintaticaAbstrata asa)
-    {
-        this.asa = asa;
-    }
-    
     public ResultadoAnalise()
     {
-        erros = new ArrayList<ErroAnalise>();
-        errosSintaticos = new ArrayList<ErroSintatico>();
-        errosSemanticos = new ArrayList<ErroSemantico>();
+        erros = new ArrayList<>();
+        errosSintaticos = new ArrayList<>();
+        errosSemanticos = new ArrayList<>();
         
-        avisos = new ArrayList<AvisoAnalise>();
+        avisos = new ArrayList<>();
     }    
     
     /**
@@ -78,49 +65,47 @@ public final class ResultadoAnalise
     }
     
     /**
-     * Obtém o número total de erros ocorridos durante a análise do código fonte.
+     * Verifica se o código contém erros, independente do tipo de erro.
      * 
-     * @return     o número total de erros ocorridos durante a análise do código fonte.
-     * @since 1.0
-     */    
-    public int getNumeroTotalErros()
+     * @return  true se o algoritmo contiver algum erro, caso contrpario retorna false
+     */
+    public boolean contemErros()
     {
-        return erros.size();
+        return !erros.isEmpty();
     }
     
     /**
-     * Obtém o número de erros sintáticos ocorridos durante a análise do código fonte.
+     * Verifica se o código contém erros semânticos
      * 
-     * @return     o número de erros sintáticos ocorridos durante a análise do código fonte.
-     * @since 1.0
-     */    
-    public int getNumeroErrosSintaticos()
+     * @return  true se o algoritmo contiver algum erro semântico, caso contrpario retorna false
+     */
+    public boolean contemErrosSemanticos()
     {
-        return errosSintaticos.size();
+        return !errosSemanticos.isEmpty();
+    }    
+    
+    /**
+     * Verifica se o código contém erros sintáticos
+     * 
+     * @return  true se o algoritmo contiver algum erro sintático, caso contrpario retorna false
+     */
+    public boolean contemErrosSintaticos()
+    {
+        return !errosSintaticos.isEmpty();
     }
     
     /**
-     * Obtém o número de erros semânticos ocorridos durante a análise do código fonte.
+     * Verifica se o código contém algum aviso. Os avisos servem para indicar problemas no 
+     * código que não irão necessariamente impedir sua execução, mas que podem trazer melhorias
+     * quando corrigidos
      * 
-     * @return     o número de erros semânticos ocorridos durante a análise do código fonte.
-     * @since 1.0
-     */        
-    public int getNumeroErrosSemanticos()
-    {        
-        return errosSemanticos.size();
-    }
-    
-    /**
-     * Obtém o número de avisos gerados durante a análise do código fonte.
-     * 
-     * @return     o número de avisos gerados durante a análise do código fonte.
-     * @since 1.0
-     */        
-    public int getNumeroAvisos()
+     * @return 
+     */
+    public boolean contemAvisos()
     {
-        return avisos.size();
-    }
-
+        return !avisos.isEmpty();
+    }    
+    
     
     /**
      * Obtém a lista de erros ocorridos durante a análise do código fonte.
@@ -130,7 +115,7 @@ public final class ResultadoAnalise
      */    
     public List<ErroAnalise> getErros()
     {
-        return erros;
+        return new ArrayList<>(erros);
     }
 
     /**
@@ -141,7 +126,7 @@ public final class ResultadoAnalise
      */
     public List<AvisoAnalise> getAvisos()
     {
-        return avisos;
+        return new ArrayList<>(avisos);
     }
 
     /**
@@ -152,7 +137,7 @@ public final class ResultadoAnalise
      */        
     public List<ErroSintatico> getErrosSintaticos()
     {
-        return errosSintaticos;
+        return new ArrayList<>(errosSintaticos);
     }
 
     /**
@@ -163,6 +148,6 @@ public final class ResultadoAnalise
      */        
     public List<ErroSemantico> getErrosSemanticos()
     {
-        return errosSemanticos;
+        return new ArrayList<>(errosSemanticos);
     }
 }

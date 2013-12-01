@@ -104,9 +104,5 @@ public final class ResultadoExecucao
     public void setRetorno(Object retorno)
     {
         this.retorno = retorno;
-    }
-    
-    
-    
-    
+    }    
 }

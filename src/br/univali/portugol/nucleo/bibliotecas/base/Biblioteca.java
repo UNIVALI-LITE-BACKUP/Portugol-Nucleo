@@ -105,7 +105,7 @@ import java.util.TreeMap;
 public abstract class Biblioteca
 {    
     private TipoBiblioteca tipo = getClass().getAnnotation(PropriedadesBiblioteca.class).tipo();
-    private Map<String, Method> cacheFuncoes;
+    private final Map<String, Method> cacheFuncoes;
     
     public Biblioteca()
     {
@@ -144,7 +144,7 @@ public abstract class Biblioteca
         }
     }
     
-    public final Object chamarFuncao(NoChamadaFuncao noChamadaFuncao, Object... parametros) throws ErroExecucao
+    public final Object chamarFuncao(NoChamadaFuncao noChamadaFuncao, Object... parametros) throws ErroExecucao, InterruptedException
     {
         String nome = noChamadaFuncao.getNome();
         int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
@@ -167,9 +167,16 @@ public abstract class Biblioteca
         }
         catch (InvocationTargetException ex)
         {
-            throw traduzirExcecao((Exception) ex.getCause(), linha, coluna);
+            if (ex.getCause() instanceof InterruptedException)
+            {
+                throw ((InterruptedException) ex.getCause());
+            }
+            else 
+            {
+                throw traduzirExcecao((Exception) ex.getCause(), linha, coluna);
+            }
         }
-        catch (Exception excecao)
+        catch (SecurityException | IllegalAccessException | IllegalArgumentException excecao)
         {
             throw traduzirExcecao(excecao, linha, coluna);
         }
@@ -195,9 +202,11 @@ public abstract class Biblioteca
      * {@link TipoBiblioteca#COMPARTILHADA}. O método será chamado apenas uma vez, 
      * na primeira vez em que a biblioteca for carregada em memória
      * 
+     * @throws  ErroExecucaoBiblioteca
+     * 
      * @see TipoBiblioteca
      */
-    protected void inicializar() throws ErroExecucao
+    protected void inicializar() throws ErroExecucaoBiblioteca
     {
 
     }
@@ -213,11 +222,12 @@ public abstract class Biblioteca
      *                                 incluídas no programa antes da inlusão desta biblioteca. 
      *                                 Para obter as demais bibliotecas, o método {@link Biblioteca#bibliotecaRegistrada(Biblioteca) }
      *                                 deve ser sobrescrito.
-     *      
+     * 
+     * @throws  ErroExecucaoBiblioteca
      * 
      * @see TipoBiblioteca
      */    
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucao
+    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
     
     }
@@ -232,21 +242,25 @@ public abstract class Biblioteca
      *      de finalização seja executado apenas uma vez
      * </p>
      *
+     * @throws ErroExecucaoBiblioteca
+     * 
      * @see GerenciadorBibliotecas
      * 
      */
-    protected void finalizar() throws ErroExecucao
+    protected void finalizar() throws ErroExecucaoBiblioteca
     {
 
     }
     
     /**
-     * Método chamado automaticamente pelo {@link GerenciadorBibliotecas} todaz vez que 
+     * Método chamado automaticamente pelo {@link GerenciadorBibliotecas} toda vez que 
      * uma nova biblioteca do tipo {@link TipoBiblioteca#RESERVADA} é declarada no programa
      * 
      * @param biblioteca 
+     * 
+     * @throws ErroExecucaoBiblioteca
      */    
-    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucao
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
     {
         
     }    

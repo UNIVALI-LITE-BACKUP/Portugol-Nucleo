@@ -102,9 +102,12 @@ public class Memoria
         {
              Map<String, Simbolo> escopo = escoposLocais.peek().desempilharEscopo();
              
-             for (Simbolo simbolo : escopo.values())
+             if (escopo != null)
              {
-                 notificarSimboloRemovido(simbolo);
+                for (Simbolo simbolo : escopo.values())
+                {
+                    notificarSimboloRemovido(simbolo);
+                }
              }
              
         } else {

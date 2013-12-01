@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao;
+package br.univali.portugol.nucleo.execucao.es;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
 import java.util.Scanner;
@@ -7,9 +7,9 @@ import java.util.Scanner;
  *
  * @author Luiz Fernando Noschang
  */
-public final class EntradaSaidaSistema implements Entrada, Saida
+public final class EntradaSaidaPadrao implements Entrada, Saida
 {
-    public EntradaSaidaSistema()
+    public EntradaSaidaPadrao()
     {
 
     }

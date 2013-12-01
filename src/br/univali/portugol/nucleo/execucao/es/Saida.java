@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao;
+package br.univali.portugol.nucleo.execucao.es;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
 

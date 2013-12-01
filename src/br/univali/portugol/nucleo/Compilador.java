@@ -14,125 +14,141 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Classe utilitária para abstrair as etapas necessárias à compilação do código fonte
  *
  * @author Luiz Fernando Noschang
  */
-final class Compilador extends VisitanteASABasico
+final class Compilador
 {
     private static final String funcaoInicialPadrao = "inicio";
-    private static final String[] funcoesEspeciais = new String[] { "potencia", "raiz_quadrada", "aguarde", "limpa", "tamanho_vetor", "tamanho_matriz", "leia", "escreva", "sorteia" };
+    private static final String[] funcoesEspeciais = new String[] { "limpa", "leia", "escreva" };
     
-    private List<String> funcoes = new ArrayList<String>();
-            
+    private final LocalizadorFuncoes localizadorFuncoes = new LocalizadorFuncoes();
+    
+    /**
+     * Compila o código fonte em Portugol para um programa. Realiza a análise sintática
+     * e semântica para garantir que não há erros no código.
+     * 
+     * @param codigo  o código fonte em Portugol a ser compilado
+     * @return  o programa equivalente ao código fonte passado
+     * 
+     * @throws ErroCompilacao 
+     */
     public Programa compilar(String codigo) throws ErroCompilacao
     {
         AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
         ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
 
-        if (resultadoAnalise.getNumeroTotalErros() > 0)
+        if (!resultadoAnalise.contemErros())
+        {
+            ArvoreSintaticaAbstrataPrograma asa = (ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata();
+        
+            Programa programa = new Programa();
+            programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
+            programa.setFuncaoInicial(localizadorFuncoes.getFuncaoInicial());
+            programa.setArvoreSintaticaAbstrata(asa);
+            programa.setResultadoAnalise(resultadoAnalise);
+            
+            return programa;
+        }
+        else
         {
             throw new ErroCompilacao(resultadoAnalise);
         }
-
-        ArvoreSintaticaAbstrataPrograma asa = (ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata();
-        
-        Programa programa = new Programa();
-        programa.setCodigo(codigo);
-        programa.setFuncoes(listarFuncoes(asa));        
-        programa.setFuncaoInicial(detectarFuncaoInicial());
-        programa.setArvoreSintaticaAbstrataPrograma(asa);
-
-        return programa;
-    }
-
-    private List<String> listarFuncoes(ArvoreSintaticaAbstrataPrograma asa)
-    {
-        try
-        {
-            asa.aceitar(this);
-        }
-        catch (ExcecaoVisitaASA excecaoVisitaASA)
-        {
-            excecaoVisitaASA.printStackTrace(System.out);
-        }
-        
-        return funcoes;               
     }
     
-    private String detectarFuncaoInicial()
+    private final class LocalizadorFuncoes extends VisitanteASABasico
     {
-        for (String funcao : funcoes)
+        private final List<String> funcoes = new ArrayList<>();
+        
+        public List<String> getFuncoes(ArvoreSintaticaAbstrataPrograma asa)
         {
-            if (funcao.equals(funcaoInicialPadrao))
+            try
             {
-                return funcaoInicialPadrao;
+                asa.aceitar(this);
             }
-        }
-        
-        if (!funcoes.isEmpty())
-        {
-            return funcoes.get(0);
-        }
-        
-        return funcaoInicialPadrao;
-    }
-    
-    private boolean estaNaListaNegra(String funcao)
-    {
-        for (String func : funcoesEspeciais)
-        {
-            if (funcao.equals(func))
+            catch (ExcecaoVisitaASA excecaoVisitaASA)
             {
-                return true;
+                excecaoVisitaASA.printStackTrace(System.out);
             }
+
+            return funcoes;               
         }
-        
-        return false;
-    }
 
-    @Override
-    public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
-    {
-        return null;
-    }    
-    
-    
-    @Override
-    public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
-    {
-        List<NoDeclaracao> declaracoes = asap.getListaDeclaracoesGlobais();
-        
-        if (declaracoes != null)
+        public String getFuncaoInicial()
         {
-            for (NoDeclaracao declaracao : declaracoes)
+            for (String funcao : funcoes)
             {
-                if (!estaNaListaNegra(declaracao.getNome()))
-                {                    
-                    declaracao.aceitar(this);                
+                if (funcao.equals(funcaoInicialPadrao))
+                {
+                    return funcaoInicialPadrao;
                 }
             }
+
+            if (!funcoes.isEmpty())
+            {
+                return funcoes.get(0);
+            }
+
+            return funcaoInicialPadrao;
+        }
+
+        private boolean estaNaListaNegra(String funcao)
+        {
+            for (String func : funcoesEspeciais)
+            {
+                if (funcao.equals(func))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
         
-        return null;
-    }
+        @Override
+        public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
+        {
+            List<NoDeclaracao> declaracoes = asap.getListaDeclaracoesGlobais();
 
-    @Override
-    public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
-    {
-        funcoes.add(declaracaoFuncao.getNome());
+            if (declaracoes != null)
+            {
+                for (NoDeclaracao declaracao : declaracoes)
+                {
+                    if (!estaNaListaNegra(declaracao.getNome()))
+                    {                    
+                        declaracao.aceitar(this);                
+                    }
+                }
+            }
+
+            return null;
+        }
         
-        return null;
+        @Override
+        public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
+        {
+            return null;
+        }
+
+        @Override
+        public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
+        {
+            return null;
+        }
+
+        @Override
+        public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
+        {
+            return null;
+        }        
+
+        @Override
+        public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
+        {
+            funcoes.add(declaracaoFuncao.getNome());
+
+            return null;
+        }
     }
 }
