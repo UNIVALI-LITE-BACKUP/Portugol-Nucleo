@@ -10,8 +10,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.NaoExportar;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
-import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,7 +31,7 @@ import java.util.TreeMap;
  * 
  * @author Luiz Fernando Noschang
  */
-public final class GerenciadorBibliotecas implements ObservadorExecucao
+public final class GerenciadorBibliotecas
 {
     private static GerenciadorBibliotecas instance = null;
 
@@ -90,6 +88,7 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
             bibliotecasDisponiveis.add("Tipos");
             bibliotecasDisponiveis.add("Mouse");
             bibliotecasDisponiveis.add("Arquivos");
+            bibliotecasDisponiveis.add("Sons");
             
             Collections.sort(bibliotecasDisponiveis);
         }
@@ -227,7 +226,10 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
                         memoriaPrograma.remove(biblioteca.getNome());
                     }
                     
-                    bibliotecasReservadas.remove(programa);
+                    if (memoriaPrograma.isEmpty())
+                    {
+                        bibliotecasReservadas.remove(programa);
+                    }
                 }
             }
         }
@@ -687,37 +689,5 @@ public final class GerenciadorBibliotecas implements ObservadorExecucao
         if (classeBiblioteca.isLocalClass())                        return "a biblioteca não pode ser uma classe local";
         
         return null;
-    }
-
-    @Override
-    public void execucaoIniciada(Programa programa)
-    {
-        /** 
-         * Neste ponto, nenhum nó NoInclusaoBiblioteca foi visitado ainda, portanto, 
-         * a lista de bibliotecas está vazia. A inicialização é feita no método
-         * registrarBiblioteca, chamado pelo Interpretador.
-         * 
-         **/
-    }
-
-    @Override
-    public void execucaoEncerrada(Programa programa, ResultadoExecucao resultadoExecucao)
-    {
-        if (bibliotecasReservadas.containsKey(programa))
-        {
-            for (Biblioteca biblioteca : bibliotecasReservadas.get(programa).values())
-            {
-                try
-                {
-                    biblioteca.finalizar();
-                }
-                catch (ErroExecucaoBiblioteca e)
-                {
-                    resultadoExecucao.setErro(e);
-                }
-            }
-            
-            bibliotecasReservadas.remove(programa);
-        }
     }
 }
