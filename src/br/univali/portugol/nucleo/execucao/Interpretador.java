@@ -1250,7 +1250,16 @@ public class Interpretador implements VisitanteASA
                 }
             }
 
-            return ((Variavel) simbolo).getValor();
+            Object valor = ((Variavel) simbolo).getValor();
+            
+            if (valor != null)
+            {
+                return valor;
+            }
+            else
+            {
+                throw new ExcecaoVisitaASA(new ErroVariavelNaoInicializada(noReferenciaVariavel), asa, noReferenciaVariavel);
+            }
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
