@@ -909,6 +909,35 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         return 0;
     }
     
+    @DocumentacaoFuncao
+    (
+        descricao = "Carrega uma fonte no ambiente gráfico a partir de um arquivo de fonte presente no sistema de arquivos",
+            
+        parametros =
+        {
+            @DocumentacaoParametro(nome = "caminho_fonte", descricao = "o caminho do arquivo de fonte no sistema de arquivos")
+        },
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public void carregar_fonte(String caminho_fonte) throws ErroExecucaoBiblioteca
+    {
+        File arquivo = new File(caminho_fonte);
+        
+        try
+        {
+            Font fonte = Font.createFont(Font.TRUETYPE_FONT, arquivo);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(fonte);
+        }
+        catch (IOException | FontFormatException excecao)
+        {
+            throw new ErroExecucaoBiblioteca(String.format("Não foi possível carregar a fonte '%s'", arquivo.getAbsolutePath()));
+        }
+    }
+    
     /*
     @DocumentacaoFuncao
     (
