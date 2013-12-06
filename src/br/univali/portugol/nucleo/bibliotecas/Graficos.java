@@ -737,33 +737,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         if (ambienteGraficoInicializado())
         {
+            final Font fonte = criarFonte(nome, tamanho, italico, negrito, sublinhado);
+            janela.superficieDesenho.atualizarDimensoesFonte(fonte);
+            
             operacoesDesenho.add(new OperacaoDesenho()
             {
                 @Override
                 public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
                 {
-                    Font fonte = new Font(nome, 12, Font.PLAIN);
-                    
-                    fonte = fonte.deriveFont(tamanho.floatValue());        
-                    
-                    if (sublinhado)
-                    {
-                        Map<TextAttribute, Integer> atributos = new HashMap<>();
-                        atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-
-                        fonte = fonte.deriveFont(atributos);
-                    }
-                    
-                    if (italico)
-                    {
-                        fonte = fonte.deriveFont(fonte.getStyle() | Font.ITALIC);
-                    }
-                    
-                    if (negrito)
-                    {
-                        fonte = fonte.deriveFont(fonte.getStyle() | Font.BOLD);
-                    }
-                    
                     janela.superficieDesenho.ultimaFonte = fonte;
                     janela.superficieDesenho.ultimaCorTexto = new Color(cor);
                     
@@ -772,6 +753,79 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             });
         }
         else throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+    }
+    
+    private Font criarFonte(String nome, Double tamanho, Boolean italico, Boolean negrito, Boolean sublinhado)
+    {
+        Font fonte = new Font(nome, 12, Font.PLAIN);
+                    
+        fonte = fonte.deriveFont(tamanho.floatValue());        
+
+        if (sublinhado)
+        {
+            Map<TextAttribute, Integer> atributos = new HashMap<>();
+            atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+
+            fonte = fonte.deriveFont(atributos);
+        }
+
+        if (italico)
+        {
+            fonte = fonte.deriveFont(fonte.getStyle() | Font.ITALIC);
+        }
+
+        if (negrito)
+        {
+            fonte = fonte.deriveFont(fonte.getStyle() | Font.BOLD);
+        }
+        
+        return fonte;
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém a largura em pixels que um texto ocupa para ser desenhado na tela",
+        
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "texto", descricao = "o texto que será mensurado")
+        },
+        
+        retorno = "a largura do texto",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Integer largura_texto(String texto) throws ErroExecucaoBiblioteca
+    {
+        FontMetrics dimensoesFonte = janela.superficieDesenho.getDimensoesFonte();
+
+        return dimensoesFonte.stringWidth(texto);
+    }    
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém a altura em pixels que um texto ocupa para ser desenhado na tela",
+        
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "texto", descricao = "o texto que será mensurado")
+        },
+        
+        retorno = "a altura do texto",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Integer altura_texto(String texto) throws ErroExecucaoBiblioteca
+    {
+        FontMetrics dimensoesFonte = janela.superficieDesenho.getDimensoesFonte();
+
+        return dimensoesFonte.getAscent() + dimensoesFonte.getLeading();
     }
     
     @DocumentacaoFuncao
@@ -1057,12 +1111,33 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         public Color ultimaCorDesenho = Color.BLACK;
         public Color ultimaCorTexto = Color.BLACK;
         private Font ultimaFonte = null;
+        private FontMetrics dimensoesFonte;
         
         public SuperficieDesenho()
         {
-            setIgnoreRepaint(true);
+            setIgnoreRepaint(true);            
         }
 
+        public FontMetrics getDimensoesFonte()
+        {
+            if (dimensoesFonte == null)
+            {
+                atualizarDimensoesFonte(getGraphics2D().getFont());
+            }
+            
+            return dimensoesFonte;
+        }
+
+        public void atualizarDimensoesFonte(Font novaFonte)
+        {
+            Graphics2D g2d = getGraphics2D();
+            Font fonteAtual = g2d.getFont();
+            
+            g2d.setFont(novaFonte);
+            dimensoesFonte = g2d.getFontMetrics();
+            g2d.setFont(fonteAtual);
+        }
+        
         public Font getUltimaFonte()
         {
             if (ultimaFonte == null)
@@ -1087,9 +1162,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         public Graphics2D getGraphics2D()
         {
             Graphics2D g2d = (Graphics2D) estrategiaBuffer.getDrawGraphics();
+            
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setColor(ultimaCorDesenho);
             g2d.setFont(getUltimaFonte());
+            
             return g2d;
         }      
     }
