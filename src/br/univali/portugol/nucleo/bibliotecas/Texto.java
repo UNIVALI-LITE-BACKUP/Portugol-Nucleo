@@ -226,7 +226,7 @@ public final class Texto extends Biblioteca
         }
         catch (IndexOutOfBoundsException excecao)
         {
-            throw new ErroExecucaoBiblioteca("Posição inicial ou final inválida: %d. A posição deve estar entre 0 e o tamanho da cadeia");
+            throw new ErroExecucaoBiblioteca("Posição inicial ou final inválida. A posição deve estar entre 0 e o tamanho da cadeia");
         }
     }
 }
