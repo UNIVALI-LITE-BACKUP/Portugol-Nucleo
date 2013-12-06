@@ -20,7 +20,7 @@ import java.util.List;
 @DocumentacaoBiblioteca
 (
     descricao = "Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do teclado do computador", 
-    versao = "1.0"
+    versao = "1.1"
 )
 public final class Teclado extends Biblioteca
 {
@@ -516,6 +516,27 @@ public final class Teclado extends Biblioteca
         }
         
         return ultimaTecla;
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Obtém o caracter correspondente a uma determinada <param>tecla</param>",
+            
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "tecla", descricao = "a tecla para a qual se quer obter o caracter")
+        },
+        
+        retorno = "o caracter correspondente à tecla",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }            
+    )
+    public Character caracter_tecla(Integer tecla) throws ErroExecucaoBiblioteca
+    {
+        return (char) (int) tecla;
     }
     
     private synchronized void acordarThread()
