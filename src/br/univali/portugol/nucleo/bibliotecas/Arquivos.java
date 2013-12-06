@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
 @DocumentacaoBiblioteca
 (
     descricao = "Esta biblioteca permite ler e escrever arquivos locais ou em um servidor remoto",
-    versao = "1.0"
+    versao = "1.1"
 )
 public final class Arquivos extends Biblioteca
 {
@@ -180,6 +181,64 @@ public final class Arquivos extends Biblioteca
         obterArquivo(endereco).escrever(linha);
     }
     
+    @DocumentacaoFuncao
+    (
+        descricao = "Verifica se um determinado arquivo existe no sistema de arquivos",
+            
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "caminho_arquivo", descricao = "o caminho do arquivo que se quer verificar")
+        },
+        
+        retorno = "<tipo>verdadeiro</tipo> se o arquivo existir",
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public Boolean arquivo_existe(String caminho_arquivo) throws ErroExecucaoBiblioteca
+    {
+        File arquivo = new File(caminho_arquivo);
+        
+        return arquivo.isFile() && arquivo.exists();
+    }
+    
+    @DocumentacaoFuncao
+    (
+        descricao = "Remove um arquivo do sistema de arquivos",
+        
+        parametros = 
+        {
+            @DocumentacaoParametro(nome = "caminho_arquivo", descricao = "o caminho do arquivo que ser quer apagar")
+        },
+        
+        autores = 
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+        }
+    )
+    public void apagar_arquivo(String caminho_arquivo) throws ErroExecucaoBiblioteca
+    {
+        File arquivo = new File(caminho_arquivo);
+        
+        try
+        {
+            if (arquivo.isFile())
+            {
+                Files.delete(arquivo.toPath());
+            }            
+            else
+            {
+                throw new ErroExecucaoBiblioteca(String.format("Não foi possível apagar o arquivo '%s'", arquivo.getAbsolutePath()));
+            }
+        }
+        catch (IOException excecao)
+        {
+            throw new ErroExecucaoBiblioteca(String.format("Não foi possível apagar o arquivo '%s'", arquivo.getAbsolutePath()));
+        }
+    }
+    
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
@@ -290,6 +349,11 @@ public final class Arquivos extends Biblioteca
         {
             try
             {
+                if (arquivo.getParentFile() != null)
+                {
+                    arquivo.getParentFile().mkdirs();
+                }
+                
                 escritor = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(arquivo), charset));
             }
             catch (IOException excecao)
