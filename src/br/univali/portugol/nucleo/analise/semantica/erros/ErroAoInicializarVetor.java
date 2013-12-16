@@ -15,7 +15,7 @@ public class ErroAoInicializarVetor extends ErroSemantico {
 
     public ErroAoInicializarVetor(TrechoCodigoFonte trechoCodigoFonte)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte,"ErroSemantico.ErroAoInicializarVetor");
     }
 
     @Override

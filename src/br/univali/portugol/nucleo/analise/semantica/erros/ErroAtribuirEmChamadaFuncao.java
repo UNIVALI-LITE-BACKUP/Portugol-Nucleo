@@ -15,7 +15,7 @@ public class ErroAtribuirEmChamadaFuncao extends ErroSemantico {
 
     public ErroAtribuirEmChamadaFuncao(TrechoCodigoFonte trechoCodigoFonte)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte,"ErroSemantico.ErroAtribuirEmChamadaFuncao");
     }
 
     @Override

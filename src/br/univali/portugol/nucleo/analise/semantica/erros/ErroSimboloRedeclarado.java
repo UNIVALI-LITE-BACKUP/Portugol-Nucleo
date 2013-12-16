@@ -42,6 +42,7 @@ public final class ErroSimboloRedeclarado extends ErroSemantico
 {
     private Simbolo simboloExistente;
     private Simbolo simboloRedeclarado;
+    private String codigo = "ErroSemantico.ErroSimboloRedeclarado";
 
     /**
      * 
@@ -91,13 +92,25 @@ public final class ErroSimboloRedeclarado extends ErroSemantico
         construtorString.append(simboloRedeclarado.getNome());
         construtorString.append("\" já foi declarado como ");
 
-        if (simboloExistente instanceof Vetor) construtorString.append("um vetor");
+        if (simboloExistente instanceof Vetor) {
+            construtorString.append("um vetor");
+            codigo +="1";
+        }
         else
-        if (simboloExistente instanceof Matriz) construtorString.append("uma matriz");
+        if (simboloExistente instanceof Matriz){
+            construtorString.append("uma matriz");            
+            codigo +="2";
+        }
         else
-        if (simboloExistente instanceof Variavel) construtorString.append("uma variável");
+        if (simboloExistente instanceof Variavel){
+            construtorString.append("uma variável");
+            codigo +="3";
+        }
         else
-        if (simboloExistente instanceof Funcao) construtorString.append("uma função");
+        if (simboloExistente instanceof Funcao){
+            construtorString.append("uma função");
+            codigo +="4";
+        }
 
         if (simboloExistente.getTrechoCodigoFonteNome() != null) {
             construtorString.append(" na linha: ");
@@ -106,7 +119,7 @@ public final class ErroSimboloRedeclarado extends ErroSemantico
             construtorString.append(simboloExistente.getTrechoCodigoFonteNome().getColuna());
             construtorString.append(".");
         }
-        
+        super.setCodigo(codigo);
         return construtorString.toString();
     }
 }

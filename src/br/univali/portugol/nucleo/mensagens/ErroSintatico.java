@@ -18,4 +18,8 @@ public abstract class ErroSintatico extends ErroAnalise
     {
         super(linha, coluna);
     }
+    public ErroSintatico(int linha, int coluna, String codigo)
+    {
+        super(linha, coluna,codigo);
+    }
 }

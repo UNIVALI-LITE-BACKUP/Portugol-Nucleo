@@ -33,6 +33,7 @@ public final class ErroEscopo extends ErroSintatico
     
     private Tipo tipo;
     private Stack<String> pilhaContexto;
+    private String codigo = "ErroSintatico.ErroEscopo.";
 
     /**
      * 
@@ -60,21 +61,33 @@ public final class ErroEscopo extends ErroSintatico
         
         switch (contexto)
         {
-            case "programa": construtorTexto.append(" do programa "); break;                
-            case "declaracaoFuncao": construtorTexto.append(" da função "); break;
-            case "vetor": construtorTexto.append(" do vetor "); break;
-            case "matriz": construtorTexto.append(" da matriz "); break;
-                
+            case "programa": 
+                construtorTexto.append(" do programa ");
+                codigo += "1";
+                break;                
+            case "declaracaoFuncao": 
+                construtorTexto.append(" da função ");                 
+                codigo += "2";
+                break;
+            case "vetor": 
+                construtorTexto.append(" do vetor "); 
+                codigo += "3";
+                break;
+            case "matriz": 
+                construtorTexto.append(" da matriz "); 
+                codigo += "4";
+                break;                
             default:
             {
                 construtorTexto.append(" do comando \"");
                 construtorTexto.append(contexto.replace("facaEnquanto", "faca-enquanto"));
                 construtorTexto.append("\" ");
+                codigo += "5";
             } 
         }
         
         construtorTexto.append("não foi fechado corretamente. Insira o caracter '}' para corrigir o problema");
-        
+        super.setCodigo(codigo);
         return construtorTexto.toString();
     }    
 }

@@ -10,7 +10,7 @@ public final class ErroParaEsperaCondicao extends ErroSintatico
 {
     public ErroParaEsperaCondicao(int linha, int coluna)
     {
-        super(linha, coluna);
+        super(linha, coluna,"ErroSintatico.ErroParaEsperaCondicao");
     }
 
     @Override

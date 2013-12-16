@@ -37,7 +37,7 @@ public final class ErroPalavraReservadaEstaFaltando extends ErroSintatico
      */
     public ErroPalavraReservadaEstaFaltando(int linha, int coluna, String palavraReservada, String contexto)
     {
-        super(linha, coluna);
+        super(linha, coluna,"ErroSintatico.ErroPalavraReservadaEstaFaltando");
         this.contexto = contexto;
         this.palavraReservada = palavraReservada;
     }

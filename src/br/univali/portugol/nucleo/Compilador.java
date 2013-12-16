@@ -48,8 +48,8 @@ final class Compilador
             programa.setFuncaoInicial(localizadorFuncoes.getFuncaoInicial());
             programa.setArvoreSintaticaAbstrata(asa);
             programa.setResultadoAnalise(resultadoAnalise);
-            
-            return programa;
+
+        return programa;
         }
         else
         {

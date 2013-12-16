@@ -17,11 +17,13 @@ import br.univali.portugol.nucleo.simbolos.Vetor;
  */
 public class ErroAtribuirEmConstante extends ErroSemantico {
     private final Simbolo pSimbolo;
-
+    private String codigo;
+    
     public ErroAtribuirEmConstante(TrechoCodigoFonte trechoCodigoFonte, Simbolo pSimbolo)
     {
         super(trechoCodigoFonte);
         this.pSimbolo = pSimbolo;
+        this.codigo = "ErroSemantico.ErroAtribuirEmConstante";
     }
 
     @Override
@@ -30,6 +32,7 @@ public class ErroAtribuirEmConstante extends ErroSemantico {
         StringBuilder sb = new StringBuilder();
         if (pSimbolo instanceof Variavel)
         {
+            codigo += ".1";
             sb.append("\"");
             sb.append(pSimbolo.getNome());
             sb.append("\" é uma constante, e portanto, não pode ter seu valor alterado após a inicialização");
@@ -38,6 +41,7 @@ public class ErroAtribuirEmConstante extends ErroSemantico {
         {
             if (pSimbolo instanceof Vetor)
             {
+                codigo += ".2";
                 sb.append("O vetor \"");
                 sb.append(pSimbolo.getNome());
                 sb.append("\" é constante e, portanto, não pode ter seus valores alterados após a inicialização");
@@ -46,12 +50,14 @@ public class ErroAtribuirEmConstante extends ErroSemantico {
             {
                 if (pSimbolo instanceof Matriz)
                 {
+                    codigo += ".3";
                     sb.append("A matriz \"");
                     sb.append(pSimbolo.getNome());
                     sb.append("\" é constante e, portanto, não pode ter seu valor alterado após a inicialização");
                 }
             }
         }
+        super.setCodigo(codigo);
         return sb.toString();
     }
     

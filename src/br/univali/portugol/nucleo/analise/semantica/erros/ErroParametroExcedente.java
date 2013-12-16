@@ -18,7 +18,7 @@ public class ErroParametroExcedente extends ErroSemantico
 
     public ErroParametroExcedente(TrechoCodigoFonte trechoCodigoFonte, NoChamadaFuncao chamadaFuncao)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte,"ErroSemantico.ErroParametroExcedente");
         this.chamadaFuncao = chamadaFuncao;
     }
 

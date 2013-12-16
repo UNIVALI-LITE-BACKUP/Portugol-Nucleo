@@ -29,7 +29,7 @@ public final class ErroNumeroParametrosFuncao extends ErroSemantico
      */    
     public ErroNumeroParametrosFuncao(int numeroParametrosPassados, int numeroParametrosEsperados, NoChamadaFuncao chamadaFuncao)
     {
-        super(chamadaFuncao.getTrechoCodigoFonteNome());
+        super(chamadaFuncao.getTrechoCodigoFonteNome(), "ErroSemantico.ErroNumeroParametrosFuncao");
 
         this.numeroParametrosPassados = numeroParametrosPassados;
         this.numeroParametrosEsperados = numeroParametrosEsperados;

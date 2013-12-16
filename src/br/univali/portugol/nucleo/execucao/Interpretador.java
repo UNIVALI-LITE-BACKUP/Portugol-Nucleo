@@ -1281,6 +1281,24 @@ public class Interpretador implements VisitanteASA
         }
     }
 
+    @Override
+    public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoTitulo noTitulo) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitar(NoVaPara noVaPara) throws ExcecaoVisitaASA
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private class PareException extends RuntimeException
     {
     }

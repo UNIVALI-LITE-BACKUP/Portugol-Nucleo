@@ -10,6 +10,7 @@ public abstract class ErroAnalise extends Erro
 {
     private int linha;
     private int coluna;
+    private String codigo;
 
     public ErroAnalise()
     {
@@ -22,10 +23,18 @@ public abstract class ErroAnalise extends Erro
      * @param coluna     a coluna onde o erro ocorreu
      * @since 1.0
      */
-    public ErroAnalise(int linha, int coluna)
+    public ErroAnalise(int linha, int coluna, String codigo)
     {
         this.linha = linha;
         this.coluna = coluna;
+        this.codigo = codigo;
+    }
+    
+        public ErroAnalise(int linha, int coluna)
+    {
+        this.linha  = linha;
+        this.coluna = coluna;
+        this.codigo = "";
     }
 
     /**
@@ -60,4 +69,16 @@ public abstract class ErroAnalise extends Erro
     {
         this.coluna = coluna;
     }
+    
+    public String getCodigo()
+    {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo)
+    {
+        this.codigo = codigo;
+    }
+
+
 }

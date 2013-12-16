@@ -37,6 +37,11 @@ public abstract class VisitanteASABasico implements VisitanteASA
     }
 
     @Override
+    public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
+    @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
     {
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
@@ -276,6 +281,17 @@ public abstract class VisitanteASABasico implements VisitanteASA
         throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
     }
 
+    @Override
+    public Object visitar(NoTitulo noTitulo) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
+    
+    @Override
+    public Object visitar(NoVaPara noVaPara) throws ExcecaoVisitaASA
+    {
+        throw new ExcecaoVisitaASA(new UnsupportedOperationException("Esta operação ainda não foi implementada"), null, null) ;
+    }
     @Override
     public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA
     {

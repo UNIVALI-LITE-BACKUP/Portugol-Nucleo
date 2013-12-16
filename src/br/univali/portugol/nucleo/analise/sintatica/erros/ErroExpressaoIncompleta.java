@@ -39,7 +39,7 @@ public final class ErroExpressaoIncompleta extends ErroSintatico
      */
     public ErroExpressaoIncompleta(int linha, int coluna)
     {
-        super(linha, coluna);
+        super(linha, coluna,"ErroSintatico.ErroExpressaoIncompleta");
     }
     
     /**

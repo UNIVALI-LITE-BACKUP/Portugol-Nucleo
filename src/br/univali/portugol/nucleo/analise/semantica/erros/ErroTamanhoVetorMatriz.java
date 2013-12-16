@@ -21,7 +21,7 @@ public class ErroTamanhoVetorMatriz extends ErroSemantico
         
     public ErroTamanhoVetorMatriz(NoDeclaracao declaracao, NoExpressao tamanho)
     {
-        super(tamanho.getTrechoCodigoFonte());
+        super(tamanho.getTrechoCodigoFonte(),"ErroSemantico.ErroTamanhoVetorMatriz");
         this.declaracao = declaracao;
         this.tamanho = tamanho;
     }    

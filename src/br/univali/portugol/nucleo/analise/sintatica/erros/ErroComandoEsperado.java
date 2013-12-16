@@ -54,7 +54,7 @@ public final class ErroComandoEsperado extends ErroSintatico
      */
     public ErroComandoEsperado(int linha, int coluna)
     {
-        super(linha, coluna);
+        super(linha, coluna,"ErroSintatico.ErroComandoEsperado");
     }
 
     /**
