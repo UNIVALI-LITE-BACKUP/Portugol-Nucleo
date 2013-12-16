@@ -15,7 +15,7 @@ public class ErroDefinirTipoDadoVetorLiteral extends ErroSemantico {
 
     public ErroDefinirTipoDadoVetorLiteral(TrechoCodigoFonte trechoCodigoFonte)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte,"ErroSemantico.ErroDefinirTipoDadoVetorLiteral");
     }
 
     @Override

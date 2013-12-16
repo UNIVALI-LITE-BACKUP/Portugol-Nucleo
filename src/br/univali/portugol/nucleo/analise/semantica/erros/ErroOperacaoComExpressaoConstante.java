@@ -49,7 +49,7 @@ public final class ErroOperacaoComExpressaoConstante extends ErroSemantico
      */
     public ErroOperacaoComExpressaoConstante(NoBloco operacao, NoExpressao expressao)
     {
-        super(expressao.getTrechoCodigoFonte());
+        super(expressao.getTrechoCodigoFonte(), "ErroSemantico.ErroOperacaoComExpressaoConstante");
 
         this.operacao = operacao;
         this.expressao = expressao;

@@ -15,7 +15,7 @@ public class ErroAoAtribuirEmVetor extends ErroSemantico {
 
     public ErroAoAtribuirEmVetor(TrechoCodigoFonte trechoCodigoFonte)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte, "ErroSemantico.ErroAoAtribuirEmVetor");
     }
 
     @Override

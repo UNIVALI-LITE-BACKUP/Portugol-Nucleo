@@ -15,7 +15,7 @@ public class ErroVetorSemElementos extends ErroSemantico {
 
     public ErroVetorSemElementos(TrechoCodigoFonte trechoCodigoFonte)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte,"ErroSemantico.ErroVetorSemElementos");
     }
 
     @Override

@@ -15,7 +15,7 @@ grammar Portugol;
 
 	import java.util.Stack;
 	import org.antlr.runtime.Token;
-	import br.univali.portugol.nucleo.asa.*;
+	import br.univali.asa.*;
 }
 
 
@@ -188,7 +188,7 @@ PR_INCLUA				:	'inclua'		;
 PR_BIBLIOTECA			:	'biblioteca'		;
 
 
-GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'Á'|'À'|'Ã'|'Â'|'É'|'Ê'|'Í'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'\''|'`'|'\\'|'@';
+GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'�?'|'À'|'Ã'|'Â'|'É'|'Ê'|'�?'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'\''|'`'|'\\'|'@';
  
 fragment PR_FALSO			:	'falso'		;
 fragment PR_VERDADEIRO		:	'verdadeiro'		;
@@ -1000,43 +1000,9 @@ finally
 expressao2_5 returns[NoExpressao expressao] @init
 {
 	pilhaContexto.push("expressao2_5");
-}: 
-	operandoEsquerdo = expressao3
-   	(
-		{ 		
-			if (gerarArvore)
-			{
-				if (operandoDireito != null)
-				{
-					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-				 	operandoEsquerdo = operacao; 
-				 }
-			 }
-		}       
-		
-		(operador = '&' | operador = '|' | operador = '^')
-		
-		operandoDireito = expressao3
-	)*
-	{
-		if (gerarArvore)
-		{
-			expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-		}
-	}
-;
-finally
-{
-	pilhaContexto.pop();
-} 
-
-expressao3 returns[NoExpressao expressao] @init
-{
-	pilhaContexto.push("expressao3");
 }:
 
-	operandoEsquerdo = expressao4
+	operandoEsquerdo = expressao3
 	( 	
 		{
 			if (gerarArvore)
@@ -1053,7 +1019,7 @@ expressao3 returns[NoExpressao expressao] @init
 		
 		(operador = '==' | operador = '!=') 
 		
-		operandoDireito = expressao4
+		operandoDireito = expressao3
 	)*
 	{
 		if (gerarArvore)
@@ -1068,12 +1034,12 @@ finally
 }
 
 
-expressao4 returns[NoExpressao expressao] @init
+expressao3 returns[NoExpressao expressao] @init
 {
-	pilhaContexto.push("expressao4");
+	pilhaContexto.push("expressao3");
 }:
 
-	operandoEsquerdo = expressao4_5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao4_5)?
+	operandoEsquerdo = expressao3_5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao3_5)?
 	{
 		if (gerarArvore)
 		{
@@ -1085,6 +1051,42 @@ finally
 {
 	pilhaContexto.pop();
 }
+
+
+expressao3_5 returns[NoExpressao expressao] @init
+{
+	pilhaContexto.push("expressao3_5");
+}: 
+	operandoEsquerdo = expressao4_5
+   	(
+		{ 		
+			if (gerarArvore)
+			{
+				if (operandoDireito != null)
+				{
+					NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
+					operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
+				 	operandoEsquerdo = operacao; 
+				 }
+			 }
+		}       
+		
+		(operador = '&' | operador = '|' | operador = '^')
+		
+		operandoDireito = expressao4_5
+	)*
+	{
+		if (gerarArvore)
+		{
+			expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
+		}
+	}
+;
+finally
+{
+	pilhaContexto.pop();
+} 
+
 
 expressao4_5 returns[NoExpressao expressao] @init
 {

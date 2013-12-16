@@ -57,7 +57,7 @@ public final class ResultadoAnalise
      * @param aviso     o aviso gerado durante a análise.
      * @since 1.0
      */
-    void adicionarAviso(AvisoAnalise aviso)
+    public void adicionarAviso(AvisoAnalise aviso)
     {
         avisos.add(aviso);
     }
@@ -68,7 +68,7 @@ public final class ResultadoAnalise
      * @param erro     o erro gerado durante a análise.
      * @since 1.0
      */    
-    void adicionarErro(ErroAnalise erro)
+    public void adicionarErro(ErroAnalise erro)
     {
         erros.add(erro);
         

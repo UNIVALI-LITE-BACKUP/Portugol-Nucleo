@@ -44,6 +44,26 @@ final class Compilador extends VisitanteASABasico
 
         return programa;
     }
+    public Programa compilar(String codigo, String[] funcoesEspeciaisC) throws ErroCompilacao
+    {
+        AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
+        ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
+
+        if (resultadoAnalise.getNumeroTotalErros() > 0)
+        {
+            throw new ErroCompilacao(resultadoAnalise);
+        }
+
+        ArvoreSintaticaAbstrataPrograma asa = (ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata();
+        
+        Programa programa = new Programa();
+        programa.setCodigo(codigo);
+        programa.setFuncoes(listarFuncoes(asa));        
+        programa.setFuncaoInicial(detectarFuncaoInicial());
+        programa.setArvoreSintaticaAbstrataPrograma(asa);
+
+        return programa;
+    }
 
     private List<String> listarFuncoes(ArvoreSintaticaAbstrataPrograma asa)
     {

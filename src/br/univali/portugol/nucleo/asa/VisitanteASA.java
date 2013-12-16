@@ -20,6 +20,8 @@ public interface VisitanteASA
     public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA;
 
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA;
 
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA;
 
@@ -100,6 +102,10 @@ public interface VisitanteASA
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA;
 
     public Object visitar(NoSe noSe) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoTitulo noTitulo) throws ExcecaoVisitaASA;
+    
+    public Object visitar(NoVaPara noVaPara) throws ExcecaoVisitaASA;
 
     public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA;
 

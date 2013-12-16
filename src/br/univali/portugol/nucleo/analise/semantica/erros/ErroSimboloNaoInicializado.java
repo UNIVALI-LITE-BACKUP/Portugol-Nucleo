@@ -22,7 +22,7 @@ public class ErroSimboloNaoInicializado extends ErroSemantico
 
     public ErroSimboloNaoInicializado(NoReferencia noReferencia, Simbolo simbolo)
     {
-        super(noReferencia.getTrechoCodigoFonteNome());
+        super(noReferencia.getTrechoCodigoFonteNome(), "ErroSemantico.ErroSimboloNaoInicializado");
         this.noReferencia = noReferencia;
         this.simbolo = simbolo;        
     }

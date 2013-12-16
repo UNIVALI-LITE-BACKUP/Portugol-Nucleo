@@ -1969,7 +1969,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         funcoes.add("leia");
         funcoes.add("escreva");
         funcoes.add("limpa");
-
+        
         return funcoes;
     }
 
@@ -2229,6 +2229,24 @@ public final class AnalisadorSemantico implements VisitanteASA
             }
         }
         
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoTitulo noTitulo) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoVaPara noVaPara) throws ExcecaoVisitaASA
+    {
         return null;
     }
 }

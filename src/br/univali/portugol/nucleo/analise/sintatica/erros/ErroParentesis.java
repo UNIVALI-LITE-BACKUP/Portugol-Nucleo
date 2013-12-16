@@ -31,6 +31,7 @@ public final class ErroParentesis extends ErroSintatico
     public static enum Tipo { ABERTURA, FECHAMENTO };
     
     private Tipo tipo;
+    private String codigo = "ErroSintatico.ErroParentesis.";
             
     /**
      * 
@@ -56,9 +57,17 @@ public final class ErroParentesis extends ErroSintatico
         
         switch (tipo)
         {
-            case ABERTURA: construtorTexto.append("iniciada"); break;
-            case FECHAMENTO: construtorTexto.append("finalizada"); break;
+            case ABERTURA: 
+                construtorTexto.append("iniciada"); 
+                codigo+="1";
+                break;
+            case FECHAMENTO:
+                construtorTexto.append("finalizada");
+                codigo+="2";
+                break;
         }
+        
+        super.setCodigo(codigo);
         
         construtorTexto.append(" corretamente. Insira o caracter '");
         

@@ -15,7 +15,7 @@ public final class ErroTokenFaltando extends ErroSintatico
     
     public ErroTokenFaltando(int linha, int coluna, String token)
     {
-        super(linha, coluna);
+        super(linha, coluna, "ErroSintatico.ErroTokenFaltando");
         this.token = token;
     }
 

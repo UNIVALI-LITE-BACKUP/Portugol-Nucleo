@@ -1289,6 +1289,24 @@ public class InterpretadorImpl implements VisitanteASA, Interpretador
         }
     }
 
+    @Override
+    public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoTitulo noTitulo) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
+    @Override
+    public Object visitar(NoVaPara noVaPara) throws ExcecaoVisitaASA
+    {
+        return null;
+    }
+
     private class PareException extends RuntimeException
     {
     }

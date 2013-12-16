@@ -30,6 +30,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 public final class ErroNomeSimboloEstaFaltando extends ErroSintatico
 {
     private String contexto;
+    private String codigo = "ErroSintatico.ErroNomeSimboloEstaFaltando.";
     
     /**
      * 
@@ -52,14 +53,17 @@ public final class ErroNomeSimboloEstaFaltando extends ErroSintatico
     {
         if (contexto.equals("declaracaoParametro"))
         {
+            super.setCodigo(codigo+"1");
             return "O nome do parâmetro da função não foi informado";
         }
         else if (contexto.equals("declaracaoFuncao"))
         {
+            super.setCodigo(codigo+"2");
             return "O nome da função não foi informado";
         }
         else 
         {
+            super.setCodigo(codigo+"3");
             return "O nome da variável não foi informado";
         }
     }

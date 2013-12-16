@@ -23,6 +23,11 @@ public abstract class ErroSemantico extends ErroAnalise
      * @param linha      a linha onde o erro ocorreu.
      * @param coluna     a coluna onde o erro ocorreu.
      */
+    public ErroSemantico(TrechoCodigoFonte trechoCodigoFonte, String codigo)
+    {
+        super(trechoCodigoFonte.getLinha(), trechoCodigoFonte.getColuna(), codigo);
+        this.trechoCodigoFonte = trechoCodigoFonte;
+    }
     public ErroSemantico(TrechoCodigoFonte trechoCodigoFonte)
     {
         super(trechoCodigoFonte.getLinha(), trechoCodigoFonte.getColuna());

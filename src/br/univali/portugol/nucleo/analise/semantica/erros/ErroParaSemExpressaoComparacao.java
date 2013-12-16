@@ -15,7 +15,7 @@ public class ErroParaSemExpressaoComparacao extends ErroSemantico {
 
     public ErroParaSemExpressaoComparacao(TrechoCodigoFonte trechoCodigoFonte)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte,"ErroSemantico.ErroParaSemExpressaoComparacao");
     }
 
     @Override

@@ -34,7 +34,7 @@ public final class ErroTipoDeDadoEstaFaltando extends ErroSintatico
      */
     public ErroTipoDeDadoEstaFaltando(int linha, int coluna)
     {
-        super(linha, coluna);
+        super(linha, coluna, "ErroSintatico.ErroTipoDeDadoEstaFaltando");
     }    
     
     /**

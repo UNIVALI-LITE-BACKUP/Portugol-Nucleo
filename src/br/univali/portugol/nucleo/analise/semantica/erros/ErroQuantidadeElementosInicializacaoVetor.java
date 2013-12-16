@@ -16,7 +16,7 @@ public final class ErroQuantidadeElementosInicializacaoVetor extends ErroSemanti
 
     public ErroQuantidadeElementosInicializacaoVetor(TrechoCodigoFonte trechoCodigoFonte, String nome, int numeroElementosEsperados, int numeroElementosDeclarados)
     {
-        super(trechoCodigoFonte);
+        super(trechoCodigoFonte,"ErroSemantico.ErroQuantidadeElementosInicializacaoVetor");
         
         this.nome = nome;
         this.numeroElementosEsperados = numeroElementosEsperados;

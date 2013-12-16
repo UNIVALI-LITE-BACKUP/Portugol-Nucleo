@@ -50,6 +50,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 public final class ErroSimboloNaoDeclarado extends ErroSemantico
 {
     private NoReferencia referencia;
+    private String codigo = "ErroSemantico.ErroSimboloNaoDeclarado.";
 
     /**
      * @param referencia     a referência ao símbolo inexistente.
@@ -79,7 +80,9 @@ public final class ErroSimboloNaoDeclarado extends ErroSemantico
     @Override
     protected String construirMensagem()
     {        
-        return new ErroSimboloNaoDeclarado.ConstrutorMensagem().construirMensagem();
+        String msg = new ErroSimboloNaoDeclarado.ConstrutorMensagem().construirMensagem();
+        super.setCodigo(codigo);
+        return msg;
     }
     
     private class ConstrutorMensagem extends VisitanteASABasico
@@ -118,6 +121,7 @@ public final class ErroSimboloNaoDeclarado extends ErroSemantico
             construtorTexto.append(referencia.getNome());
             construtorTexto.append("\" não foi declarado neste escopo.");
 
+            codigo += "1";
             return construtorTexto.toString();
         }
 
@@ -138,6 +142,7 @@ public final class ErroSimboloNaoDeclarado extends ErroSemantico
             construtorString.append(referencia.getNome());
             construtorString.append("\" não foi declarada neste escopo.");
 
+            codigo += "2";
             return construtorString.toString();
         }  
 
@@ -158,6 +163,7 @@ public final class ErroSimboloNaoDeclarado extends ErroSemantico
             construtorString.append(referencia.getNome());
             construtorString.append("\" não foi declarada neste escopo.");
 
+            codigo += "3";
             return construtorString.toString();
         }
 
@@ -179,6 +185,8 @@ public final class ErroSimboloNaoDeclarado extends ErroSemantico
             
             if (referencia.getEscopo() == null)
             {
+                
+                codigo += "4";
                 construtorString.append("\" não foi declarada no programa");
             }
             else 

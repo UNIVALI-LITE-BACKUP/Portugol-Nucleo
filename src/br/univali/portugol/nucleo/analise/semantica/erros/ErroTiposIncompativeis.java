@@ -66,6 +66,7 @@ public final class ErroTiposIncompativeis extends ErroSemantico
     private NoBloco bloco;
     private TipoDado[] tiposDado;
     private String[] detalhes;
+    private String codigo = "ErroSemantico.ErroTiposIncompativeis.";
     
     /**
      * 
@@ -127,7 +128,9 @@ public final class ErroTiposIncompativeis extends ErroSemantico
     @Override
     protected String construirMensagem()
     {        
-        return new ConstrutorMensagem().construirMensagem();
+        String msg = new ConstrutorMensagem().construirMensagem();
+        super.setCodigo(codigo);
+        return msg;
     }
     
     private class ConstrutorMensagem extends VisitanteASABasico
@@ -168,6 +171,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
             
+            codigo +="1";
+            
             setLinha(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte().getColuna());
             setTrechoCodigoFonte(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte());
@@ -189,6 +194,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
 
+            codigo +="2";
+            
             setLinha(noMenosUnario.getExpressao().getTrechoCodigoFonte().getLinha());
             setColuna(noMenosUnario.getExpressao().getTrechoCodigoFonte().getColuna());
             setTrechoCodigoFonte(noMenosUnario.getTrechoCodigoFonte());
@@ -205,6 +212,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" mas foi passada uma expressão do tipo \"");
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
+            
+            codigo +="3";
             
             setLinha(noNao.getTrechoCodigoFonte().getLinha());
             setColuna(noNao.getTrechoCodigoFonte().getColuna());
@@ -232,6 +241,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
             
+            codigo +="4";
+            
             setLinha(noOperacaoLogicaDiferenca.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaDiferenca.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             setTrechoCodigoFonte(noOperacaoLogicaDiferenca.getTrechoCodigoFonte());
@@ -257,6 +268,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
             
+            codigo +="5";
+            
             setLinha(noOperacaoDivisao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoDivisao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             setTrechoCodigoFonte(noOperacaoDivisao.getTrechoCodigoFonte());
@@ -281,6 +294,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" e uma expressão do tipo \"");
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
+                        
+            codigo +="6";
             
             setLinha(noOperacaoLogicaE.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaE.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
@@ -307,6 +322,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
 
+            codigo +="7";
+            
             setLinha(noOperacaoLogicaIgualdade.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaIgualdade.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             setTrechoCodigoFonte(noOperacaoLogicaIgualdade.getTrechoCodigoFonte());
@@ -332,6 +349,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
 
+            codigo +="8";
+            
             setLinha(noOperacaoLogicaMaior.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMaior.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             setTrechoCodigoFonte(noOperacaoLogicaMaior.getTrechoCodigoFonte());
@@ -356,7 +375,9 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" com uma expressão do tipo \"");
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
-
+            
+            codigo +="9";
+            
             setLinha(noOperacaoLogicaMaiorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMaiorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             setTrechoCodigoFonte(noOperacaoLogicaMaiorIgual.getTrechoCodigoFonte());
@@ -382,6 +403,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
 
+            codigo +="10";
+            
             setLinha(noOperacaoLogicaMenor.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMenor.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
@@ -408,6 +431,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
 
+            codigo +="11";
+            
             setLinha(noOperacaoLogicaMenorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaMenorIgual.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
@@ -433,6 +458,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" e uma expressão do tipo \"");
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
+            
+            codigo +="12";
             
             setLinha(noOperacaoModulo.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoModulo.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
@@ -460,6 +487,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
 
+            codigo +="13";
+            
             setLinha(noOperacaoMultiplicacao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoMultiplicacao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
@@ -486,6 +515,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
 
+            codigo +="14";
+            
             setLinha(noOperacaoLogicaOU.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoLogicaOU.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
@@ -512,6 +543,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
 
+            codigo +="15";
+            
             setLinha(noOperacaoSoma.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoSoma.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
@@ -538,6 +571,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
 
+            codigo +="16";
+            
             setLinha(noOperacaoSubtracao.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
             setColuna(noOperacaoSubtracao.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
             
@@ -558,6 +593,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
 
+            codigo +="17";
+            
             setLinha(noEscolha.getExpressao().getTrechoCodigoFonte().getLinha());
             setColuna(noEscolha.getExpressao().getTrechoCodigoFonte().getColuna());
             
@@ -582,6 +619,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
 
+            codigo +="18";
+            
             setLinha(noCaso.getExpressao().getTrechoCodigoFonte().getLinha());
             setColuna(noCaso.getExpressao().getTrechoCodigoFonte().getColuna());
             
@@ -602,6 +641,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
             
+            codigo +="19";
+            
             setLinha(noSe.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noSe.getCondicao().getTrechoCodigoFonte().getColuna());
 
@@ -619,6 +660,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" mas foi passada uma expressão do tipo \"");
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
+            
+            codigo +="20";
             
             setLinha(noEnquanto.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noEnquanto.getCondicao().getTrechoCodigoFonte().getColuna());
@@ -638,6 +681,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
             
+            codigo +="21";
+            
             setLinha(noFacaEnquanto.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noFacaEnquanto.getCondicao().getTrechoCodigoFonte().getColuna());
 
@@ -655,6 +700,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" mas foi passada uma expressão do tipo \"");
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
+            
+            codigo +="22";
             
             setLinha(noPara.getCondicao().getTrechoCodigoFonte().getLinha());
             setColuna(noPara.getCondicao().getTrechoCodigoFonte().getColuna());
@@ -678,6 +725,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append(tiposDado[2]);
             construtorString.append("\".");
             
+            codigo +="23";
+            
             setLinha(noReferenciaMatriz.getTrechoCodigoFonte().getLinha());
             setColuna(noReferenciaMatriz.getTrechoCodigoFonte().getColuna());
 
@@ -697,6 +746,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" mas foi passada uma expressão do tipo \"");
             construtorString.append(tiposDado[0]);
             construtorString.append("\".");
+            
+            codigo +="24";
             
             setLinha(noReferenciaVetor.getTrechoCodigoFonte().getLinha());
             setColuna(noReferenciaVetor.getTrechoCodigoFonte().getColuna());
@@ -719,6 +770,8 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             construtorString.append("\" mas foi retornada uma expressão do tipo \"");
             construtorString.append(tiposDado[1]);
             construtorString.append("\".");
+            
+            codigo +="25";
             
             setLinha(noRetorne.getTrechoCodigoFonte().getLinha());
             setColuna(noRetorne.getTrechoCodigoFonte().getColuna());

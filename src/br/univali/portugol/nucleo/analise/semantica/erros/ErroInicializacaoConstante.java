@@ -22,6 +22,7 @@ public final class ErroInicializacaoConstante extends ErroSemantico
     private Integer indice = null;
     private Integer linha = null;
     private Integer coluna = null;
+    private String codigo = "ErroSemantico.ErroInicializacaoConstante";
     
     public ErroInicializacaoConstante(NoDeclaracaoVariavel declaracao)
     {
@@ -50,7 +51,9 @@ public final class ErroInicializacaoConstante extends ErroSemantico
     @Override
     protected String construirMensagem()
     {        
-        return new ConstrutorMensagem().construirMensagem();
+        String mensagem = new ConstrutorMensagem().construirMensagem();
+        super.setCodigo(codigo);        
+        return mensagem;
     }
     
     private class ConstrutorMensagem extends VisitanteASABasico
@@ -64,7 +67,9 @@ public final class ErroInicializacaoConstante extends ErroSemantico
         {
             try
             {
-                return (String) declaracao.aceitar(this);
+                String s = (String) declaracao.aceitar(this);  
+                
+                return s;         
             }
             catch (Exception e)
             {
@@ -81,6 +86,7 @@ public final class ErroInicializacaoConstante extends ErroSemantico
             construtorTexto.append(noDeclaracaoVariavel.getNome());
             construtorTexto.append("\" deve ser inicializada com um valor ao invés de uma expressão");
             
+            codigo+= ".1";
             return construtorTexto.toString();
         }
 
@@ -95,6 +101,7 @@ public final class ErroInicializacaoConstante extends ErroSemantico
             construtorTexto.append(noDeclaracaoVetor.getNome());
             construtorTexto.append("\" deve ser inicializado com um valor ao invés de uma expressão");
             
+            codigo+= ".2";
             return construtorTexto.toString();
         }
         
@@ -111,6 +118,7 @@ public final class ErroInicializacaoConstante extends ErroSemantico
             construtorTexto.append(noDeclaracaoMatriz.getNome());
             construtorTexto.append("\" deve ser inicializado com um valor ao invés de uma expressão");
             
+            codigo+= ".3";
             return construtorTexto.toString();
         }        
     }

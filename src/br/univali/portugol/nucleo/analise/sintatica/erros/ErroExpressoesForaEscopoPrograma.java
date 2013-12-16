@@ -16,7 +16,7 @@ public final class ErroExpressoesForaEscopoPrograma extends ErroSintatico
     
     public ErroExpressoesForaEscopoPrograma(String expressoes, int posicao, String codigoFonte, Local local)
     {
-        super(1, 1);
+        super(1, 1,"ErroSintatico.ErroExpressoesForaEscopoPrograma");
         this.posicao = posicao;
         this.expressoes = expressoes;
         this.local = local;

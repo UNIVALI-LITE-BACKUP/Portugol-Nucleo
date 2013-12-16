@@ -21,7 +21,7 @@ public final class ErroQuantificadorParametroFuncao extends ErroSemantico
 
     public ErroQuantificadorParametroFuncao(NoChamadaFuncao chamadaFuncao, int indiceParametro, String nomeParametro, Quantificador quantificadorParametroEsperado, Quantificador quantificadorParametroPassado)
     {
-        super(chamadaFuncao.getParametros().get(indiceParametro).getTrechoCodigoFonte());
+        super(chamadaFuncao.getParametros().get(indiceParametro).getTrechoCodigoFonte(),"ErroSemantico.ErroQuantificadorParametroFuncao");
         
         this.chamadaFuncao = chamadaFuncao;
         this.indiceParametro = indiceParametro;

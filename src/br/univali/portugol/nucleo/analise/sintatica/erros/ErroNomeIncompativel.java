@@ -46,7 +46,7 @@ public final class ErroNomeIncompativel extends ErroSintatico
      */
     public ErroNomeIncompativel(int linha, int coluna)
     {
-        super(linha, coluna);
+        super(linha, coluna,"ErroSintatico.ErroNomeIncompativel");
     }
 
     /**

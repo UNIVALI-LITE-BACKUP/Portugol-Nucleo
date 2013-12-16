@@ -15,7 +15,7 @@ public final class ErroPassagemParametroInvalida extends ErroSemantico
 
     public ErroPassagemParametroInvalida(NoExpressao valor, String nomeParametro, String nomeFuncao)
     {
-        super(valor.getTrechoCodigoFonte());
+        super(valor.getTrechoCodigoFonte(),"ErroSemantico.ErroPassagemParametroInvalida");
         
         this.valor = valor;
         this.nomeParametro = nomeParametro;

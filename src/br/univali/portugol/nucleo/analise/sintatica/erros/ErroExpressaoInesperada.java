@@ -8,7 +8,7 @@ public class ErroExpressaoInesperada extends ErroSintatico
     
     public ErroExpressaoInesperada(int linha, int coluna, String token)
     {
-        super(linha, coluna);
+        super(linha, coluna,"ErroSintatico.ErroExpressaoInesperada");
         this.token = token;
     }
     

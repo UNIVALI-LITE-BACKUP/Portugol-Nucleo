@@ -44,7 +44,7 @@ public final class ErroFaltaDoisPontos extends ErroSintatico
      */
     public ErroFaltaDoisPontos(int linha, int coluna)
     {
-        super(linha, coluna);
+        super(linha, coluna, "ErroSintatico.ErroFaltaDoisPontos");
         
     }
     

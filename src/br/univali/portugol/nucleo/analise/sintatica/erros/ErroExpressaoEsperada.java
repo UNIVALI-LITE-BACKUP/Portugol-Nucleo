@@ -38,7 +38,8 @@ import static br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico.e
  */
 public final class ErroExpressaoEsperada extends ErroSintatico
 {
-    private Stack<String> pilhaContexto;    
+    private Stack<String> pilhaContexto;   
+    private String codigo = "ErroSintatico.ErroExpressaoEsperada.";
     /**
      * 
      * @param linha      a linha ond eo erro ocorreu.
@@ -59,14 +60,18 @@ public final class ErroExpressaoEsperada extends ErroSintatico
     {
         if (estaNoContexto("listaListaExpressoes", pilhaContexto))
         {
+            super.setCodigo(codigo += "1");
             return "A linha da matriz não foi informada ou a expressão informada não é uma linha de matriz";
+            
         }
         else if (estaNoContexto("vetor", pilhaContexto))
         {
+            super.setCodigo(codigo += "2");
             return "O elemento do vetor não foi informado, insira um valor ou uma expressão para corrigir o problema";
         }
         else if (estaNoContexto("matriz", pilhaContexto))
         {
+            super.setCodigo(codigo += "3");
             return "O elemento não foi informado na linha da matriz, insira um valor ou uma expressão para corrigir o problema";
         }
         else if (estaEmUmComando(pilhaContexto))
@@ -75,13 +80,22 @@ public final class ErroExpressaoEsperada extends ErroSintatico
 
             switch (comando)
             {
-                case "se": return "O comando \"se\" espera uma expressão do tipo lógico entre os parêntesis";
-                case "enquanto": return "O comando \"enquanto\" espera uma expressão do tipo lógico entre os parêntesis";
-                case "facaEnquanto": return "O comando \"faca-enquanto\" espera uma expressão do tipo lógico entre os parêntesis";
-                case "escolha": return "O comando \"escolha\" espera um valor ou uma expressão";
+                case "se": 
+                    super.setCodigo(codigo += "4");                  
+                    return "O comando \"se\" espera uma expressão do tipo lógico entre os parêntesis";
+                case "enquanto": 
+                    super.setCodigo(codigo += "5");
+                    return "O comando \"enquanto\" espera uma expressão do tipo lógico entre os parêntesis";
+                case "facaEnquanto": 
+                    super.setCodigo(codigo += "6");                
+                    return "O comando \"faca-enquanto\" espera uma expressão do tipo lógico entre os parêntesis";
+                case "escolha": 
+                    super.setCodigo(codigo += "7");
+                    return "O comando \"escolha\" espera um valor ou uma expressão";
             }
         }
         
+        super.setCodigo(codigo += "8");
         return "Era esperada uma expressão";
     }
 }
