@@ -292,7 +292,7 @@ public final class Programa
      * 
      * @param funcoes  a lista de funções
      */
-    void setFuncoes(List<String> funcoes)
+    public void setFuncoes(List<String> funcoes)
     {
         this.funcoes = funcoes;
     }
@@ -315,7 +315,7 @@ public final class Programa
      * programa.
      * @since 1.0
      */
-    void setArvoreSintaticaAbstrata(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma)
+    public void setArvoreSintaticaAbstrata(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma)
     {
         this.arvoreSintaticaAbstrataPrograma = arvoreSintaticaAbstrataPrograma;
     }
@@ -395,7 +395,7 @@ public final class Programa
         this.saida = saida;
     }
 
-    void setResultadoAnalise(ResultadoAnalise resultadoAnalise)
+    public void setResultadoAnalise(ResultadoAnalise resultadoAnalise)
     {
         this.resultadoAnalise = resultadoAnalise;
     }
