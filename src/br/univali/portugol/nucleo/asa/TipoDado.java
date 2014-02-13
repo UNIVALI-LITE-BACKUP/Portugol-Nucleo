@@ -33,7 +33,7 @@ public enum TipoDado
      *
      * @since 1.0
      */
-    INTEIRO(TipoDadoEspecifico.VALORINTEIRO, "inteiro", 0, Integer.class),
+    INTEIRO("inteiro", "inteiro", 0, Integer.class),
     
     /**
      * Representa os valores reais no Portugol. Os valores reais são todos os números fracionários positivos
@@ -54,7 +54,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    REAL(TipoDadoEspecifico.VALORREAL, "real", 0.0, Double.class),
+    REAL("real", "real", 0.0, Double.class),
     
     /**
      * Representa os valores lógicos (verdadeiro ou falso) no Portugol. 
@@ -72,7 +72,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    LOGICO(TipoDadoEspecifico.VALORLOGICO, "lógico", false, Boolean.class),
+    LOGICO("logico", "lógico", false, Boolean.class),
     
     /**
      * Representa as cadeias de carcateres, ou seja, os valores textuais, no Portugol.
@@ -92,7 +92,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    CADEIA(TipoDadoEspecifico.VALORCADEIA, "cadeia", null, String.class),
+    CADEIA("cadeia", "cadeia", null, String.class),
     
     /**
      * Representa um único caracter no Portugol. Os caracteres são declarados entre aspas simples ''.
@@ -114,7 +114,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    CARACTER(TipoDadoEspecifico.VALORCARACTER, "caracter", '\0', Character.class),
+    CARACTER("caracter", "caracter", '\0', Character.class),
     
     /**
      * Este é um tipo de dados especial utilizado apenas nas declarações de função para indicar
@@ -139,19 +139,19 @@ public enum TipoDado
      * @since 1.0
      * 
      */
-    VAZIO(TipoDadoEspecifico.VALORVAZIO, "vazio", null, Void.TYPE),
+    VAZIO("vazio", "vazio", null, Void.TYPE),
     
     /**
      * Este é um tipo de dados especial utilizado apenas com os parâmetros 
      * das funções de bibliotecas. Este tipo de dado indica ao {@link AnalisadorSemantico}
      * que o parâmetro da função aceita qualquer tipo de dado.
      */ 
-    TODOS(TipoDadoEspecifico.VALORTODOS, "todos", null, Object.class);
+    TODOS("todos", "todos", null, Object.class);
     
-    private TipoDadoEspecifico nome;
-    private String descricao;
-    private Object valorPadrao;
-    private Class tipoJava;
+    private final String nome;
+    private final String descricao;
+    private final Object valorPadrao;
+    private final Class tipoJava;
 
     /**
      * 
@@ -159,7 +159,7 @@ public enum TipoDado
      * @param descricao   
      * @param valorPadrao
      */    
-    private TipoDado(TipoDadoEspecifico nome, String descricao, Object valorPadrao, Class tipoJava)
+    private TipoDado(String nome, String descricao, Object valorPadrao, Class tipoJava)
     {
         this.nome = nome;
         this.descricao = descricao;
@@ -197,7 +197,7 @@ public enum TipoDado
 
     public String getNome()
     {
-        return nome.toString();
+        return nome;
     }
 
     
@@ -226,15 +226,11 @@ public enum TipoDado
     {
         TipoDado[] tiposDado = values();
  
-        TipoDadoEspecifico tipoDadoEspec = TipoDadoEspecifico.obterTipoDadoPeloNome(nome);
-        
         for (TipoDado tipoDado : tiposDado)
         {
-            if (tipoDado.nome == tipoDadoEspec){
-                if (nome.equals(tipoDadoEspec.getNomeC()))                
-                    return tipoDado;                
-                if (nome.equals(tipoDadoEspec.getNomePortugol()))               
-                    return tipoDado;            
+            if (nome.equals(tipoDado.nome))
+            {
+                return tipoDado;
             }
         }
 
@@ -248,52 +244,6 @@ public enum TipoDado
         for (TipoDado tipoDado : tiposDado)
         {
             if (tipoDado.getTipoJava().equals(tipoJava))
-            {
-                return tipoDado;
-            }
-        }
-
-        return null;
-    }
-}
-enum TipoDadoEspecifico{
-
-    VALORINTEIRO    ("inteiro"  , "int"     ),
-    VALORREAL       ("real"     , "float"   ),
-    VALORLOGICO     ("logico"   , ""        ),
-    VALORCADEIA     ("cadeia"   , ""        ),
-    VALORCARACTER   ("caracter" , "char"    ),
-    VALORVAZIO      ("vazio"    , "void"    ),
-    VALORTODOS      ("todos"    , "todos"   );
-    
-    private String nomeportugol;
-    private String nomec;
-    
-    private TipoDadoEspecifico(String nomeportugol, String nomec)
-    {
-        this.nomeportugol = nomeportugol;
-        this.nomec = nomec;
-    }
-    public String getNomePortugol()
-    {
-        return nomeportugol.toString();
-    }
-    public String getNomeC()
-    {
-        return nomec.toString();
-    }
-    
-    public static TipoDadoEspecifico obterTipoDadoPeloNome(String nome)
-    {
-        TipoDadoEspecifico[] tiposDado = values();
- 
-        for (TipoDadoEspecifico tipoDado : tiposDado)
-        {
-            if (nome.equals(tipoDado.nomeportugol))
-            {
-                return tipoDado;
-            }
-            if (nome.equals(tipoDado.nomec))
             {
                 return tipoDado;
             }

@@ -2245,18 +2245,18 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
     {
-        return null;
+        throw new UnsupportedOperationException("Não implementado");
     }
 
     @Override
     public Object visitar(NoTitulo noTitulo) throws ExcecaoVisitaASA
     {
-        return null;
+        throw new UnsupportedOperationException("Não implementado");
     }
 
     @Override
     public Object visitar(NoVaPara noVaPara) throws ExcecaoVisitaASA
     {
-        return null;
+        throw new UnsupportedOperationException("Não implementado");
     }
 }
