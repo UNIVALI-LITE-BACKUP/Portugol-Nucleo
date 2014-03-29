@@ -9,11 +9,23 @@ import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 public final class ErroExecucaoBiblioteca extends ErroExecucao
 {
     private String mensagem;
+    private Throwable causa;
 
     public ErroExecucaoBiblioteca(String mensagem)
     {
         this.mensagem = mensagem;
-    }    
+    }
+    
+    public ErroExecucaoBiblioteca(final Throwable causa)
+    {
+        this.causa = causa;
+    }
+
+    @Override
+    public synchronized Throwable getCause()
+    {
+        return causa;
+    }
     
     /**
      * {@inheritDoc}
