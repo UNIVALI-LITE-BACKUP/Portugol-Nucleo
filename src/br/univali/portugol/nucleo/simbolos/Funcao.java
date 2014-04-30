@@ -34,7 +34,12 @@ public final class Funcao extends Simbolo
     public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, NoDeclaracao origem)
     {
         super(nome, tipoDado, origem);
-        this.blocos = ((NoDeclaracaoFuncao) origem).getBlocos();
+        
+        if (origem != null)
+        {
+            this.blocos = ((NoDeclaracaoFuncao) origem).getBlocos();
+        }
+        
         this.parametros = parametros;
         this.quantificador = quantificador;
     }
