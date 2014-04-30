@@ -16,57 +16,65 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
 {
     private final boolean detalhado;
     private final List<DepuradorListener> listeners = new ArrayList<>();
-    
+
     private Programa programa;
     private List<NoBloco> eleitos;
-    
+
     @Override
     public synchronized void proximo()
     {
         notifyAll();
     }
-    
+
     public void disparaDestacar(int linha)
     {
-        for (DepuradorListener l : listeners)
+        if (linha >= 0)
         {
-            l.highlightLinha(linha);
+            for (DepuradorListener l : listeners)
+            {
+                l.highlightLinha(linha);
+            }
         }
     }
-    
+
     public void disparaDestacar(TrechoCodigoFonte trechoCodigoFonte)
     {
-        int linha = trechoCodigoFonte.getLinha();
-        int coluna = trechoCodigoFonte.getColuna();
-        int tamanho = trechoCodigoFonte.getTamanhoTexto();
-        for (DepuradorListener l : listeners)
+        if (trechoCodigoFonte != null)
         {
-            l.HighlightDetalhadoAtual(linha,coluna,tamanho);
+            int linha = trechoCodigoFonte.getLinha();
+            int coluna = trechoCodigoFonte.getColuna();
+            int tamanho = trechoCodigoFonte.getTamanhoTexto();
+            for (DepuradorListener l : listeners)
+            {
+                l.HighlightDetalhadoAtual(linha, coluna, tamanho);
+            }
         }
     }
-    
+
     private List<Simbolo> getSimbolosAlterados(NoExpressao expressao)
     {
         final List<Simbolo> simbolosAlterados = new ArrayList<>();
-        VisitanteASA visitante = new VisitanteASABasico() {
-            
-            
+        VisitanteASA visitante = new VisitanteASABasico()
+        {
+
             @Override
             public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA
             {
                 NoReferencia ref = (NoReferencia) noOperacaoAtribuicao.getOperandoEsquerdo();
                 try
                 {
-                    
+
                     Simbolo simbolo = memoria.getSimbolo(ref.getNome());
                     simbolosAlterados.add(simbolo);
-                    if (simbolo instanceof Ponteiro) {
-                        while (simbolo instanceof Ponteiro){
-                            simbolo = ((Ponteiro)simbolo).getSimboloApontado();
+                    if (simbolo instanceof Ponteiro)
+                    {
+                        while (simbolo instanceof Ponteiro)
+                        {
+                            simbolo = ((Ponteiro) simbolo).getSimboloApontado();
                         }
                         simbolosAlterados.add(simbolo);
                     }
-                    
+
                 }
                 catch (ExcecaoSimboloNaoDeclarado ex)
                 {
@@ -79,11 +87,13 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
             public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
             {
                 List<ModoAcesso> obterModosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
-                
+
                 if (chamadaFuncao.getParametros() != null)
                 {
-                    for (int i = 0; i < chamadaFuncao.getParametros().size(); i++){
-                        if (obterModosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA){
+                    for (int i = 0; i < chamadaFuncao.getParametros().size(); i++)
+                    {
+                        if (obterModosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA)
+                        {
                             NoReferencia ref = (NoReferencia) chamadaFuncao.getParametros().get(i);
                             try
                             {
@@ -98,10 +108,10 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
 
                     }
                 }
-                
+
                 return null;
             }
-            
+
             private List<ModoAcesso> obterModosAcessoEsperados(NoChamadaFuncao chamadaFuncao)
             {
                 List<ModoAcesso> modosAcesso = new ArrayList<>();
@@ -110,32 +120,38 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
                 {
                     if (chamadaFuncao.getNome().equals("leia"))
                     {
-                       for (NoExpressao parametro : chamadaFuncao.getParametros())
-                        {
-                            modosAcesso.add(ModoAcesso.POR_REFERENCIA);
-                        } 
-                    } else if (chamadaFuncao.getNome().equals("escreva"))
-                    {
                         for (NoExpressao parametro : chamadaFuncao.getParametros())
                         {
-                            modosAcesso.add(ModoAcesso.POR_VALOR);
-                        } 
-                    } else {
-                        try
+                            modosAcesso.add(ModoAcesso.POR_REFERENCIA);
+                        }
+                    }
+                    else
+                    {
+                        if (chamadaFuncao.getNome().equals("escreva"))
                         {
-                            Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
-
-                            for (NoDeclaracaoParametro parametro : funcao.getParametros())
+                            for (NoExpressao parametro : chamadaFuncao.getParametros())
                             {
-                                //nao olhar mesmo que seja por referencia.
-                                //pois esta sendo feito na atribuicao, quando o simbolo e ponteiro.
-                                //PS: meu teclado nao tem acento.
                                 modosAcesso.add(ModoAcesso.POR_VALOR);
                             }
                         }
-                        catch (ExcecaoSimboloNaoDeclarado ex)
+                        else
                         {
-                            // Não faz nada aqui
+                            try
+                            {
+                                Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+
+                                for (NoDeclaracaoParametro parametro : funcao.getParametros())
+                                {
+                                    //nao olhar mesmo que seja por referencia.
+                                    //pois esta sendo feito na atribuicao, quando o simbolo e ponteiro.
+                                    //PS: meu teclado nao tem acento.
+                                    modosAcesso.add(ModoAcesso.POR_VALOR);
+                                }
+                            }
+                            catch (ExcecaoSimboloNaoDeclarado ex)
+                            {
+                                // Não faz nada aqui
+                            }
                         }
                     }
                 }
@@ -161,8 +177,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
 
                 return modosAcesso;
             }
-            
-            
+
         };
         try
         {
@@ -182,8 +197,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
             l.simbolosAlterados(simbolos);
         }
     }
-    
-   
+
     public void disparaDepuracaoInicializada()
     {
         for (DepuradorListener l : listeners)
@@ -197,7 +211,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
     {
         this.listeners.addAll(listeners);
     }
-    
+
     @Override
     public void addListener(DepuradorListener listener)
     {
@@ -213,14 +227,59 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
         if (!listeners.isEmpty())
         {
             this.programa = programa;
-            
+
             disparaDepuracaoInicializada();
+            destacarFuncaoInicial();
             super.executar(programa, parametros);
+            destacarFuncaoInicial();
         }
-       else
-       {
-           throw new ErroObservadorDepuracao();
-       }
+        else
+        {
+            throw new ErroObservadorDepuracao();
+        }
+    }
+
+    private boolean funcaoInicial(No no)
+    {
+        if (no instanceof NoDeclaracaoFuncao)
+        {
+            return ((NoDeclaracaoFuncao) no).getNome().equals(this.programa.getFuncaoInicial());
+        }
+
+        return false;
+    }
+
+    private void destacarFuncaoInicial() throws InterruptedException
+    {
+        NoDeclaracao funcaoInicial = obterFuncaoInicial(programa);
+
+        if (funcaoInicial != null)
+        {
+            try
+            {
+                realizarParada(funcaoInicial, funcaoInicial.getTrechoCodigoFonteNome());
+            }
+            catch (ExcecaoVisitaASA excecao)
+            {
+                if (excecao.getCause() instanceof InterruptedException)
+                {
+                    throw (InterruptedException) excecao.getCause();
+                }
+            }
+        }
+    }
+
+    private NoDeclaracao obterFuncaoInicial(Programa programa)
+    {
+        for (NoDeclaracao declaracao : programa.getArvoreSintaticaAbstrata().getListaDeclaracoesGlobais())
+        {
+            if (declaracao instanceof NoDeclaracaoFuncao && declaracao.getNome().equals(programa.getFuncaoInicial()))
+            {
+                return declaracao;
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -232,10 +291,10 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
     public DepuradorImpl(List<NoBloco> nosParada, boolean detalhado)
     {
         this.eleitos = nosParada;
-        this.detalhado = detalhado;        
+        this.detalhado = detalhado;
         this.memoria.adicionarObservador(DepuradorImpl.this);
     }
-    
+
     public DepuradorImpl(List<NoBloco> nosParada)
     {
         this(nosParada, false);
@@ -273,13 +332,13 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
         {
             disparaSimbolosAlterados(getSimbolosAlterados(no));
         }
-        
+
         if (no.getEscopo() == null && !no.getNome().equals("leia") && !no.getNome().equals("escreva"))
         {
             realizarParada(no, no.getTrechoCodigoFonte());
         }
 
-        return value;        
+        return value;
     }
 
     @Override
@@ -448,9 +507,9 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         final Object result = super.visitar(no);
-        
+
         disparaSimbolosAlterados(getSimbolosAlterados(no));
-        
+
         return result;
     }
 
@@ -530,15 +589,18 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
- 
+
     private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no))
+        if (eleitos.contains(no) || funcaoInicial(no))
         {
-            if (detalhado) {
+            if (detalhado)
+            {
                 disparaDestacar(trechoCodigoFonte);
-            } else {
-                disparaDestacar(trechoCodigoFonte.getLinha());
+            }
+            else
+            {
+                disparaDestacar((trechoCodigoFonte != null) ? trechoCodigoFonte.getLinha() : -1);
             }
             synchronized (this)
             {
@@ -553,7 +615,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
             }
         }
     }
-    
+
     @Override
     public void simboloAdicionado(Simbolo simbolo)
     {
