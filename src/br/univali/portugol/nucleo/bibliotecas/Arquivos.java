@@ -200,7 +200,7 @@ public final class Arquivos extends Biblioteca
     )
     public Boolean arquivo_existe(String caminho_arquivo) throws ErroExecucaoBiblioteca
     {
-        File arquivo = new File(caminho_arquivo);
+        File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
         
         return arquivo.isFile() && arquivo.exists();
     }
