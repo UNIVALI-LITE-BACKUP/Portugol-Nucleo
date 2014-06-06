@@ -42,6 +42,7 @@ public final class Sons extends Biblioteca
     private static final int NUMERO_MAXIMO_REPRODUCOES = 256;
     
     private Som[] sons;
+    private Programa programa;
     
     private ReprodutorSom[] reprodutores;
 
@@ -63,9 +64,10 @@ public final class Sons extends Biblioteca
     )
     public Integer carregar_som(String caminho_som) throws ErroExecucaoBiblioteca
     {
+        File caminho = programa.resolverCaminho(new File(caminho_som));
         int indice = obterProximoIndiceSomLivre();
 
-        sons[indice] = new Som(new File(caminho_som), indice);
+        sons[indice] = new Som(caminho, indice);
 
         return indice;
     }    
@@ -160,8 +162,9 @@ public final class Sons extends Biblioteca
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
-        sons = new Som[NUMERO_MAXIMO_SONS];
-        reprodutores = new ReprodutorSom[NUMERO_MAXIMO_REPRODUCOES];
+        this.programa = programa;
+        this.sons = new Som[NUMERO_MAXIMO_SONS];
+        this.reprodutores = new ReprodutorSom[NUMERO_MAXIMO_REPRODUCOES];
     }
 
     @Override

@@ -30,7 +30,7 @@ import java.util.List;
 @PropriedadesBiblioteca(tipo = TipoBiblioteca.RESERVADA)
 @DocumentacaoBiblioteca
 (
-    descricao = "Esta biblioteca permite ler e escrever arquivos locais ou em um servidor remoto",
+    descricao = "Esta biblioteca permite ler e escrever arquivos",
     versao = "1.1"
 )
 public final class Arquivos extends Biblioteca
@@ -39,6 +39,7 @@ public final class Arquivos extends Biblioteca
     
     private static final int NUMERO_MAXIMO_ARQUIVOS = 10;
     
+    private Programa programa;
     private Arquivo[] arquivos;
     
     @DocumentacaoConstante(descricao = "indica à biblioteca que o arquivo deve ser aberto apenas para leitura")
@@ -73,7 +74,7 @@ public final class Arquivos extends Biblioteca
     )
     public Integer abrir_arquivo(String caminho_arquivo, Integer modo_acesso) throws ErroExecucaoBiblioteca
     {
-        File arquivo = new File(caminho_arquivo);
+        File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
         
         if (!arquivoAberto(arquivo))
         {
@@ -220,7 +221,7 @@ public final class Arquivos extends Biblioteca
     )
     public void apagar_arquivo(String caminho_arquivo) throws ErroExecucaoBiblioteca
     {
-        File arquivo = new File(caminho_arquivo);
+        File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
         
         try
         {
@@ -242,7 +243,8 @@ public final class Arquivos extends Biblioteca
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
-        arquivos = new Arquivo[NUMERO_MAXIMO_ARQUIVOS];
+        this.programa = programa;
+        this.arquivos = new Arquivo[NUMERO_MAXIMO_ARQUIVOS];
     }    
 
     @Override

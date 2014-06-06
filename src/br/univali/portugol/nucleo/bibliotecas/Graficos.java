@@ -532,7 +532,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public Integer carregar_imagem(String caminho) throws ErroExecucaoBiblioteca
     {
-        File arquivo = new File(caminho);
+        File arquivo = programa.resolverCaminho(new File(caminho));
         int indiceImagem = obterProximoIndiceLivre();
 
         if (arquivo.exists())
@@ -964,7 +964,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void carregar_fonte(String caminho_fonte) throws ErroExecucaoBiblioteca
     {
-        File arquivo = new File(caminho_fonte);
+        File arquivo = programa.resolverCaminho(new File(caminho_fonte));
 
         try
         {

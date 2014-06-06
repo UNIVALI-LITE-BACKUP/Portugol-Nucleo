@@ -14,6 +14,7 @@ import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -57,6 +58,7 @@ public final class Programa
     private Saida saida;
     private Entrada entrada;
     private String funcaoInicial;
+    private File diretorioTrabalho = new File(".");
     
     private TarefaExecucao tarefaExecucao = null;
     private Future controleTarefaExecucao = null;
@@ -446,6 +448,28 @@ public final class Programa
         {
             observador.execucaoEncerrada(this, resultadoExecucao);
         }
+    }
+
+    public void setDiretorioTrabalho(File diretorioTrabalho)
+    {
+        if (diretorioTrabalho.isDirectory() && diretorioTrabalho.exists())
+        {
+            this.diretorioTrabalho = diretorioTrabalho;
+        }
+        else
+        {
+            throw new IllegalArgumentException(String.format("Diretório de trabalho inválido. O caminho '%s' não existe ou não representa um diretório", diretorioTrabalho.getAbsolutePath()));
+        }
+    }
+    
+    public File resolverCaminho(File caminho)
+    {
+        if (!caminho.isAbsolute())
+        {
+            return new File(diretorioTrabalho, caminho.getPath());
+        }
+        
+        return caminho;
     }
 
     @Override
