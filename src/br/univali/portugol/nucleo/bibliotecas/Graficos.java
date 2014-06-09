@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -33,7 +35,7 @@ import javax.swing.SwingUtilities;
         descricao = "Esta biblioteca permite inicializar e utilizar um ambiente gráfico com "
         + "suporte ao desenho de primitivas gráficas e de imagens carregadas do "
         + "sistema de arquivos",
-        versao = "1.3"
+        versao = "1.4"
 )
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
@@ -106,6 +108,139 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             {
                 throw new ErroExecucaoBiblioteca(excecao);
             }
+        }
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Encerra o programa como se o usuário tivesse clicado no botão 'Fechar' da janela",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void fechar_janela() throws ErroExecucaoBiblioteca
+    {
+        encerrar_modo_grafico();
+        programa.interromper();
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Minimiza a janela do ambiente gráfico, como se o usuário tivesse clicado no botão 'Minimizar' da janela",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void minimizar_janela() throws ErroExecucaoBiblioteca
+    {
+        if (ambienteGraficoInicializado())
+        {
+            try
+            {
+                SwingUtilities.invokeAndWait(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        janela.setExtendedState(JFrame.ICONIFIED);
+                    }
+                });
+            }
+            catch (InterruptedException | InvocationTargetException excecao)
+            {
+                throw new ErroExecucaoBiblioteca(excecao);
+            }
+        }
+    }
+    
+    @DocumentacaoFuncao(
+            descricao = "Restaura a janela do ambiente gráfico, como se o usuário tivesse clicado no ícone do programa na barra de tarefas do Sistema Operacional",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void restaurar_janela() throws ErroExecucaoBiblioteca
+    {
+        if (ambienteGraficoInicializado())
+        {
+            try
+            {
+                SwingUtilities.invokeAndWait(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        janela.setExtendedState(JFrame.NORMAL);
+                    }
+                });
+            }
+            catch (InterruptedException | InvocationTargetException excecao)
+            {
+                throw new ErroExecucaoBiblioteca(excecao);
+            }
+        }
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Oculta a borda da janela do modo gráfico, fazendo com que somente o conteúdo da janela seja exibido",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void ocultar_borda_janela() throws ErroExecucaoBiblioteca
+    {
+        ocultar_borda(true);
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Exibe novamente a borda da janela do modo gráfico, caso ela esteja oculta",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void exibir_borda_janela() throws ErroExecucaoBiblioteca
+    {
+        ocultar_borda(false);
+    }
+
+    private void ocultar_borda(final boolean ocultar) throws ErroExecucaoBiblioteca
+    {
+        if (ambienteGraficoInicializado())
+        {
+            try
+            {
+                SwingUtilities.invokeAndWait(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        int w = janela.getWidth();
+                        int h = janela.getHeight();
+
+                        janela.setVisible(false);
+                        janela.dispose();
+                        janela.setUndecorated(ocultar);
+                        janela.setVisible(true);
+
+                        // Deve ser chamado após exibir a janela, caso contrário a janela estará em estado 
+                        // inválido (disposed) e a chamada gerará uma exceção
+                        janela.definirDimensoes(janela.largura, janela.altura);
+
+                        janela.setLocationRelativeTo(null);
+                    }
+                });
+            }
+            catch (InterruptedException | InvocationTargetException excecao)
+            {
+                throw new ErroExecucaoBiblioteca(excecao);
+            }
+        }
+        else
+        {
+            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
         }
     }
 
@@ -1048,7 +1183,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                      * Se o usuário interromper o programa fechando a janela ou de
                      * alguma outra forma, ocorrerá um interrupção. Neste caso, 
                      * simplesmente ignoramos e continuamos tentando fechar a janela.
-                    */
+                     */
                 }
                 catch (InvocationTargetException excecao)
                 {
@@ -1145,6 +1280,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     private final class Janela extends JFrame
     {
+        private int largura;
+        private int altura;
         private SuperficieDesenho superficieDesenho;
 
         public Janela() throws HeadlessException
@@ -1195,6 +1332,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
         public void definirDimensoes(int largura, int altura)
         {
+            this.largura = largura;
+            this.altura = altura;
+
             JPanel painelConteudo = (JPanel) getContentPane();
 
             painelConteudo.setPreferredSize(new Dimension(largura, altura));
