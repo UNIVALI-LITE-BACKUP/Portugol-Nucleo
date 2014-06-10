@@ -188,8 +188,16 @@ public final class AnalisadorSintatico implements ObservadorParsing
                 String texto = codigoFonte.substring(posicao, codigoFonte.length());
                 
                 if (texto.trim().length() > 0)
-                {                
-                    if (!texto.startsWith("/*") && !texto.endsWith("*/"))
+                {          
+                    String tempTexto;
+                    
+                    tempTexto = texto.replace("\r", "");
+                    tempTexto = tempTexto.replace("\n", "");
+                    tempTexto = tempTexto.replace("\t", "");
+                    tempTexto = tempTexto.replace(" ", "");
+                    tempTexto = tempTexto.trim();
+                    
+                    if (!tempTexto.startsWith("/*") && !tempTexto.endsWith("*/"))
                     {
                         notificarErroSintatico(new ErroExpressoesForaEscopoPrograma(texto, posicao, codigoFonte, ErroExpressoesForaEscopoPrograma.Local.DEPOIS));
                     }
