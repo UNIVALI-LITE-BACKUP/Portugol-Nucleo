@@ -19,13 +19,13 @@ public class Interpretador implements VisitanteASA
     private boolean referencia = false;
     private ArvoreSintaticaAbstrata asa;
     private String ultimaReferenciaAcessada;
-    
+
     private final Stack<String> chamadasFuncao = new Stack<>();
     private NoChamadaFuncao candidataRecursividade;
-    
-    protected Memoria memoria = new Memoria();    
+
+    protected Memoria memoria = new Memoria();
     protected Map<String, Biblioteca> bibliotecas = new TreeMap<>();
-    
+
     private final OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
     private final OperacaoLogicaIgualdade operacaoLogicaIgualdade = new OperacaoLogicaIgualdade();
     private final OperacaoLogicaMaior operacaoLogicaMaior = new OperacaoLogicaMaior();
@@ -41,9 +41,9 @@ public class Interpretador implements VisitanteASA
     private final OperacaoBitwiseE operacaoBitwiseE = new OperacaoBitwiseE();
     private final OperacaoBitwiseOu operacaoBitwiseOu = new OperacaoBitwiseOu();
     private final OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
-    
+
     private Object valorPassadoParametro;
-    
+
     public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
     {
         try
@@ -51,18 +51,18 @@ public class Interpretador implements VisitanteASA
             try
             {
                 this.programa = programa;
-                this.asa = programa.getArvoreSintaticaAbstrata();            
+                this.asa = programa.getArvoreSintaticaAbstrata();
 
                 asa.aceitar(this);
 
-                try 
+                try
                 {
                     Funcao funcaoInicial = (Funcao) memoria.getSimbolo(programa.getFuncaoInicial());
-                    
+
                     chamadasFuncao.push(funcaoInicial.getNome());
                     memoria.empilharFuncao();
-                    
-                    try 
+
+                    try
                     {
                         if (funcaoInicialValida(funcaoInicial))
                         {
@@ -78,8 +78,8 @@ public class Interpretador implements VisitanteASA
                         {
                             throw new ErroFuncaoInicialInvalida(programa.getFuncaoInicial());
                         }
-                    } 
-                    finally 
+                    }
+                    finally
                     {
                         memoria.desempilharFuncao();
                         chamadasFuncao.pop();
@@ -116,10 +116,10 @@ public class Interpretador implements VisitanteASA
                 excecao.printStackTrace(System.err);
 
             }
-            catch (StackOverflowError soe) 
+            catch (StackOverflowError soe)
             {
                 throw new ErroEstouroPilha(candidataRecursividade);
-            }      
+            }
         }
         catch (RuntimeException excecao)
         {
@@ -128,12 +128,12 @@ public class Interpretador implements VisitanteASA
     }
 
     private boolean funcaoInicialValida(Funcao funcaoPrincipal)
-    {        
+    {
         boolean possuiParametros = !funcaoPrincipal.getParametros().isEmpty();
         boolean possuiUmParametro = funcaoPrincipal.getParametros().size() == 1;
         boolean parametroVetor = possuiUmParametro && funcaoPrincipal.getParametros().get(0).getQuantificador() == Quantificador.VETOR;
         boolean tipoParametroCadeia = possuiUmParametro && funcaoPrincipal.getParametros().get(0).getTipoDado() == TipoDado.CADEIA;
-        
+
         return !possuiParametros || (parametroVetor && tipoParametroCadeia);
     }
 
@@ -151,7 +151,7 @@ public class Interpretador implements VisitanteASA
 
     @Override
     public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
-    {       
+    {
         for (NoInclusaoBiblioteca inclusao : asap.getListaInclusoesBibliotecas())
         {
             inclusao.aceitar(this);
@@ -195,86 +195,96 @@ public class Interpretador implements VisitanteASA
                     escreva(noChamadaFuncao);
 
                 }
-                else if (noChamadaFuncao.getNome().equals("leia"))
+                else
                 {
+                    if (noChamadaFuncao.getNome().equals("leia"))
+                    {
                         leia(noChamadaFuncao);
 
-                } else if (noChamadaFuncao.getNome().equals("limpa"))
-                {
-                    try
-                    {
-                        limpar();
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        throw new ExcecaoVisitaASA(ex, asa, noChamadaFuncao);
-                    }
-                } else 
-                {   
-                        if (chamadasFuncao.contains(noChamadaFuncao.getNome()) && candidataRecursividade == null)
+                        if (noChamadaFuncao.getNome().equals("limpa"))
                         {
-                            candidataRecursividade = noChamadaFuncao;
-                        }
-                        
-                        
-                        Funcao funcao = (Funcao) memoria.getSimbolo(noChamadaFuncao.getNome());                        
-
-                        List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
-                        List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
-
-                        List<Object> valoresParametrosPassados = new ArrayList<>();
-                        if (listaParametrosPassados != null ) {
-                            for (int i = 0; i < listaParametrosPassados.size(); i++)
-                            {   
-                                NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-
-                                referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;
-                                valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
-                                referencia = false;
-                            }
-                        }
-
-                        chamadasFuncao.push(noChamadaFuncao.getNome());
-                        memoria.empilharFuncao();
-                        
-                        if (listaParametrosEsperados != null) {
-                            for (int i = 0; i < listaParametrosEsperados.size(); i++)
+                            try
                             {
-                                NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
-                                this.valorPassadoParametro = valoresParametrosPassados.get(i);
-                                
-                                declaracao.aceitar(this);
+                                limpar();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new ExcecaoVisitaASA(ex, asa, noChamadaFuncao);
                             }
                         }
-                        Object retorno = interpretarListaBlocos(funcao.getBlocos());
-                        
-                        if (retorno != null && !(retorno instanceof TipoDado))
+                        else
                         {
-                            if (retorno.getClass() != funcao.getTipoDado().getTipoJava()){
-                                try
+                            if (chamadasFuncao.contains(noChamadaFuncao.getNome()) && candidataRecursividade == null)
+                            {
+                                candidataRecursividade = noChamadaFuncao;
+                            }
+
+                            Funcao funcao = (Funcao) memoria.getSimbolo(noChamadaFuncao.getNome());
+
+                            List<NoExpressao> listaParametrosPassados = noChamadaFuncao.getParametros();
+                            List<NoDeclaracaoParametro> listaParametrosEsperados = funcao.getParametros();
+
+                            List<Object> valoresParametrosPassados = new ArrayList<>();
+                            if (listaParametrosPassados != null)
+                            {
+                                for (int i = 0; i < listaParametrosPassados.size(); i++)
                                 {
-                                    retorno = ConversorTipos.converter(retorno, funcao.getTipoDado().getTipoJava());
-                                }
-                                catch (ErroImpossivelConverterTipos ex)
-                                {
-                                    int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
-                                    int coluna = noChamadaFuncao.getTrechoCodigoFonteNome().getColuna();
-                                    
-                                    ex.setLinha(linha);
-                                    ex.setColuna(coluna);
-                                    
-                                    throw new ExcecaoVisitaASA(ex, asa, noChamadaFuncao);
+                                    NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+
+                                    referencia = declaracao.getModoAcesso() == ModoAcesso.POR_REFERENCIA;
+                                    valoresParametrosPassados.add(listaParametrosPassados.get(i).aceitar(this));
+                                    referencia = false;
                                 }
                             }
+
+                            chamadasFuncao.push(noChamadaFuncao.getNome());
+                            memoria.empilharFuncao();
+
+                            if (listaParametrosEsperados != null)
+                            {
+                                for (int i = 0; i < listaParametrosEsperados.size(); i++)
+                                {
+                                    NoDeclaracaoParametro declaracao = listaParametrosEsperados.get(i);
+                                    this.valorPassadoParametro = valoresParametrosPassados.get(i);
+
+                                    declaracao.aceitar(this);
+                                }
+                            }
+                            Object retorno = interpretarListaBlocos(funcao.getBlocos());
+
+                            if (retorno != null && !(retorno instanceof TipoDado))
+                            {
+                                if (retorno.getClass() != funcao.getTipoDado().getTipoJava())
+                                {
+                                    try
+                                    {
+                                        retorno = ConversorTipos.converter(retorno, funcao.getTipoDado().getTipoJava());
+                                    }
+                                    catch (ErroImpossivelConverterTipos ex)
+                                    {
+                                        int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
+                                        int coluna = noChamadaFuncao.getTrechoCodigoFonteNome().getColuna();
+
+                                        ex.setLinha(linha);
+                                        ex.setColuna(coluna);
+
+                                        throw new ExcecaoVisitaASA(ex, asa, noChamadaFuncao);
+                                    }
+                                }
+                            }
+
+                            memoria.desempilharFuncao();
+                            chamadasFuncao.pop();
+
+                            candidataRecursividade = null;
+
+                            return retorno;
                         }
-                        
-                        memoria.desempilharFuncao();
-                        chamadasFuncao.pop();
-                        
-                        candidataRecursividade = null;
-                        
-                        return retorno;
-                    } 
+                    }
+                }
             }
             else
             {
@@ -283,10 +293,10 @@ public class Interpretador implements VisitanteASA
                     Biblioteca biblioteca = bibliotecas.get(noChamadaFuncao.getEscopo());
                     MetaDadosBiblioteca metaDadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(biblioteca.getNome());
                     MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(noChamadaFuncao.getNome());
-                    MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();                    
-                    
+                    MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
+
                     List<NoExpressao> param = noChamadaFuncao.getParametros();
-                    
+
                     if (param != null && !param.isEmpty())
                     {
                         Object[] parametros = new Object[param.size()];
@@ -294,14 +304,14 @@ public class Interpretador implements VisitanteASA
                         for (int indice = 0; indice < parametros.length; indice++)
                         {
                             MetaDadosParametro metaDadosParametro = metaDadosParametros.obter(indice);
-                            
+
                             if (metaDadosParametro.getModoAcesso() == ModoAcesso.POR_VALOR)
                             {
                                 referencia = false;
-                                
+
                                 parametros[indice] = param.get(indice).aceitar(this);
-                                
-                                if (metaDadosParametro.getTipoDado() != TipoDado.TODOS &&  parametros[indice].getClass() != metaDadosParametro.getTipoDado().getTipoJava())
+
+                                if (metaDadosParametro.getTipoDado() != TipoDado.TODOS && parametros[indice].getClass() != metaDadosParametro.getTipoDado().getTipoJava())
                                 {
                                     parametros[indice] = ConversorTipos.converter(parametros[indice], metaDadosParametro.getTipoDado().getTipoJava());
                                 }
@@ -313,31 +323,34 @@ public class Interpretador implements VisitanteASA
                                 referencia = false;
                             }
                         }
-                        
+
                         return biblioteca.chamarFuncao(noChamadaFuncao, parametros);
                     }
-                    
-                    else return biblioteca.chamarFuncao(noChamadaFuncao);
+
+                    else
+                    {
+                        return biblioteca.chamarFuncao(noChamadaFuncao);
+                    }
                 }
-                catch(ErroCarregamentoBiblioteca excecao)
+                catch (ErroCarregamentoBiblioteca excecao)
                 {
                     int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
                     int coluna = noChamadaFuncao.getTrechoCodigoFonteNome().getColuna();
-                    
+
                     ErroExecucaoNaoTratado erroExecucaoNaoTratado = new ErroExecucaoNaoTratado(excecao);
                     erroExecucaoNaoTratado.setLinha(linha);
                     erroExecucaoNaoTratado.setColuna(coluna);
-                    
+
                     throw new ExcecaoVisitaASA(erroExecucaoNaoTratado, asa, noChamadaFuncao);
                 }
                 catch (ErroExecucao excecao)
                 {
                     int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
                     int coluna = noChamadaFuncao.getTrechoCodigoFonteNome().getColuna();
-                    
+
                     excecao.setLinha(linha);
                     excecao.setColuna(coluna);
-                    
+
                     throw new ExcecaoVisitaASA(excecao, asa, noChamadaFuncao);
                 }
                 catch (InterruptedException excecao)
@@ -353,16 +366,16 @@ public class Interpretador implements VisitanteASA
             throw new ExcecaoVisitaASA(excecaoSimboloNaoDeclarado, asa, noChamadaFuncao);
         }
     }
-        
+
     private Object obterReferencia(NoExpressao expressao) throws ExcecaoVisitaASA
     {
         Simbolo simbolo = (Simbolo) expressao.aceitar(this);
-        
+
         if (simbolo instanceof Variavel)
         {
             final Variavel variavel = (Variavel) simbolo;
-            
-            return new ReferenciaVariavel() 
+
+            return new ReferenciaVariavel()
             {
                 @Override
                 public Object obterValor() throws ErroExecucao
@@ -377,64 +390,71 @@ public class Interpretador implements VisitanteASA
                 }
             };
         }
-        else if (simbolo instanceof Vetor)
+        else
         {
-            final Vetor vetor = (Vetor) simbolo;
-            
-            return new ReferenciaVetor()
+            if (simbolo instanceof Vetor)
             {
+                final Vetor vetor = (Vetor) simbolo;
 
-                @Override
-                public int numeroElementos()
+                return new ReferenciaVetor()
                 {
-                    return vetor.getTamanho();
-                }
-                
-                @Override
-                public Object obterValor(int indice) throws ErroExecucao
-                {
-                    return vetor.getValor(indice);
-                }
 
-                @Override
-                public void definirValor(Object valor, int indice) throws ErroExecucao
+                    @Override
+                    public int numeroElementos()
+                    {
+                        return vetor.getTamanho();
+                    }
+
+                    @Override
+                    public Object obterValor(int indice) throws ErroExecucao
+                    {
+                        return vetor.getValor(indice);
+                    }
+
+                    @Override
+                    public void definirValor(Object valor, int indice) throws ErroExecucao
+                    {
+                        vetor.setValor(indice, valor);
+                    }
+                };
+            }
+            else
+            {
+                if (simbolo instanceof Matriz)
                 {
-                    vetor.setValor(indice, valor);
+                    final Matriz matriz = (Matriz) simbolo;
+
+                    return new ReferenciaMatriz()
+                    {
+
+                        @Override
+                        public Object obterValor(int linha, int coluna) throws ErroExecucao
+                        {
+                            return matriz.getValor(linha, coluna);
+                        }
+
+                        @Override
+                        public void definirValor(Object valor, int linha, int coluna) throws ErroExecucao
+                        {
+                            matriz.setValor(linha, coluna, valor);
+                        }
+
+                        @Override
+                        public int numeroLinhas()
+                        {
+                            return matriz.getNumeroLinhas();
+                        }
+
+                        @Override
+                        public int numeroColunas()
+                        {
+                            return matriz.getNumeroColunas();
+                        }
+                    };
                 }
-            };
+            }
         }
-        else if (simbolo instanceof Matriz)
-        {
-            final Matriz matriz = (Matriz) simbolo;
-            
-            return new ReferenciaMatriz() {
 
-                @Override
-                public Object obterValor(int linha, int coluna) throws ErroExecucao
-                {
-                    return matriz.getValor(linha, coluna);
-                }
-
-                @Override
-                public void definirValor(Object valor, int linha, int coluna) throws ErroExecucao
-                {
-                    matriz.setValor(linha, coluna, valor);
-                }
-
-                @Override
-                public int numeroLinhas()
-                {
-                    return matriz.getNumeroLinhas();
-                }
-
-                @Override
-                public int numeroColunas()
-                {
-                    return matriz.getNumeroColunas();
-                }
-            };
-        }
-        
         throw new ExcecaoVisitaASA("Erro ao criar referência", asa, expressao);
     }
 
@@ -540,16 +560,16 @@ public class Interpretador implements VisitanteASA
 
         int tamanho = (noDeclaracaoVetor.getTamanho() == null) ? 0 : (Integer) noDeclaracaoVetor.getTamanho().aceitar(this);
         List<Object> valores = null;
-        
+
         if (noDeclaracaoVetor.getInicializacao() != null)
         {
             valores = (List<Object>) noDeclaracaoVetor.getInicializacao().aceitar(this);
-            
+
             for (int indice = 0; indice < valores.size(); indice++)
             {
                 Class classeValor = valores.get(indice).getClass();
                 Class classeVetor = tipoDado.getTipoJava();
-                
+
                 if (classeValor != classeVetor)
                 {
                     try
@@ -560,10 +580,10 @@ public class Interpretador implements VisitanteASA
                     {
                         int linha = noDeclaracaoVetor.getTrechoCodigoFonteNome().getLinha();
                         int coluna = noDeclaracaoVetor.getTrechoCodigoFonteNome().getColuna();
-                                    
+
                         erro.setLinha(linha);
                         erro.setColuna(coluna);
-                        
+
                         throw new ExcecaoVisitaASA(erro, asa, noDeclaracaoVetor);
                     }
                 }
@@ -635,7 +655,7 @@ public class Interpretador implements VisitanteASA
             for (NoBloco noBloco : blocos)
             {
                 Object retorno = noBloco.aceitar(this);
-                
+
                 if (!(noBloco instanceof NoExpressao) && retorno != null)
                 {
                     return retorno;
@@ -648,10 +668,13 @@ public class Interpretador implements VisitanteASA
         }
         finally
         {
-            try {
+            try
+            {
                 memoria.desempilharEscopo();
-            } catch (EmptyStackException e) {
-            
+            }
+            catch (EmptyStackException e)
+            {
+
             }
         }
         return null;
@@ -741,7 +764,7 @@ public class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
     {
-        
+
         List<List<Object>> valores = noMatriz.getValores();
 
         if (valores != null)
@@ -751,19 +774,21 @@ public class Interpretador implements VisitanteASA
             for (int i = 0; i < linhas; i++)
             {
                 List<Object> vetor = valores.get(i);
-                
+
                 int colunas = (vetor == null) ? 0 : vetor.size();
 
                 for (int j = 0; j < colunas; j++)
                 {
                     Object valor = vetor.get(j);
                     if (valor instanceof NoExpressao)
-                        valor = ((NoExpressao)valor).aceitar(this);
+                    {
+                        valor = ((NoExpressao) valor).aceitar(this);
+                    }
                     vetor.set(j, valor);
                 }
             }
         }
-                
+
         return valores;
     }
 
@@ -817,7 +842,7 @@ public class Interpretador implements VisitanteASA
             ErroIndiceVetorInvalido erroIndiceVetorInvalido = new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, vetor.getNome());
             erroIndiceVetorInvalido.setLinha(linha);
             erroIndiceVetorInvalido.setColuna(coluna);
-            
+
             throw new ExcecaoVisitaASA(erroIndiceVetorInvalido, asa, referenciaVetor);
         }
         return valor;
@@ -835,11 +860,11 @@ public class Interpretador implements VisitanteASA
         {
             int linhaErro = referenciaMatriz.getTrechoCodigoFonteNome().getLinha();
             int colunaErro = referenciaMatriz.getTrechoCodigoFonteNome().getColuna();
-            
+
             ErroIndiceMatrizInvalido erroIndiceMatrizInvalido = new ErroIndiceMatrizInvalido(matriz, linha, coluna);
             erroIndiceMatrizInvalido.setLinha(linhaErro);
             erroIndiceMatrizInvalido.setColuna(colunaErro);
-            
+
             throw new ExcecaoVisitaASA(erroIndiceMatrizInvalido, asa, referenciaMatriz);
         }
         return valor;
@@ -851,12 +876,12 @@ public class Interpretador implements VisitanteASA
         Object valorRetorno = null;
 
         memoria.empilharEscopo();
-        
+
         if (noPara.getInicializacao() != null)
         {
             noPara.getInicializacao().aceitar(this);
         }
-            
+
         NoExpressao condicao = noPara.getCondicao();
         try
         {
@@ -867,7 +892,7 @@ public class Interpretador implements VisitanteASA
                     break;
                 }
 
-                if (noPara.getIncremento() != null) 
+                if (noPara.getIncremento() != null)
                 {
                     noPara.getIncremento().aceitar(this);
                 }
@@ -897,7 +922,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoLogicaIgualdade.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -979,7 +1004,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoLogicaMaior.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -995,7 +1020,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoLogicaMaiorIgual.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1011,7 +1036,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoLogicaMenor.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1027,7 +1052,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoLogicaMenorIgual.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1043,7 +1068,7 @@ public class Interpretador implements VisitanteASA
         {
             Object valorOpEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object valorOpDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoSoma.executar(noOperacao, valorOpEsq, valorOpDir);
         }
         catch (ErroExecucao ex)
@@ -1059,7 +1084,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoSubtracao.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1075,7 +1100,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoDivisao.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1091,7 +1116,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoMultiplicacao.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1107,7 +1132,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-            
+
             return operacaoModulo.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1123,7 +1148,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacaoBitwiseLeftShift.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseLeftShift.getOperandoDireito().aceitar(this);
-            
+
             return operacaoBitwiseLeftShift.executar(noOperacaoBitwiseLeftShift, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1139,7 +1164,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacaoBitwiseRightShift.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseRightShift.getOperandoDireito().aceitar(this);
-            
+
             return operacaoBitwiseRightShift.executar(noOperacaoBitwiseRightShift, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1155,7 +1180,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacaoBitwiseE.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseE.getOperandoDireito().aceitar(this);
-            
+
             return operacaoBitwiseE.executar(noOperacaoBitwiseE, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1171,7 +1196,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacaoBitwiseOu.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseOu.getOperandoDireito().aceitar(this);
-            
+
             return operacaoBitwiseOu.executar(noOperacaoBitwiseOu, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1187,7 +1212,7 @@ public class Interpretador implements VisitanteASA
         {
             Object opEsq = noOperacaoBitwiseXOR.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseXOR.getOperandoDireito().aceitar(this);
-            
+
             return operacaoBitwiseXOR.executar(noOperacaoBitwiseXOR, opEsq, opDir);
         }
         catch (ErroExecucao ex)
@@ -1195,13 +1220,13 @@ public class Interpretador implements VisitanteASA
             throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseXOR);
         }
     }
-    
+
     @Override
     public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA
     {
         return ~((Integer) noOperacaoBitwiseNao.getExpressao().aceitar(this));
     }
-    
+
     @Override
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
@@ -1251,7 +1276,7 @@ public class Interpretador implements VisitanteASA
             }
 
             Object valor = ((Variavel) simbolo).getValor();
-            
+
             if (valor != null)
             {
                 return valor;
@@ -1316,16 +1341,16 @@ public class Interpretador implements VisitanteASA
         {
             String nome = noReferenciaMatriz.getNome();
             Simbolo simbolo = extrairSimbolo(memoria.getSimbolo(nome));
-            
+
             if (referencia)
             {
                 return simbolo;
             }
-            else 
-            {            
+            else
+            {
                 final int linha = (Integer) noReferenciaMatriz.getLinha().aceitar(this);
                 final int coluna = (Integer) noReferenciaMatriz.getColuna().aceitar(this);
-                
+
                 final Matriz matriz = (Matriz) simbolo;
 
                 Object valor;
@@ -1337,19 +1362,19 @@ public class Interpretador implements VisitanteASA
                 {
                     int linhaErro = noReferenciaMatriz.getTrechoCodigoFonteNome().getLinha();
                     int colunaErro = noReferenciaMatriz.getTrechoCodigoFonteNome().getColuna();
-            
+
                     ErroIndiceMatrizInvalido erroIndiceMatrizInvalido = new ErroIndiceMatrizInvalido(matriz, linha, coluna);
                     erroIndiceMatrizInvalido.setLinha(linhaErro);
                     erroIndiceMatrizInvalido.setColuna(colunaErro);
-                    
+
                     throw new ExcecaoVisitaASA(erroIndiceMatrizInvalido, asa, noReferenciaMatriz);
                 }
 
-                 if (valor == null)
-                 {
+                if (valor == null)
+                {
                     throw new ExcecaoVisitaASA(new ErroValorVetorMatrizNaoInicializado(noReferenciaMatriz, linha, coluna), asa, noReferenciaMatriz);
                 }
-                
+
                 while (valor instanceof NoExpressao)
                 {
                     valor = ((NoExpressao) valor).aceitar(this);
@@ -1383,17 +1408,16 @@ public class Interpretador implements VisitanteASA
         try
         {
             Simbolo simbolo = extrairSimbolo(memoria.getSimbolo(noReferenciaVetor.getNome()));
-            
+
             if (referencia)
             {
                 return simbolo;
             }
             else
-            {            
+            {
                 final Vetor vetor = (Vetor) simbolo;
                 final int indice = (Integer) noReferenciaVetor.getIndice().aceitar(this);
 
-                
                 Object valor;
                 try
                 {
@@ -1402,18 +1426,18 @@ public class Interpretador implements VisitanteASA
                 catch (IndexOutOfBoundsException aioobe)
                 {
                     ErroIndiceVetorInvalido erroIndiceVetorInvalido = new ErroIndiceVetorInvalido(vetor.getTamanho(), indice, noReferenciaVetor.getNome());
-                    
+
                     erroIndiceVetorInvalido.setLinha(noReferenciaVetor.getIndice().getTrechoCodigoFonte().getLinha());
                     erroIndiceVetorInvalido.setColuna(noReferenciaVetor.getIndice().getTrechoCodigoFonte().getColuna());
-                    
+
                     throw new ExcecaoVisitaASA(erroIndiceVetorInvalido, null, noReferenciaVetor);
                 }
-                
+
                 if (valor == null)
-                {                    
+                {
                     throw new ExcecaoVisitaASA(new ErroValorVetorMatrizNaoInicializado(noReferenciaVetor, indice), asa, noReferenciaVetor);
                 }
-                
+
                 while (valor instanceof NoExpressao)
                 {
                     valor = ((NoExpressao) valor).aceitar(this);
@@ -1432,7 +1456,8 @@ public class Interpretador implements VisitanteASA
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
         Object retorno = TipoDado.VAZIO;
-        if (noRetorne.getExpressao() != null) {
+        if (noRetorne.getExpressao() != null)
+        {
             retorno = noRetorne.getExpressao().aceitar(this);
         }
         throw new RetorneException(retorno);
@@ -1493,8 +1518,8 @@ public class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
-        Simbolo simbolo = null;        
-        
+        Simbolo simbolo = null;
+
         switch (noDeclaracaoParametro.getModoAcesso())
         {
             case POR_REFERENCIA:
@@ -1531,7 +1556,7 @@ public class Interpretador implements VisitanteASA
     private void escreva(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         final Saida saida = programa.getSaida();
-        
+
         List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
 
         for (NoExpressao expressao : listaParametrosPassados)
@@ -1619,9 +1644,9 @@ public class Interpretador implements VisitanteASA
     private void leia(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         final Entrada entrada = programa.getEntrada();
-        
+
         try
-        {        
+        {
             List<NoExpressao> listaParametrosPassados = chamadaFuncao.getParametros();
 
             for (NoExpressao expressao : listaParametrosPassados)
@@ -1640,29 +1665,33 @@ public class Interpretador implements VisitanteASA
                     {
                         try
                         {
-                            
+
                             InputHandler mediador = new InputHandler();
                             entrada.solicitaEntrada(tipoDado, mediador);
 
-                            if (mediador.getValor() == null)
+                            // Se for verdadeiro, significa que a entrada é assíncrona,
+                            // então devemos esperar a leitura da entrada. Caso contrário,
+                            // a entrada é síncrona, podemos seguir em frente e pegar o valor 
+                            if (mediador.getValor() == null && !mediador.isCancelado())
                             {
-                                synchronized (this)
+                                synchronized (Interpretador.this)
                                 {
                                     wait();
                                 }
                             }
-                            
-                            valor = mediador.getValor();
+
+                            if (!mediador.isCancelado())
+                            {
+                                valor = mediador.getValor();
+                            }
+                            else
+                            {
+                                throw new ErroValorEntradaInvalido(tipoDado, chamadaFuncao.getTrechoCodigoFonte().getLinha(), chamadaFuncao.getTrechoCodigoFonte().getColuna());
+                            }
                         }
                         catch (Exception ex)
                         {
                             throw new ExcecaoVisitaASA(ex, asa, chamadaFuncao);
-                        }
-                        
-                        if (valor == null)
-                        {
-
-                            throw new ExcecaoVisitaASA(new ErroValorEntradaInvalido(tipoDado, chamadaFuncao.getTrechoCodigoFonte().getLinha(), chamadaFuncao.getTrechoCodigoFonte().getColuna()), asa, chamadaFuncao);
                         }
                     }
 
@@ -1692,15 +1721,19 @@ public class Interpretador implements VisitanteASA
             throw new ExcecaoVisitaASA(excecaoSimboloNaoDeclarado, asa, chamadaFuncao);
         }
     }
-    
+
     private class InputHandler implements InputMediator, Armazenador
     {
         private Object valor;
-        
+        private boolean cancelado = false;
+
         @Override
-        public synchronized Object getValor()
+        public Object getValor()
         {
-            return valor;
+            synchronized (Interpretador.this)
+            {
+                return valor;
+            }
         }
 
         @Override
@@ -1710,6 +1743,24 @@ public class Interpretador implements VisitanteASA
             {
                 this.valor = valor;
                 Interpretador.this.notifyAll();
+            }
+        }
+
+        @Override
+        public void cancelarLeitura()
+        {
+            synchronized (Interpretador.this)
+            {
+                this.cancelado = true;
+                Interpretador.this.notifyAll();
+            }
+        }
+
+        public boolean isCancelado()
+        {
+            synchronized (Interpretador.this)
+            {
+                return cancelado;
             }
         }
     }

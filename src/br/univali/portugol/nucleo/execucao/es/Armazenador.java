@@ -12,5 +12,7 @@ package br.univali.portugol.nucleo.execucao.es;
  */
 public interface Armazenador
 {
+    public void cancelarLeitura();
+    
     public void setValor(Object valor);
 }
