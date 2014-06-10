@@ -189,7 +189,10 @@ public final class AnalisadorSintatico implements ObservadorParsing
                 
                 if (texto.trim().length() > 0)
                 {                
-                    notificarErroSintatico(new ErroExpressoesForaEscopoPrograma(texto, posicao, codigoFonte, ErroExpressoesForaEscopoPrograma.Local.DEPOIS));
+                    if (!texto.startsWith("/*") && !texto.endsWith("*/"))
+                    {
+                        notificarErroSintatico(new ErroExpressoesForaEscopoPrograma(texto, posicao, codigoFonte, ErroExpressoesForaEscopoPrograma.Local.DEPOIS));
+                    }
                 }
             }
         }
