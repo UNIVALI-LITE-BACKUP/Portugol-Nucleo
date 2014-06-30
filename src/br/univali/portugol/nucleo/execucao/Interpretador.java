@@ -378,13 +378,13 @@ public class Interpretador implements VisitanteASA
             return new ReferenciaVariavel()
             {
                 @Override
-                public Object obterValor() throws ErroExecucao
+                public Object obterValor() throws ErroExecucaoBiblioteca
                 {
                     return variavel.getValor();
                 }
 
                 @Override
-                public void definirValor(Object valor) throws ErroExecucao
+                public void definirValor(Object valor) throws ErroExecucaoBiblioteca
                 {
                     variavel.setValor(valor);
                 }
@@ -406,13 +406,13 @@ public class Interpretador implements VisitanteASA
                     }
 
                     @Override
-                    public Object obterValor(int indice) throws ErroExecucao
+                    public Object obterValor(int indice) throws ErroExecucaoBiblioteca
                     {
                         return vetor.getValor(indice);
                     }
 
                     @Override
-                    public void definirValor(Object valor, int indice) throws ErroExecucao
+                    public void definirValor(Object valor, int indice) throws ErroExecucaoBiblioteca
                     {
                         vetor.setValor(indice, valor);
                     }
@@ -428,13 +428,13 @@ public class Interpretador implements VisitanteASA
                     {
 
                         @Override
-                        public Object obterValor(int linha, int coluna) throws ErroExecucao
+                        public Object obterValor(int linha, int coluna) throws ErroExecucaoBiblioteca
                         {
                             return matriz.getValor(linha, coluna);
                         }
 
                         @Override
-                        public void definirValor(Object valor, int linha, int coluna) throws ErroExecucao
+                        public void definirValor(Object valor, int linha, int coluna) throws ErroExecucaoBiblioteca
                         {
                             matriz.setValor(linha, coluna, valor);
                         }
