@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities;
         descricao = "Esta biblioteca permite inicializar e utilizar um ambiente gráfico com "
         + "suporte ao desenho de primitivas gráficas e de imagens carregadas do "
         + "sistema de arquivos",
-        versao = "1.5"
+        versao = "1.6"
 )
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
@@ -151,7 +151,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             }
         }
     }
-    
+
     @DocumentacaoFuncao(
             descricao = "Restaura a janela do ambiente gráfico, como se o usuário tivesse clicado no ícone do programa na barra de tarefas do Sistema Operacional",
             autores =
@@ -1108,6 +1108,46 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         }
     }
 
+    @DocumentacaoFuncao(
+            descricao = "Altera o ícone que é exibido na janela do ambiente gráfico. Este ícone aparece ao lado do título "
+            + "da janela e na barra de tarefas do sistema operacional",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço da imagem que será usada como ícone"),
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void definir_icone_janela(Integer endereco) throws ErroExecucaoBiblioteca
+    {
+        if (ambienteGraficoInicializado())
+        {
+            try
+            {
+                final Image imagem = obterImagem(endereco);
+
+                SwingUtilities.invokeAndWait(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        janela.setIconImage(imagem);
+                    }
+                });
+            }
+            catch (InterruptedException | InvocationTargetException excecao)
+            {
+                throw new ErroExecucaoBiblioteca(excecao);
+            }
+        }
+        else
+        {
+            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
+        }
+    }
+
     /*
      @DocumentacaoFuncao
      (
@@ -1291,6 +1331,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             setBackground(Color.BLACK);
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             setAlwaysOnTop(false);
+            setIconImage(getIconePadrao());
 
             JPanel painelConteudo = (JPanel) getContentPane();
 
@@ -1310,6 +1351,18 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                     programa.interromper();
                 }
             });
+        }
+
+        private Image getIconePadrao()
+        {
+            Window janelaAtiva = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+
+            if (janelaAtiva != null && !janelaAtiva.getIconImages().isEmpty())
+            {
+                return janelaAtiva.getIconImages().get(0);
+            }
+
+            return null;
         }
 
         @Override
