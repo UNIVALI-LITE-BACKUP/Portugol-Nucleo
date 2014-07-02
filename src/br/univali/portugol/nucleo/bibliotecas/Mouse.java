@@ -14,8 +14,12 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -28,21 +32,23 @@ import javax.swing.SwingUtilities;
 @DocumentacaoBiblioteca
 (
     descricao = "Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do mouse do computador", 
-    versao = "1.0"
+    versao = "1.1"
 )
 public final class Mouse extends Biblioteca
 {
     private static final Cursor cursorPadrao = Cursor.getDefaultCursor();
     private static final Cursor cursorTransparente = criarCursorTransparente();
             
-    private boolean[] buffer = new boolean[3];
-    private final MouseAdapter observador;
+    private final boolean[] buffer = new boolean[3];
+    private final List<InstaladorMouse> instaladores;
+    private final MouseAdapter observadorMouse;
+    private final FocusAdapter observadorFoco;
+    
     private int x;
     private int y;
     private int botoesPressionados = 0;
     private boolean aguardandoBotao = false;
-    private int ultimoBotao = -1;
-    private List<InstaladorMouse> instaladores;
+    private int ultimoBotao = -1;    
         
     @DocumentacaoConstante(descricao = "Código numérico do botão esquerdo do mouse")
     public static final Integer BOTAO_ESQUERDO = 0;
@@ -57,8 +63,44 @@ public final class Mouse extends Biblioteca
     {
         instaladores = new ArrayList<>();
         
-        observador = new MouseAdapter()
+        observadorMouse = new MouseAdapter()
         {
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                botoesPressionados = 0;
+                
+                if (SwingUtilities.isLeftMouseButton(e))
+                {
+                    buffer[BOTAO_ESQUERDO] = true;
+                    botoesPressionados += 1;
+                }
+                else
+                {
+                    buffer[BOTAO_ESQUERDO] = false;
+                }
+                
+                if (SwingUtilities.isRightMouseButton(e))
+                {
+                    buffer[BOTAO_DIREITO] = true;
+                    botoesPressionados += 1;
+                }
+                else
+                {
+                    buffer[BOTAO_DIREITO] = false;
+                }
+                
+                if (SwingUtilities.isMiddleMouseButton(e))
+                {
+                    buffer[BOTAO_MEIO] = true;
+                    botoesPressionados += 1;
+                }
+                else
+                {
+                    buffer[BOTAO_MEIO] = false;
+                }
+            }
+            
             @Override
             public void mousePressed(MouseEvent e)
             {
@@ -123,6 +165,26 @@ public final class Mouse extends Biblioteca
             {
                 x = e.getX();
                 y = e.getY();
+            }
+        };
+        
+        observadorFoco = new FocusAdapter()
+        {
+            @Override
+            public void focusLost(FocusEvent e)
+            {
+                buffer[0] = false;
+                buffer[1] = false;
+                buffer[2] = false;
+                
+                ultimoBotao = -1;
+                botoesPressionados = 0;
+                
+                if (aguardandoBotao)
+                {
+                    aguardandoBotao = false;
+                    acordarThread();
+                }                
             }
         };
     }
@@ -266,7 +328,7 @@ public final class Mouse extends Biblioteca
 
             return toolkit.createCustomCursor(cursorImg, new Point(0,0), "hiddenCursor");
         }
-        catch (Exception ex)
+        catch (HeadlessException | IndexOutOfBoundsException ex)
         {
             return Cursor.getDefaultCursor();
         }
@@ -291,14 +353,14 @@ public final class Mouse extends Biblioteca
     {
         if (biblioteca instanceof InstaladorMouse)
         {
-            ((InstaladorMouse) biblioteca).instalarMouse(observador);
+            ((InstaladorMouse) biblioteca).instalarMouse(observadorMouse, observadorFoco);
             instaladores.add((InstaladorMouse) biblioteca);
         }
     }
     
     public interface InstaladorMouse
     {
-        public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucaoBiblioteca;
+        public void instalarMouse(MouseAdapter observadorMouse, FocusListener observadorFoco) throws ErroExecucaoBiblioteca;
         public void definirCursor(Cursor cursor) throws ErroExecucaoBiblioteca;
     }
 }

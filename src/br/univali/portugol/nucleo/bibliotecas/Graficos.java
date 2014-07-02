@@ -6,6 +6,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import java.awt.*;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
@@ -19,8 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -35,7 +34,7 @@ import javax.swing.SwingUtilities;
         descricao = "Esta biblioteca permite inicializar e utilizar um ambiente gráfico com "
         + "suporte ao desenho de primitivas gráficas e de imagens carregadas do "
         + "sistema de arquivos",
-        versao = "1.4"
+        versao = "1.5"
 )
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
@@ -217,9 +216,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                     @Override
                     public void run()
                     {
-                        int w = janela.getWidth();
-                        int h = janela.getHeight();
-
                         janela.setVisible(false);
                         janela.dispose();
                         janela.setUndecorated(ocultar);
@@ -1260,10 +1256,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     @NaoExportar
     @Override
-    public void instalarMouse(MouseAdapter observadorMouse) throws ErroExecucaoBiblioteca
+    public void instalarMouse(MouseAdapter observadorMouse, FocusListener observadorFoco) throws ErroExecucaoBiblioteca
     {
         janela.superficieDesenho.addMouseListener(observadorMouse);
         janela.superficieDesenho.addMouseMotionListener(observadorMouse);
+        janela.addFocusListener(observadorFoco);
     }
 
     @NaoExportar

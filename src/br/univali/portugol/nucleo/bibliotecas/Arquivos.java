@@ -12,6 +12,8 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import java.awt.KeyboardFocusManager;
+import java.awt.Window;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import javax.swing.filechooser.FileFilter;
 @PropriedadesBiblioteca(tipo = TipoBiblioteca.RESERVADA)
 @DocumentacaoBiblioteca(
         descricao = "Esta biblioteca permite ler e escrever arquivos",
-        versao = "1.2"
+        versao = "1.3"
 )
 public final class Arquivos extends Biblioteca
 {
@@ -288,8 +289,8 @@ public final class Arquivos extends Biblioteca
 
         throw new ErroExecucaoBiblioteca("O número máximo de arquivos que podem ser abertos ao mesmo tempo foi atingido");
     }
-    
-   @DocumentacaoFuncao(descricao = "Abre um janela que permite ao usuário navegar nos diretórios do computador e selecionar um arquivo",
+
+    @DocumentacaoFuncao(descricao = "Abre um janela que permite ao usuário navegar nos diretórios do computador e selecionar um arquivo",
             parametros =
             {
                 @DocumentacaoParametro(nome = "formatos_suportados",
@@ -315,11 +316,11 @@ public final class Arquivos extends Biblioteca
     )
     public Boolean selecionar_arquivo(final ReferenciaVetor<String> formatos_suportados, final Boolean aceitar_todos_arquivos, final ReferenciaVariavel<String> arquivo_selecionado) throws ErroExecucaoBiblioteca
     {
-        final ResultadoSelecao resultadoSelecao = new ResultadoSelecao();
-
-        try
+        synchronized (Arquivos.this)
         {
-            SwingUtilities.invokeAndWait(new Runnable()
+            final ResultadoSelecao resultadoSelecao = new ResultadoSelecao();
+
+            SwingUtilities.invokeLater(new Runnable()
             {
                 @Override
                 public void run()
@@ -328,7 +329,7 @@ public final class Arquivos extends Biblioteca
                     {
                         JFileChooser dialogo = obterDialogoSelecao();
                         List<FileFilter> filtros = criarFiltros(formatos_suportados);
-                        
+
                         for (FileFilter filtro : dialogo.getChoosableFileFilters())
                         {
                             dialogo.removeChoosableFileFilter(filtro);
@@ -344,10 +345,17 @@ public final class Arquivos extends Biblioteca
                             dialogo.addChoosableFileFilter(obterFiltroTodosArquivos());
                         }
 
-                        if (dialogo.showDialog(null, null) == JFileChooser.APPROVE_OPTION)
+                        Window janelaPai = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
+                        
+                        if (dialogo.showDialog(janelaPai, null) == JFileChooser.APPROVE_OPTION)
                         {
                             arquivo_selecionado.definirValor(obterCaminhoArquivo(dialogo.getSelectedFile()));
                             resultadoSelecao.setArquivoSelecionado(true);
+                        }
+                        
+                        synchronized(Arquivos.this)
+                        {
+                            Arquivos.this.notifyAll();
                         }
                     }
                     catch (ErroExecucaoBiblioteca excecao)
@@ -356,21 +364,18 @@ public final class Arquivos extends Biblioteca
                     }
                 }
             });
-        }
-        catch (InterruptedException | InvocationTargetException excecao)
-        {
-            if (excecao.getCause() instanceof RuntimeException)
+
+            try
             {
-                if (excecao.getCause().getCause() instanceof ErroExecucaoBiblioteca)
-                {
-                    throw (ErroExecucaoBiblioteca) excecao.getCause().getCause();
-                }
+                wait();
+            }
+            catch (InterruptedException excecao)
+            {
+                throw new ErroExecucaoBiblioteca(excecao);
             }
 
-            throw new ErroExecucaoBiblioteca(excecao);
+            return resultadoSelecao.isArquivoSelecionado();
         }
-
-        return resultadoSelecao.isArquivoSelecionado();
     }
 
     private String obterCaminhoArquivo(File arquivo)
@@ -392,7 +397,7 @@ public final class Arquivos extends Biblioteca
         for (int i = 0; i < formatos.numeroElementos(); i++)
         {
             String formato = formatos.obterValor(i);
-            
+
             try
             {
                 String[] partes = formato.split("\\|");
@@ -486,7 +491,7 @@ public final class Arquivos extends Biblioteca
                         return true;
                     }
                 }
-                
+
                 return false;
             }
 
