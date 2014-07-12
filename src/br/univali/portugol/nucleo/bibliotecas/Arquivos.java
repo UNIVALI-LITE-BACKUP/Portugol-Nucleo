@@ -649,7 +649,7 @@ public final class Arquivos extends Biblioteca
                 try
                 {
                     escritor.write(linha.replace("\n", "").replace("\r", ""));
-                    escritor.write("\n");
+                    escritor.newLine();
                     escritor.flush();
                 }
                 catch (IOException excecao)
