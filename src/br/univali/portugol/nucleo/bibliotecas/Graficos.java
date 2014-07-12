@@ -5,25 +5,22 @@ import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
+import br.univali.portugol.nucleo.bibliotecas.graficos.CacheImagens;
+import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGrafica;
+import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGraficaImpl;
 import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.font.TextAttribute;
-import java.awt.image.BufferStrategy;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -38,16 +35,6 @@ import javax.swing.SwingUtilities;
 )
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
-    private static final int NUMERO_MAXIMO_IMAGENS = 128;
-    private static final int ALTURA_PADRAO = 480;
-    private static final int LARGURA_PADRAO = 640;
-
-    private Programa programa;
-    private Janela janela;
-    private Image[] imagens;
-
-    private ArrayList<OperacaoDesenho> operacoesDesenho;
-
     @DocumentacaoConstante(descricao = "constante que representa a cor 'preto'")
     public static final Integer COR_PRETO = Color.BLACK.getRGB();
 
@@ -66,8 +53,52 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
     public static final Integer COR_AMARELO = Color.YELLOW.getRGB();
 
+    private Programa programa;
+    private JanelaGrafica janela;
+    private CacheImagens cacheImagens;
+    private boolean inicializado = false;
+
+    @Override
+    protected void inicializar(final Programa programa, final List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    {
+        this.programa = programa;
+        this.janela = JanelaGraficaImpl.criar(programa);
+        this.cacheImagens = CacheImagens.criar(programa);
+    }
+
+    @Override
+    protected void finalizar() throws ErroExecucaoBiblioteca
+    {
+        janela.ocultar();
+        cacheImagens.liberar();
+        inicializado = false;
+
+    }
+
+    @NaoExportar
+    @Override
+    public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucaoBiblioteca
+    {
+        janela.instalarTeclado(observadorTeclado);
+    }
+
+    @NaoExportar
+    @Override
+    public void instalarMouse(MouseAdapter observadorMouse, FocusListener observadorFoco) throws ErroExecucaoBiblioteca
+    {
+        janela.instalarMouse(observadorMouse, observadorFoco);
+    }
+
+    @NaoExportar
+    @Override
+    public void definirCursor(Cursor cursor) throws ErroExecucaoBiblioteca
+    {
+        janela.definirCursor(cursor);
+    }
+
     @DocumentacaoFuncao(
-            descricao = "Inicia o modo gráfico e exibe uma janela com as configurações padrão (tamanho 640x480 e fundo preto). "
+            descricao
+            = "Inicia o modo gráfico e exibe uma janela com as configurações padrão (tamanho 640x480 e fundo preto). "
             + "Se o modo gráfico já estiver iniciado, nada acontecerá",
             parametros =
             {
@@ -83,31 +114,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void iniciar_modo_grafico(final Boolean manter_visivel) throws ErroExecucaoBiblioteca
     {
-        if (!ambienteGraficoInicializado())
-        {
-            try
-            {
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        janela.setVisible(true);
-                        janela.setAlwaysOnTop(manter_visivel);
-                        janela.requestFocusInWindow();
-
-                        while (!janela.isVisible())
-                        {
-
-                        }
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-        }
+        janela.exibir(true);
+        inicializado = true;
     }
 
     @DocumentacaoFuncao(
@@ -119,8 +127,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void fechar_janela() throws ErroExecucaoBiblioteca
     {
-        encerrar_modo_grafico();
-        programa.interromper();
+        janela().fechar();
     }
 
     @DocumentacaoFuncao(
@@ -132,24 +139,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void minimizar_janela() throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            try
-            {
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        janela.setExtendedState(JFrame.ICONIFIED);
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-        }
+        janela().minimizar();
     }
 
     @DocumentacaoFuncao(
@@ -161,24 +151,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void restaurar_janela() throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            try
-            {
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        janela.setExtendedState(JFrame.NORMAL);
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-        }
+        janela().restaurar();
     }
 
     @DocumentacaoFuncao(
@@ -190,7 +163,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void ocultar_borda_janela() throws ErroExecucaoBiblioteca
     {
-        ocultar_borda(true);
+        janela().ocultarBorda();
     }
 
     @DocumentacaoFuncao(
@@ -202,42 +175,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void exibir_borda_janela() throws ErroExecucaoBiblioteca
     {
-        ocultar_borda(false);
-    }
-
-    private void ocultar_borda(final boolean ocultar) throws ErroExecucaoBiblioteca
-    {
-        if (ambienteGraficoInicializado())
-        {
-            try
-            {
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        janela.setVisible(false);
-                        janela.dispose();
-                        janela.setUndecorated(ocultar);
-                        janela.setVisible(true);
-
-                        // Deve ser chamado após exibir a janela, caso contrário a janela estará em estado 
-                        // inválido (disposed) e a chamada gerará uma exceção
-                        janela.definirDimensoes(janela.largura, janela.altura);
-
-                        janela.setLocationRelativeTo(null);
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().exibirBorda();
     }
 
     @DocumentacaoFuncao(
@@ -249,7 +187,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void encerrar_modo_grafico() throws ErroExecucaoBiblioteca
     {
-        encerrar();
+        janela().ocultar();
+        inicializado = false;
     }
 
     @DocumentacaoFuncao(
@@ -266,29 +205,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_dimensoes_janela(final Integer largura, final Integer altura) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            try
-            {
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        janela.definirDimensoes(largura, altura);
-                        janela.setLocationRelativeTo(null);
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().definirDimensoes(largura, altura);
     }
 
     @DocumentacaoFuncao(
@@ -304,29 +221,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_titulo_janela(final String titulo) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            try
-            {
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        janela.setTitle(titulo);
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-        }
-
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().definirTitulo(titulo);
     }
 
     @DocumentacaoFuncao(
@@ -338,71 +233,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void limpar() throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    SuperficieDesenho superficieDesenho = janela.superficieDesenho;
-
-                    g2d.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
-    }
-
-    @DocumentacaoFuncao(
-            descricao = "cria uma nova cor a partir da combinação de tons de vermelho, verde e azul",
-            parametros =
-            {
-                @DocumentacaoParametro(nome = "vermelho", descricao = "o tom de vermelho (0 a 255)"),
-                @DocumentacaoParametro(nome = "verde", descricao = "o tom de verde (0 a 255)"),
-                @DocumentacaoParametro(nome = "azul", descricao = "o tom de verde (0 a 255)")
-            },
-            retorno = "a nova cor criada pela combinação dos tons de vermelho, verde e azul",
-            autores =
-            {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-            },
-            referencia = "http://pt.wikipedia.org/wiki/RGB"
-    )
-    public Integer criar_cor(Integer vermelho, Integer verde, Integer azul) throws ErroExecucaoBiblioteca
-    {
-        try
-        {
-            return new Color(vermelho, verde, azul).getRGB();
-        }
-        catch (IllegalArgumentException excecao)
-        {
-            String corErrada = "indefinido";
-
-            if (excecao.getMessage().contains("Red"))
-            {
-                corErrada = "vermelho";
-            }
-            else
-            {
-                if (excecao.getMessage().contains("Green"))
-                {
-                    corErrada = "verde";
-                }
-                else
-                {
-                    if (excecao.getMessage().contains("Blue"))
-                    {
-                        corErrada = "azul";
-                    }
-                }
-            }
-
-            throw new ErroExecucaoBiblioteca(String.format("Erro ao criar a cor, o valor do tom de %s deve estar entre 0 e 255", corErrada));
-        }
+        janela().getSuperficieDesenho().limpar();
     }
 
     @DocumentacaoFuncao(
@@ -422,57 +253,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void renderizar() throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            try
-            {
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        BufferStrategy estrategia = janela.superficieDesenho.estrategiaBuffer;
-
-                        do
-                        {
-                            do
-                            {
-                                Graphics2D graphics = janela.superficieDesenho.getGraphics2D();
-
-                                for (OperacaoDesenho op : operacoesDesenho)
-                                {
-                                    try
-                                    {
-                                        op.desenhar(graphics);
-                                    }
-                                    catch (ErroExecucaoBiblioteca ex)
-                                    {
-                                        throw new RuntimeException(ex);
-                                    }
-                                }
-
-                                graphics.dispose();
-                            }
-                            while (estrategia.contentsRestored());
-
-                            estrategia.show();
-                        }
-                        while (estrategia.contentsLost());
-
-                        operacoesDesenho.clear();
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().renderizar();
     }
 
     @DocumentacaoFuncao(
@@ -486,6 +267,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) do retângulo no eixo vertical, em relação ao topo da janela"),
                 @DocumentacaoParametro(nome = "largura", descricao = "a largura do retângulo em pixels"),
                 @DocumentacaoParametro(nome = "altura", descricao = "a altura do retângulo em pixels"),
+                @DocumentacaoParametro(nome = "arredondar_cantos", descricao = "define se o retângulo deverá ter cantos arredondados"),
                 @DocumentacaoParametro(
                         nome = "preencher",
                         descricao
@@ -500,30 +282,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Boolean preencher) throws ErroExecucaoBiblioteca
+    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Boolean arredondar_cantos, final Boolean preencher) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    if (preencher)
-                    {
-                        g2d.fillRect(x, y, largura, altura);
-                    }
-                    else
-                    {
-                        g2d.drawRect(x, y, largura, altura);
-                    }
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().desenharRetangulo(x, y, largura, altura, arredondar_cantos, preencher);
     }
 
     @DocumentacaoFuncao(
@@ -553,28 +314,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_elipse(final Integer x, final Integer y, final Integer largura, final Integer altura, final Boolean preencher) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    if (preencher)
-                    {
-                        g2d.fillOval(x, y, largura, largura);
-                    }
-                    else
-                    {
-                        g2d.drawOval(x, y, largura, largura);
-                    }
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().desenharElipse(x, y, largura, altura, preencher);
     }
 
     @DocumentacaoFuncao(
@@ -594,21 +334,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_ponto(final Integer x, final Integer y) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    g2d.drawLine(x, y, x, y);
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().desenharPonto(x, y);
     }
 
     @DocumentacaoFuncao(
@@ -630,21 +356,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_linha(final Integer x1, final Integer y1, final Integer x2, final Integer y2) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    g2d.drawLine(x1, y1, x2, y2);
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().desenharLinha(x1, y1, x2, y2);
     }
 
     @DocumentacaoFuncao(
@@ -664,47 +376,228 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public Integer carregar_imagem(String caminho) throws ErroExecucaoBiblioteca
     {
         File arquivo = programa.resolverCaminho(new File(caminho));
-        int indiceImagem = obterProximoIndiceLivre();
 
         if (arquivo.exists())
         {
-            if (arquivo.isFile())
+            try
             {
-                if (arquivo.canRead())
-                {
-                    if (indiceImagem >= 0)
-                    {
-                        try
-                        {
-                            imagens[indiceImagem] = ImageIO.read(arquivo);
-                            indiceImagem = indiceImagem - 1;
+                BufferedImage imagem = ImageIO.read(arquivo);
 
-                            return indiceImagem + 1;
-                        }
-                        catch (IOException excecao)
-                        {
-                            throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' é inválida", caminho));
-                        }
-                    }
-                    else
-                    {
-                        throw new ErroExecucaoBiblioteca("O número máximo de imagens que podem ser carregadas foi atingido");
-                    }
-                }
-                else
-                {
-                    throw new ErroExecucaoBiblioteca(String.format("O arquivo '%s' não pode ser lido", caminho));
-                }
+                return cacheImagens.adicionarImagem(imagem);
             }
-            else
+            catch (IOException excecao)
             {
-                throw new ErroExecucaoBiblioteca(String.format("O caminho '%s' não é um arquivo", caminho));
+                throw new ErroExecucaoBiblioteca(String.format("Ocorreu um erro ao carregar a imagem '%s'", caminho));
             }
         }
         else
         {
-            throw new ErroExecucaoBiblioteca(String.format("O arquivo '%s' não existe", caminho));
+            throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
         }
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Esta função permite transformar uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). "
+            + "As transformações possíveis são: espelhamento, rotação e remoção de cor.<br><br>O espelhamento permite inverter a imagem tanto na "
+            + "direção horizontal quanto na direção vertical.<br><br>A rotação, permite girar e inclinar a imagem em um ângulo de 360 graus.<br><br> "
+            + "A remoção de cor, permite escolher uma cor da imagem e torná-la transparente.<br><br>Esta função cria uma cópia da imagem original "
+            + "antes de aplicar as transformações, portanto, a imagem original não é perdida ao realizar a transformação e a nova imagem é alocada em "
+            + "outro endereço de memória",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem que será transformada"),
+                @DocumentacaoParametro(nome = "espelhamento_horizontal", descricao = "define se a imagem será invertida (espelhada) na direção horizontal"),
+                @DocumentacaoParametro(nome = "espelhamento_vertical", descricao = "define se a imagem será invertida (espelhada) na direção vertical"),
+                @DocumentacaoParametro(nome = "rotacao",
+                        descricao = "define em quantos graus a imagem será rotacionada. Se o valor 0 for informado, a imagem não será rotacionada. "
+                        + "É importante notar que, ao rotacionar a imagem, as suas dimensões (largura e altura) poderão se alterar"
+                ),
+                @DocumentacaoParametro(nome = "cor_transparente", descricao = "define a cor que será removida da imagem, ou seja, que irá se tornar transparente. Se o valor 0 for informado, nenhuma cor será removida")
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public Integer transformar_imagem(Integer endereco, Boolean espelhamento_horizontal, Boolean espelhamento_vertical, Integer rotacao, Integer cor_ignorada) throws ErroExecucaoBiblioteca
+    {
+        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
+
+        imagemTransformada = aplicarChromaKey(imagemTransformada, cor_ignorada);
+        imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
+        imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
+
+        return cacheImagens.adicionarImagem(imagemTransformada);
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Esta função permite transformar uma porção de uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). "
+            + "As transformações possíveis são: espelhamento, rotação e remoção de cor.<br><br>O espelhamento permite inverter uma porção da imagem tanto na "
+            + "direção horizontal quanto na direção vertical.<br><br>A rotação, permite girar e inclinar uma porção da imagem em um ângulo de 360 graus.<br><br> "
+            + "A remoção de cor, permite escolher uma cor da imagem e torná-la transparente.<br><br>Esta função copia uma porção da imagem original "
+            + "antes de aplicar as transformações, portanto, a imagem original não é perdida ao realizar a transformação e a nova imagem é alocada em "
+            + "outro endereço de memória",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem que será transformada"),
+                @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) no eixo horizontal a partir da qual a imagem será transformada"),
+                @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) no eixo vertical a partir da qual a imagem será transformada"),
+                @DocumentacaoParametro(nome = "largura", descricao = "a largura da porção da imagem a ser transformada"),
+                @DocumentacaoParametro(nome = "altura", descricao = "a altura da porção da imagem a ser transformada"),
+                @DocumentacaoParametro(nome = "espelhamento_horizontal", descricao = "define se a imagem será invertida (espelhada) na direção horizontal"),
+                @DocumentacaoParametro(nome = "espelhamento_vertical", descricao = "define se a imagem será invertida (espelhada) na direção vertical"),
+                @DocumentacaoParametro(nome = "rotacao",
+                        descricao = "define em quantos graus a imagem será rotacionada. Se o valor 0 for informado, a imagem não será rotacionada. "
+                        + "É importante notar que, ao rotacionar a imagem, as suas dimensões (largura e altura) poderão se alterar"
+                ),
+                @DocumentacaoParametro(nome = "cor_transparente", descricao = "define a cor que será removida da imagem, ou seja, que irá se tornar transparente. Se o valor 0 for informado, nenhuma cor será removida")
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public Integer transformar_porcao_imagem(Integer endereco, Integer x, Integer y, Integer largura, Integer altura, Boolean espelhamento_horizontal, Boolean espelhamento_vertical, Integer rotacao, Integer cor_ignorada) throws ErroExecucaoBiblioteca
+    {
+        BufferedImage imagemTransformada = copiarPorcaoImagem((BufferedImage) cacheImagens.obterImagem(endereco), x, y, largura, altura);
+
+        imagemTransformada = aplicarChromaKey(imagemTransformada, cor_ignorada);
+        imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
+        imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
+
+        return cacheImagens.adicionarImagem(imagemTransformada);
+    }
+
+    private BufferedImage copiarImagem(BufferedImage original)
+    {
+        BufferedImage copia = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics graficos = copia.getGraphics();
+
+        graficos.drawImage(original, 0, 0, null);
+        graficos.dispose();
+
+        return copia;
+    }
+
+    private BufferedImage copiarPorcaoImagem(BufferedImage original, int x, int y, int largura, int altura)
+    {
+        BufferedImage copia = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
+        Graphics graficos = copia.getGraphics();
+
+        graficos.drawImage(original, 0, 0, largura, altura, x, y, x + largura, y + altura, null);
+        graficos.dispose();
+
+        return copia;
+    }
+
+    private BufferedImage espelharImagem(BufferedImage imagem, boolean espelhamento_horizontal, boolean espelhamento_vertical)
+    {
+        int escalaX = (espelhamento_horizontal) ? -1 : 1;
+        int escalaY = (espelhamento_vertical) ? -1 : 1;
+
+        int translacaoX = (espelhamento_horizontal) ? -imagem.getWidth() : 0;
+        int translacaoY = (espelhamento_vertical) ? -imagem.getHeight() : 0;
+
+        AffineTransform transformacao = AffineTransform.getScaleInstance(escalaX, escalaY);
+        transformacao.translate(translacaoX, translacaoY);
+
+        AffineTransformOp operacao = new AffineTransformOp(transformacao, AffineTransformOp.TYPE_BICUBIC);
+
+        return operacao.filter(imagem, null);
+    }
+
+    private BufferedImage rotacionarImagem(BufferedImage imagem, int graus)
+    {
+        if ((graus % 360) != 0)
+        {
+            double angulo = Math.toRadians(graus % 360);
+
+            AffineTransform rotacao = AffineTransform.getRotateInstance(angulo);
+            rotacao.preConcatenate(calcularTranslacao(rotacao, imagem));
+
+            AffineTransformOp operacao = new AffineTransformOp(rotacao, AffineTransformOp.TYPE_BICUBIC);
+
+            return operacao.filter(imagem, null);
+        }
+
+        return imagem;
+    }
+
+    private AffineTransform calcularTranslacao(AffineTransform rotacao, BufferedImage imagem)
+    {
+        double translacaoX = 0;
+        double translacaoY = 0;
+
+        Point2D[] vertices = new Point2D[]
+        {
+            new Point2D.Double(0.0, 0.0), // Vértice superior esquerdo
+            new Point2D.Double(imagem.getWidth(), 0.0), // Vértice superior direito
+            new Point2D.Double(imagem.getWidth(), imagem.getHeight()), // Vértice inferior direito
+            new Point2D.Double(0.0, imagem.getHeight())                     // Vértice inferior esquerdo
+        };
+
+        for (Point2D vertice : vertices)
+        {
+            vertice = rotacao.transform(vertice, null); // Calcula a nova posição de cada vértice de acordo com o ângulo de rotação
+
+            if (vertice.getX() < translacaoX)
+            {
+                translacaoX = vertice.getX();
+            }
+
+            if (vertice.getY() < translacaoY)
+            {
+                translacaoY = vertice.getY();
+            }
+        }
+
+        AffineTransform translacao = new AffineTransform();
+        translacao.translate(-translacaoX, -translacaoY);
+
+        return translacao;
+    }
+
+    private BufferedImage aplicarChromaKey(BufferedImage imagem, int cor)
+    {
+        if (cor != 0)
+        {
+            Color chroma = new Color(cor);
+
+            int chromaRed = chroma.getRed();
+            int chromaGreen = chroma.getGreen();
+            int chromaBlue = chroma.getBlue();
+
+            int[] pixel = new int[4];
+
+            WritableRaster rgb = imagem.getRaster();
+            WritableRaster alpha = imagem.getAlphaRaster();
+
+            int r, g, b;
+
+            for (int x = 0; x < rgb.getWidth(); x++)
+            {
+                for (int y = 0; y < rgb.getHeight(); y++)
+                {
+                    rgb.getPixel(x, y, pixel);
+
+                    r = pixel[0];
+                    g = pixel[1];
+                    b = pixel[2];
+
+                    if (r == chromaRed && g == chromaGreen && b == chromaBlue)
+                    {
+                        pixel[0] = 0;
+                        pixel[1] = 0;
+                        pixel[2] = 0;
+                        pixel[3] = 0;
+
+                        alpha.setPixel(x, y, pixel);
+                    }
+                }
+            }
+        }
+
+        return imagem;
     }
 
     @DocumentacaoFuncao(
@@ -725,23 +618,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_imagem(final Integer x, final Integer y, Integer endereco) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            final Image imagem = obterImagem(endereco);
-
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    g2d.drawImage(imagem, x, y, null);
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco));
     }
 
     @DocumentacaoFuncao(
@@ -766,23 +643,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_porcao_imagem(final Integer x, final Integer y, final Integer xi, final Integer yi, final Integer largura, final Integer altura, Integer endereco) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            final Image imagem = obterImagem(endereco);
-
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    g2d.drawImage(imagem, x, y, x + largura, y + altura, xi, yi, xi + largura, yi + altura, null);
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco));
     }
 
     @DocumentacaoFuncao(
@@ -798,10 +659,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void liberar_imagem(Integer endereco) throws ErroExecucaoBiblioteca
     {
-        if (obterImagem(endereco) != null)
-        {
-            imagens[endereco] = null;
-        }
+        cacheImagens.liberarImagem(endereco);
     }
 
     @DocumentacaoFuncao(
@@ -812,14 +670,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             {
                 @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) do texto no eixo horizontal, em relação ao lado esquerdo da janela"),
                 @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) do ponto no eixo vertical, em relação ao topo da janela"),
-                @DocumentacaoParametro(nome = "texto", descricao = "o texto (<tipo>cadeia</tipo>) a ser desenhado"),
-                @DocumentacaoParametro(
-                        nome = "preencher_fundo",
-                        descricao
-                        = "define se o fundo do texto deve ser preenchido. Se <tipo>verdadeiro</tipo> preenche "
-                        + "o fundo do texto com a cor atual do ambiente gráfico. Se <tipo>falso</tipo> o fundo do "
-                        + "texto será transparente"
-                ),
+                @DocumentacaoParametro(nome = "texto", descricao = "o texto (<tipo>cadeia</tipo>) a ser desenhado")
             },
             autores =
             {
@@ -827,37 +678,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_texto(final Integer x, final Integer y, final String texto, final Boolean preencher_fundo) throws ErroExecucaoBiblioteca
+    public void desenhar_texto(final Integer x, final Integer y, final String texto) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    FontMetrics dimensoesFonte = g2d.getFontMetrics();
-
-                    int altura = dimensoesFonte.getAscent() + dimensoesFonte.getLeading();
-                    int largura = dimensoesFonte.stringWidth(texto);
-
-                    if (preencher_fundo)
-                    {
-                        g2d.fillRect(x, y, largura, altura);
-                    }
-
-                    Color corAtual = g2d.getColor();
-
-                    g2d.setColor(janela.superficieDesenho.ultimaCorTexto);
-                    g2d.drawString(texto, x, y + dimensoesFonte.getAscent() - dimensoesFonte.getDescent() + dimensoesFonte.getLeading() + 1);
-                    g2d.setColor(corAtual);
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().desenharTexto(texto, x, y);
     }
 
     @DocumentacaoFuncao(
@@ -876,22 +699,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_cor(final Integer cor) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    janela.superficieDesenho.ultimaCorDesenho = new Color(cor);
-                    g2d.setColor(janela.superficieDesenho.ultimaCorDesenho);
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().getSuperficieDesenho().definirCor(cor);
     }
 
     @DocumentacaoFuncao(
@@ -903,9 +711,42 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                         descricao
                         = "o nome da fonte a ser utilizada (Ex.: Arial, Times New Roman, Tahoma). Se a fonte informada "
                         + "não existir no sistema operacional do computador, será utilizada a fonte padrão"
-                ),
-                @DocumentacaoParametro(nome = "tamanho", descricao = "o tamanho da fonte em pontos (pt)"),
-                @DocumentacaoParametro(nome = "cor", descricao = "a cor da fonte"),
+                )
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void definir_fonte_texto(final String nome) throws ErroExecucaoBiblioteca
+    {
+        janela().getSuperficieDesenho().definirFonteTexto(nome);
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Define o tamanho da fonte que será utilizada para desenhar um texto no ambiente gráfico",
+            parametros =
+            {
+                @DocumentacaoParametro(
+                        nome = "tamanho",
+                        descricao
+                        = "o tamanho da fonte a ser utilizada"
+                )
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void definir_tamanho_texto(final Double tamanho) throws ErroExecucaoBiblioteca
+    {
+        janela().getSuperficieDesenho().definirTamanhoTexto(tamanho);
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Define o estilo da onte que será utilizada para desenhar um texto no ambiente gráfico",
+            parametros =
+            {
                 @DocumentacaoParametro(nome = "italico", descricao = "define se a fonte terá o estilo itálico"),
                 @DocumentacaoParametro(nome = "negrito", descricao = "define se a fonte terá o estilo negrito"),
                 @DocumentacaoParametro(nome = "sublinhado", descricao = "define se a fonte terá o estilo sublinhado")
@@ -915,56 +756,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_fonte(final String nome, final Double tamanho, final Integer cor, final Boolean italico, final Boolean negrito, final Boolean sublinhado) throws ErroExecucaoBiblioteca
+    public void definir_estilo_texto(final Boolean italico, final Boolean negrito, final Boolean sublinhado) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            final Font fonte = criarFonte(nome, tamanho, italico, negrito, sublinhado);
-            janela.superficieDesenho.atualizarDimensoesFonte(fonte);
-
-            operacoesDesenho.add(new OperacaoDesenho()
-            {
-                @Override
-                public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca
-                {
-                    janela.superficieDesenho.ultimaFonte = fonte;
-                    janela.superficieDesenho.ultimaCorTexto = new Color(cor);
-
-                    g2d.setFont(fonte);
-                }
-            });
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
-    }
-
-    private Font criarFonte(String nome, Double tamanho, Boolean italico, Boolean negrito, Boolean sublinhado)
-    {
-        Font fonte = new Font(nome, 12, Font.PLAIN);
-
-        fonte = fonte.deriveFont(tamanho.floatValue());
-
-        if (sublinhado)
-        {
-            Map<TextAttribute, Integer> atributos = new HashMap<>();
-            atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-
-            fonte = fonte.deriveFont(atributos);
-        }
-
-        if (italico)
-        {
-            fonte = fonte.deriveFont(fonte.getStyle() | Font.ITALIC);
-        }
-
-        if (negrito)
-        {
-            fonte = fonte.deriveFont(fonte.getStyle() | Font.BOLD);
-        }
-
-        return fonte;
+        janela().getSuperficieDesenho().definirEstiloTexto(italico, negrito, sublinhado);
     }
 
     @DocumentacaoFuncao(
@@ -981,9 +775,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public Integer largura_texto(String texto) throws ErroExecucaoBiblioteca
     {
-        FontMetrics dimensoesFonte = janela.superficieDesenho.getDimensoesFonte();
-
-        return dimensoesFonte.stringWidth(texto);
+        return janela().getSuperficieDesenho().larguraTexto(texto);
     }
 
     @DocumentacaoFuncao(
@@ -1000,38 +792,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public Integer altura_texto(String texto) throws ErroExecucaoBiblioteca
     {
-        FontMetrics dimensoesFonte = janela.superficieDesenho.getDimensoesFonte();
-
-        return dimensoesFonte.getAscent() + dimensoesFonte.getLeading();
-    }
-
-    @DocumentacaoFuncao(
-            descricao = "Obtém o nome da fonte atual",
-            autores =
-            {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-            }
-    )
-    public String nome_fonte() throws ErroExecucaoBiblioteca
-    {
-        Font fonte = janela.superficieDesenho.getUltimaFonte();
-
-        return fonte.getName();
-    }
-
-    @DocumentacaoFuncao(
-            descricao = "Obtém tamanho da fonte atual",
-            autores =
-            {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-            }
-    )
-    public Double tamanho_fonte() throws ErroExecucaoBiblioteca
-    {
-        Font fonte = janela.superficieDesenho.getUltimaFonte();
-        Float tamanho = fonte.getSize2D();
-
-        return tamanho.doubleValue();
+        return janela().getSuperficieDesenho().alturaTexto(texto);
     }
 
     @DocumentacaoFuncao(
@@ -1048,14 +809,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public Integer largura_imagem(Integer endereco) throws ErroExecucaoBiblioteca
     {
-        Image imagem = obterImagem(endereco);
-
-        if (imagem != null)
-        {
-            return imagem.getWidth(null);
-        }
-
-        return 0;
+        return cacheImagens.obterImagem(endereco).getWidth(null);
     }
 
     @DocumentacaoFuncao(
@@ -1072,14 +826,34 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public Integer altura_imagem(Integer endereco) throws ErroExecucaoBiblioteca
     {
-        Image imagem = obterImagem(endereco);
+        return cacheImagens.obterImagem(endereco).getHeight(null);
+    }
 
-        if (imagem != null)
+    @DocumentacaoFuncao(
+            descricao = "cria uma nova cor a partir da combinação de tons de vermelho, verde e azul",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "vermelho", descricao = "o tom de vermelho (0 a 255)"),
+                @DocumentacaoParametro(nome = "verde", descricao = "o tom de verde (0 a 255)"),
+                @DocumentacaoParametro(nome = "azul", descricao = "o tom de verde (0 a 255)")
+            },
+            retorno = "a nova cor criada pela combinação dos tons de vermelho, verde e azul",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            },
+            referencia = "http://pt.wikipedia.org/wiki/RGB"
+    )
+    public Integer criar_cor(Integer vermelho, Integer verde, Integer azul) throws ErroExecucaoBiblioteca
+    {
+        try
         {
-            return imagem.getHeight(null);
+            return new Color(vermelho, verde, azul).getRGB();
         }
-
-        return 0;
+        catch (IllegalArgumentException excecao)
+        {
+            throw new ErroExecucaoBiblioteca("Erro ao criar a cor, os valor dos tons deve estar entre 0 e 255");
+        }
     }
 
     @DocumentacaoFuncao(
@@ -1097,14 +871,21 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         File arquivo = programa.resolverCaminho(new File(caminho_fonte));
 
-        try
+        if (arquivo.exists())
         {
-            Font fonte = Font.createFont(Font.TRUETYPE_FONT, arquivo);
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(fonte);
+            try
+            {
+                Font fonte = Font.createFont(Font.TRUETYPE_FONT, arquivo);
+                GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(fonte);
+            }
+            catch (IOException | FontFormatException excecao)
+            {
+                throw new ErroExecucaoBiblioteca(String.format("Não foi possível carregar a fonte '%s'", arquivo.getAbsolutePath()));
+            }
         }
-        catch (IOException | FontFormatException excecao)
+        else
         {
-            throw new ErroExecucaoBiblioteca(String.format("Não foi possível carregar a fonte '%s'", arquivo.getAbsolutePath()));
+            throw new ErroExecucaoBiblioteca(String.format("A fonte '%s' não foi encontrada", caminho_fonte));
         }
     }
 
@@ -1122,347 +903,75 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_icone_janela(Integer endereco) throws ErroExecucaoBiblioteca
     {
-        if (ambienteGraficoInicializado())
-        {
-            try
-            {
-                final Image imagem = obterImagem(endereco);
-
-                SwingUtilities.invokeAndWait(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        janela.setIconImage(imagem);
-                    }
-                });
-            }
-            catch (InterruptedException | InvocationTargetException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O modo gráfico ainda não foi inicializado");
-        }
+        janela().definirIcone(cacheImagens.obterImagem(endereco));
     }
 
-    /*
-     @DocumentacaoFuncao
-     (
-     descricao = "Define em quantos <param>graus</param> os desenhos deverão ser rotacionados.",
-        
-     autores = 
-     {
-     @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
-     }
-     )
-     public void definir_rotacao(Integer graus)
-     {
-     janela.superficieDesenho.rotacao = graus;
-     }
-    
-     private void rotacionar(Graphics2D graficos)
-     {
-        
-     }*/
-    private Image obterImagem(Integer endereco) throws ErroExecucaoBiblioteca
-    {
-        if (endereco >= 0 && endereco < NUMERO_MAXIMO_IMAGENS)
-        {
-            Image imagem = imagens[endereco];
-
-            if (imagem != null)
+    @DocumentacaoFuncao(
+            descricao = "Esta função define o nível de opacidade dos desenhos no ambiente gráfico. Quanto menor for a opacidade, "
+            + "mais transparente será o desenho e quanto maior for a opacidade mais opaco será o desenho. Com esta função, é "
+            + "possível desenhar imagens, textos e primitivas gráficas semi-transparentes, o que permite \"enxergar\" através dos "
+            + "desenhos.<br><br>É importante notar que, após ser chamada, esta função afeta todos os desenhos realizados. Isto significa "
+            + "que se foram desenhados um retângulo e uma elipse após a chamada desta função, ambos terão seu nível de "
+            + "opacidade alterados.<br><br>Caso fosse desejável modificar apenas a opacidade do retângulo, então seria necessário "
+            + "chamar novamente esta função definido a opacidade para o valor máximo antes de desenhar a elipse",
+            parametros =
             {
-                return imagem;
-            }
-            else
+                @DocumentacaoParametro(nome = "opacidade",
+                        descricao = "o nível de opacidade dos desenhos. O valor deve estar entre 0 e 255, sendo que, 0 indica um "
+                        + "desenho totalmente transparente e 255 indica um desenho totalmente opaco"
+                ),
+            },
+            autores =
             {
-                throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória é inválido");
-        }
-    }
-
-    private void liberarImagens()
-    {
-        for (int indice = 0; indice < NUMERO_MAXIMO_IMAGENS; indice++)
-        {
-            imagens[indice] = null;
-        }
-    }
-
-    private void encerrar() throws ErroExecucaoBiblioteca
-    {
-        if (ambienteGraficoInicializado())
-        {
-            do
-            {
-                try
-                {
-                    SwingUtilities.invokeAndWait(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            janela.setVisible(false);
-                        }
-                    });
-                }
-                catch (InterruptedException excecao)
-                {
-                    /*
-                     * Se o usuário interromper o programa fechando a janela ou de
-                     * alguma outra forma, ocorrerá um interrupção. Neste caso, 
-                     * simplesmente ignoramos e continuamos tentando fechar a janela.
-                     */
-                }
-                catch (InvocationTargetException excecao)
-                {
-                    throw new ErroExecucaoBiblioteca(excecao);
-                }
-            }
-            while (janela.isVisible());
-
-            janela = null;
-            operacoesDesenho.clear();
-            liberarImagens();
-        }
-    }
-
-    @Override
-    protected void finalizar() throws ErroExecucaoBiblioteca
-    {
-        encerrar();
-    }
-
-    @Override
-    protected void inicializar(final Programa programa, final List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    )
+    public void definir_opacidade(Integer opacidade) throws ErroExecucaoBiblioteca
     {
         try
         {
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    Graficos.this.programa = programa;
-
-                    janela = new Janela();
-                    imagens = new Image[NUMERO_MAXIMO_IMAGENS];
-                    operacoesDesenho = new ArrayList<>(512);
-                }
-            });
+            janela().getSuperficieDesenho().definirOpacidade(opacidade);
         }
-        catch (InterruptedException | InvocationTargetException excecao)
+        catch (IllegalArgumentException excecao)
         {
-            throw new ErroExecucaoBiblioteca(excecao);
+            throw new ErroExecucaoBiblioteca("O valor da opacidade deve esta entre 0 e 255");
         }
     }
 
-    private boolean ambienteGraficoInicializado()
-    {
-        if (janela != null)
-        {
-            return janela.isVisible();
-        }
-
-        return false;
-    }
-
-    private int obterProximoIndiceLivre()
-    {
-        for (int indice = NUMERO_MAXIMO_IMAGENS - 1; indice >= 0; indice--)
-        {
-            if (imagens[indice] == null)
+    @DocumentacaoFuncao(
+            descricao = "Esta função define o grau de rotação dos desenhos no ambiente gráfico. Com esta função, é possível rotacionar "
+            + "imagens, textos e todas as primitivas gráficas, incluindo linhas, retângulos e elipses.<br><br>A rotação é realizada sempre "
+            + "a partir do centro do desenho.<br><br>É importante notar que, após ser chamada, esta função afeta todos os desenhos realizados. "
+            + "Isto significa que se foram desenhados um retângulo e uma elipse após a chamada desta função, ambos serão rotacionados no mesmo "
+            + "grau de inclinação.<br><br>Caso fosse desejável rotacionar apenas o retângulo, então seria necessário chamar novamente esta "
+            + "função definido a rotação para 0 antes de desenhar a elipse",
+            parametros =
             {
-                return indice;
+                @DocumentacaoParametro(nome = "rotacao",
+                        descricao = "o grau de rotação dos desenhos. Pode ser qualquer valor real, incluindo 0, positivos e negativos. "
+                        + "Os valores múltiplos de 360.0 e o valor 0.0 indicam que não haverá rotação. Valores positivos, indicam uma "
+                        + "rotação no sentido horário enquanto que valores negativos indicam uma rotação no sentido anti-horário"
+                ),
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
-        }
-
-        return -1;
+    )
+    public void definir_rotacao(Integer rotacao) throws ErroExecucaoBiblioteca
+    {
+        janela().getSuperficieDesenho().definirRotacao(rotacao);
     }
 
-    @NaoExportar
-    @Override
-    public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucaoBiblioteca
+    private JanelaGrafica janela() throws ErroExecucaoBiblioteca
     {
-        janela.addKeyListener(observadorTeclado);
-    }
-
-    @NaoExportar
-    @Override
-    public void instalarMouse(MouseAdapter observadorMouse, FocusListener observadorFoco) throws ErroExecucaoBiblioteca
-    {
-        janela.superficieDesenho.addMouseListener(observadorMouse);
-        janela.superficieDesenho.addMouseMotionListener(observadorMouse);
-        janela.addFocusListener(observadorFoco);
-    }
-
-    @NaoExportar
-    @Override
-    public void definirCursor(Cursor cursor) throws ErroExecucaoBiblioteca
-    {
-        janela.setCursor(cursor);
-    }
-
-    private interface OperacaoDesenho
-    {
-        public void desenhar(Graphics2D g2d) throws ErroExecucaoBiblioteca;
-    }
-
-    private final class Janela extends JFrame
-    {
-        private int largura;
-        private int altura;
-        private SuperficieDesenho superficieDesenho;
-
-        public Janela() throws HeadlessException
+        if (inicializado)
         {
-            superficieDesenho = new SuperficieDesenho();
-            superficieDesenho.setFocusable(false);
-
-            setTitle("Sem título");
-            setResizable(false);
-            setBackground(Color.BLACK);
-            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            setAlwaysOnTop(false);
-            setIconImage(getIconePadrao());
-
-            JPanel painelConteudo = (JPanel) getContentPane();
-
-            painelConteudo.setFocusable(false);
-            painelConteudo.setRequestFocusEnabled(false);
-            painelConteudo.setLayout(null);
-            painelConteudo.add(superficieDesenho);
-
-            definirDimensoes(LARGURA_PADRAO, ALTURA_PADRAO);
-            setLocationRelativeTo(null);
-
-            addWindowListener(new WindowAdapter()
-            {
-                @Override
-                public void windowClosing(WindowEvent e)
-                {
-                    programa.interromper();
-                }
-            });
+            return janela;
         }
-
-        private Image getIconePadrao()
+        else
         {
-            Window janelaAtiva = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
-
-            if (janelaAtiva != null && !janelaAtiva.getIconImages().isEmpty())
-            {
-                return janelaAtiva.getIconImages().get(0);
-            }
-
-            return null;
-        }
-
-        @Override
-        public void setVisible(boolean visivel)
-        {
-            super.setVisible(visivel);
-
-            if (visivel)
-            {
-                Graphics2D g2d = superficieDesenho.getGraphics2D();
-                g2d.setColor(Color.BLACK);
-                g2d.fillRect(0, 0, superficieDesenho.getWidth(), superficieDesenho.getHeight());
-                g2d.dispose();
-                superficieDesenho.estrategiaBuffer.show();
-            }
-        }
-
-        public void definirDimensoes(int largura, int altura)
-        {
-            this.largura = largura;
-            this.altura = altura;
-
-            JPanel painelConteudo = (JPanel) getContentPane();
-
-            painelConteudo.setPreferredSize(new Dimension(largura, altura));
-            superficieDesenho.setBounds(0, 0, largura, altura);
-
-            pack();
-
-            superficieDesenho.criarBuffer();
-            Graphics2D g2d = superficieDesenho.getGraphics2D();
-            g2d.setColor(Color.BLACK);
-            g2d.fillRect(0, 0, largura, altura);
-            g2d.dispose();
-        }
-    }
-
-    private final class SuperficieDesenho extends Canvas
-    {
-        public BufferStrategy estrategiaBuffer;
-        public Color ultimaCorDesenho = Color.BLACK;
-        public Color ultimaCorTexto = Color.BLACK;
-        private Font ultimaFonte = null;
-        private FontMetrics dimensoesFonte;
-
-        public SuperficieDesenho()
-        {
-            setIgnoreRepaint(true);
-        }
-
-        public FontMetrics getDimensoesFonte()
-        {
-            if (dimensoesFonte == null)
-            {
-                atualizarDimensoesFonte(getGraphics2D().getFont());
-            }
-
-            return dimensoesFonte;
-        }
-
-        public void atualizarDimensoesFonte(Font novaFonte)
-        {
-            Graphics2D g2d = getGraphics2D();
-            Font fonteAtual = g2d.getFont();
-
-            g2d.setFont(novaFonte);
-            dimensoesFonte = g2d.getFontMetrics();
-            g2d.setFont(fonteAtual);
-        }
-
-        public Font getUltimaFonte()
-        {
-            if (ultimaFonte == null)
-            {
-                ultimaFonte = getFont();
-            }
-
-            return ultimaFonte;
-        }
-
-        public void setUltimaFonte(Font ultimaFonte)
-        {
-            this.ultimaFonte = ultimaFonte;
-        }
-
-        public void criarBuffer()
-        {
-            createBufferStrategy(2);
-            estrategiaBuffer = getBufferStrategy();
-        }
-
-        public Graphics2D getGraphics2D()
-        {
-            Graphics2D g2d = (Graphics2D) estrategiaBuffer.getDrawGraphics();
-
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setColor(ultimaCorDesenho);
-            g2d.setFont(getUltimaFonte());
-
-            return g2d;
+            throw new ErroExecucaoBiblioteca("O modo gráfico não foi inicializado");
         }
     }
 }
