@@ -258,6 +258,28 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     @DocumentacaoFuncao(
             descricao
+            = "Esta função cria uma nova imagem em memória e renderiza todos os desenhos do ambiente gráfico nesta nova imagem ao invés de "
+            + "renderizá-los na tela",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "largura", descricao = "a largura da nova imagem"),
+                @DocumentacaoParametro(nome = "altura", descricao = "a altura da nova imagem")
+            },
+            retorno = "o endereço de memória da nova imagem",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public Integer renderizar_imagem(Integer largura, Integer altura) throws ErroExecucaoBiblioteca
+    {
+        BufferedImage imagem = janela().getSuperficieDesenho().renderizarImagem(largura, altura);
+
+        return cacheImagens.adicionarImagem(imagem);
+    }
+
+    @DocumentacaoFuncao(
+            descricao
             = "Desenha um retângulo na posição definida pelos parâmetros <param>x</param> e <param>y</param> "
             + "e com as dimensões especificadas pelos parâmetros <param>largura</param> e <param>altura</param>. <br><br>"
             + "O retângulo é desenhado na tela a partir do seu canto superior esquerdo ",
@@ -414,6 +436,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 ),
                 @DocumentacaoParametro(nome = "cor_transparente", descricao = "define a cor que será removida da imagem, ou seja, que irá se tornar transparente. Se o valor 0 for informado, nenhuma cor será removida")
             },
+            retorno = "o endereço de memória da nova imagem",
             autores =
             {
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")

@@ -23,6 +23,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.font.TextAttribute;
@@ -265,6 +266,28 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     public void desenharPonto(int x, int y)
     {
         operacoes.add(new DesenhoPonto(x, y));
+    }
+
+    @Override
+    public BufferedImage renderizarImagem(int largura, int altura)
+    {
+        BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graficos = (Graphics2D) imagem.getGraphics();
+        
+        graficos.setColor(cor);
+        graficos.setFont(fonteTexto);
+        graficos.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        Rectangle areaGraficos = new Rectangle(0, 0, largura, altura);
+
+        for (OperacaoGrafica operacao : operacoes)
+        {
+            operacao.executar(graficos, areaGraficos);
+        }
+
+        operacoes.clear();
+        
+        return imagem;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.OperacaoGrafica;
 import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 
@@ -48,4 +49,6 @@ public interface SuperficieDesenho
     public void definirRotacao(int graus);
 
     public void instalarMouse(MouseAdapter observadorMouse);
+    
+    public BufferedImage renderizarImagem(int largura, int altura);
 }
