@@ -195,8 +195,15 @@ public final class Tipos extends Biblioteca
         {
             try
             {
-                valor = valor.replaceFirst("0X", "").replaceFirst("0x", "");
-                valor = valor.replaceFirst("0B", "").replaceFirst("0b", "");
+                if (base == 16)
+                {
+                    valor = valor.replaceFirst("0X", "").replaceFirst("0x", "");
+                }
+                
+                if (base == 2)
+                {
+                    valor = valor.replaceFirst("0B", "").replaceFirst("0b", "");
+                }
                 
                 Long val = Long.parseLong(valor, base);
                  
