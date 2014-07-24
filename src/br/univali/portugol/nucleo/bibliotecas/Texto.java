@@ -48,7 +48,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caracteres_maiusculos(String cad) throws ErroExecucaoBiblioteca
+    public String caixa_alta(String cad) throws ErroExecucaoBiblioteca
     {
         return cad.toUpperCase();
     }    
@@ -66,7 +66,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caracteres_minusculos(String cad) throws ErroExecucaoBiblioteca
+    public String caixa_baixa(String cad) throws ErroExecucaoBiblioteca
     {
         return cad.toLowerCase();
     }
