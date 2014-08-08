@@ -14,13 +14,23 @@ public final class ErroComunicacao extends ErroArduino
     
     public ErroComunicacao(Instrucao instrucao)
     {
-        super("Erro de comunicação. O Arduíno foi desconectado do computador");
+        super(obterMensagemInstrucao(instrucao));
         
         LOGGER.log(Level.SEVERE, String.format("A resposta da instrução '%s' não foi recebida dentro do timeout especificado", instrucao.name()));        
     }
 
     public ErroComunicacao(SerialPortException erroPortaSerial)
     {
-        super("Erro de comunicação. O Arduíno foi desconectado do computador ou a porta serial já está sendo utilizda por outro dispositivo");
+        super("Erro de comunicação. O Arduino não está conectado ao computador ou a porta serial já está sendo utilizda por outro dispositivo");
+    }
+    
+    private static String obterMensagemInstrucao(Instrucao instrucao)
+    {
+        if (instrucao == Instrucao.HAND_SHAKE)
+        {
+            return "Erro de comunicação. O dispositivo conectado na porta serial não é um Arduino ou é um Arduino que não contém o firmware do Portugol";
+        }
+        
+        return "Erro de comunicação. O Arduino não está conectado ao computador";
     }
 }

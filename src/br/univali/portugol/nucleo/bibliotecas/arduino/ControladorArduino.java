@@ -18,7 +18,7 @@ public final class ControladorArduino
 
     private static final int VELOCIDADE_PORTA = 9600;
     private static final int TIMEOUT_COMUNICACAO = 2000;
-    private static final int DELAY_INICIAL = 2000;
+    private static final int DELAY_INICIAL = 4000;
 
     public static final byte INICIALIZADOR_INSTRUCAO = 17; // ASCII Control 1
     public static final byte FINALIZADOR_INSTRUCAO = 20; // ASCII Control 4
@@ -38,8 +38,11 @@ public final class ControladorArduino
     {
         if (!inicializado())
         {
-            portaSerial = conectar();
-            handShake();
+            synchronized (ControladorArduino.this)
+            {
+                portaSerial = conectar();
+                handShake();
+            }
         }
     }
 
@@ -47,14 +50,15 @@ public final class ControladorArduino
     {
         try
         {
-            SerialPort porta = new SerialPort("COM6");
+            SerialPort porta = new SerialPort("COM8");
 
             porta.openPort();
             porta.setParams(VELOCIDADE_PORTA, 8, 1, 0);
             porta.setEventsMask(SerialPort.MASK_RXCHAR);
-            porta.addEventListener(new DecodificadorInstrucoes());
 
             Thread.sleep(DELAY_INICIAL);
+
+            porta.addEventListener(new DecodificadorInstrucoes());
 
             return porta;
         }
@@ -75,7 +79,11 @@ public final class ControladorArduino
             try
             {
                 portaSerial.closePort();
-                portaSerial = null;
+                
+                synchronized (ControladorArduino.this)
+                {
+                    portaSerial = null;
+                }
             }
             catch (SerialPortException excecao)
             {
@@ -83,20 +91,23 @@ public final class ControladorArduino
             }
         }
     }
-    
+
     public boolean inicializado()
     {
-        if (portaSerial != null)
+        synchronized (ControladorArduino.this)
         {
-            return portaSerial.isOpened();
+            if (portaSerial != null)
+            {
+                return portaSerial.isOpened();
+            }
+
+            return false;
         }
-        
-        return false;
     }
 
     private void handShake() throws ErroExecucaoBiblioteca
     {
-        enviarInstrucao(Instrucao.HAND_SHAKE, "lala", "123", "meu pai");
+        enviarInstrucao(Instrucao.HAND_SHAKE);
     }
 
     public void enviarInstrucao(Instrucao instrucao, String... parametros) throws ErroExecucaoBiblioteca
@@ -172,11 +183,16 @@ public final class ControladorArduino
         @Override
         public void serialEvent(SerialPortEvent event)
         {
-            if (event.isRXCHAR())
+            if (inicializado() && event.isRXCHAR())
             {
                 try
                 {
-                    bufferResposta.append(portaSerial.readString());
+                    String resposta = portaSerial.readString();
+
+                    if (resposta != null)
+                    {
+                        bufferResposta.append(resposta);
+                    }
 
                     if (instrucaoEnviada.respostaValida(bufferResposta))
                     {
