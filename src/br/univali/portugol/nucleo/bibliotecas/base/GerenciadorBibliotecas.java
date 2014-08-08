@@ -89,6 +89,7 @@ public final class GerenciadorBibliotecas
             bibliotecasDisponiveis.add("Mouse");
             bibliotecasDisponiveis.add("Arquivos");
             bibliotecasDisponiveis.add("Sons");
+            bibliotecasDisponiveis.add("Arduino");
             
             Collections.sort(bibliotecasDisponiveis);
         }

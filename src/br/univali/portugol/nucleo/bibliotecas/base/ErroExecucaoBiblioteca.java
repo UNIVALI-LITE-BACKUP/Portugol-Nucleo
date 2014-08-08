@@ -19,6 +19,7 @@ public final class ErroExecucaoBiblioteca extends ErroExecucao
     public ErroExecucaoBiblioteca(final Throwable causa)
     {
         this.causa = causa;
+        this.mensagem = causa.getMessage();
     }
 
     @Override
