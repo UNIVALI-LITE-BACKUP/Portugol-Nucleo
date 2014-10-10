@@ -333,7 +333,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
             disparaSimbolosAlterados(getSimbolosAlterados(no));
         }
 
-        if (no.getEscopo() == null && !no.getNome().equals("leia") && !no.getNome().equals("escreva"))
+        if (no.getEscopo() == null && !no.getNome().equals("leia") && !no.getNome().equals("escreva") && !no.getNome().equals("limpa"))
         {
             realizarParada(no, no.getTrechoCodigoFonte());
         }
