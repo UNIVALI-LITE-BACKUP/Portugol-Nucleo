@@ -28,4 +28,10 @@ public final class NoCaracter extends NoValor<Character>
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return "'" + getValor() + "'";
+    }
 }

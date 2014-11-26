@@ -6,6 +6,7 @@ import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.depuracao.DepuradorImpl;
 import br.univali.portugol.nucleo.depuracao.DepuradorListener;
 import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
+import br.univali.portugol.nucleo.depuracao.PontoParada;
 import br.univali.portugol.nucleo.execucao.es.Entrada;
 import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
 import br.univali.portugol.nucleo.execucao.Interpretador;
@@ -69,6 +70,8 @@ public final class Programa
     
     private final List<DepuradorListener> listeners = new ArrayList<>();
     private final ArrayList<ObservadorExecucao> observadores;
+    
+    private final SetadorPontosParada setadorPontosParada = new SetadorPontosParada();
 
     public Programa()
     {
@@ -163,6 +166,10 @@ public final class Programa
         listeners.add(aThis);
     }
 
+    public boolean adicionarPontoParada(int linha)
+    {
+        return setadorPontosParada.adicionarPontoParada(linha, arvoreSintaticaAbstrataPrograma);
+    }
 
     /**
      * Implementa uma tarefa para disparar a execução do programa com os parâmetros e a estratégia selecionada.

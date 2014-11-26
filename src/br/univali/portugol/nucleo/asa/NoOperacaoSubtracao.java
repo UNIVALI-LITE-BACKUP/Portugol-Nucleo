@@ -26,4 +26,10 @@ public final class NoOperacaoSubtracao extends NoOperacao
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return getOperandoEsquerdo().toString() + " - " + getOperandoEsquerdo().toString();
+    }
 }

@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.depuracao.Depurador;
 import java.util.List;
 
 /**
@@ -44,12 +45,18 @@ public final class NoPara extends NoBloco
     private NoBloco inicializacao;
     private NoExpressao condicao;
     private NoExpressao incremento;
-    private TrechoCodigoFonte trechoCodigoFonte;
 
     public NoPara()
     {
+        
     }
 
+    @Override
+    public boolean ehParavel(Depurador.Estado estado)
+    {
+        return estado == Depurador.Estado.BREAK_POINT ; //To change body of generated methods, choose Tools | Templates.
+    }    
+    
     /**
      * Define a lista de blocos que serão executados a cada iteração.
      * 
@@ -145,15 +152,5 @@ public final class NoPara extends NoBloco
     public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         return visitante.visitar(this);
-    }
-
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-
-    public TrechoCodigoFonte getTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
     }
 }

@@ -27,4 +27,10 @@ public final class NoOperacaoSoma extends NoOperacao
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return getOperandoEsquerdo().toString() + " + " + getOperandoDireito().toString();
+    }
 }

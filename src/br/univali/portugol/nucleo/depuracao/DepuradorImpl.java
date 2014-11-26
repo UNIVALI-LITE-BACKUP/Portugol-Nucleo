@@ -19,6 +19,8 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
 
     private Programa programa;
     private List<NoBloco> eleitos;
+    
+    private Estado estado = Estado.INIT;
 
     @Override
     public synchronized void proximo()

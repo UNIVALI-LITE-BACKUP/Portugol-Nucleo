@@ -22,4 +22,10 @@ public final class NoOperacaoMultiplicacao extends NoOperacao
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return getOperandoEsquerdo().toString() + " * " + getOperandoDireito().toString();
+    }
 }

@@ -39,14 +39,4 @@ public class NoVaPara extends NoBloco
     {
         return visitante.visitar(this);
     }
-    
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-
-    public TrechoCodigoFonte getTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
-    }
 }

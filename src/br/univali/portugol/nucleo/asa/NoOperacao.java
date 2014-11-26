@@ -100,5 +100,5 @@ public abstract class NoOperacao extends NoExpressao
         int tamanhoTexto = terminoOpDireito - inicioOpEsquerdo;
 
         return new TrechoCodigoFonte(linha, inicioOpEsquerdo, tamanhoTexto);
-    }    
+    }
 }

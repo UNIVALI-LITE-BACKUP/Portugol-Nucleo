@@ -28,4 +28,10 @@ public final class NoInteiro extends NoValor<Integer>
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return Integer.toString(getValor());
+    }
 }

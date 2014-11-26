@@ -26,4 +26,10 @@ public final class NoLogico extends NoValor<Boolean>
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return Boolean.toString(getValor());
+    }
 }

@@ -5,19 +5,6 @@ package br.univali.portugol.nucleo.asa;
  */
 public final class NoContinue extends NoBloco
 {
-    
-    private TrechoCodigoFonte trechoCodigoFonte = null;
-
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-
-    public TrechoCodigoFonte getTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
-    }
-    
     /**
      * {@inheritDoc }
      */

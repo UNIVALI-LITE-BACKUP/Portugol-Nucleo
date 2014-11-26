@@ -27,4 +27,10 @@ public final class NoCadeia extends NoValor<String>
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return "\"" + getValor() + "\"";
+    }
 }
