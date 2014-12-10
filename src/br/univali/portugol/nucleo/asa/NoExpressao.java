@@ -48,7 +48,7 @@ public abstract class NoExpressao extends NoBloco
     @Override
     public final TrechoCodigoFonte getTrechoCodigoFonte()
     {
-        if (trechoCodigoFonte == null)
+        if (trechoCodigoFonte == null || trechoCodigoFonte == TRECHO_NULO)
         {
             trechoCodigoFonte = montarTrechoCodigoFonte();
         }

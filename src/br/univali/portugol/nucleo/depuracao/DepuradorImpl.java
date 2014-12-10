@@ -14,13 +14,24 @@ import java.util.logging.Logger;
 
 public class DepuradorImpl extends Interpretador implements Depurador, InterfaceDepurador, ObservadorMemoria
 {
-    private final boolean detalhado;
+    //private final boolean detalhado;
     private final List<DepuradorListener> listeners = new ArrayList<>();
 
     private Programa programa;
-    private List<NoBloco> eleitos;
-    
+    //private List<NoBloco> eleitos;
+
     private Estado estado = Estado.INIT;
+
+    @Override
+    public Estado getEstado()
+    {
+        return estado;
+    }
+
+    public void setEstado(Estado estado)
+    {
+        this.estado = estado;
+    }
 
     @Override
     public synchronized void proximo()
@@ -231,9 +242,17 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
             this.programa = programa;
 
             disparaDepuracaoInicializada();
-            destacarFuncaoInicial();
+            if (estado != Estado.BREAK_POINT)
+            {
+                destacarFuncaoInicial();
+            }
             super.executar(programa, parametros);
-            destacarFuncaoInicial();
+
+            if (estado != Estado.BREAK_POINT)
+            {
+                destacarFuncaoInicial();
+            }
+
         }
         else
         {
@@ -290,16 +309,9 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
         listeners.remove(listener);
     }
 
-    public DepuradorImpl(List<NoBloco> nosParada, boolean detalhado)
+    public DepuradorImpl()
     {
-        this.eleitos = nosParada;
-        this.detalhado = detalhado;
         this.memoria.adicionarObservador(DepuradorImpl.this);
-    }
-
-    public DepuradorImpl(List<NoBloco> nosParada)
-    {
-        this(nosParada, false);
     }
 
     @Override
@@ -594,10 +606,10 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
 
     private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
     {
-        if (eleitos.contains(no) || funcaoInicial(no))
+        if (no.ehParavel(this.estado) || funcaoInicial(no))
         {
-            if (detalhado)
-            {
+            if ( this.estado == Estado.STEP_INTO){
+            
                 disparaDestacar(trechoCodigoFonte);
             }
             else

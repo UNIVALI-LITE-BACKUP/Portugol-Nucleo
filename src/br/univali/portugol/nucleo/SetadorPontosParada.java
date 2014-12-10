@@ -2,7 +2,6 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.No;
 import br.univali.portugol.nucleo.asa.NoBitwiseNao;
 import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoCadeia;
@@ -56,31 +55,96 @@ import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.NoTitulo;
 import br.univali.portugol.nucleo.asa.NoVaPara;
 import br.univali.portugol.nucleo.asa.NoVetor;
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
+import br.univali.portugol.nucleo.depuracao.Depurador;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
+ * Esta classe recebe uma coleção de inteiros representado os números das linhas
+ * onde o usuário colocou pontos de parada. A árvore é precorrida e em cada nó é
+ * feita uma comparação com a linha de código que corresponde ao nó. Se existe
+ * um ponto de parada para a linha então um ponto de parada é adicionado no nó
+ * da AST. Esta classe também desativa os pontos de parada de todos os outros
+ * nós que não estão marcados com 'breakpoints', evitando que se tenha que
+ * executar algum método que reseta o estado de parada dos nós antes de cada
+ * execução do depurador.
+ *
  * @author Luiz Fernando
+ * @author Elieser
  */
 final class SetadorPontosParada implements VisitanteASA
 {
-    private int linha;
+    private static final Logger LOGGER = Logger.getLogger(SetadorPontosParada.class.getName());
+    private Set<Integer> linhasDosCandidatosParaPontoDeParada;
 
-    public boolean adicionarPontoParada(int linha, ArvoreSintaticaAbstrataPrograma asa)
+    private Set<Integer> linhasComPontoDeParada;//guarda somente os pontos de parada que realmente puderam ser adicionados aos nós, já que nem todo nó pode ser parado
+
+    private boolean podeParar(int linha)
     {
-        this.linha = linha;
-        //this.pontoParadaSetado = false;
+        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
+        {
+            linhasComPontoDeParada.add(linha);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean podeParar(TrechoCodigoFonte trechoCodigoFonte)
+    {
+        int linha = trechoCodigoFonte.getLinha();
+        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
+        {
+            linhasComPontoDeParada.add(linha);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean podeParar(NoBloco noBloco)
+    {
+        int linha = noBloco.getTrechoCodigoFonte().getLinha();
+        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
+        {
+            linhasComPontoDeParada.add(linha);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param linhasDosPontosDeParada As linhas onde serão aplicados os pontos
+     * de parada
+     * @param asa
+     * @return Uma coleção contendo apenas as linhas onde foram adicionados os
+     * pontos de parada, pois nem todos os nós podem ser parados.
+     */
+    public Set<Integer> setaPontosDeParada(Collection<Integer> linhasDosPontosDeParada, ArvoreSintaticaAbstrataPrograma asa)
+    {
+        
+        this.linhasDosCandidatosParaPontoDeParada = new HashSet();
+        for (Integer linha : linhasDosPontosDeParada)
+        {
+            this.linhasDosCandidatosParaPontoDeParada.add(linha + 1);
+        }
+        
+        this.linhasComPontoDeParada = new HashSet<>();
 
         try
         {
-            return (boolean)asa.aceitar(this);
+            asa.aceitar(this);
         }
         catch (ExcecaoVisitaASA ex)
         {
-            ex.printStackTrace(System.err);
+            LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
         }
-
-        return false;
+        return linhasComPontoDeParada;
     }
 
     @Override
@@ -88,25 +152,21 @@ final class SetadorPontosParada implements VisitanteASA
     {
         for (NoDeclaracao declaracao : asap.getListaDeclaracoesGlobais())
         {
-            if ((Boolean) declaracao.aceitar(this))
-            {
-                return true;
-            }
+            declaracao.aceitar(this);
         }
-
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
@@ -115,459 +175,350 @@ final class SetadorPontosParada implements VisitanteASA
         NoExpressao expressao = noCaso.getExpressao();
         if (expressao != null)
         {
-            if (expressao.getTrechoCodigoFonte().getLinha() == linha)
-            {
-                expressao.definirPontoParada();
-                return true;
-            }
+            expressao.definirPontoParada(podeParar(expressao));
         }
         else
         {
-            if (noCaso.getTrechoCodigoFonte().getLinha() == linha)
-            {
-                noCaso.definirPontoParada();
-                return true;
-            }
-
+            noCaso.definirPontoParada(podeParar(noCaso));
         }
+
         if (noCaso.getBlocos() != null)
         {
             for (NoBloco filho : noCaso.getBlocos())
             {
-                if((Boolean)filho.aceitar(this)){
-                    return true;
-                }
+                filho.aceitar(this);
             }
         }
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
-        if (chamadaFuncao.getTrechoCodigoFonteNome().getLinha() == linha)
-        {
-            chamadaFuncao.definirPontoParada();
-            return true;
-        }
-        return false;
+        chamadaFuncao.definirPontoParada(podeParar(chamadaFuncao));
+        return null;
     }
 
     @Override
     public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
     {
-        if (noContinue.getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noContinue.definirPontoParada();
-            return true;
-        }
-        return false;
+        noContinue.definirPontoParada(podeParar(noContinue));
+        return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
     {
-        if (declaracaoFuncao.getTrechoCodigoFonteNome().getLinha() == linha)
-        {
-            declaracaoFuncao.definirPontoParada();
-            return true;
-        }
+        declaracaoFuncao.definirPontoParada(podeParar(declaracaoFuncao));
+
         for (NoBloco filho : declaracaoFuncao.getBlocos())
         {
-            if ((Boolean) filho.aceitar(this))
-            {
-                return true;
-            }
+            filho.aceitar(this);
         }
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
     {
-        if (noDeclaracaoMatriz.getTrechoCodigoFonteNome().getLinha() == linha)
-        {
-            noDeclaracaoMatriz.definirPontoParada();
-
-            return true;
-        }
-
-        return false;
+        noDeclaracaoMatriz.definirPontoParada(podeParar(noDeclaracaoMatriz));
+        return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
     {
-        if (noDeclaracaoVariavel.getTrechoCodigoFonteNome().getLinha() == linha)
-        {
-            noDeclaracaoVariavel.definirPontoParada();
-
-            return true;
-        }
-
-        return false;
+        noDeclaracaoVariavel.definirPontoParada(podeParar(noDeclaracaoVariavel));
+        return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
     {
-        if (noDeclaracaoVetor.getTrechoCodigoFonteNome().getLinha() == linha)
-        {
-            noDeclaracaoVetor.definirPontoParada();
-
-            return true;
-        }
-
-        return false;
+        noDeclaracaoVetor.definirPontoParada(podeParar(noDeclaracaoVetor));
+        return null;
     }
 
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
-        if (noEnquanto.getCondicao().getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noEnquanto.getCondicao().definirPontoParada();
-
-            return true;
-        }
-
+        noEnquanto.getCondicao().definirPontoParada(podeParar(noEnquanto.getCondicao()));
         for (NoBloco bloco : noEnquanto.getBlocos())
         {
-            if ((Boolean) bloco.aceitar(this))
-            {
-                return true;
-            }
+            bloco.aceitar(this);
         }
-
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
     {
-        if (noEscolha.getExpressao().getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noEscolha.getExpressao().definirPontoParada();
-
-            return true;
-        }
-
+        noEscolha.definirPontoParada(podeParar(noEscolha));
         for (NoCaso caso : noEscolha.getCasos())
         {
-            if ((Boolean) caso.aceitar(this))
-            {
-                return true;
-            }
+            caso.aceitar(this);
         }
-
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA
     {
-        if (noFacaEnquanto.getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noFacaEnquanto.definirPontoParada();
-
-            return true;
-        }
-
+        noFacaEnquanto.definirPontoParada(podeParar(noFacaEnquanto));
         for (NoBloco no : noFacaEnquanto.getBlocos())
         {
-            if ((Boolean) no.aceitar(this))
-            {
-                return true;
-            }
+            no.aceitar(this);
         }
 
-        if (noFacaEnquanto.getCondicao().getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noFacaEnquanto.getCondicao().definirPontoParada();
-
-            return true;
-        }
-
-        return false;
+        noFacaEnquanto.getCondicao().definirPontoParada(podeParar(noFacaEnquanto.getCondicao()));
+        return null;
     }
 
     @Override
     public Object visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoLogico noLogico) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoNao noNao) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA
     {
-        if (noOperacaoAtribuicao.getTrechoCodigoFonteOperador().getLinha() == linha)
-        {
-            noOperacaoAtribuicao.definirPontoParada();
-
-            return true;
-        }
-
-        return false;
+        noOperacaoAtribuicao.definirPontoParada(podeParar(noOperacaoAtribuicao));
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoSoma noOperacaoSoma) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoSubtracao noOperacaoSubtracao) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoDivisao noOperacaoDivisao) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoMultiplicacao noOperacaoMultiplicacao) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoModulo noOperacaoModulo) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
-        if (noPara.getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noPara.definirPontoParada();
-
-            return true;
-        }
-
+        NoExpressao condicao = noPara.getCondicao();
+        condicao.definirPontoParada(podeParar(condicao));
         for (NoBloco no : noPara.getBlocos())
         {
-            if ((Boolean) no.aceitar(this))
-            {
-                return true;
-            }
+            no.aceitar(this);
         }
-
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA
     {
-        if (noPare.getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noPare.definirPontoParada();
-
-            return true;
-        }
-
-        return false;
+        noPare.definirPontoParada(podeParar(noPare));
+        return null;
     }
 
     @Override
     public Object visitar(NoReal noReal) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoReferenciaVariavel noReferenciaVariavel) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoReferenciaVetor noReferenciaVetor) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
-        return noRetorne.getExpressao().aceitar(this);
+        noRetorne.getExpressao().aceitar(this);
+        return null;
     }
 
     @Override
     public Object visitar(NoSe noSe) throws ExcecaoVisitaASA
     {
-        if (noSe.getCondicao().getTrechoCodigoFonte().getLinha() == linha)
-        {
-            noSe.getCondicao().definirPontoParada();
-
-            return true;
-        }
-
+        noSe.getCondicao().definirPontoParada(podeParar(noSe.getCondicao()));
         for (NoBloco no : noSe.getBlocosVerdadeiros())
         {
-            if ((Boolean) no.aceitar(this))
-            {
-                return true;
-            }
+            no.aceitar(this);
         }
 
         for (NoBloco no : noSe.getBlocosFalsos())
         {
-            if ((Boolean) no.aceitar(this))
-            {
-                return true;
-            }
+            no.aceitar(this);
         }
 
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoTitulo noTitulo) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoVaPara noVaPara) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 
     @Override
     public Object visitar(NoInclusaoBiblioteca noInclusaoBiblioteca) throws ExcecaoVisitaASA
     {
-        return false;
+        return null;
     }
 }

@@ -2,11 +2,9 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.depuracao.Depurador;
 import br.univali.portugol.nucleo.depuracao.DepuradorImpl;
 import br.univali.portugol.nucleo.depuracao.DepuradorListener;
-import br.univali.portugol.nucleo.depuracao.DetectaNosParada;
-import br.univali.portugol.nucleo.depuracao.PontoParada;
 import br.univali.portugol.nucleo.execucao.es.Entrada;
 import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
 import br.univali.portugol.nucleo.execucao.Interpretador;
@@ -17,7 +15,9 @@ import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
@@ -139,9 +139,12 @@ public final class Programa
      * 
      * @since 2.0
      */
-    public void depurar(String[] parametros, boolean detalhado)
+    public void depurar(String[] parametros, Collection<Integer> candidatosParaPontosDeParada)
     {
-        executar(new EstrategiaDepuracao(listeners, detalhado), parametros);
+        Set<Integer> linhasMarcadas = setadorPontosParada.setaPontosDeParada(candidatosParaPontosDeParada, arvoreSintaticaAbstrataPrograma);
+        //TODO usar a coleção de linhas marcadas para notificar a VIEW sobre quais linhas realmente
+        //foram marcadas, nem todas as linhas em 'candidatosParaPontosDeParada'  
+        executar(new EstrategiaDepuracao(listeners), parametros);
     }
     
     /**
@@ -164,11 +167,6 @@ public final class Programa
     public void addDepuradorListener(DepuradorListener aThis)
     {
         listeners.add(aThis);
-    }
-
-    public boolean adicionarPontoParada(int linha)
-    {
-        return setadorPontosParada.adicionarPontoParada(linha, arvoreSintaticaAbstrataPrograma);
     }
 
     /**
@@ -253,20 +251,21 @@ public final class Programa
     private final class EstrategiaDepuracao implements EstrategiaExecucao
     {
         private final List<DepuradorListener> listeners;
-        private final boolean detalhado;
+        //private final boolean detalhado;
 
-        public EstrategiaDepuracao(List<DepuradorListener> listeners, boolean detalhado)
+        public EstrategiaDepuracao(List<DepuradorListener> listeners)
         {
             this.listeners = listeners;
-            this.detalhado = detalhado;
+            //this.detalhado = detalhado;
         }
         
         @Override
         public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
         {
-            List<NoBloco> nosParada = new DetectaNosParada(detalhado).executar(Programa.this, parametros);
-            DepuradorImpl depurador = new DepuradorImpl(nosParada,detalhado);
-
+            //List<NoBloco> nosParada = new DetectaNosParada(detalhado).executar(Programa.this, parametros);
+            DepuradorImpl depurador = new DepuradorImpl();//nosParada,detalhado);
+            depurador.setEstado(Depurador.Estado.BREAK_POINT);//DEIXEI ISSO FIXO APENAS PARA TESTAR
+            
             depurador.addListeners(listeners);
             depurador.executar(programa, parametros);
         }

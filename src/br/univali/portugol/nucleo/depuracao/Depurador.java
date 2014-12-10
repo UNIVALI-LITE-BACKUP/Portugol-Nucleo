@@ -10,6 +10,10 @@ public interface Depurador
         BREAK_POINT, STEP_INTO, STEP_OVER, INIT
     }
 
+    public Estado getEstado();
+    
+    public void setEstado(Estado novoEstado);
+    
     void addListeners(List<DepuradorListener> listeners);
 
     void addListener(DepuradorListener listener);

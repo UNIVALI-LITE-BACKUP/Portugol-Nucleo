@@ -54,7 +54,7 @@ public final class NoPara extends NoBloco
     @Override
     public boolean ehParavel(Depurador.Estado estado)
     {
-        return estado == Depurador.Estado.BREAK_POINT ; //To change body of generated methods, choose Tools | Templates.
+        return temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT ; //To change body of generated methods, choose Tools | Templates.
     }    
     
     /**

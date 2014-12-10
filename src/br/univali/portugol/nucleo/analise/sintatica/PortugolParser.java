@@ -2223,6 +2223,7 @@ public class PortugolParser extends Parser
                         para = new NoPara();
                         para.setInicializacao(inicializacao);
                         para.setCondicao(condicao);
+                        condicao.setPai(para);
                         para.setIncremento(incremento);
                         para.setBlocos(vBlocos);
 

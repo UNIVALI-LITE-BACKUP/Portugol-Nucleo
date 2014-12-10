@@ -50,6 +50,11 @@ public abstract class No
         this.pai = pai;
     }
 
+    public void setPai(NoBloco pai)
+    {
+        this.pai = pai;
+    }
+    
     public boolean ehParavel(Depurador.Estado estado)
     {
         return temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT ;
@@ -69,21 +74,18 @@ public abstract class No
         return pai;
     }
 
-    public void definirPontoParada(){
-        if(!temPontoDeParada()){
+    /**
+     * 
+     * @param status true se o nó será parado, false em caso contrário
+     */
+    public void definirPontoParada(boolean status){
+        if(status){
             pontoParada = new PontoParada(this);
-        }              
+        }
+        else{
+            pontoParada = null;
+        }
     }
-    
-    public void removerPontoParada()
-    {
-        pontoParada = null;
-    }
-
-//    public PontoParada getPontoParada()
-//    {
-//        return pontoParada;
-//    }
     
     protected boolean temPontoDeParada(){
         return pontoParada != null;
