@@ -139,12 +139,20 @@ public final class Programa
      * 
      * @since 2.0
      */
-    public void depurar(String[] parametros, Collection<Integer> candidatosParaPontosDeParada)
-    {
-        Set<Integer> linhasMarcadas = setadorPontosParada.setaPontosDeParada(candidatosParaPontosDeParada, arvoreSintaticaAbstrataPrograma);
-        //TODO usar a coleção de linhas marcadas para notificar a VIEW sobre quais linhas realmente
-        //foram marcadas, nem todas as linhas em 'candidatosParaPontosDeParada'  
+    public void depurar(String[] parametros)
+    {    
         executar(new EstrategiaDepuracao(listeners), parametros);
+    }
+    
+    /**
+     * 
+     * @param candidatosParaPontosDeParada
+     * @return retorna um conjunto com os números das linhas que puderam ser marcadas
+     */
+    public Set<Integer> setPontosDeParada(Collection<Integer> candidatosParaPontosDeParada){
+     //TODO usar a coleção de linhas marcadas para notificar a VIEW sobre quais linhas realmente
+        //foram marcadas, nem todas as linhas em 'candidatosParaPontosDeParada'  
+        return setadorPontosParada.setaPontosDeParada(candidatosParaPontosDeParada, arvoreSintaticaAbstrataPrograma);
     }
     
     /**
