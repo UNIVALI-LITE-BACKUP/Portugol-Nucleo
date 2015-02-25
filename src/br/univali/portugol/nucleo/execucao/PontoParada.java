@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.depuracao;
+package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.asa.No;
 

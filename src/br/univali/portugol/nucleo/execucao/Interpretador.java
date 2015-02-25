@@ -13,7 +13,7 @@ import br.univali.portugol.nucleo.execucao.operacoes.logicas.*;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.*;
 
-public class Interpretador implements VisitanteASA
+public abstract class Interpretador implements VisitanteASA
 {
     private Programa programa;
     private boolean referencia = false;

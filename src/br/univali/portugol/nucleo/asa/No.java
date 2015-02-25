@@ -1,7 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.depuracao.Depurador;
-import br.univali.portugol.nucleo.depuracao.PontoParada;
+import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.execucao.PontoParada;
 
 /**
  * Esta é a classe base para todos os nós da ASA.

@@ -57,7 +57,7 @@ import br.univali.portugol.nucleo.asa.NoVaPara;
 import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
-import br.univali.portugol.nucleo.depuracao.Depurador;
+import br.univali.portugol.nucleo.execucao.Depurador;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -127,13 +127,13 @@ final class SetadorPontosParada implements VisitanteASA
      */
     public Set<Integer> setaPontosDeParada(Collection<Integer> linhasDosPontosDeParada, ArvoreSintaticaAbstrataPrograma asa)
     {
-        
+
         this.linhasDosCandidatosParaPontoDeParada = new HashSet();
         for (Integer linha : linhasDosPontosDeParada)
         {
             this.linhasDosCandidatosParaPontoDeParada.add(linha + 1);
         }
-        
+
         this.linhasComPontoDeParada = new HashSet<>();
 
         try
@@ -484,9 +484,12 @@ final class SetadorPontosParada implements VisitanteASA
             no.aceitar(this);
         }
 
-        for (NoBloco no : noSe.getBlocosFalsos())
+        if (noSe.getBlocosFalsos() != null)
         {
-            no.aceitar(this);
+            for (NoBloco no : noSe.getBlocosFalsos())
+            {
+                no.aceitar(this);
+            }
         }
 
         return null;

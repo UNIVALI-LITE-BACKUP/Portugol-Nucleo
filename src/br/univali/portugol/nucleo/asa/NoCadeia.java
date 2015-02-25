@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.execucao.Depurador;
+
 /**
  * Representa um valor do tipo {@link TipoDado#CADEIA} no código fonte.
  * 
@@ -33,4 +35,4 @@ public final class NoCadeia extends NoValor<String>
     {
         return "\"" + getValor() + "\"";
     }
-}
+    }    

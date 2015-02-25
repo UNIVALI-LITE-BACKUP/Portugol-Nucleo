@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.execucao.Depurador;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,5 +52,10 @@ public abstract class NoBloco extends No
     public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
     {
         this.trechoCodigoFonte = trechoCodigoFonte;
+    }
+    
+    public boolean ehParavel(Depurador.Estado estado)
+    {
+        return super.ehParavel(estado) || estado == Depurador.Estado.STEP_OVER;
     }
 }

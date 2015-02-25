@@ -1,9 +1,8 @@
-package br.univali.portugol.nucleo.depuracao;
+package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.*;
-import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.erros.ErroObservadorDepuracao;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -12,17 +11,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DepuradorImpl extends Interpretador implements Depurador, InterfaceDepurador, ObservadorMemoria
+public class Depurador extends Interpretador implements ObservadorMemoria
 {
-    //private final boolean detalhado;
-    private final List<DepuradorListener> listeners = new ArrayList<>();
+    public static enum Estado
+    {
+        BREAK_POINT, STEP_INTO, STEP_OVER, INIT
+    }
+    
+    private final List<ObservadorExecucao> observadores = new ArrayList<>();
 
     private Programa programa;
-    //private List<NoBloco> eleitos;
-
     private Estado estado = Estado.INIT;
 
-    @Override
+
+    
+    
     public Estado getEstado()
     {
         return estado;
@@ -33,9 +36,9 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
         this.estado = estado;
     }
 
-    @Override
-    public synchronized void proximo()
+    public synchronized void continuar(Depurador.Estado estado)
     {
+        this.estado = estado;
         notifyAll();
     }
 
@@ -43,9 +46,9 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
     {
         if (linha >= 0)
         {
-            for (DepuradorListener l : listeners)
+            for (ObservadorExecucao observador : observadores)
             {
-                l.highlightLinha(linha);
+                observador.highlightLinha(linha);
             }
         }
     }
@@ -57,9 +60,10 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
             int linha = trechoCodigoFonte.getLinha();
             int coluna = trechoCodigoFonte.getColuna();
             int tamanho = trechoCodigoFonte.getTamanhoTexto();
-            for (DepuradorListener l : listeners)
+            
+            for (ObservadorExecucao observador : observadores)
             {
-                l.HighlightDetalhadoAtual(linha, coluna, tamanho);
+                observador.highlightDetalhadoAtual(linha, coluna, tamanho);
             }
         }
     }
@@ -91,7 +95,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
                 }
                 catch (ExcecaoSimboloNaoDeclarado ex)
                 {
-                    Logger.getLogger(DepuradorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
@@ -115,7 +119,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
                             }
                             catch (ExcecaoSimboloNaoDeclarado ex)
                             {
-                                Logger.getLogger(DepuradorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
 
@@ -184,7 +188,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
                     }
                     catch (ErroCarregamentoBiblioteca ex)
                     {
-                        Logger.getLogger(DepuradorImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
 
@@ -198,50 +202,55 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
         }
         catch (ExcecaoVisitaASA ex)
         {
-            Logger.getLogger(DepuradorImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
         }
         return simbolosAlterados;
     }
 
     public void disparaSimbolosAlterados(List<Simbolo> simbolos)
     {
-        for (DepuradorListener l : listeners)
+        for (ObservadorExecucao l : observadores)
         {
             l.simbolosAlterados(simbolos);
         }
     }
 
-    public void disparaDepuracaoInicializada()
+    /**
+     * Permite adicionar um observador à execução do programa. Os observadores
+     * serão notificados sobre o início e o término da execução, bem como erros
+     * em tempo de execução que vierem a ocorrer.
+     *
+     * @param observadores os observadores de execução a serem registrados.
+     * @since 1.0
+     */
+    public void adicionarObservadoresExecucao(List<ObservadorExecucao> observadores)
     {
-        for (DepuradorListener l : listeners)
-        {
-            l.depuracaoInicializada(this);
-        }
+        this.observadores.addAll(observadores);
     }
 
-    @Override
-    public void addListeners(List<DepuradorListener> listeners)
+    /**
+     * Remove um observador de execução previamente registrado utilizando o
+     * método 
+     * {@link Programa#adicionarObservadorExecucao(br.univali.portugol.nucleo.execucao.ObservadorExecucao) }.
+     * Uma vez removido, o observador não será mais notificado sobre o estado da
+     * execução do programa nem dos erros em tempo de execução que vierem a
+     * ocorrer.
+     *
+     * @param observadores os observadores de execução previamente registrados.
+     * @since 1.0
+     */
+    public void removerObservadoresExecucao(List<ObservadorExecucao> observadores)
     {
-        this.listeners.addAll(listeners);
-    }
-
-    @Override
-    public void addListener(DepuradorListener listener)
-    {
-        if (!listeners.contains(listener))
-        {
-            listeners.add(listener);
-        }
-    }
-
+        this.observadores.removeAll(observadores);
+    }    
+    
     @Override
     public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
     {
-        if (!listeners.isEmpty())
+        if (!observadores.isEmpty())
         {
             this.programa = programa;
 
-            disparaDepuracaoInicializada();
             if (estado != Estado.BREAK_POINT)
             {
                 destacarFuncaoInicial();
@@ -303,15 +312,9 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
         return null;
     }
 
-    @Override
-    public void removeListener(DepuradorListener listener)
+    public Depurador()
     {
-        listeners.remove(listener);
-    }
-
-    public DepuradorImpl()
-    {
-        this.memoria.adicionarObservador(DepuradorImpl.this);
+        this.memoria.adicionarObservador(Depurador.this);
     }
 
     @Override
@@ -633,7 +636,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
     @Override
     public void simboloAdicionado(Simbolo simbolo)
     {
-        for (DepuradorListener l : listeners)
+        for (ObservadorExecucao l : observadores)
         {
             l.simboloDeclarado(simbolo);
         }
@@ -642,7 +645,7 @@ public class DepuradorImpl extends Interpretador implements Depurador, Interface
     @Override
     public void simboloRemovido(Simbolo simbolo)
     {
-        for (DepuradorListener l : listeners)
+        for (ObservadorExecucao l : observadores)
         {
             l.simboloRemovido(simbolo);
         }
