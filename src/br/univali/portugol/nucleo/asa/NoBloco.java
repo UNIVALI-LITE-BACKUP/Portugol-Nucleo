@@ -44,7 +44,7 @@ public abstract class NoBloco extends No
     public TrechoCodigoFonte getTrechoCodigoFonte()
     {
         if(trechoCodigoFonte == TRECHO_NULO){
-            LOGGER.warning("trechoDoCodigo fonte NULO em " + getClass().getName());
+            //LOGGER.warning("trechoDoCodigo fonte NULO em " + getClass().getName());
         }
         return trechoCodigoFonte;
     }

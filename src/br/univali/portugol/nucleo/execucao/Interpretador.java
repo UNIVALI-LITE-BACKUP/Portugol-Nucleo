@@ -123,6 +123,7 @@ public abstract class Interpretador implements VisitanteASA
         }
         catch (RuntimeException excecao)
         {
+            excecao.printStackTrace(System.err);
             throw new ErroExecucaoNaoTratado(excecao);
         }
     }
