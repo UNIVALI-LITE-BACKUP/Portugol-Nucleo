@@ -15,13 +15,16 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 {
     public static enum Estado
     {
-        BREAK_POINT, STEP_INTO, STEP_OVER, INIT
+        BREAK_POINT, //usuário clicou no botão que executa o programa até atingir um ponto de parada, caso exista algum
+        STEP_INTO, //não utilizado no momento
+        STEP_OVER, //executa passo a passo, para em todos os nós que são paráveis (nem todos são)
+        PARADO//esperando o usuário iniciar a execução
     }
     
     private final List<ObservadorExecucao> observadores = new ArrayList<>();
 
     private Programa programa;
-    private Estado estado = Estado.INIT;
+    private Estado estado = Estado.PARADO;
 
 
     
@@ -334,7 +337,9 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     @Override
     public Object visitar(NoCaso no) throws ExcecaoVisitaASA
     {
-        realizarParada(no, no.getExpressao().getTrechoCodigoFonte());
+        if(no.getExpressao() != null){
+            realizarParada(no, no.getExpressao().getTrechoCodigoFonte());
+        }
         return super.visitar(no);
     }
 

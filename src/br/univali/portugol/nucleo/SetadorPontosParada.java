@@ -116,7 +116,7 @@ final class SetadorPontosParada implements VisitanteASA
         }
         return false;
     }
-
+    
     /**
      *
      * @param linhasDosPontosDeParada As linhas onde serão aplicados os pontos
@@ -131,7 +131,7 @@ final class SetadorPontosParada implements VisitanteASA
         this.linhasDosCandidatosParaPontoDeParada = new HashSet();
         for (Integer linha : linhasDosPontosDeParada)
         {
-            this.linhasDosCandidatosParaPontoDeParada.add(linha + 1);
+            this.linhasDosCandidatosParaPontoDeParada.add(linha);
         }
 
         this.linhasComPontoDeParada = new HashSet<>();

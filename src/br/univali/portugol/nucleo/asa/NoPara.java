@@ -54,7 +54,10 @@ public final class NoPara extends NoBloco
     @Override
     public boolean ehParavel(Depurador.Estado estado)
     {
-        return temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT ; //To change body of generated methods, choose Tools | Templates.
+        if(getCondicao() != null){
+            return super.ehParavel(estado) || (getCondicao().temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT);
+        }
+        return super.ehParavel(estado);
     }    
     
     /**
@@ -153,4 +156,6 @@ public final class NoPara extends NoBloco
     {
         return visitante.visitar(this);
     }
+    
+   
 }

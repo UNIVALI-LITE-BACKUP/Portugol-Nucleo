@@ -54,7 +54,13 @@ public abstract class No
     {
         this.pai = pai;
     }
-    
+
+    /**
+     * 
+     * @param estado Estado de execução do depurador.
+     * @return responde se o no pode ser parado em função do estado do depurador. Por exemplo,
+     * alguns nós só para quando o depurador está no estado BREAK_POINT.
+     */
     public boolean ehParavel(Depurador.Estado estado)
     {
         return temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT ;
@@ -73,13 +79,13 @@ public abstract class No
         }
         return pai;
     }
-
+    
     /**
      * 
      * @param status true se o nó será parado, false em caso contrário
      */
     public void definirPontoParada(boolean status){
-        if(status){
+        if(status ){
             pontoParada = new PontoParada(this);
         }
         else{

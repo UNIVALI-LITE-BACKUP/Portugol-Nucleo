@@ -54,6 +54,7 @@ public abstract class NoBloco extends No
         this.trechoCodigoFonte = trechoCodigoFonte;
     }
     
+    @Override
     public boolean ehParavel(Depurador.Estado estado)
     {
         return super.ehParavel(estado) || estado == Depurador.Estado.STEP_OVER;
