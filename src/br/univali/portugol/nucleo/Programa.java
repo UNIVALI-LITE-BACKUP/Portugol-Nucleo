@@ -201,6 +201,7 @@ public final class Programa
                 depurador.setEstado(estado);
 
                 depurador.adicionarObservadoresExecucao(observadores);
+                notificarInicioExecucao();
                 depurador.executar(Programa.this, parametros);
             }
             catch (ErroExecucao erroExecucao)
