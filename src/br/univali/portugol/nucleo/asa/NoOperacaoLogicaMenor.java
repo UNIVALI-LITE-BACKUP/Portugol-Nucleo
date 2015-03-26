@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.execucao.Depurador;
+
 
 /**
  * Esta enumeração representa a operação <code>menor</code> no código fonte.
@@ -30,4 +32,12 @@ public final class NoOperacaoLogicaMenor extends NoOperacao
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public boolean ehParavel(Depurador.Estado estado)
+    {
+         return super.ehParavel(estado) && getPai() instanceof NoPara;
+    }
+    
+    
 }

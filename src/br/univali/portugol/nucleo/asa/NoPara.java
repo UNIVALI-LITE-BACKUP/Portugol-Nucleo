@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.execucao.Depurador;
 import java.util.List;
 
 /**
@@ -44,12 +45,21 @@ public final class NoPara extends NoBloco
     private NoBloco inicializacao;
     private NoExpressao condicao;
     private NoExpressao incremento;
-    private TrechoCodigoFonte trechoCodigoFonte;
 
     public NoPara()
     {
+        
     }
 
+    @Override
+    public boolean ehParavel(Depurador.Estado estado)
+    {
+        if(getCondicao() != null){
+            return super.ehParavel(estado) || (getCondicao().temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT);
+        }
+        return super.ehParavel(estado);
+    }    
+    
     /**
      * Define a lista de blocos que serão executados a cada iteração.
      * 
@@ -146,14 +156,6 @@ public final class NoPara extends NoBloco
     {
         return visitante.visitar(this);
     }
-
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-
-    public TrechoCodigoFonte getTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
-    }
+    
+   
 }

@@ -27,4 +27,10 @@ public final class NoReal extends NoValor<Double>
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return Double.toString(getValor());
+    }
 }

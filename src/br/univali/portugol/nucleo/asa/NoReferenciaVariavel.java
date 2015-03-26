@@ -58,4 +58,10 @@ public final class NoReferenciaVariavel extends NoReferencia
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return getNome();
+    }
 }

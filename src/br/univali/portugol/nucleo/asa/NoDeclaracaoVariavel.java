@@ -39,4 +39,19 @@ public final class NoDeclaracaoVariavel extends NoDeclaracao
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public TrechoCodigoFonte getTrechoCodigoFonte()
+    {
+        if(super.getTrechoCodigoFonte() == TRECHO_NULO){
+            NoExpressao inicializacao = getInicializacao();
+            if(inicializacao != null){
+                return inicializacao.getTrechoCodigoFonte();
+            }
+        }
+        return TRECHO_NULO;
+    }
+    
+    
+    
 }

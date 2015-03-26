@@ -18,16 +18,6 @@ public class NoTitulo extends NoBloco
         this.nome = nome;
     }
     
-    public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        this.trechoCodigoFonte = trechoCodigoFonte;
-    }
-
-    public TrechoCodigoFonte getTrechoCodigoFonte()
-    {
-        return trechoCodigoFonte;
-    }
-    
     /**
      * @return the nome
      */
