@@ -106,7 +106,7 @@ public final class NoFacaEnquanto extends NoBloco
     public boolean ehParavel(Depurador.Estado estado)
     {
         if(getCondicao() != null){
-            return super.ehParavel(estado) || (getCondicao().temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT);
+            return super.ehParavel(estado) || getCondicao().ehParavel(estado);
         }
         return super.ehParavel(estado);
     }

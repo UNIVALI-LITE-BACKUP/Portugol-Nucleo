@@ -85,26 +85,26 @@ final class SetadorPontosParada implements VisitanteASA
 
     private Set<Integer> linhasComPontoDeParada;//guarda somente os pontos de parada que realmente puderam ser adicionados aos nós, já que nem todo nó pode ser parado
 
-    private boolean podeParar(int linha)
-    {
-        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
-        {
-            linhasComPontoDeParada.add(linha);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean podeParar(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        int linha = trechoCodigoFonte.getLinha();
-        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
-        {
-            linhasComPontoDeParada.add(linha);
-            return true;
-        }
-        return false;
-    }
+//    private boolean podeParar(int linha)
+//    {
+//        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
+//        {
+//            linhasComPontoDeParada.add(linha);
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    private boolean podeParar(TrechoCodigoFonte trechoCodigoFonte)
+//    {
+//        int linha = trechoCodigoFonte.getLinha();
+//        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
+//        {
+//            linhasComPontoDeParada.add(linha);
+//            return true;
+//        }
+//        return false;
+//    }
 
     private boolean podeParar(NoBloco noBloco)
     {

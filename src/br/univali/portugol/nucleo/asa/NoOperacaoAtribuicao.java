@@ -42,8 +42,8 @@ public final class NoOperacaoAtribuicao extends NoOperacao
     @Override
     public boolean ehParavel(Depurador.Estado estado)
     {
-        boolean pontoDeParada = temPontoDeParada() || getOperandoEsquerdo().temPontoDeParada() || getOperandoDireito().temPontoDeParada();
-        return (pontoDeParada && estado == Depurador.Estado.BREAK_POINT) || estado == Depurador.Estado.STEP_OVER ;
+        boolean operandos = getOperandoDireito().ehParavel(estado) || getOperandoEsquerdo().ehParavel(estado);
+        return operandos || ( temPontoDeParada() && pontoDeParaEstaAtivo() &&  estado == Depurador.Estado.BREAK_POINT) || estado == Depurador.Estado.STEP_OVER ;
     }
     
     

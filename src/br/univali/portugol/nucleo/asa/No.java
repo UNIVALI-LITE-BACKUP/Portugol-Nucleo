@@ -63,7 +63,7 @@ public abstract class No
      */
     public boolean ehParavel(Depurador.Estado estado)
     {
-        return temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT ;
+        return temPontoDeParada() && pontoParada.estaAtivo() && estado == Depurador.Estado.BREAK_POINT ;
     }
 
     protected boolean temPai()
@@ -97,5 +97,14 @@ public abstract class No
         return pontoParada != null;
     }
     
+    public void definirAtivacaoPontoDeParada(boolean ativado){
+        if(temPontoDeParada() ){
+            pontoParada.setAtivo(ativado);
+        }
+    }
+    
+    public boolean pontoDeParaEstaAtivo(){
+        return temPontoDeParada() && pontoParada.estaAtivo();
+    }
     
 }

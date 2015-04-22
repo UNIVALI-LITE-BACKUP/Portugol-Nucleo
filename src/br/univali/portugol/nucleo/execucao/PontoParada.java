@@ -9,6 +9,7 @@ import br.univali.portugol.nucleo.asa.No;
 public final class PontoParada
 {
     private final No no;
+    private boolean ativo = false;
 
     public PontoParada(No no)
     {
@@ -18,5 +19,13 @@ public final class PontoParada
     public No getNo()
     {
         return no;
+    }
+    
+    public void setAtivo(boolean ativo){
+        this.ativo = ativo;
+    }
+    
+    public boolean estaAtivo(){
+        return this.ativo;
     }
 }
