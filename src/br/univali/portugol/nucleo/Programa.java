@@ -79,7 +79,7 @@ public final class Programa
     
     private final ArrayList<ObservadorExecucao> observadores;
 
-    private final SetadorPontosParada setadorPontosParada = new SetadorPontosParada();
+    private final AtivadorDePontosDeParada ativadorDePontoDesParada = new AtivadorDePontosDeParada();
 
     public Programa()
     {
@@ -153,17 +153,9 @@ public final class Programa
         }
     }
 
-    /**
-     *
-     * @param candidatosParaPontosDeParada
-     * @return retorna um conjunto com os números das linhas que puderam ser
-     * marcadas
-     */
-    public Set<Integer> setPontosDeParada(Collection<Integer> candidatosParaPontosDeParada)
+    public void ativaPontosDeParada(Set<Integer> linhasComPontosDeParadaAtivados)
     {
-        //TODO usar a coleção de linhas marcadas para notificar a VIEW sobre quais linhas realmente
-        //foram marcadas, nem todas as linhas em 'candidatosParaPontosDeParada'  
-        return setadorPontosParada.setaPontosDeParada(candidatosParaPontosDeParada, arvoreSintaticaAbstrataPrograma);
+        ativadorDePontoDesParada.ativaPontosDeParada(linhasComPontosDeParadaAtivados, arvoreSintaticaAbstrataPrograma);
     }
 
     /**

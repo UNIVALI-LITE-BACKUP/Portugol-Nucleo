@@ -97,7 +97,7 @@ public final class NoChamadaFuncao extends NoReferencia
     @Override
     public boolean ehParavel(Depurador.Estado estado)
     {
-        return super.ehParavel(estado) || estado == Depurador.Estado.STEP_OVER;
+        return (estado == Depurador.Estado.BREAK_POINT && pontoDeParadaEstaAtivo()) || estado == Depurador.Estado.STEP_OVER;
     }
 
 }

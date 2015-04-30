@@ -78,63 +78,27 @@ import java.util.logging.Logger;
  * @author Luiz Fernando
  * @author Elieser
  */
-final class SetadorPontosParada implements VisitanteASA
+public final class AtivadorDePontosDeParada implements VisitanteASA
 {
-    private static final Logger LOGGER = Logger.getLogger(SetadorPontosParada.class.getName());
-    private Set<Integer> linhasDosCandidatosParaPontoDeParada;
+    private static final Logger LOGGER = Logger.getLogger(AtivadorDePontosDeParada.class.getName());
+    private Set<Integer> linhasDasParadas;
 
-    private Set<Integer> linhasComPontoDeParada;//guarda somente os pontos de parada que realmente puderam ser adicionados aos nós, já que nem todo nó pode ser parado
-
-//    private boolean podeParar(int linha)
-//    {
-//        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
-//        {
-//            linhasComPontoDeParada.add(linha);
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private boolean podeParar(TrechoCodigoFonte trechoCodigoFonte)
-//    {
-//        int linha = trechoCodigoFonte.getLinha();
-//        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
-//        {
-//            linhasComPontoDeParada.add(linha);
-//            return true;
-//        }
-//        return false;
-//    }
-
-    private boolean podeParar(NoBloco noBloco)
+    private boolean podeAtivar(NoBloco noBloco)
     {
-        int linha = noBloco.getTrechoCodigoFonte().getLinha();
-        if (linhasDosCandidatosParaPontoDeParada.contains(linha))
-        {
-            linhasComPontoDeParada.add(linha);
-            return true;
-        }
-        return false;
+        int linhaDoNo = noBloco.getTrechoCodigoFonte().getLinha();
+        return linhasDasParadas.contains(linhaDoNo);
     }
-    
+
     /**
      *
      * @param linhasDosPontosDeParada As linhas onde serão aplicados os pontos
      * de parada
      * @param asa
-     * @return Uma coleção contendo apenas as linhas onde foram adicionados os
-     * pontos de parada, pois nem todos os nós podem ser parados.
      */
-    public Set<Integer> setaPontosDeParada(Collection<Integer> linhasDosPontosDeParada, ArvoreSintaticaAbstrataPrograma asa)
+    public void ativaPontosDeParada(Set<Integer> linhasDosPontosDeParada, ArvoreSintaticaAbstrataPrograma asa)
     {
 
-        this.linhasDosCandidatosParaPontoDeParada = new HashSet();
-        for (Integer linha : linhasDosPontosDeParada)
-        {
-            this.linhasDosCandidatosParaPontoDeParada.add(linha);
-        }
-
-        this.linhasComPontoDeParada = new HashSet<>();
+        this.linhasDasParadas = linhasDosPontosDeParada;
 
         try
         {
@@ -144,7 +108,6 @@ final class SetadorPontosParada implements VisitanteASA
         {
             LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
         }
-        return linhasComPontoDeParada;
     }
 
     @Override
@@ -175,11 +138,11 @@ final class SetadorPontosParada implements VisitanteASA
         NoExpressao expressao = noCaso.getExpressao();
         if (expressao != null)
         {
-            expressao.definirPontoParada(podeParar(expressao));
+            expressao.definirPontoParada(podeAtivar(expressao));
         }
         else
         {
-            noCaso.definirPontoParada(podeParar(noCaso));
+            noCaso.definirPontoParada(podeAtivar(noCaso));
         }
 
         if (noCaso.getBlocos() != null)
@@ -195,21 +158,21 @@ final class SetadorPontosParada implements VisitanteASA
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
-        chamadaFuncao.definirPontoParada(podeParar(chamadaFuncao));
+        chamadaFuncao.definirPontoParada(podeAtivar(chamadaFuncao));
         return null;
     }
 
     @Override
     public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
     {
-        noContinue.definirPontoParada(podeParar(noContinue));
+        noContinue.definirPontoParada(podeAtivar(noContinue));
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
     {
-        declaracaoFuncao.definirPontoParada(podeParar(declaracaoFuncao));
+        declaracaoFuncao.definirPontoParada(podeAtivar(declaracaoFuncao));
 
         for (NoBloco filho : declaracaoFuncao.getBlocos())
         {
@@ -221,28 +184,28 @@ final class SetadorPontosParada implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
     {
-        noDeclaracaoMatriz.definirPontoParada(podeParar(noDeclaracaoMatriz));
+        noDeclaracaoMatriz.definirPontoParada(podeAtivar(noDeclaracaoMatriz));
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
     {
-        noDeclaracaoVariavel.definirPontoParada(podeParar(noDeclaracaoVariavel));
+        noDeclaracaoVariavel.definirPontoParada(podeAtivar(noDeclaracaoVariavel));
         return null;
     }
 
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
     {
-        noDeclaracaoVetor.definirPontoParada(podeParar(noDeclaracaoVetor));
+        noDeclaracaoVetor.definirPontoParada(podeAtivar(noDeclaracaoVetor));
         return null;
     }
 
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA
     {
-        noEnquanto.getCondicao().definirPontoParada(podeParar(noEnquanto.getCondicao()));
+        noEnquanto.getCondicao().definirPontoParada(podeAtivar(noEnquanto.getCondicao()));
         for (NoBloco bloco : noEnquanto.getBlocos())
         {
             bloco.aceitar(this);
@@ -253,7 +216,7 @@ final class SetadorPontosParada implements VisitanteASA
     @Override
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
     {
-        noEscolha.definirPontoParada(podeParar(noEscolha));
+        noEscolha.definirPontoParada(podeAtivar(noEscolha));
         for (NoCaso caso : noEscolha.getCasos())
         {
             caso.aceitar(this);
@@ -264,13 +227,13 @@ final class SetadorPontosParada implements VisitanteASA
     @Override
     public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA
     {
-        noFacaEnquanto.definirPontoParada(podeParar(noFacaEnquanto));
+        noFacaEnquanto.definirPontoParada(podeAtivar(noFacaEnquanto));
         for (NoBloco no : noFacaEnquanto.getBlocos())
         {
             no.aceitar(this);
         }
 
-        noFacaEnquanto.getCondicao().definirPontoParada(podeParar(noFacaEnquanto.getCondicao()));
+        noFacaEnquanto.getCondicao().definirPontoParada(podeAtivar(noFacaEnquanto.getCondicao()));
         return null;
     }
 
@@ -319,7 +282,7 @@ final class SetadorPontosParada implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA
     {
-        noOperacaoAtribuicao.definirPontoParada(podeParar(noOperacaoAtribuicao));
+        noOperacaoAtribuicao.definirPontoParada(podeAtivar(noOperacaoAtribuicao));
         return null;
     }
 
@@ -429,7 +392,7 @@ final class SetadorPontosParada implements VisitanteASA
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA
     {
         NoExpressao condicao = noPara.getCondicao();
-        condicao.definirPontoParada(podeParar(condicao));
+        condicao.definirPontoParada(podeAtivar(condicao));
         for (NoBloco no : noPara.getBlocos())
         {
             no.aceitar(this);
@@ -440,7 +403,7 @@ final class SetadorPontosParada implements VisitanteASA
     @Override
     public Object visitar(NoPare noPare) throws ExcecaoVisitaASA
     {
-        noPare.definirPontoParada(podeParar(noPare));
+        noPare.definirPontoParada(podeAtivar(noPare));
         return null;
     }
 
@@ -478,7 +441,7 @@ final class SetadorPontosParada implements VisitanteASA
     @Override
     public Object visitar(NoSe noSe) throws ExcecaoVisitaASA
     {
-        noSe.getCondicao().definirPontoParada(podeParar(noSe.getCondicao()));
+        noSe.getCondicao().definirPontoParada(podeAtivar(noSe.getCondicao()));
         for (NoBloco no : noSe.getBlocosVerdadeiros())
         {
             no.aceitar(this);
