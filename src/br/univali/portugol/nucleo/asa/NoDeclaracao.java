@@ -1,5 +1,8 @@
 package br.univali.portugol.nucleo.asa;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class base para todos os tipos de declaração do Portugol.
  * <p>
@@ -17,6 +20,7 @@ public abstract class NoDeclaracao extends NoBloco
     private NoExpressao inicializacao;
     private TrechoCodigoFonte trechoCodigoFonteNome;
     private TrechoCodigoFonte trechoCodigoFonteTipoDado;
+    private final List<NoReferencia> referencias = new ArrayList<>();
 
     /**
      * 
@@ -131,5 +135,15 @@ public abstract class NoDeclaracao extends NoBloco
     public TrechoCodigoFonte getTrechoCodigoFonteTipoDado()
     {
         return trechoCodigoFonteTipoDado;
+    }
+
+    /**
+     * Obtém uma lista dos nós da árvore que representam referências a esta declaração
+     * 
+     * @return a lista de nós
+     */
+    public List<NoReferencia> getReferencias()
+    {
+        return referencias;
     }
 }
