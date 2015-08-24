@@ -31,7 +31,8 @@ import javax.swing.SwingUtilities;
 @PropriedadesBiblioteca(tipo = TipoBiblioteca.RESERVADA)
 @DocumentacaoBiblioteca
 (
-    descricao = "Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do mouse do computador", 
+    descricao = "Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do mouse do computador\n"
+            + "<b>IMPORTANTE:</b> Esta biblioteca só funciona se o modo grafico (da biblioteca graficos) estiver iniciado", 
     versao = "1.1"
 )
 public final class Mouse extends Biblioteca

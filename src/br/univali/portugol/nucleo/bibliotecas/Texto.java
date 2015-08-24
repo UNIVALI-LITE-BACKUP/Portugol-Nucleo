@@ -174,7 +174,7 @@ public final class Texto extends Biblioteca
             
         parametros = 
         {
-            @DocumentacaoParametro(nome = "texto", descricao = "o texto que será procurarado na cadeia"),
+            @DocumentacaoParametro(nome = "texto", descricao = "o texto que será procurado na cadeia"),
             @DocumentacaoParametro(nome = "cad", descricao = "a cadeia dentro da qual o texto será procurado"),
             
             @DocumentacaoParametro
@@ -206,6 +206,7 @@ public final class Texto extends Biblioteca
                     "extrair_subtexto(\"salgado\", 3, 7) // resultado: \"gado\"<br><br>" +
                     "extrair_subtexto(\"salgado\", 1, 5) // resultado: \"alga\"",
 
+        retorno = "uma <tipo>cadeia</tipo> contendo o subtexto",
         parametros = 
         {
             @DocumentacaoParametro(nome = "cad", descricao = "a cadeia a partir da qual será extraído o subtexto"),

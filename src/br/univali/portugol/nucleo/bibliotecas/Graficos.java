@@ -243,7 +243,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             + "programa e minimizar outros problemas. Esta técnica é chamada de <b>Back Buffer</b> ou <b>Double Buffer</b>.<br><br>"
             + "A função renderizar, faz com que os desenhos existentes no <b>Back Buffer</b> sejam desenhados na tela.<br><br>"
             + "Esta função deve ser chamada sempre após todas as outras funções de desenho, para garantir que todos os"
-            + "desenhos sejam exibidos",
+            + " desenhos sejam exibidos",
             autores =
             {
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
@@ -767,7 +767,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     }
 
     @DocumentacaoFuncao(
-            descricao = "Define o estilo da onte que será utilizada para desenhar um texto no ambiente gráfico",
+            descricao = "Define o estilo da fonte que será utilizada para desenhar um texto no ambiente gráfico",
             parametros =
             {
                 @DocumentacaoParametro(nome = "italico", descricao = "define se a fonte terá o estilo itálico"),
@@ -858,7 +858,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             {
                 @DocumentacaoParametro(nome = "vermelho", descricao = "o tom de vermelho (0 a 255)"),
                 @DocumentacaoParametro(nome = "verde", descricao = "o tom de verde (0 a 255)"),
-                @DocumentacaoParametro(nome = "azul", descricao = "o tom de verde (0 a 255)")
+                @DocumentacaoParametro(nome = "azul", descricao = "o tom de azul (0 a 255)")
             },
             retorno = "a nova cor criada pela combinação dos tons de vermelho, verde e azul",
             autores =

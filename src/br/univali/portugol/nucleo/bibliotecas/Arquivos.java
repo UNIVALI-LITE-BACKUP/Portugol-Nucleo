@@ -71,7 +71,7 @@ public final class Arquivos extends Biblioteca
             {
                 @DocumentacaoParametro(nome = "caminho_arquivo", descricao = "o nome do arquivo que se quer abrir"),
 
-                @DocumentacaoParametro(nome = "modo_acesso", descricao = "determina se o arquivo será aberto para leitura ou para escrita")
+                @DocumentacaoParametro(nome = "modo_acesso", descricao = "determina se o arquivo será aberto para leitura ou para escrita.<br>Constantes aceitas: MODO_LEITURA | MODO_ESCRITA")
             },
             retorno = "o endereço de memória onde o arquivo foi carregado",
             autores =
@@ -145,7 +145,7 @@ public final class Arquivos extends Biblioteca
             {
                 @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do arquivo")
             },
-            retorno = "<tipo>verdadeiro</tipo> se o arquivo tiver chegado ao fim. Caso cotrário retorna <tipo>falso</tipo>",
+            retorno = "Uma <tipo>cadeia</tipo> contendo o conteudo da linha lida.",
             autores =
             {
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")

@@ -73,7 +73,7 @@ public final class Matematica extends Biblioteca
 
     @DocumentacaoFuncao(
             descricao
-            = "Arredonda um número <tipo>real</tipo> para o número de casas decimais informado. "
+            = "Arredonda um número <tipo>real</tipo> para o número de casas decimais informadas. "
             + "Quando o último dígito for maior ou igual a 5, o número será arredondado para cima, "
             + "quando o último dígito for menor que 5, o número será arredondado para baixo",
             parametros =
