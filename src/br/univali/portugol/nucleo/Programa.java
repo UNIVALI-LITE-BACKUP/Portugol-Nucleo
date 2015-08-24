@@ -2,12 +2,10 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.depuracao.Depurador;
-import br.univali.portugol.nucleo.depuracao.DepuradorImpl;
-import br.univali.portugol.nucleo.depuracao.DepuradorListener;
+import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.es.Entrada;
 import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
-import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
@@ -21,15 +19,17 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Esta classe provê uma fachada (Facade) para abstrair os detalhes da execução
- * dos programas que não interessam aos utilizadores do Portugol. <p> Ela se
- * encarrega de instanciar um interpretador para o código fonte e de gerenciar o
- * ciclo de vida (inicio, fim, interrupção) da Thread na qual o interpretador
- * irá executar.
+ * dos programas que não interessam aos utilizadores do Portugol.
+ * <p>
+ * Ela se encarrega de instanciar um interpretador para o código fonte e de
+ * gerenciar o ciclo de vida (inicio, fim, interrupção) da Thread na qual o
+ * interpretador irá executar.
  *
  *
  * @author Luiz Fernando Noschang
@@ -53,25 +53,33 @@ public final class Programa
      * tarefas no pool eram desalocadas e novas threads tinham que ser criadas.
      *    
      * Nesta implementação, o tempo foi aumentado (exageradamente) para 2 horas.
-     */ 
-    private static final ExecutorService servicoExecucao = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.HOURS, new SynchronousQueue<Runnable>());
-    
+     */
+    private static int contadorDeThreads = 0;
+    private static final ExecutorService servicoExecucao = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.HOURS, new SynchronousQueue<Runnable>(), new ThreadFactory()
+    {
+        
+        @Override
+        public Thread newThread(Runnable r)
+        {
+            return new Thread(r, "Thread do nucleo " + (++contadorDeThreads));
+        }
+    });
+
     private Saida saida;
     private Entrada entrada;
     private String funcaoInicial;
     private File diretorioTrabalho = new File(".");
-    
+
     private TarefaExecucao tarefaExecucao = null;
     private Future controleTarefaExecucao = null;
-    
+
     private ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma;
     private List<String> funcoes;
     private ResultadoAnalise resultadoAnalise;
     
-    private final List<DepuradorListener> listeners = new ArrayList<>();
     private final ArrayList<ObservadorExecucao> observadores;
-    
-    private final SetadorPontosParada setadorPontosParada = new SetadorPontosParada();
+
+    private final AtivadorDePontosDeParada ativadorDePontoDesParada = new AtivadorDePontosDeParada();
 
     public Programa()
     {
@@ -116,99 +124,77 @@ public final class Programa
     }
 
     /**
-     * Executa este programa com os parâmetros especificados. Se o programa já
-     * estiver executando/depurando não faz nada.
-     *
-     * @param parametros lista de parâmetros que serão passados ao programa no
-     * momento da execução.
-     * @since 1.0
-     */
-    public void executar(String[] parametros)
-    {
-        executar(new EstrategiaInterpretacao(), parametros);
-    }
-    
-    /**
      * Depura este programa com os parâmetros especificados. Se o programa já
      * estiver executando/depurando não faz nada.
      *
      * @param parametros lista de parâmetros que serão passados ao programa no
      * momento da execução.
-     * 
-     * @param detalhado define se a depuração executará em modo simples ou detalhado.
-     * 
+     *
      * @since 2.0
      */
-    public void depurar(String[] parametros)
-    {    
-        executar(new EstrategiaDepuracao(listeners), parametros);
-    }
-    
-    /**
-     * 
-     * @param candidatosParaPontosDeParada
-     * @return retorna um conjunto com os números das linhas que puderam ser marcadas
-     */
-    public Set<Integer> setPontosDeParada(Collection<Integer> candidatosParaPontosDeParada){
-     //TODO usar a coleção de linhas marcadas para notificar a VIEW sobre quais linhas realmente
-        //foram marcadas, nem todas as linhas em 'candidatosParaPontosDeParada'  
-        return setadorPontosParada.setaPontosDeParada(candidatosParaPontosDeParada, arvoreSintaticaAbstrataPrograma);
-    }
-    
-    /**
-     * Executa o programa utilizando os parâmetros e a estratégia selecionada. A execução ocorre de forma
-     * assíncrona em sua própria thread, garantindo que vários programas possam ser executados ao mesmo tempo
-     * pelo núcleo.
-     * 
-     * @param estrategiaExecucao  a estratégia utilizada para executar o programa
-     * @param parametros  os parâmetros que serão passados ao programa durante a execução
-     */
-    private void executar(EstrategiaExecucao estrategiaExecucao, String[] parametros)
+    public void executar(String[] parametros, Depurador.Estado estado)
     {
         if (!isExecutando())
         {
-            tarefaExecucao = new TarefaExecucao(estrategiaExecucao, parametros);
+            tarefaExecucao = new TarefaExecucao(parametros, estado);
             controleTarefaExecucao = servicoExecucao.submit(tarefaExecucao);
         }
     }
-
-    public void addDepuradorListener(DepuradorListener aThis)
+    
+    public void continuar(Depurador.Estado estado)
     {
-        listeners.add(aThis);
+        if (isExecutando())
+        {
+            tarefaExecucao.continuar(estado);
+        }
+        else
+        {
+            throw new IllegalStateException("O programa não pode ser continuado pois não foi iniciado");
+        }
+    }
+
+    public void ativaPontosDeParada(Set<Integer> linhasComPontosDeParadaAtivados)
+    {
+        ativadorDePontoDesParada.ativaPontosDeParada(linhasComPontosDeParadaAtivados, arvoreSintaticaAbstrataPrograma);
     }
 
     /**
-     * Implementa uma tarefa para disparar a execução do programa com os parâmetros e a estratégia selecionada.
-     * Futuramente podemos refatorar para executar a partir de um pool de threads.
+     * Implementa uma tarefa para disparar a execução do programa com os
+     * parâmetros e a estratégia selecionada. Futuramente podemos refatorar para
+     * executar a partir de um pool de threads.
      */
     private final class TarefaExecucao implements Runnable
     {
         private final String[] parametros;
-        private final EstrategiaExecucao estrategiaExecucao;
         private final ResultadoExecucao resultadoExecucao;
+        private final Depurador.Estado estado;
+        private final Depurador depurador;
 
-        public TarefaExecucao(EstrategiaExecucao estrategiaExecucao, String[] parametros)
+        public TarefaExecucao(String[] parametros, Depurador.Estado estado)
         {
-            this.estrategiaExecucao = estrategiaExecucao;
             this.parametros = parametros;
             this.resultadoExecucao = new ResultadoExecucao();
+            this.estado = estado;
+            this.depurador = new Depurador();
         }
 
         public ResultadoExecucao getResultadoExecucao()
         {
             return resultadoExecucao;
         }
-        
+
         @Override
         public void run()
-        {   
+        {
             long horaInicialExecucao = System.currentTimeMillis();
-            
-            notificarInicioExecucao();
-            
+
             try
-            {                
-                estrategiaExecucao.executar(Programa.this, parametros);
+            {
+                depurador.setEstado(estado);
+
+                depurador.adicionarObservadoresExecucao(observadores);
+                notificarInicioExecucao();
+                depurador.executar(Programa.this, parametros);
             }
             catch (ErroExecucao erroExecucao)
             {
@@ -221,64 +207,16 @@ public final class Programa
             }
 
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
-            
+
             notificarEncerramentoExecucao(resultadoExecucao);
         }
-    }
-    
-    /**
-    * Define uma interface para criar diferentes estratégias de execução para o programa
-    * 
-    * @author Luiz Fernando Noschang
-    */
-    interface EstrategiaExecucao 
-    {    
-        public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException;
-    }
-    
-    /**
-     * Estratégia para interpretar o programa
-     * 
-     * @author Luiz Fernando Noschang
-     */
-    private final class EstrategiaInterpretacao implements EstrategiaExecucao
-    {
-        @Override
-        public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
-        {
-            Interpretador interpretador = new Interpretador();
-            interpretador.executar(programa, parametros);
-        }        
-    }
-    
-    /**
-     * Estratégia para depurar o programa
-     * 
-     * @author Luiz Fernando Noschang
-     */
-    private final class EstrategiaDepuracao implements EstrategiaExecucao
-    {
-        private final List<DepuradorListener> listeners;
-        //private final boolean detalhado;
 
-        public EstrategiaDepuracao(List<DepuradorListener> listeners)
+        public void continuar(Depurador.Estado estado)
         {
-            this.listeners = listeners;
-            //this.detalhado = detalhado;
-        }
-        
-        @Override
-        public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
-        {
-            //List<NoBloco> nosParada = new DetectaNosParada(detalhado).executar(Programa.this, parametros);
-            DepuradorImpl depurador = new DepuradorImpl();//nosParada,detalhado);
-            depurador.setEstado(Depurador.Estado.BREAK_POINT);//DEIXEI ISSO FIXO APENAS PARA TESTAR
-            
-            depurador.addListeners(listeners);
-            depurador.executar(programa, parametros);
+            depurador.continuar(estado);
         }
     }
-    
+
     /**
      * Interrompe a execução deste programa. Não tem nenhum efeito se o programa
      * não estiver executando.
@@ -288,15 +226,15 @@ public final class Programa
     public void interromper()
     {
         if (isExecutando())
-        {            
+        {
             controleTarefaExecucao.cancel(true);
         }
     }
-    
+
     /**
      * Obtém a lista de funções declaradas atualmente no programa
-     * 
-     * @return  a lista de funções
+     *
+     * @return a lista de funções
      */
     public List<String> getFuncoes()
     {
@@ -305,8 +243,8 @@ public final class Programa
 
     /**
      * Define a lista de funções declaradas atualmente no programa
-     * 
-     * @param funcoes  a lista de funções
+     *
+     * @param funcoes a lista de funções
      */
     public void setFuncoes(List<String> funcoes)
     {
@@ -475,14 +413,14 @@ public final class Programa
             throw new IllegalArgumentException(String.format("Diretório de trabalho inválido. O caminho '%s' não existe ou não representa um diretório", diretorioTrabalho.getAbsolutePath()));
         }
     }
-    
+
     public File resolverCaminho(File caminho)
     {
         if (!caminho.isAbsolute())
         {
             return new File(diretorioTrabalho, caminho.getPath());
         }
-        
+
         return caminho;
     }
 
@@ -493,7 +431,7 @@ public final class Programa
         {
             return ((Programa) obj) == this;
         }
-        
+
         return false;
     }
 

@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.depuracao.Depurador;
+import br.univali.portugol.nucleo.execucao.Depurador;
 import java.util.List;
 
 /**
@@ -54,7 +54,10 @@ public final class NoPara extends NoBloco
     @Override
     public boolean ehParavel(Depurador.Estado estado)
     {
-        return temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT ; //To change body of generated methods, choose Tools | Templates.
+        if(getCondicao() != null){
+            return super.ehParavel(estado) || getCondicao().ehParavel(estado);
+        }
+        return super.ehParavel(estado);
     }    
     
     /**
@@ -153,4 +156,6 @@ public final class NoPara extends NoBloco
     {
         return visitante.visitar(this);
     }
+    
+   
 }

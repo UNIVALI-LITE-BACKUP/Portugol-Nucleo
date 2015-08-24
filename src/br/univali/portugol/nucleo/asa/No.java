@@ -1,7 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.depuracao.Depurador;
-import br.univali.portugol.nucleo.depuracao.PontoParada;
+import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.execucao.PontoParada;
 
 /**
  * Esta é a classe base para todos os nós da ASA.
@@ -14,7 +14,7 @@ import br.univali.portugol.nucleo.depuracao.PontoParada;
 public abstract class No
 {
     private NoBloco pai = null;
-    private PontoParada pontoParada = null;
+    private PontoParada pontoParada;
 
     /**
      * Este método serve para dar suporte ao caminhamento da ASA utilizando o
@@ -43,21 +43,30 @@ public abstract class No
 
     public No()
     {
+        this(null);
     }
 
     protected No(NoBloco pai)
     {
-        this.pai = pai;
+        pontoParada = new PontoParada(this);//todos os nós têm pontos de parada desativados por padrão
+        setPai(pai);
     }
 
     public void setPai(NoBloco pai)
     {
         this.pai = pai;
     }
-    
+
+    /**
+     *
+     * @param estado Estado de execução do depurador.
+     * @return responde se o no pode ser parado em função do estado do
+     * depurador. Por exemplo, alguns nós só para quando o depurador está no
+     * estado BREAK_POINT.
+     */
     public boolean ehParavel(Depurador.Estado estado)
     {
-        return temPontoDeParada() && estado == Depurador.Estado.BREAK_POINT ;
+        return pontoParada.estaAtivo() && estado == Depurador.Estado.BREAK_POINT;
     }
 
     protected boolean temPai()
@@ -74,22 +83,14 @@ public abstract class No
         return pai;
     }
 
-    /**
-     * 
-     * @param status true se o nó será parado, false em caso contrário
-     */
-    public void definirPontoParada(boolean status){
-        if(status){
-            pontoParada = new PontoParada(this);
-        }
-        else{
-            pontoParada = null;
-        }
+    public void definirPontoParada(boolean ativado)
+    {
+        pontoParada.setAtivo(ativado);
     }
-    
-    protected boolean temPontoDeParada(){
-        return pontoParada != null;
+
+    public boolean pontoDeParadaEstaAtivo()
+    {
+        return pontoParada.estaAtivo();
     }
-    
-    
+
 }

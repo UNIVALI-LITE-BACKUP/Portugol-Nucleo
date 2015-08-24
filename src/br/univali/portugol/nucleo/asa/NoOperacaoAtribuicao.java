@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.execucao.Depurador;
+
 
 /**
 * Esta enumeração representa a operação de <code>atribuição</code> no código fonte.
@@ -36,4 +38,13 @@ public final class NoOperacaoAtribuicao extends NoOperacao
     {
         return getOperandoEsquerdo().toString() + " = " + getOperandoDireito().toString();
     }
+
+    @Override
+    public boolean ehParavel(Depurador.Estado estado)
+    {
+        boolean operandos = getOperandoDireito().ehParavel(estado) || getOperandoEsquerdo().ehParavel(estado);
+        return operandos || ( pontoDeParadaEstaAtivo() &&  estado == Depurador.Estado.BREAK_POINT) || estado == Depurador.Estado.STEP_OVER ;
+    }
+    
+    
 }
