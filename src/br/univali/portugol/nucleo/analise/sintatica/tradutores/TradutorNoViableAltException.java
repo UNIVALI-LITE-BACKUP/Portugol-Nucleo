@@ -13,6 +13,7 @@ import java.util.Stack;
 import org.antlr.runtime.NoViableAltException;
 import static br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico.estaNoContexto;
 import static br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico.estaEmUmComando;
+import br.univali.portugol.nucleo.analise.sintatica.erros.ErroInteiroForaDoIntervalo;
 import br.univali.portugol.nucleo.analise.sintatica.erros.ErroParentesis;
 
 /**
@@ -44,6 +45,10 @@ public final class TradutorNoViableAltException
         int coluna = erro.charPositionInLine;
         String contextoAtual = pilhaContexto.peek();
         
+//        System.out.println("TESTE NUCLEO: " + erro.grammarDecisionDescription);
+        if(erro.grammarDecisionDescription.contains("INT-OVERFLOW")){
+            return new ErroInteiroForaDoIntervalo(linha, coluna, erro.grammarDecisionDescription.substring(13));
+        }
         switch (contextoAtual)
         {
             case "declaracaoTipoDado": return new ErroTipoDeDadoEstaFaltando(linha, coluna);

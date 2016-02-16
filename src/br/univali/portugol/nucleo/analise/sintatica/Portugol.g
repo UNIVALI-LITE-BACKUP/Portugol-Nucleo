@@ -1345,7 +1345,20 @@ tipoPrimitivo returns[NoExpressao expressao] @init
 			} else if ($INTEIRO.text.matches("(0b|0B).+")) {
 				inteiro = new NoInteiro(Integer.valueOf($INTEIRO.text.replaceAll("0b|0B", ""),2));
 			} else {
-				inteiro = new NoInteiro(Integer.parseInt($INTEIRO.text));
+                                try{
+                                    int temp = Integer.parseInt($INTEIRO.text);
+                                    inteiro = new NoInteiro(temp);
+                                }
+                                catch(Exception e){
+                                    int linha = $INTEIRO.getLine();
+                                    int coluna = $INTEIRO.getCharPositionInLine();
+
+                                    NoViableAltException error = new NoViableAltException("INT-OVERFLOW:" + $INTEIRO.text, 0, 0, input);
+                                    error.line = linha;
+                                    error.charPositionInLine = coluna;
+                                    throw error;
+                                }
+				
 			}
 			inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte($INTEIRO));
 			expressao = inteiro;

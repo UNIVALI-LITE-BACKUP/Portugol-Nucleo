@@ -5326,7 +5326,22 @@ public class PortugolParser extends Parser
                                     }
                                     else
                                     {
-                                        inteiro = new NoInteiro(Integer.parseInt((INTEIRO11 != null ? INTEIRO11.getText() : null)));
+                                        try
+                                        {
+                                            int temp = Integer.parseInt((INTEIRO11 != null ? INTEIRO11.getText() : null));                                        
+                                        
+                                            inteiro = new NoInteiro(temp);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            int linha = INTEIRO11.getLine();
+                                            int coluna = INTEIRO11.getCharPositionInLine();
+                                            
+                                            NoViableAltException error = new NoViableAltException("INT-OVERFLOW:" + INTEIRO11.getText(), 0, 0, input);
+                                            error.line = linha;
+                                            error.charPositionInLine = coluna;
+                                            throw error;
+                                        }
                                     }
                                 }
                                 inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte(INTEIRO11));
