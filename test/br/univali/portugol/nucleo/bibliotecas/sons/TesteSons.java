@@ -1,9 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.sons;
 
 import br.univali.portugol.nucleo.bibliotecas.Sons;
-import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author elieser
