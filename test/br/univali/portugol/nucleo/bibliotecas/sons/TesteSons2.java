@@ -1,7 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.sons;
 
 import br.univali.portugol.nucleo.bibliotecas.Sons;
-import java.io.File;
 
 /**
  * @author elieser Esta classe não é um teste unitário padrão. É um teste
