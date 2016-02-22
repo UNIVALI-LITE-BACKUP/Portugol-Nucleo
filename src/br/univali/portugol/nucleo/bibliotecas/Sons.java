@@ -15,14 +15,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  *
@@ -36,13 +39,13 @@ import javazoom.jl.player.Player;
 )
 public final class Sons extends Biblioteca
 {
-    private static final ExecutorService threadPool = Executors.newCachedThreadPool();
-
     private final AtomicInteger indiceDosSons = new AtomicInteger(0);
-    private final AtomicInteger indiceDosReprodutores = new AtomicInteger(0);
-    
+    private final AtomicInteger indiceDasReproducoes = new AtomicInteger(0);
+
     private final Map<Integer, Som> sons = new HashMap<>();
-    private final Map<Integer, ReprodutorSom> reprodutores = new HashMap<>();
+    private final Map<Integer, Reproducao> reproducoes = new HashMap<>();
+
+    private final AudioFormat formatoDeAudio = criaFormatoDeAudioPadrao();
 
     private Programa programa;
 
@@ -72,7 +75,7 @@ public final class Sons extends Biblioteca
         {
             return programa.resolverCaminho(new File(caminho));
         }
-        return new File(new File("."), caminho);
+        return new File(new File("."), caminho); //isto é útil para poder testar a lib Sons sem inicializá-la com um programa.
     }
 
     @DocumentacaoFuncao(
@@ -92,8 +95,6 @@ public final class Sons extends Biblioteca
         if (sons.containsKey(endereco))
         {
             sons.remove(endereco);
-            
-            //TODO liberar as reproduções do som?
         }
     }
 
@@ -118,13 +119,19 @@ public final class Sons extends Biblioteca
     {
         if (sons.containsKey(endereco))
         {
-            Som som = sons.get(endereco);
-            ReprodutorSom reprodutor = new ReprodutorMp3(som);
-            Integer indice = indiceDosReprodutores.incrementAndGet();
-            TarefaReproducaoSom tarefaReproducao = new TarefaReproducaoSom(reprodutor, repetir, indice);
-            threadPool.submit(tarefaReproducao);
-            reprodutores.put(indice, reprodutor);
-            return indice;
+            try
+            {
+                Som som = sons.get(endereco);
+                Integer enderecoDaReproducao = indiceDasReproducoes.incrementAndGet();
+                Reproducao reproducao = new Reproducao(som, formatoDeAudio, enderecoDaReproducao);
+                reproducoes.put(enderecoDaReproducao, reproducao);
+                reproducao.inicia(repetir);
+                return enderecoDaReproducao;
+            }
+            catch (Exception e)
+            {
+                throw new ErroExecucaoBiblioteca(e);
+            }
         }
         throw new ErroExecucaoBiblioteca("Endereço de som inválido!");
     }
@@ -142,7 +149,12 @@ public final class Sons extends Biblioteca
     )
     public void interromper_som(Integer endereco) throws ErroExecucaoBiblioteca
     {
-        threadPool.submit(new TarefaInterrupcaoSom(endereco));
+        if (reproducoes.containsKey(endereco))
+        {
+            Reproducao reproducao = reproducoes.get(endereco);
+            reproducao.interrompe();
+            reproducoes.remove(endereco);
+        }
     }
 
     @Override
@@ -154,68 +166,96 @@ public final class Sons extends Biblioteca
     @Override
     protected void finalizar() throws ErroExecucaoBiblioteca
     {
-        for (ReprodutorSom reprodutor : reprodutores.values())
+        for (Reproducao reproducao : reproducoes.values())
         {
-            reprodutor.interromper();
+            reproducao.interrompe();
         }
-        reprodutores.clear();
+        reproducoes.clear();
         sons.clear();
-        threadPool.shutdownNow();
     }
 
-    private final class TarefaReproducaoSom implements Runnable
+    private class Reproducao
     {
-        private final ReprodutorSom reprodutor;
-        private final boolean repetir;
-        private final int indice;
+        private final Clip reprodutor;
+        private final Integer endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
 
-        public TarefaReproducaoSom(ReprodutorSom reprodutor, boolean repetir, int indice)
+        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws LineUnavailableException, IOException, UnsupportedAudioFileException
         {
-            this.reprodutor = reprodutor;
-            this.repetir = repetir;
-            this.indice = indice;
-        }
-
-        @Override
-        public void run()
-        {
-            try
-            {
-                reprodutor.reproduzir(repetir);
-                reprodutores.remove(indice);
-            }
-            catch (ErroExecucaoBiblioteca excecao)
-            {
-                throw new RuntimeException(excecao);
-            }
-        }
-    }
-
-    private final class TarefaInterrupcaoSom implements Runnable
-    {
-        private final int endereco;
-
-        public TarefaInterrupcaoSom(int endereco)
-        {
+            Clip clip = AudioSystem.getClip();
+            clip.open(criaStream(som, formatoDeAudio));
             this.endereco = endereco;
+            this.reprodutor = clip;
         }
 
-        @Override
-        public void run()
+        private AudioInputStream criaStream(Som som, AudioFormat formatoDoAudio)
+                throws UnsupportedAudioFileException, IOException
         {
-            try
+
+            InputStream fluxoPreCarregado = new ByteArrayInputStream(som.getDados());
+            AudioInputStream fluxoCodificado = AudioSystem.getAudioInputStream(fluxoPreCarregado);
+            AudioFormat formatoCodificado = fluxoCodificado.getFormat();
+
+            boolean precisaConverterTaxaDeAmostragem = formatoCodificado.getSampleRate() != formatoDoAudio.getSampleRate();
+            boolean precisaConververCanais = formatoCodificado.getChannels() != formatoDoAudio.getChannels();
+
+            //converte para PCM, mas mantendo a taxa de amostragem original e o número de canais originais
+            AudioFormat formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoCodificado.getSampleRate(), formatoCodificado.getChannels());
+            AudioInputStream fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoCodificado);
+
+            if (precisaConverterTaxaDeAmostragem)
             {
-                if (reprodutores.containsKey(endereco))
-                {
-                    ReprodutorSom reprodutor = reprodutores.get(endereco);
-                    reprodutor.interromper();
-                    reprodutores.remove(endereco);
-                }
+                // converte de PCM para PCM mas alterando a taxa de amostragem e mantendo a mesma quantidade de canais do áudio original
+                formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoCodificado.getChannels());
+                fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
             }
-            catch (ErroExecucaoBiblioteca excecao)
+
+            if (precisaConververCanais) //o áudio original era mono e precisar ser convertido para stereo
             {
-                throw new RuntimeException(excecao);
+                // converte o fluxo para a quantidade final de canais
+                formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoDoAudio.getChannels());
+                fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
             }
+            return fluxoDecodificado;
+        }
+
+        private AudioFormat criaNovoFormatoDeAudio(AudioFormat formatoBase, float novaTaxaDeAmostragem, int canais)
+        {
+            return new AudioFormat(
+                    formatoBase.getEncoding(),
+                    novaTaxaDeAmostragem,
+                    formatoBase.getSampleSizeInBits(),
+                    canais,
+                    canais * formatoBase.getSampleSizeInBits() / 8,
+                    formatoBase.getFrameRate(),
+                    formatoBase.isBigEndian()
+            );
+        }
+
+        public Clip getReprodutor()
+        {
+            return reprodutor;
+        }
+
+        public Integer getEndereco()
+        {
+            return endereco;
+        }
+
+        public void inicia(boolean repetir)
+        {
+            if (!repetir)
+            {
+                reprodutor.start();
+            }
+            else
+            {
+                reprodutor.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+        }
+
+        public void interrompe()
+        {
+            reprodutor.stop();
         }
     }
 
@@ -256,7 +296,7 @@ public final class Sons extends Biblioteca
 
                 byte[] buffer = new byte[tamanhoBuffer];
 
-                FileInputStream fluxoArquivo = new FileInputStream(arquivo);
+                InputStream fluxoArquivo = new BufferedInputStream(new FileInputStream(arquivo));
                 ByteArrayOutputStream fluxoSaida = new ByteArrayOutputStream(buffer.length);
 
                 while ((bytesLidos = fluxoArquivo.read(buffer, 0, buffer.length)) > 0)
@@ -275,62 +315,18 @@ public final class Sons extends Biblioteca
         }
     }
 
-    private interface ReprodutorSom
+    private static AudioFormat criaFormatoDeAudioPadrao()
     {
-        public Som getSom();
-
-        public void reproduzir(boolean repetir) throws ErroExecucaoBiblioteca;
-
-        public void interromper() throws ErroExecucaoBiblioteca;
+        float taxaDeAmostragem = 44100; //44100 amostras por segundo (44.1 KHz)
+        int canais = 2;//estéreo
+        int quantidadeDeBitsPorAmostra = 16; //áudio de 16 bits
+        return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+                taxaDeAmostragem,
+                quantidadeDeBitsPorAmostra,
+                canais,
+                canais * quantidadeDeBitsPorAmostra / 8, //frame size
+                taxaDeAmostragem, //frame rate
+                false); //big endian?
     }
 
-    private final class ReprodutorMp3 implements ReprodutorSom
-    {
-        private final Som som;
-        private Player reprodutor;
-        private boolean interrompido;
-
-        public ReprodutorMp3(Som som)
-        {
-            this.interrompido = false;
-            this.som = som;
-        }
-
-        @Override
-        public void reproduzir(boolean repetir) throws ErroExecucaoBiblioteca
-        {
-            try
-            {
-                do
-                {
-                    reprodutor = new Player(new BufferedInputStream(new ByteArrayInputStream(som.getDados())));
-                    reprodutor.play();
-                    reprodutor.close();
-                    reprodutor = null;
-                }
-                while (repetir && !interrompido);
-            }
-            catch (JavaLayerException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(String.format("Não foi possível reproduzir o som '%s'", som.getArquivo().getAbsolutePath()));
-            }
-        }
-
-        @Override
-        public void interromper() throws ErroExecucaoBiblioteca
-        {
-            interrompido = true;
-
-            if (reprodutor != null)
-            {
-                reprodutor.close();
-            }
-        }
-
-        @Override
-        public Som getSom()
-        {
-            return som;
-        }
-    }
 }

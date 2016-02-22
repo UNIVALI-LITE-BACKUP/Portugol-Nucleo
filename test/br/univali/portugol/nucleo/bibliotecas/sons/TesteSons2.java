@@ -7,7 +7,7 @@ import br.univali.portugol.nucleo.bibliotecas.Sons;
  * 'auditivo'. Se o teste funcionar você ouvirá sons de bateria tocando na mais
  * perfeita e sublime sincronia musical. Se a sincronia não estiver perfeita ou
  * sublime o teste falhou :)
- */
+     */
 public class TesteSons2
 {
     public static void main(String args[]) throws Exception
@@ -17,7 +17,7 @@ public class TesteSons2
         Integer hihat = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/musica/bateria/sons/chimbal.mp3");
         Integer caixa = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/musica/bateria/sons/caixa.mp3");
 
-        for (int compasso = 1; compasso < 32; compasso++)
+        for (int compasso = 1; compasso < 8; compasso++)
         {
             for (int tempo = 1; tempo <= 4; tempo++) // 4 tempos em um compasso
             {
