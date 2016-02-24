@@ -22,13 +22,14 @@ public class TesteSons
         Integer reproducaoSino = sons.reproduzir_som(somDoSino, true);//testa a repetição do som
         Integer reproducaoSomDeFundo = sons.reproduzir_som(somDeFundo, true);
         
-        sons.definir_volume_reproducao(reproducaoSomDeFundo, 50);
+        sons.definir_volume_reproducao(reproducaoSomDeFundo, 80);
+        sons.definir_volume(100);
         
         int volume = 100;
         for (int i = 0; i < 20; i++)
         {
             Thread.sleep(1000);
-            //sons.definir_volume_reproducao(reproducaoSino, volume);
+            sons.definir_volume_reproducao(reproducaoSino, volume);
             
             volume -= 3;
             if (volume <= 10)

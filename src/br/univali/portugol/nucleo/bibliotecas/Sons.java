@@ -10,7 +10,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.sons.SonsUtils;
-import com.sun.javafx.util.Utils;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -53,6 +52,8 @@ public final class Sons extends Biblioteca
     private final Map<Integer, Reproducao> reproducoes = new HashMap<>();
 
     private final AudioFormat formatoDeAudio = criaFormatoDeAudioPadrao();
+
+    private int volumeGeral = 100;
 
     private Programa programa;
 
@@ -179,11 +180,20 @@ public final class Sons extends Biblioteca
     {
         if (reproducoes.containsKey(endereco))
         {
-            reproducoes.get(endereco).setVolume(volume);
+            reproducoes.get(endereco).setVolume(volume / 100f);
         }
         else
         {
             LOGGER.log(Level.WARNING, "Índice de reprodução não encontrado!");
+        }
+    }
+
+    public void definir_volume(Integer volume)
+    {
+        volumeGeral = volume;
+        for (Reproducao reproducao : reproducoes.values())
+        {
+            reproducao.setVolumeGeral(volume/100f);
         }
     }
 
@@ -208,6 +218,8 @@ public final class Sons extends Biblioteca
     {
         private final Clip reprodutor;
         private final Integer endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
+        private float volume = 1.0f;
+        private float volumeGeral = 1.0f;
 
         public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws LineUnavailableException, IOException, UnsupportedAudioFileException
         {
@@ -218,28 +230,18 @@ public final class Sons extends Biblioteca
         }
 
         /**
-         * @param volume Entre 0 e 100
+         * @param volume da reprodução Entre 0.0 e 1.0
          */
-        public void setVolume(int volume)
+        void setVolume(float volume)
         {
-            if (volume < 0)
-            {
-                volume = 0;
-            }
-            else
-            {
-                if (volume > 100)
-                {
-                    volume = 100;
-                }
-            }
+            this.volume = limitaValorDoVolume(volume);
 
             if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
             {
-                FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
-                float valorLinear = volume / 100f;
+                float valorLinear = this.volume * this.volumeGeral;
                 float volumeExponencial = SonsUtils.linearParaExponencial(valorLinear); //É possível converter o valor linear para decibéis diretamente, entretanto converter os valores lineares para exponenciais faz com que as alterações de volume se adequem melhor à audição humana. Mais detalhes em http://www.dr-lex.be/info-stuff/volumecontrols.html
                 float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
+                FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
                 controleDeVolume.setValue(valorEmDecibeis);
                 LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
                 LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
@@ -249,6 +251,12 @@ public final class Sons extends Biblioteca
             {
                 LOGGER.log(Level.WARNING, "O controle de volume não é suportado!");
             }
+        }
+        
+        void setVolumeGeral(float volumeGeral) //esse 'workaround' no volume geral foi usado porque o Java não permite manipular o volume geral
+        {
+            this.volumeGeral = volumeGeral;
+            setVolume(this.volume); //atualiza o volume
         }
 
         public Clip getReprodutor()
@@ -277,6 +285,22 @@ public final class Sons extends Biblioteca
         {
             reprodutor.stop();
         }
+    }
+
+    private static float limitaValorDoVolume(float volume)
+    {
+        if (volume < 0)
+        {
+            return 0;
+        }
+        else
+        {
+            if (volume > 1)
+            {
+                return 1;
+            }
+        }
+        return volume;
     }
 
     private static AudioInputStream criaStream(Som som, AudioFormat formatoDoAudio)
