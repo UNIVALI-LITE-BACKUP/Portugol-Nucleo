@@ -9,6 +9,8 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBibliot
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.sons.SonsUtils;
+import com.sun.javafx.util.Utils;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -215,50 +217,6 @@ public final class Sons extends Biblioteca
             this.reprodutor = clip;
         }
 
-        private AudioInputStream criaStream(Som som, AudioFormat formatoDoAudio)
-                throws UnsupportedAudioFileException, IOException
-        {
-
-            InputStream fluxoPreCarregado = new ByteArrayInputStream(som.getDados());
-            AudioInputStream fluxoCodificado = AudioSystem.getAudioInputStream(fluxoPreCarregado);
-            AudioFormat formatoCodificado = fluxoCodificado.getFormat();
-
-            boolean precisaConverterTaxaDeAmostragem = formatoCodificado.getSampleRate() != formatoDoAudio.getSampleRate();
-            boolean precisaConververCanais = formatoCodificado.getChannels() != formatoDoAudio.getChannels();
-
-            //converte para PCM, mas mantendo a taxa de amostragem original e o número de canais originais
-            AudioFormat formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoCodificado.getSampleRate(), formatoCodificado.getChannels());
-            AudioInputStream fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoCodificado);
-
-            if (precisaConverterTaxaDeAmostragem)
-            {
-                // converte de PCM para PCM mas alterando a taxa de amostragem e mantendo a mesma quantidade de canais do áudio original
-                formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoCodificado.getChannels());
-                fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
-            }
-
-            if (precisaConververCanais) //o áudio original era mono e precisar ser convertido para stereo
-            {
-                // converte o fluxo para a quantidade final de canais
-                formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoDoAudio.getChannels());
-                fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
-            }
-            return fluxoDecodificado;
-        }
-
-        private AudioFormat criaNovoFormatoDeAudio(AudioFormat formatoBase, float novaTaxaDeAmostragem, int canais)
-        {
-            return new AudioFormat(
-                    formatoBase.getEncoding(),
-                    novaTaxaDeAmostragem,
-                    formatoBase.getSampleSizeInBits(),
-                    canais,
-                    canais * formatoBase.getSampleSizeInBits() / 8,
-                    formatoBase.getFrameRate(),
-                    formatoBase.isBigEndian()
-            );
-        }
-
         /**
          * @param volume Entre 0 e 100
          */
@@ -279,9 +237,12 @@ public final class Sons extends Biblioteca
             if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
             {
                 FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
-                float range = controleDeVolume.getMaximum() - controleDeVolume.getMinimum();
-                float novoVolume = (float)Math.pow(volume / 100f, 3); //a nossa percepção de intensidade sonora não é linear. Usar 'volume elevado a 3ª potência' ao invés de apenas 'volume' (que seria linear) gera uma curva que se aproxima mais da audição humana no que se refere a perceção da varição de intensidade. A leitura mais interessante que vi sobre esse tópico é esta: http://www.dr-lex.be/info-stuff/volumecontrols.html
-                controleDeVolume.setValue(novoVolume * range + controleDeVolume.getMinimum());
+                float valorLinear = volume / 100f;
+                float volumeExponencial = SonsUtils.linearParaExponencial(valorLinear); //É possível converter o valor linear para decibéis diretamente, entretanto converter os valores lineares para exponenciais faz com que as alterações de volume se adequem melhor à audição humana. Mais detalhes em http://www.dr-lex.be/info-stuff/volumecontrols.html
+                float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
+                controleDeVolume.setValue(valorEmDecibeis);
+                LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
+                LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
                 LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
             }
             else
@@ -316,6 +277,50 @@ public final class Sons extends Biblioteca
         {
             reprodutor.stop();
         }
+    }
+
+    private static AudioInputStream criaStream(Som som, AudioFormat formatoDoAudio)
+            throws UnsupportedAudioFileException, IOException
+    {
+
+        InputStream fluxoPreCarregado = new ByteArrayInputStream(som.getDados());
+        AudioInputStream fluxoCodificado = AudioSystem.getAudioInputStream(fluxoPreCarregado);
+        AudioFormat formatoCodificado = fluxoCodificado.getFormat();
+
+        boolean precisaConverterTaxaDeAmostragem = formatoCodificado.getSampleRate() != formatoDoAudio.getSampleRate();
+        boolean precisaConververCanais = formatoCodificado.getChannels() != formatoDoAudio.getChannels();
+
+        //converte para PCM, mas mantendo a taxa de amostragem original e o número de canais originais
+        AudioFormat formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoCodificado.getSampleRate(), formatoCodificado.getChannels());
+        AudioInputStream fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoCodificado);
+
+        if (precisaConverterTaxaDeAmostragem)
+        {
+            // converte de PCM para PCM mas alterando a taxa de amostragem e mantendo a mesma quantidade de canais do áudio original
+            formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoCodificado.getChannels());
+            fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
+        }
+
+        if (precisaConververCanais) //o áudio original era mono e precisar ser convertido para stereo
+        {
+            // converte o fluxo para a quantidade final de canais
+            formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoDoAudio.getChannels());
+            fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
+        }
+        return fluxoDecodificado;
+    }
+
+    private static AudioFormat criaNovoFormatoDeAudio(AudioFormat formatoBase, float novaTaxaDeAmostragem, int canais)
+    {
+        return new AudioFormat(
+                formatoBase.getEncoding(),
+                novaTaxaDeAmostragem,
+                formatoBase.getSampleSizeInBits(),
+                canais,
+                canais * formatoBase.getSampleSizeInBits() / 8,
+                formatoBase.getFrameRate(),
+                formatoBase.isBigEndian()
+        );
     }
 
     private final class Som
