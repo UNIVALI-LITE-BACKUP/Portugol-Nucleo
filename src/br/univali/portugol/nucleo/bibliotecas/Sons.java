@@ -20,10 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -39,6 +42,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 )
 public final class Sons extends Biblioteca
 {
+    private final Logger LOGGER = Logger.getLogger(Sons.class.getName());
+
     private final AtomicInteger indiceDosSons = new AtomicInteger(0);
     private final AtomicInteger indiceDasReproducoes = new AtomicInteger(0);
 
@@ -157,6 +162,29 @@ public final class Sons extends Biblioteca
         }
     }
 
+    @DocumentacaoFuncao(
+            descricao = "Define um novo volume (entre 0 e 100) para um som que já está sendo executado",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume")
+            },
+            autores =
+            {
+                @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
+            }
+    )
+    public void definir_volume_reproducao(Integer endereco, Integer volume)
+    {
+        if (reproducoes.containsKey(endereco))
+        {
+            reproducoes.get(endereco).setVolume(volume);
+        }
+        else
+        {
+            LOGGER.log(Level.WARNING, "Índice de reprodução não encontrado!");
+        }
+    }
+
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
@@ -229,6 +257,37 @@ public final class Sons extends Biblioteca
                     formatoBase.getFrameRate(),
                     formatoBase.isBigEndian()
             );
+        }
+
+        /**
+         * @param volume Entre 0 e 100
+         */
+        public void setVolume(int volume)
+        {
+            if (volume < 0)
+            {
+                volume = 0;
+            }
+            else
+            {
+                if (volume > 100)
+                {
+                    volume = 100;
+                }
+            }
+
+            if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
+            {
+                FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
+                float range = controleDeVolume.getMaximum() - controleDeVolume.getMinimum();
+                float novoVolume = (float)Math.pow(volume / 100f, 3); //a nossa percepção de intensidade sonora não é linear. Usar 'volume elevado a 3ª potência' ao invés de apenas 'volume' (que seria linear) gera uma curva que se aproxima mais da audição humana no que se refere a perceção da varição de intensidade. A leitura mais interessante que vi sobre esse tópico é esta: http://www.dr-lex.be/info-stuff/volumecontrols.html
+                controleDeVolume.setValue(novoVolume * range + controleDeVolume.getMinimum());
+                LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
+            }
+            else
+            {
+                LOGGER.log(Level.WARNING, "O controle de volume não é suportado!");
+            }
         }
 
         public Clip getReprodutor()
