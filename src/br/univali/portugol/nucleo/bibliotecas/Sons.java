@@ -53,7 +53,7 @@ public final class Sons extends Biblioteca
 
     private final AudioFormat formatoDeAudio = criaFormatoDeAudioPadrao();
 
-    private int volumeGeral = 100;
+    private Integer volumeGeral = 100;
 
     private Programa programa;
 
@@ -177,7 +177,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume_reproducao(Integer endereco, Integer volume)
+    public void definir_volume_reproducao(Integer endereco, Integer volume) throws ErroExecucaoBiblioteca
     {
         if (reproducoes.containsKey(endereco))
         {
@@ -200,7 +200,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume(Integer volume)
+    public void definir_volume(Integer volume) throws ErroExecucaoBiblioteca
     {
         volumeGeral = volume;
         for (Reproducao reproducao : reproducoes.values())
@@ -208,7 +208,43 @@ public final class Sons extends Biblioteca
             reproducao.setVolumeGeral(volume/100f);
         }
     }
-
+    
+    @DocumentacaoFuncao(
+            descricao = "Retorna o volume geral",
+            retorno = "Um valor do tipo inteiro entre 0 e 100 representando o volume geral atual.",
+            autores =
+            {
+                @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
+            }
+    )
+    public Integer obter_volume() throws ErroExecucaoBiblioteca
+    {
+        return volumeGeral;
+    }
+    
+    
+    @DocumentacaoFuncao(
+            descricao = "Retornar o volume de uma reprodução de som",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "O endereço de memória da reprodução que se quer obter o volume")
+            },
+            retorno = "Um valor do tipo inteiro entre 0 e 100 representando o volume atual da reprodução. Caso a reprodução não exista ou já tenha sido finalizada o valor -1 será retornado",
+            autores =
+            {
+                @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
+            }
+    )
+    public Integer obter_volume_reproducao(Integer endereco) throws ErroExecucaoBiblioteca
+    {
+        if (reproducoes.containsKey(endereco))
+        {
+            Reproducao reproducao = reproducoes.get(endereco);
+            return (int)(reproducao.getVolume() * 100);
+        }
+        return -1;
+    }
+    
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
@@ -274,6 +310,11 @@ public final class Sons extends Biblioteca
         public Clip getReprodutor()
         {
             return reprodutor;
+        }
+
+        public float getVolume()
+        {
+            return volume;
         }
 
         public Integer getEndereco()

@@ -23,7 +23,7 @@ public class TesteSons
         Integer reproducaoSomDeFundo = sons.reproduzir_som(somDeFundo, true);
         
         sons.definir_volume_reproducao(reproducaoSomDeFundo, 80);
-        sons.definir_volume(100);
+        sons.definir_volume(90);
         
         int volume = 100;
         for (int i = 0; i < 20; i++)
