@@ -32,7 +32,7 @@ import javax.swing.SwingUtilities;
 @DocumentacaoBiblioteca
 (
     descricao = "Esta biblioteca contém um conjunto de funções para manipular a entrada de dados através do mouse do computador\n"
-            + "<b>IMPORTANTE:</b> Esta biblioteca só funciona se o modo grafico (da biblioteca graficos) estiver iniciado", 
+            + "<b>IMPORTANTE:</b> Esta biblioteca não funciona no console de entrada e saída de dados do Portugol Studio, ela só funciona com a biblioteca Graficos, se o modo gráfico estiver iniciado.", 
     versao = "1.1"
 )
 public final class Mouse extends Biblioteca
