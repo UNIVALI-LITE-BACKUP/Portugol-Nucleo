@@ -166,10 +166,11 @@ public final class Sons extends Biblioteca
     }
 
     @DocumentacaoFuncao(
-            descricao = "Define um novo volume (entre 0 e 100) para um som que já está sendo executado",
+            descricao = "Define um novo volume para um som que já está sendo executado",
             parametros =
             {
-                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume")
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume"),
+                @DocumentacaoParametro(nome = "volume", descricao = "o novo volume entre 0 e 100")
             },
             autores =
             {
@@ -188,6 +189,17 @@ public final class Sons extends Biblioteca
         }
     }
 
+      @DocumentacaoFuncao(
+            descricao = "Define o volume geral",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "volume", descricao = "O novo volume geral (entre 0 e 100)")
+            },
+            autores =
+            {
+                @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
+            }
+    )
     public void definir_volume(Integer volume)
     {
         volumeGeral = volume;
