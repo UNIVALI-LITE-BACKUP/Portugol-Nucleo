@@ -132,6 +132,7 @@ public final class Sons extends Biblioteca
                 Som som = sons.get(endereco);
                 Integer enderecoDaReproducao = indiceDasReproducoes.incrementAndGet();
                 Reproducao reproducao = new Reproducao(som, formatoDeAudio, enderecoDaReproducao);
+                reproducao.setVolumeGeral(volumeGeral/100f);
                 reproducoes.put(enderecoDaReproducao, reproducao);
                 reproducao.inicia(repetir);
                 return enderecoDaReproducao;
