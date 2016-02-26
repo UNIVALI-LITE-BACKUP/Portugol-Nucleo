@@ -291,6 +291,10 @@ public final class Sons extends Biblioteca
                 float volumeExponencial = SonsUtils.linearParaExponencial(valorLinear); //É possível converter o valor linear para decibéis diretamente, entretanto converter os valores lineares para exponenciais faz com que as alterações de volume se adequem melhor à audição humana. Mais detalhes em http://www.dr-lex.be/info-stuff/volumecontrols.html
                 float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
                 FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
+                if (valorEmDecibeis < controleDeVolume.getMinimum())
+                    valorEmDecibeis = controleDeVolume.getMinimum();
+                else if (valorEmDecibeis > controleDeVolume.getMaximum())
+                    valorEmDecibeis = controleDeVolume.getMaximum();
                 controleDeVolume.setValue(valorEmDecibeis);
                 LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
                 LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
