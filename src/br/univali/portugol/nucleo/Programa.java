@@ -12,16 +12,17 @@ import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Esta classe provê uma fachada (Facade) para abstrair os detalhes da execução
@@ -54,21 +55,13 @@ public final class Programa
      *    
      * Nesta implementação, o tempo foi aumentado (exageradamente) para 2 horas.
      */
-    private static int contadorDeThreads = 0;
-    private static final ExecutorService servicoExecucao = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.HOURS, new SynchronousQueue<Runnable>(), new ThreadFactory()
-    {
-        
-        @Override
-        public Thread newThread(Runnable r)
-        {
-            return new Thread(r, "Thread do nucleo " + (++contadorDeThreads));
-        }
-    });
+    private static final ExecutorService servicoExecucao = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.HOURS, new SynchronousQueue<Runnable>(), new NamedThreadFactory("Portugol Núcleo (Thread de programa #%d", Thread.MAX_PRIORITY));
 
     private Saida saida;
     private Entrada entrada;
     private String funcaoInicial;
     private File diretorioTrabalho = new File(".");
+    private File arquivoOrigem = null;
 
     private TarefaExecucao tarefaExecucao = null;
     private Future controleTarefaExecucao = null;
@@ -251,6 +244,17 @@ public final class Programa
         this.funcoes = funcoes;
     }
 
+    public File getArquivoOrigem()
+    {
+        return arquivoOrigem;
+    }
+
+    public void setArquivoOrigem(File arquivoOrigem)
+    {
+        this.arquivoOrigem = arquivoOrigem;
+    }    
+    
+
     /**
      * Obtém a ASA que representa este programa.
      *
@@ -423,6 +427,21 @@ public final class Programa
 
         return caminho;
     }
+    
+    private String obterCaminhoCompleto(File arquivo)
+    {
+        try
+        {
+            return arquivo.getCanonicalPath();
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Programa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return arquivo.getAbsolutePath();
+    }
+        
 
     @Override
     public boolean equals(Object obj)
