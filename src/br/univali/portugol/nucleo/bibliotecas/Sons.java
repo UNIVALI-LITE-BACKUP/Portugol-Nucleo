@@ -314,6 +314,7 @@ public final class Sons extends Biblioteca
         private final Integer endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
+        private FloatControl controleDeVolume = null;
 
         public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws IOException, UnsupportedAudioFileException
         {
@@ -323,6 +324,11 @@ public final class Sons extends Biblioteca
                 reprodutor = AudioSystem.getClip();
                 reprodutor.open(criaStream(som, formatoDeAudio));
                 reprodutor.addLineListener(new ListenerDeInterrupcaoDeAudio(endereco));
+
+                if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
+                {
+                    controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
+                }
             }
             catch (LineUnavailableException excecao)
             {
@@ -336,39 +342,31 @@ public final class Sons extends Biblioteca
          */
         void setVolume(float volume)
         {
-            if (reprodutor == null)
+            if (reprodutor == null || controleDeVolume == null)
             {
                 return;
             }
 
             this.volume = limitaValorDoVolume(volume);
 
-            if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
+            float valorLinear = this.volume * this.volumeGeral;
+            float volumeExponencial = SonsUtils.linearParaExponencial(valorLinear); //É possível converter o valor linear para decibéis diretamente, entretanto converter os valores lineares para exponenciais faz com que as alterações de volume se adequem melhor à audição humana. Mais detalhes em http://www.dr-lex.be/info-stuff/volumecontrols.html
+            float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
+            if (valorEmDecibeis < controleDeVolume.getMinimum())
             {
-                float valorLinear = this.volume * this.volumeGeral;
-                float volumeExponencial = SonsUtils.linearParaExponencial(valorLinear); //É possível converter o valor linear para decibéis diretamente, entretanto converter os valores lineares para exponenciais faz com que as alterações de volume se adequem melhor à audição humana. Mais detalhes em http://www.dr-lex.be/info-stuff/volumecontrols.html
-                float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
-                FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
-                if (valorEmDecibeis < controleDeVolume.getMinimum())
-                {
-                    valorEmDecibeis = controleDeVolume.getMinimum();
-                }
-                else
-                {
-                    if (valorEmDecibeis > controleDeVolume.getMaximum())
-                    {
-                        valorEmDecibeis = controleDeVolume.getMaximum();
-                    }
-                }
-                controleDeVolume.setValue(valorEmDecibeis);
-                LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
-                LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
-                LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
+                valorEmDecibeis = controleDeVolume.getMinimum();
             }
             else
             {
-                LOGGER.log(Level.WARNING, "O controle de volume não é suportado!");
+                if (valorEmDecibeis > controleDeVolume.getMaximum())
+                {
+                    valorEmDecibeis = controleDeVolume.getMaximum();
+                }
             }
+            controleDeVolume.setValue(valorEmDecibeis);
+            LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
+            LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
+            LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
         }
 
         void setVolumeGeral(float volumeGeral) //esse 'workaround' no volume geral foi usado porque o Java não permite manipular o volume geral
