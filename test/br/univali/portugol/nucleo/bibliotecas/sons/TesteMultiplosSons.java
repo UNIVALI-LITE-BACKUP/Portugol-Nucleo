@@ -12,7 +12,7 @@ public class TesteMultiplosSons
     {
         Sons sons = new Sons();
 
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 32; i++)
         {
             System.out.println("Reproduzindo som " + i);
             Integer somDaIgnicao = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/jogos/corrida/sons/som_ligar.mp3");

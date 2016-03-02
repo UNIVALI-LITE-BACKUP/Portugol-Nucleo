@@ -28,6 +28,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -132,7 +134,7 @@ public final class Sons extends Biblioteca
                 Som som = sons.get(endereco);
                 Integer enderecoDaReproducao = indiceDasReproducoes.incrementAndGet();
                 Reproducao reproducao = new Reproducao(som, formatoDeAudio, enderecoDaReproducao);
-                reproducao.setVolumeGeral(volumeGeral/100f);
+                reproducao.setVolumeGeral(volumeGeral / 100f);
                 reproducoes.put(enderecoDaReproducao, reproducao);
                 reproducao.inicia(repetir);
                 return enderecoDaReproducao;
@@ -190,7 +192,7 @@ public final class Sons extends Biblioteca
         }
     }
 
-      @DocumentacaoFuncao(
+    @DocumentacaoFuncao(
             descricao = "Define o volume geral",
             parametros =
             {
@@ -206,10 +208,10 @@ public final class Sons extends Biblioteca
         volumeGeral = volume;
         for (Reproducao reproducao : reproducoes.values())
         {
-            reproducao.setVolumeGeral(volume/100f);
+            reproducao.setVolumeGeral(volume / 100f);
         }
     }
-    
+
     @DocumentacaoFuncao(
             descricao = "Retorna o volume geral",
             retorno = "Um valor do tipo inteiro entre 0 e 100 representando o volume geral atual.",
@@ -222,8 +224,7 @@ public final class Sons extends Biblioteca
     {
         return volumeGeral;
     }
-    
-    
+
     @DocumentacaoFuncao(
             descricao = "Retornar o volume de uma reprodução de som",
             parametros =
@@ -241,11 +242,11 @@ public final class Sons extends Biblioteca
         if (reproducoes.containsKey(endereco))
         {
             Reproducao reproducao = reproducoes.get(endereco);
-            return (int)(reproducao.getVolume() * 100);
+            return (int) (reproducao.getVolume() * 100);
         }
         return -1;
     }
-    
+
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
@@ -270,14 +271,26 @@ public final class Sons extends Biblioteca
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
 
-        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws IOException, UnsupportedAudioFileException
+        public Reproducao(Som som, AudioFormat formatoDeAudio, final Integer endereco) throws IOException, UnsupportedAudioFileException
         {
             try
             {
                 reprodutor = AudioSystem.getClip();
                 reprodutor.open(criaStream(som, formatoDeAudio));
+                reprodutor.addLineListener(new LineListener()
+                {
+                    @Override
+                    public void update(LineEvent evento)
+                    {
+                        if (evento.getType() == LineEvent.Type.STOP)
+                        {
+                            LOGGER.log(Level.INFO, "Fechando linha de execução de áudio!");
+                            evento.getLine().close();
+                        }
+                    }
+                });
             }
-            catch(LineUnavailableException excecao)
+            catch (LineUnavailableException excecao)
             {
                 LOGGER.log(Level.WARNING, "Não foi possível criar ou abrir uma linha de execução de áudio!", excecao);
                 reprodutor = null;
@@ -290,8 +303,10 @@ public final class Sons extends Biblioteca
          */
         void setVolume(float volume)
         {
-            if (reprodutor == null )
+            if (reprodutor == null)
+            {
                 return;
+            }
 
             this.volume = limitaValorDoVolume(volume);
 
@@ -302,9 +317,16 @@ public final class Sons extends Biblioteca
                 float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
                 FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
                 if (valorEmDecibeis < controleDeVolume.getMinimum())
+                {
                     valorEmDecibeis = controleDeVolume.getMinimum();
-                else if (valorEmDecibeis > controleDeVolume.getMaximum())
-                    valorEmDecibeis = controleDeVolume.getMaximum();
+                }
+                else
+                {
+                    if (valorEmDecibeis > controleDeVolume.getMaximum())
+                    {
+                        valorEmDecibeis = controleDeVolume.getMaximum();
+                    }
+                }
                 controleDeVolume.setValue(valorEmDecibeis);
                 LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
                 LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
@@ -315,7 +337,7 @@ public final class Sons extends Biblioteca
                 LOGGER.log(Level.WARNING, "O controle de volume não é suportado!");
             }
         }
-        
+
         void setVolumeGeral(float volumeGeral) //esse 'workaround' no volume geral foi usado porque o Java não permite manipular o volume geral
         {
             this.volumeGeral = volumeGeral;
@@ -334,9 +356,11 @@ public final class Sons extends Biblioteca
 
         public void inicia(boolean repetir)
         {
-            if (reprodutor == null )
+            if (reprodutor == null)
+            {
                 return;
-            
+            }
+
             if (!repetir)
             {
                 reprodutor.start();
@@ -349,10 +373,13 @@ public final class Sons extends Biblioteca
 
         public void interrompe()
         {
-            if (reprodutor == null )
+            if (reprodutor == null)
+            {
                 return;
-            
+            }
+
             reprodutor.stop();
+            reprodutor.close();
         }
     }
 
