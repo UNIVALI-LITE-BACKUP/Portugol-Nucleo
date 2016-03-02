@@ -265,17 +265,24 @@ public final class Sons extends Biblioteca
 
     private class Reproducao
     {
-        private final Clip reprodutor;
+        private Clip reprodutor;
         private final Integer endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
 
-        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws LineUnavailableException, IOException, UnsupportedAudioFileException
+        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws IOException, UnsupportedAudioFileException
         {
-            Clip clip = AudioSystem.getClip();
-            clip.open(criaStream(som, formatoDeAudio));
+            try
+            {
+                reprodutor = AudioSystem.getClip();
+                reprodutor.open(criaStream(som, formatoDeAudio));
+            }
+            catch(LineUnavailableException excecao)
+            {
+                LOGGER.log(Level.WARNING, "Não foi possível criar ou abrir uma linha de execução de áudio!", excecao);
+                reprodutor = null;
+            }
             this.endereco = endereco;
-            this.reprodutor = clip;
         }
 
         /**
@@ -283,6 +290,9 @@ public final class Sons extends Biblioteca
          */
         void setVolume(float volume)
         {
+            if (reprodutor == null )
+                return;
+
             this.volume = limitaValorDoVolume(volume);
 
             if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
@@ -312,11 +322,6 @@ public final class Sons extends Biblioteca
             setVolume(this.volume); //atualiza o volume
         }
 
-        public Clip getReprodutor()
-        {
-            return reprodutor;
-        }
-
         public float getVolume()
         {
             return volume;
@@ -329,6 +334,9 @@ public final class Sons extends Biblioteca
 
         public void inicia(boolean repetir)
         {
+            if (reprodutor == null )
+                return;
+            
             if (!repetir)
             {
                 reprodutor.start();
@@ -341,6 +349,9 @@ public final class Sons extends Biblioteca
 
         public void interrompe()
         {
+            if (reprodutor == null )
+                return;
+            
             reprodutor.stop();
         }
     }
