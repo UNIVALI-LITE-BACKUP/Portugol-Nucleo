@@ -83,6 +83,8 @@ public final class AnalisadorSemantico implements VisitanteASA
     private boolean declarandoMatriz;
     private boolean passandoReferencia = false;
     private boolean passandoParametro = false;
+    
+    public final static String FUNCAO_LEIA = "leia";
 
     public AnalisadorSemantico()
     {
@@ -234,7 +236,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
         return null;
     }
-
+    
     @Override
     public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
@@ -252,7 +254,16 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         List<ModoAcesso> modosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
         List<ModoAcesso> modosAcessoPassados = obterModosAcessoPassados(chamadaFuncao);
-
+        
+        //Se for a função leia, configura o modo de acesso esperado por referencia.
+        if(chamadaFuncao.getNome().equals(FUNCAO_LEIA)){
+            int qtdAcessosPassados = modosAcessoPassados.size();
+            
+            for(int indice = 0; indice < qtdAcessosPassados; indice++){
+                modosAcessoEsperados.add(ModoAcesso.POR_REFERENCIA);
+            }
+        }
+        
         int cont = Math.min(modosAcessoEsperados.size(), modosAcessoPassados.size());
 
         for (int indice = 0; indice < cont; indice++)
@@ -262,7 +273,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             if (modoAcessoEsperado == ModoAcesso.POR_REFERENCIA && modoAcessoPassado == ModoAcesso.POR_VALOR)
             {
-                notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome()));
+                notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome(), indice));
             }
         }
     }
@@ -658,7 +669,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                 try
                 {
-                    if (parametro instanceof NoReferenciaVariavel && chamadaFuncao.getNome().equals("leia"))
+                    if (parametro instanceof NoReferenciaVariavel && chamadaFuncao.getNome().equals(FUNCAO_LEIA))
                     {
                         String nome = ((NoReferenciaVariavel) parametro).getNome();
 
@@ -699,7 +710,8 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         int esperados = obterNumeroParametrosEsperados(chamadaFuncao);
         int passados = (chamadaFuncao.getParametros() != null) ? chamadaFuncao.getParametros().size() : 0;
-
+        
+        //Funções como leia e escreva aceitam numeros infinitos de parametros, mas não nenhum.
         if ((esperados == Integer.MAX_VALUE && passados == 0) || (esperados != Integer.MAX_VALUE && passados != esperados))
         {
             notificarErroSemantico(new ErroNumeroParametrosFuncao(passados, esperados, chamadaFuncao));
@@ -1976,7 +1988,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         List<String> funcoes = new ArrayList<String>();
 
-        funcoes.add("leia");
+        funcoes.add(FUNCAO_LEIA);
         funcoes.add("escreva");
         funcoes.add("limpa");
         
@@ -2259,4 +2271,6 @@ public final class AnalisadorSemantico implements VisitanteASA
     {
         throw new UnsupportedOperationException("Não implementado");
     }
+
+    
 }
