@@ -58,11 +58,11 @@ public final class ErroPassagemParametroInvalida extends ErroSemantico
 
         if (nomeFuncao.equals(AnalisadorSemantico.FUNCAO_LEIA))
         {
-            construtorTexto.append("Não é possível passar uma expressão constante para a função ");
-            construtorTexto.append(AnalisadorSemantico.FUNCAO_LEIA);
-            construtorTexto.append(" altere ou remova o parametro na posição ");
+            construtorTexto.append("Não é possível passar um valor literal, constante ou expressão para o parâmetro na posição \"");
             construtorTexto.append(posicaoParametro+1);
-            construtorTexto.append(" da função");
+            construtorTexto.append("\"da função \"");
+            construtorTexto.append(AnalisadorSemantico.FUNCAO_LEIA);
+            construtorTexto.append("\" pois este parâmetro espera uma referência. Tente passar uma variável, vetor ou matriz para a função sem ser constante");
         }
         else
         {
