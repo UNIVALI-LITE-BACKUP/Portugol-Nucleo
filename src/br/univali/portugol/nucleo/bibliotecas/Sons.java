@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -43,13 +46,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 )
 public final class Sons extends Biblioteca
 {
-    private final Logger LOGGER = Logger.getLogger(Sons.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Sons.class.getName());
 
     private final AtomicInteger indiceDosSons = new AtomicInteger(0);
     private final AtomicInteger indiceDasReproducoes = new AtomicInteger(0);
 
     private final Map<Integer, Som> sons = new HashMap<>();
-    private final Map<Integer, Reproducao> reproducoes = new HashMap<>();
+    private final Map<Integer, Reproducao> reproducoes = Collections.synchronizedMap(new HashMap<Integer, Reproducao>());
 
     private final AudioFormat formatoDeAudio = criaFormatoDeAudioPadrao();
 
@@ -132,7 +135,7 @@ public final class Sons extends Biblioteca
                 Som som = sons.get(endereco);
                 Integer enderecoDaReproducao = indiceDasReproducoes.incrementAndGet();
                 Reproducao reproducao = new Reproducao(som, formatoDeAudio, enderecoDaReproducao);
-                reproducao.setVolumeGeral(volumeGeral/100f);
+                reproducao.setVolumeGeral(volumeGeral / 100f);
                 reproducoes.put(enderecoDaReproducao, reproducao);
                 reproducao.inicia(repetir);
                 return enderecoDaReproducao;
@@ -158,11 +161,14 @@ public final class Sons extends Biblioteca
     )
     public void interromper_som(Integer endereco) throws ErroExecucaoBiblioteca
     {
-        if (reproducoes.containsKey(endereco))
+        synchronized (reproducoes)
         {
-            Reproducao reproducao = reproducoes.get(endereco);
-            reproducao.interrompe();
-            reproducoes.remove(endereco);
+            if (reproducoes.containsKey(endereco))
+            {
+                Reproducao reproducao = reproducoes.get(endereco);
+                reproducao.interrompe();
+                reproducoes.remove(endereco);
+            }
         }
     }
 
@@ -180,17 +186,20 @@ public final class Sons extends Biblioteca
     )
     public void definir_volume_reproducao(Integer endereco, Integer volume) throws ErroExecucaoBiblioteca
     {
-        if (reproducoes.containsKey(endereco))
+        synchronized (reproducoes)
         {
-            reproducoes.get(endereco).setVolume(volume / 100f);
-        }
-        else
-        {
-            LOGGER.log(Level.WARNING, "Índice de reprodução não encontrado!");
+            if (reproducoes.containsKey(endereco))
+            {
+                reproducoes.get(endereco).setVolume(volume / 100f);
+            }
+            else
+            {
+                LOGGER.log(Level.WARNING, "Índice de reprodução não encontrado!");
+            }
         }
     }
 
-      @DocumentacaoFuncao(
+    @DocumentacaoFuncao(
             descricao = "Define o volume geral",
             parametros =
             {
@@ -203,13 +212,16 @@ public final class Sons extends Biblioteca
     )
     public void definir_volume(Integer volume) throws ErroExecucaoBiblioteca
     {
-        volumeGeral = volume;
-        for (Reproducao reproducao : reproducoes.values())
+        synchronized (reproducoes)
         {
-            reproducao.setVolumeGeral(volume/100f);
+            volumeGeral = volume;
+            for (Reproducao reproducao : reproducoes.values())
+            {
+                reproducao.setVolumeGeral(volume / 100f);
+            }
         }
     }
-    
+
     @DocumentacaoFuncao(
             descricao = "Retorna o volume geral",
             retorno = "Um valor do tipo inteiro entre 0 e 100 representando o volume geral atual.",
@@ -222,8 +234,7 @@ public final class Sons extends Biblioteca
     {
         return volumeGeral;
     }
-    
-    
+
     @DocumentacaoFuncao(
             descricao = "Retornar o volume de uma reprodução de som",
             parametros =
@@ -238,14 +249,17 @@ public final class Sons extends Biblioteca
     )
     public Integer obter_volume_reproducao(Integer endereco) throws ErroExecucaoBiblioteca
     {
-        if (reproducoes.containsKey(endereco))
+        synchronized (reproducoes)
         {
-            Reproducao reproducao = reproducoes.get(endereco);
-            return (int)(reproducao.getVolume() * 100);
+            if (reproducoes.containsKey(endereco))
+            {
+                Reproducao reproducao = reproducoes.get(endereco);
+                return (int) (reproducao.getVolume() * 100);
+            }
         }
         return -1;
     }
-    
+
     @Override
     protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
@@ -255,27 +269,72 @@ public final class Sons extends Biblioteca
     @Override
     protected void finalizar() throws ErroExecucaoBiblioteca
     {
-        for (Reproducao reproducao : reproducoes.values())
+        synchronized (reproducoes)
         {
-            reproducao.interrompe();
+            for (Reproducao reproducao : reproducoes.values())
+            {
+                reproducao.interrompe();
+            }
+            reproducoes.clear();
         }
-        reproducoes.clear();
         sons.clear();
+    }
+
+    private class ListenerDeInterrupcaoDeAudio implements LineListener
+    {
+        private final Integer endereco;
+
+        public ListenerDeInterrupcaoDeAudio(Integer endereco)
+        {
+            this.endereco = endereco;
+        }
+
+        @Override
+        public void update(LineEvent evento)
+        {
+            if (evento.getType() == LineEvent.Type.STOP)
+            {
+                try
+                {
+                    interromper_som(endereco);
+                }
+                catch (ErroExecucaoBiblioteca excecao)
+                {
+                    LOGGER.log(Level.SEVERE, null, excecao);
+                }
+
+            }
+        }
+
     }
 
     private class Reproducao
     {
-        private final Clip reprodutor;
+        private Clip reprodutor;
         private final Integer endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
+        private FloatControl controleDeVolume = null;
 
-        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws LineUnavailableException, IOException, UnsupportedAudioFileException
+        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws IOException, UnsupportedAudioFileException
         {
-            Clip clip = AudioSystem.getClip();
-            clip.open(criaStream(som, formatoDeAudio));
             this.endereco = endereco;
-            this.reprodutor = clip;
+            try
+            {
+                reprodutor = AudioSystem.getClip();
+                reprodutor.open(criaStream(som, formatoDeAudio));
+                reprodutor.addLineListener(new ListenerDeInterrupcaoDeAudio(endereco));
+
+                if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
+                {
+                    controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
+                }
+            }
+            catch (LineUnavailableException excecao)
+            {
+                LOGGER.log(Level.WARNING, "Não foi possível criar ou abrir uma linha de execução de áudio!", excecao);
+                reprodutor = null;
+            }
         }
 
         /**
@@ -283,38 +342,37 @@ public final class Sons extends Biblioteca
          */
         void setVolume(float volume)
         {
+            if (reprodutor == null || controleDeVolume == null)
+            {
+                return;
+            }
+
             this.volume = limitaValorDoVolume(volume);
 
-            if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
+            float valorLinear = this.volume * this.volumeGeral;
+            float volumeExponencial = SonsUtils.linearParaExponencial(valorLinear); //É possível converter o valor linear para decibéis diretamente, entretanto converter os valores lineares para exponenciais faz com que as alterações de volume se adequem melhor à audição humana. Mais detalhes em http://www.dr-lex.be/info-stuff/volumecontrols.html
+            float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
+            if (valorEmDecibeis < controleDeVolume.getMinimum())
             {
-                float valorLinear = this.volume * this.volumeGeral;
-                float volumeExponencial = SonsUtils.linearParaExponencial(valorLinear); //É possível converter o valor linear para decibéis diretamente, entretanto converter os valores lineares para exponenciais faz com que as alterações de volume se adequem melhor à audição humana. Mais detalhes em http://www.dr-lex.be/info-stuff/volumecontrols.html
-                float valorEmDecibeis = SonsUtils.linearParaDecibel(volumeExponencial);
-                FloatControl controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
-                if (valorEmDecibeis < controleDeVolume.getMinimum())
-                    valorEmDecibeis = controleDeVolume.getMinimum();
-                else if (valorEmDecibeis > controleDeVolume.getMaximum())
-                    valorEmDecibeis = controleDeVolume.getMaximum();
-                controleDeVolume.setValue(valorEmDecibeis);
-                LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
-                LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
-                LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
+                valorEmDecibeis = controleDeVolume.getMinimum();
             }
             else
             {
-                LOGGER.log(Level.WARNING, "O controle de volume não é suportado!");
+                if (valorEmDecibeis > controleDeVolume.getMaximum())
+                {
+                    valorEmDecibeis = controleDeVolume.getMaximum();
+                }
             }
+            controleDeVolume.setValue(valorEmDecibeis);
+            LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
+            LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
+            LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
         }
-        
+
         void setVolumeGeral(float volumeGeral) //esse 'workaround' no volume geral foi usado porque o Java não permite manipular o volume geral
         {
             this.volumeGeral = volumeGeral;
             setVolume(this.volume); //atualiza o volume
-        }
-
-        public Clip getReprodutor()
-        {
-            return reprodutor;
         }
 
         public float getVolume()
@@ -329,6 +387,11 @@ public final class Sons extends Biblioteca
 
         public void inicia(boolean repetir)
         {
+            if (reprodutor == null)
+            {
+                return;
+            }
+
             if (!repetir)
             {
                 reprodutor.start();
@@ -341,7 +404,13 @@ public final class Sons extends Biblioteca
 
         public void interrompe()
         {
+            if (reprodutor == null)
+            {
+                return;
+            }
+
             reprodutor.stop();
+            reprodutor.close();
         }
     }
 
