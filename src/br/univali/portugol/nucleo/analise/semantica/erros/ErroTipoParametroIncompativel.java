@@ -110,17 +110,21 @@ public class ErroTipoParametroIncompativel extends ErroSemantico
     protected String construirMensagem()
     {
         StringBuilder construtorString = new StringBuilder();
-
-        construtorString.append("Tipos incompatíveis! O parâmetro \"");
-        construtorString.append(nomeParametro);
-        construtorString.append("\" da função \"");
-        construtorString.append(nomeFuncao);
-        construtorString.append("\" espera uma expressão do tipo \"");
-        construtorString.append(tipoEsperado);
-        construtorString.append("\", mas foi passada uma expressão do tipo \"");
-        construtorString.append(tipoPassado);
-        construtorString.append("\".");
-
+        
+        if(AnalisadorSemantico.FUNCAO_ESCREVA.equals(nomeFuncao)){
+            construtorString.append("Você não pode passar uma função com retorno vazio para a função escreva.");
+        }else{
+            construtorString.append("Tipos incompatíveis! O parâmetro \"");
+            construtorString.append(nomeParametro);
+            construtorString.append("\" da função \"");
+            construtorString.append(nomeFuncao);
+            construtorString.append("\" espera uma expressão do tipo \"");
+            construtorString.append(tipoEsperado);
+            construtorString.append("\", mas foi passada uma expressão do tipo \"");
+            construtorString.append(tipoPassado);
+            construtorString.append("\".");
+        }
+        
         return construtorString.toString();
     }
 }
