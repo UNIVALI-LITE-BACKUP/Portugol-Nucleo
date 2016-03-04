@@ -2,8 +2,10 @@ package br.univali.portugol.nucleo.analise.semantica.erros;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoOperacao;
+import br.univali.portugol.nucleo.asa.NoValor;
 import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
@@ -37,7 +39,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  * @see AnalisadorSemantico
  * @see ErroOperandoEsquerdoAtribuicaoConstante
  */
-public final class ErroOperacaoComExpressaoConstante extends ErroSemantico
+public final class ErroAtribuirEmExpressao extends ErroSemantico
 {
     private NoBloco operacao;
     private NoExpressao expressao;
@@ -47,9 +49,9 @@ public final class ErroOperacaoComExpressaoConstante extends ErroSemantico
      * @param operacao        a operação que está sendo realizada com a expressão constante.
      * @param expressao       a expressão constante que está sendo alterada.
      */
-    public ErroOperacaoComExpressaoConstante(NoBloco operacao, NoExpressao expressao)
+    public ErroAtribuirEmExpressao(NoBloco operacao, NoExpressao expressao)
     {
-        super(expressao.getTrechoCodigoFonte(), "ErroSemantico.ErroOperacaoComExpressaoConstante");
+        super(operacao.getTrechoCodigoFonte(), "ErroSemantico.ErroOperacaoComExpressaoConstante");
 
         this.operacao = operacao;
         this.expressao = expressao;
@@ -99,6 +101,26 @@ public final class ErroOperacaoComExpressaoConstante extends ErroSemantico
      */    
     private String construirMensagemAtribuicao()
     {
-        return "Não é possível atribuir um valor à expressão pois ela é constante!";
+        StringBuilder builder = new StringBuilder();
+        
+        builder.append("Não é possível realizar uma atribuição à ");
+                
+        if (expressao instanceof NoValor)
+        {
+            builder.append("um valor literal.");
+        }
+        else if (expressao instanceof NoChamadaFuncao)
+        {
+            builder.append("uma chamada de função.");
+        }
+        else
+        {
+            builder.append("uma expressão.");
+        }
+            
+        builder.append(" Você só pode realizar atribuições à variáveis, vetores ou matrizes que não tenham sido declarados como constantes. Se você estiver tentando comparar a igualdade de duas expressões, utilize o operador '==' ao invés do operador '='");
+
+        
+        return builder.toString();
     }
 }
