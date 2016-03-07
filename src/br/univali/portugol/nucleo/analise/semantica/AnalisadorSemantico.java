@@ -978,11 +978,20 @@ public final class AnalisadorSemantico implements VisitanteASA
                             throw excecao;
                         }
                     }
-
                 }
                 else
                 {
-                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoMatriz));
+                    if (linhas == null)
+                    {
+                        linhas = 0;
+                    }
+                    
+                    if (colunas == null)
+                    {
+                        colunas = 0;
+                    }
+                    
+                    notificarErroSemantico(new ErroAoInicializarMatriz(matriz, noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), linhas, colunas));
                 }
             }
 
@@ -1434,7 +1443,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 {
                                     if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz))
                                     {
-                                        notificarErroSemantico(new ErroAoInicializarMatriz(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
+                                        notificarErroSemantico(new ErroAoInicializarMatriz((Matriz) simbolo, noOperacao.getOperandoDireito().getTrechoCodigoFonte(), ((Matriz) simbolo).getNumeroLinhas(), ((Matriz) simbolo).getNumeroColunas()));
                                     }
                                 }
                             }
