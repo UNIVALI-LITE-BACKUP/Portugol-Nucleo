@@ -10,10 +10,10 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
  */
 public final class ErroPassagemParametroInvalida extends ErroSemantico
 {
-    private NoExpressao valor;
-    private String nomeParametro;
-    private String nomeFuncao;
-    private int posicaoParametro;
+    private final NoExpressao valor;
+    private final String nomeParametro;
+    private final String nomeFuncao;
+    private final int posicaoParametro;
     
     public ErroPassagemParametroInvalida(NoExpressao valor, String nomeParametro, String nomeFuncao, int posicaoParametro)
     {
@@ -52,17 +52,15 @@ public final class ErroPassagemParametroInvalida extends ErroSemantico
     @Override
     protected String construirMensagem()
     {
-        //return new ErroPassagemParametroInvalida.ConstrutorMensagem().construirMensagem();
-
         StringBuilder construtorTexto = new StringBuilder();
 
         if (nomeFuncao.equals(AnalisadorSemantico.FUNCAO_LEIA))
         {
             construtorTexto.append("Não é possível passar um valor literal, constante ou expressão para o parâmetro na posição \"");
-            construtorTexto.append(posicaoParametro+1);
+            construtorTexto.append(posicaoParametro + 1);
             construtorTexto.append("\" da função \"");
             construtorTexto.append(AnalisadorSemantico.FUNCAO_LEIA);
-            construtorTexto.append("\", pois este parâmetro espera uma referência. Tente passar uma variável, vetor ou matriz para a função sem ser constante");
+            construtorTexto.append("\". Tente passar uma variável, vetor ou matriz que não tenha sido declarada como constante");
         }
         else
         {
