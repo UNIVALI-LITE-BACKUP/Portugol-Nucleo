@@ -17,7 +17,7 @@ import br.univali.portugol.nucleo.execucao.Depurador;
  * @author Luiz Fernando Noschang
  * @version 1.13
  */
-public final class NoOperacaoLogicaMenor extends NoOperacao
+public final class NoOperacaoLogicaMenor extends NoOperacaoLogica
 {
     public NoOperacaoLogicaMenor(NoExpressao operandoEsquerdo, NoExpressao operandoDireito)
     {

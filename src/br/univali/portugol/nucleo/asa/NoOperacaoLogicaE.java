@@ -41,7 +41,7 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * @version 1.13
  */
-public class NoOperacaoLogicaE extends NoOperacao
+public class NoOperacaoLogicaE extends NoOperacaoLogica
 {
 
     public NoOperacaoLogicaE(NoExpressao operandoEsquerdo, NoExpressao operandoDireito)

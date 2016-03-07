@@ -22,12 +22,13 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoInicializarVetor
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmChamadaFuncao;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmConstante;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirMatrizVetorEmVariavel;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroBlocoInvalido;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoConstante;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosFuncao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroOperacaoComExpressaoConstante;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmExpressao;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroPassagemParametroInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantificadorParametroFuncao;
@@ -993,11 +994,20 @@ public final class AnalisadorSemantico implements VisitanteASA
                             throw excecao;
                         }
                     }
-
                 }
                 else
                 {
-                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoMatriz));
+                    if (linhas == null)
+                    {
+                        linhas = 0;
+                    }
+                    
+                    if (colunas == null)
+                    {
+                        colunas = 0;
+                    }
+                    
+                    notificarErroSemantico(new ErroAoInicializarMatriz(matriz, noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), linhas, colunas));
                 }
             }
 
@@ -1235,7 +1245,12 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
                 else
                 {
-                    notificarErroSemantico(new ErroInicializacaoInvalida(noDeclaracaoVetor));
+                    if (tamanho == null)
+                    {
+                        tamanho = 0;
+                    }
+                    
+                    notificarErroSemantico(new ErroAoInicializarVetor(vetor, noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte(), tamanho));
                 }
             }
 
@@ -1397,7 +1412,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         boolean inicializadoAnterior = false;
         if (!(noOperacao.getOperandoEsquerdo() instanceof NoReferencia))
         {
-            notificarErroSemantico(new ErroOperacaoComExpressaoConstante(noOperacao, noOperacao.getOperandoEsquerdo()));
+            notificarErroSemantico(new ErroAtribuirEmExpressao(noOperacao, noOperacao.getOperandoEsquerdo()));
         }
         else
         {
@@ -1419,7 +1434,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                             if (simbolo.constante())
                             {
                                 final Simbolo pSimbolo = simbolo;
-                                notificarErroSemantico(new ErroAtribuirEmConstante(noOperacao.getTrechoCodigoFonte(), pSimbolo));
+                                notificarErroSemantico(new ErroAtribuirEmConstante(noOperacao.getOperandoEsquerdo().getTrechoCodigoFonte(), pSimbolo));
                             }
 
                             if ((noOperacao.getOperandoDireito() instanceof NoMatriz)
@@ -1434,7 +1449,10 @@ public final class AnalisadorSemantico implements VisitanteASA
                             {
                                 if (!(noOperacao.getOperandoDireito() instanceof NoVetor))
                                 {
-                                    notificarErroSemantico(new ErroAoInicializarVetor(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
+                                    if (declarandoVetor)
+                                    {
+                                        notificarErroSemantico(new ErroAoInicializarVetor((Vetor) simbolo, noOperacao.getOperandoDireito().getTrechoCodigoFonte(), ((Vetor) simbolo).getTamanho()));
+                                    }
                                 }
                             }
                             else
@@ -1443,7 +1461,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                                 {
                                     if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz))
                                     {
-                                        notificarErroSemantico(new ErroAoInicializarMatriz(noOperacao.getOperandoDireito().getTrechoCodigoFonte()));
+                                        notificarErroSemantico(new ErroAoInicializarMatriz((Matriz) simbolo, noOperacao.getOperandoDireito().getTrechoCodigoFonte(), ((Matriz) simbolo).getNumeroLinhas(), ((Matriz) simbolo).getNumeroColunas()));
                                     }
                                 }
                             }
@@ -2083,6 +2101,12 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             try
             {
+                if (!blocoValido(noBloco))
+                {
+                    notificarErroSemantico(new ErroBlocoInvalido(noBloco));
+                }
+                    
+                    
                 noBloco.aceitar(this);
             }
             catch (ExcecaoVisitaASA excecao)
@@ -2095,6 +2119,31 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
 
         memoria.desempilharEscopo();
+    }
+    
+    private boolean blocoValido(NoBloco bloco)
+    {
+        Class classeBloco = bloco.getClass();
+        Class<? extends NoBloco> [] classesPermitidas = new Class[]
+        {
+            NoDeclaracaoVariavel.class, NoDeclaracaoVetor.class, NoDeclaracaoMatriz.class,
+            
+            NoCaso.class, NoEnquanto.class, NoEscolha.class, NoFacaEnquanto.class, NoPara.class, NoSe.class,
+            
+            NoPare.class, NoRetorne.class, NoTitulo.class, NoVaPara.class, 
+            
+            NoOperacaoAtribuicao.class, NoChamadaFuncao.class
+        };
+        
+        for (Class classe : classesPermitidas)
+        {
+            if (classe.isAssignableFrom(classeBloco))
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     @Override
