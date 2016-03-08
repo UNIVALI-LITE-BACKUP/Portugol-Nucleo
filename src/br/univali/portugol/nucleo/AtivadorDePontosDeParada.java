@@ -434,7 +434,11 @@ public final class AtivadorDePontosDeParada implements VisitanteASA
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
-        noRetorne.getExpressao().aceitar(this);
+        NoExpressao noExpressao = noRetorne.getExpressao();
+        if (noExpressao != null)
+        {
+            noRetorne.getExpressao().aceitar(this);
+        }
         return null;
     }
 
