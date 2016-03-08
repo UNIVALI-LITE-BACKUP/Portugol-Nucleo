@@ -120,7 +120,7 @@ public class PortugolParser extends Parser
         };
     }
 
-	// delegators
+    // delegators
     public PortugolParser(TokenStream input)
     {
         this(input, new RecognizerSharedState());
@@ -287,7 +287,7 @@ public class PortugolParser extends Parser
         return valor;
     }
 
-	// $ANTLR start "parse"
+    // $ANTLR start "parse"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:231:1: parse returns [ArvoreSintaticaAbstrata asa] : prog= programa ;
     public final ArvoreSintaticaAbstrata parse() throws RecognitionException
     {
@@ -297,7 +297,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:231:43: (prog= programa )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:231:43: (prog= programa )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:233:2: prog= programa
             {
                 pushFollow(FOLLOW_programa_in_parse920);
@@ -327,7 +327,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "parse"
 
-	// $ANTLR start "programa"
+    // $ANTLR start "programa"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:240:1: programa returns [ArvoreSintaticaAbstrata asa] : PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' ;
     public final ArvoreSintaticaAbstrata programa() throws RecognitionException
     {
@@ -337,7 +337,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:243:2: ( PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:243:2: ( PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:245:2: PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}'
             {
                 match(input, PR_PROGRAMA, FOLLOW_PR_PROGRAMA_in_programa942);
@@ -464,7 +464,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "programa"
 
-	// $ANTLR start "inclusaoBiblioteca"
+    // $ANTLR start "inclusaoBiblioteca"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:266:1: inclusaoBiblioteca[ArvoreSintaticaAbstrataPrograma asa] : incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )? ;
     public final void inclusaoBiblioteca(ArvoreSintaticaAbstrataPrograma asa) throws RecognitionException
     {
@@ -476,7 +476,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:269:2: (incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:269:2: (incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:270:2: incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )?
             {
                 incl = (Token) match(input, PR_INCLUA, FOLLOW_PR_INCLUA_in_inclusaoBiblioteca1002);
@@ -573,7 +573,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "inclusaoBiblioteca"
 
-	// $ANTLR start "declaracoesGlobais"
+    // $ANTLR start "declaracoesGlobais"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:307:1: declaracoesGlobais[ArvoreSintaticaAbstrata asa] : vListaDeclaracoes= listaDeclaracoes ;
     public final void declaracoesGlobais(ArvoreSintaticaAbstrata asa) throws RecognitionException
     {
@@ -583,7 +583,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:310:2: (vListaDeclaracoes= listaDeclaracoes )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:310:2: (vListaDeclaracoes= listaDeclaracoes )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:312:2: vListaDeclaracoes= listaDeclaracoes
             {
                 pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesGlobais1051);
@@ -629,7 +629,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "declaracoesGlobais"
 
-	// $ANTLR start "declaracoesLocais"
+    // $ANTLR start "declaracoesLocais"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:335:1: declaracoesLocais[List<NoBloco> listaBlocos] : vListaDeclaracoes= listaDeclaracoes ;
     public final void declaracoesLocais(List<NoBloco> listaBlocos) throws RecognitionException
     {
@@ -639,7 +639,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:338:2: (vListaDeclaracoes= listaDeclaracoes )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:338:2: (vListaDeclaracoes= listaDeclaracoes )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:340:2: vListaDeclaracoes= listaDeclaracoes
             {
                 pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesLocais1079);
@@ -680,7 +680,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "declaracoesLocais"
 
-	// $ANTLR start "listaDeclaracoes"
+    // $ANTLR start "listaDeclaracoes"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:358:1: listaDeclaracoes returns [List<NoDeclaracao> listaDeclaracoes] : ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) ;
     public final List<NoDeclaracao> listaDeclaracoes() throws RecognitionException
     {
@@ -695,10 +695,10 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:362:2: ( ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:362:2: ( ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:363:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
             {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:363:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
+                // C:\\Users\\Paula\\Desktop\\Portugol.g:363:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:364:2: (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )*
                 {
                     if (state.backtracking == 0)
@@ -734,7 +734,7 @@ public class PortugolParser extends Parser
                     {
                         return listaDeclaracoes;
                     }
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:368:2: (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )
+                    // C:\\Users\\Paula\\Desktop\\Portugol.g:368:2: (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )
                     // C:\\Users\\Paula\\Desktop\\Portugol.g:368:4: vDeclaracao= declaracao[tokenConst, informacaoTipoDado]
                     {
                         pushFollow(FOLLOW_declaracao_in_listaDeclaracoes1135);
@@ -827,7 +827,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "listaDeclaracoes"
 
-	// $ANTLR start "declaracao"
+    // $ANTLR start "declaracao"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:397:1: declaracao[Token tokenConst, InformacaoTipoDado informacaoTipoDado] returns [NoDeclaracao declaracao] : ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) ;
     public final NoDeclaracao declaracao(Token tokenConst, InformacaoTipoDado informacaoTipoDado) throws RecognitionException
     {
@@ -844,10 +844,10 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:400:2: ( ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:400:2: ( ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:402:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
             {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:402:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
+                // C:\\Users\\Paula\\Desktop\\Portugol.g:402:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:402:3: ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )?
                 {
                     ID1 = (Token) match(input, ID, FOLLOW_ID_in_declaracao1202);
@@ -1043,7 +1043,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "declaracao"
 
-	// $ANTLR start "declaracaoTipoDado"
+    // $ANTLR start "declaracaoTipoDado"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:435:1: declaracaoTipoDado returns [InformacaoTipoDado informacaoTipoDado] : (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) ;
     public final InformacaoTipoDado declaracaoTipoDado() throws RecognitionException
     {
@@ -1055,7 +1055,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:438:2: ( (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:438:2: ( (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:440:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:440:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
@@ -1180,7 +1180,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "declaracaoTipoDado"
 
-	// $ANTLR start "declaracaoTipoDadoVazio"
+    // $ANTLR start "declaracaoTipoDadoVazio"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:456:1: declaracaoTipoDadoVazio returns [InformacaoTipoDado informacaoTipoDado] : PR_VAZIO ;
     public final InformacaoTipoDado declaracaoTipoDadoVazio() throws RecognitionException
     {
@@ -1192,7 +1192,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:459:2: ( PR_VAZIO )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:459:2: ( PR_VAZIO )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:461:2: PR_VAZIO
             {
                 PR_VAZIO2 = (Token) match(input, PR_VAZIO, FOLLOW_PR_VAZIO_in_declaracaoTipoDadoVazio1345);
@@ -1228,7 +1228,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "declaracaoTipoDadoVazio"
 
-	// $ANTLR start "quantificador"
+    // $ANTLR start "quantificador"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:478:1: quantificador returns [Quantificador quantificador] : (tk1= '[' ']' (tk2= '[' ']' )? )? ;
     public final Quantificador quantificador() throws RecognitionException
     {
@@ -1241,7 +1241,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:481:2: ( (tk1= '[' ']' (tk2= '[' ']' )? )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:481:2: ( (tk1= '[' ']' (tk2= '[' ']' )? )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:483:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:483:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
@@ -1341,7 +1341,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "quantificador"
 
-	// $ANTLR start "tipoRetornoFuncao"
+    // $ANTLR start "tipoRetornoFuncao"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:501:1: tipoRetornoFuncao returns [InformacaoTipoDado informacaoTipoDado] : (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? ;
     public final InformacaoTipoDado tipoRetornoFuncao() throws RecognitionException
     {
@@ -1353,7 +1353,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:504:2: ( (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:504:2: ( (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:506:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:506:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
@@ -1434,7 +1434,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "tipoRetornoFuncao"
 
-	// $ANTLR start "declaracaoFuncao"
+    // $ANTLR start "declaracaoFuncao"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:526:1: declaracaoFuncao[ArvoreSintaticaAbstrata asa] : PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' ;
     public final void declaracaoFuncao(ArvoreSintaticaAbstrata asa) throws RecognitionException
     {
@@ -1448,7 +1448,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:529:2: ( PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:529:2: ( PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:531:2: PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}'
             {
                 match(input, PR_FUNCAO, FOLLOW_PR_FUNCAO_in_declaracaoFuncao1459);
@@ -1541,7 +1541,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "declaracaoFuncao"
 
-	// $ANTLR start "listaParametrosFuncao"
+    // $ANTLR start "listaParametrosFuncao"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:562:1: listaParametrosFuncao returns [List<NoDeclaracaoParametro> listaParametros] : ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? ;
     public final List<NoDeclaracaoParametro> listaParametrosFuncao() throws RecognitionException
     {
@@ -1554,7 +1554,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:566:2: ( ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:566:2: ( ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:567:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:567:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
@@ -1569,7 +1569,7 @@ public class PortugolParser extends Parser
                     case 1:
                     // C:\\Users\\Paula\\Desktop\\Portugol.g:568:3: (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )*
                     {
-					// C:\\Users\\Paula\\Desktop\\Portugol.g:568:3: (vDeclaracaoParametro= declaracaoParametro )
+                        // C:\\Users\\Paula\\Desktop\\Portugol.g:568:3: (vDeclaracaoParametro= declaracaoParametro )
                         // C:\\Users\\Paula\\Desktop\\Portugol.g:568:8: vDeclaracaoParametro= declaracaoParametro
                         {
                             pushFollow(FOLLOW_declaracaoParametro_in_listaParametrosFuncao1588);
@@ -1655,7 +1655,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "listaParametrosFuncao"
 
-	// $ANTLR start "declaracaoParametro"
+    // $ANTLR start "declaracaoParametro"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:593:1: declaracaoParametro returns [NoDeclaracaoParametro parametro] : informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador ;
     public final NoDeclaracaoParametro declaracaoParametro() throws RecognitionException
     {
@@ -1670,7 +1670,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:596:2: (informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:596:2: (informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:598:2: informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador
             {
                 pushFollow(FOLLOW_declaracaoTipoDado_in_declaracaoParametro1669);
@@ -1764,7 +1764,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "declaracaoParametro"
 
-	// $ANTLR start "blocos"
+    // $ANTLR start "blocos"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:629:1: blocos returns [List<NoBloco> blocos] : (vBloco= bloco | declaracoesLocais[blocos] )* ;
     public final List<NoBloco> blocos() throws RecognitionException
     {
@@ -1777,7 +1777,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:633:2: ( (vBloco= bloco | declaracoesLocais[blocos] )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:633:2: ( (vBloco= bloco | declaracoesLocais[blocos] )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:634:2: (vBloco= bloco | declaracoesLocais[blocos] )*
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:634:2: (vBloco= bloco | declaracoesLocais[blocos] )*
@@ -1853,7 +1853,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "blocos"
 
-	// $ANTLR start "bloco"
+    // $ANTLR start "bloco"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:644:1: bloco returns [NoBloco bloco] : (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) ;
     public final NoBloco bloco() throws RecognitionException
     {
@@ -1872,7 +1872,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:647:2: ( (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:647:2: ( (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:648:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:648:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
@@ -2092,7 +2092,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "bloco"
 
-	// $ANTLR start "para"
+    // $ANTLR start "para"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:665:1: para returns [NoPara para] : PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? fp= ')' vBlocos= listaBlocos ;
     public final NoPara para() throws RecognitionException
     {
@@ -2109,7 +2109,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:668:2: ( PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? fp= ')' vBlocos= listaBlocos )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:668:2: ( PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? fp= ')' vBlocos= listaBlocos )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:670:2: PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? fp= ')' vBlocos= listaBlocos
             {
                 PR_PARA5 = (Token) match(input, PR_PARA, FOLLOW_PR_PARA_in_para1901);
@@ -2223,7 +2223,11 @@ public class PortugolParser extends Parser
                         para = new NoPara();
                         para.setInicializacao(inicializacao);
                         para.setCondicao(condicao);
-                        condicao.setPai(para);
+                        //A condição não pode ser nula, mas o erro será capturado no semantico.
+                        if (condicao != null)
+                        {
+                            condicao.setPai(para);
+                        }
                         para.setIncremento(incremento);
                         para.setBlocos(vBlocos);
 
@@ -2253,7 +2257,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "para"
 
-	// $ANTLR start "inicializacaoPara"
+    // $ANTLR start "inicializacaoPara"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:694:1: inicializacaoPara returns [NoBloco bloco] : (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) ;
     public final NoBloco inicializacaoPara() throws RecognitionException
     {
@@ -2266,7 +2270,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:697:2: ( (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:697:2: ( (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:699:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:699:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
@@ -2361,7 +2365,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "inicializacaoPara"
 
-	// $ANTLR start "listaBlocos"
+    // $ANTLR start "listaBlocos"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:715:1: listaBlocos returns [List<NoBloco> listaBlocos] : ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) ;
     public final List<NoBloco> listaBlocos() throws RecognitionException
     {
@@ -2374,7 +2378,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:718:2: ( ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:718:2: ( ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:719:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:719:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
@@ -2486,7 +2490,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "listaBlocos"
 
-	// $ANTLR start "pare"
+    // $ANTLR start "pare"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:740:1: pare returns [NoPare pare] : PR_PARE ;
     public final NoPare pare() throws RecognitionException
     {
@@ -2498,7 +2502,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:743:2: ( PR_PARE )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:743:2: ( PR_PARE )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:745:2: PR_PARE
             {
                 PR_PARE6 = (Token) match(input, PR_PARE, FOLLOW_PR_PARE_in_pare2072);
@@ -2533,7 +2537,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "pare"
 
-	// $ANTLR start "escolha"
+    // $ANTLR start "escolha"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:761:1: escolha returns [NoEscolha escolha] : PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}' ;
     public final NoEscolha escolha() throws RecognitionException
     {
@@ -2548,7 +2552,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:765:2: ( PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}' )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:765:2: ( PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}' )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:767:2: PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}'
             {
                 match(input, PR_ESCOLHA, FOLLOW_PR_ESCOLHA_in_escolha2099);
@@ -2736,7 +2740,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "escolha"
 
-	// $ANTLR start "blocosCaso"
+    // $ANTLR start "blocosCaso"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:810:1: blocosCaso returns [List<NoBloco> listaBlocos] : ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) ;
     public final List<NoBloco> blocosCaso() throws RecognitionException
     {
@@ -2748,7 +2752,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:813:2: ( ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:813:2: ( ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:815:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:815:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
@@ -2795,7 +2799,7 @@ public class PortugolParser extends Parser
                     case 1:
                     // C:\\Users\\Paula\\Desktop\\Portugol.g:815:4: ( '{' )=> ( '{' vBlocos= blocos '}' )
                     {
-					// C:\\Users\\Paula\\Desktop\\Portugol.g:815:12: ( '{' vBlocos= blocos '}' )
+                        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:12: ( '{' vBlocos= blocos '}' )
                         // C:\\Users\\Paula\\Desktop\\Portugol.g:815:13: '{' vBlocos= blocos '}'
                         {
                             match(input, 79, FOLLOW_79_in_blocosCaso2210);
@@ -2822,7 +2826,7 @@ public class PortugolParser extends Parser
                     case 2:
                     // C:\\Users\\Paula\\Desktop\\Portugol.g:815:41: (vBlocos= blocos )
                     {
-					// C:\\Users\\Paula\\Desktop\\Portugol.g:815:41: (vBlocos= blocos )
+                        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:41: (vBlocos= blocos )
                         // C:\\Users\\Paula\\Desktop\\Portugol.g:815:42: vBlocos= blocos
                         {
                             pushFollow(FOLLOW_blocos_in_blocosCaso2228);
@@ -2862,7 +2866,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "blocosCaso"
 
-	// $ANTLR start "enquanto"
+    // $ANTLR start "enquanto"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:826:1: enquanto returns [NoEnquanto enquanto] : PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ;
     public final NoEnquanto enquanto() throws RecognitionException
     {
@@ -2875,7 +2879,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:829:2: ( PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:829:2: ( PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:831:2: PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos
             {
                 match(input, PR_ENQUANTO, FOLLOW_PR_ENQUANTO_in_enquanto2257);
@@ -2934,7 +2938,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "enquanto"
 
-	// $ANTLR start "facaEnquanto"
+    // $ANTLR start "facaEnquanto"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:846:1: facaEnquanto returns [NoFacaEnquanto facaEnquanto] : PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' ;
     public final NoFacaEnquanto facaEnquanto() throws RecognitionException
     {
@@ -2947,7 +2951,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:849:2: ( PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:849:2: ( PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:851:2: PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')'
             {
                 match(input, PR_FACA, FOLLOW_PR_FACA_in_facaEnquanto2299);
@@ -3011,7 +3015,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "facaEnquanto"
 
-	// $ANTLR start "se"
+    // $ANTLR start "se"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:867:1: se returns [NoSe se] : PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? ;
     public final NoSe se() throws RecognitionException
     {
@@ -3025,7 +3029,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:870:2: ( PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:870:2: ( PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:872:2: PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )?
             {
                 match(input, PR_SE, FOLLOW_PR_SE_in_se2345);
@@ -3114,7 +3118,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "se"
 
-	// $ANTLR start "retorne"
+    // $ANTLR start "retorne"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:888:1: retorne returns [NoRetorne retorne] : PR_RETORNE (vExpressao= expressao )? ;
     public final NoRetorne retorne() throws RecognitionException
     {
@@ -3127,7 +3131,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:891:2: ( PR_RETORNE (vExpressao= expressao )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:891:2: ( PR_RETORNE (vExpressao= expressao )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:893:2: PR_RETORNE (vExpressao= expressao )?
             {
                 PR_RETORNE7 = (Token) match(input, PR_RETORNE, FOLLOW_PR_RETORNE_in_retorne2399);
@@ -3243,7 +3247,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "retorne"
 
-	// $ANTLR start "pilha"
+    // $ANTLR start "pilha"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:907:1: pilha returns [Stack<Object> pilha] :;
     public final Stack<Object> pilha() throws RecognitionException
     {
@@ -3251,7 +3255,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:907:35: ()
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:907:35: ()
             // C:\\Users\\Paula\\Desktop\\Portugol.g:908:1: 
             {
                 if (state.backtracking == 0)
@@ -3269,7 +3273,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "pilha"
 
-	// $ANTLR start "expressao"
+    // $ANTLR start "expressao"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:914:1: expressao returns [NoExpressao expressao] : operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )* ;
     public final NoExpressao expressao() throws RecognitionException
     {
@@ -3284,7 +3288,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:917:2: (operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:917:2: (operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:919:2: operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )*
             {
                 pushFollow(FOLLOW_expressao2_in_expressao2450);
@@ -3572,7 +3576,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao"
 
-	// $ANTLR start "expressao2"
+    // $ANTLR start "expressao2"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:964:1: expressao2 returns [NoExpressao expressao] : operandoEsquerdo= expressao2_5 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )* ;
     public final NoExpressao expressao2() throws RecognitionException
     {
@@ -3586,7 +3590,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:967:2: (operandoEsquerdo= expressao2_5 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:967:2: (operandoEsquerdo= expressao2_5 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:969:2: operandoEsquerdo= expressao2_5 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )*
             {
                 pushFollow(FOLLOW_expressao2_5_in_expressao22602);
@@ -3718,7 +3722,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao2"
 
-	// $ANTLR start "expressao2_5"
+    // $ANTLR start "expressao2_5"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1000:1: expressao2_5 returns [NoExpressao expressao] : operandoEsquerdo= expressao3 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )* ;
     public final NoExpressao expressao2_5() throws RecognitionException
     {
@@ -3732,7 +3736,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1003:2: (operandoEsquerdo= expressao3 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1003:2: (operandoEsquerdo= expressao3 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1005:2: operandoEsquerdo= expressao3 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )*
             {
                 pushFollow(FOLLOW_expressao3_in_expressao2_52684);
@@ -3864,7 +3868,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao2_5"
 
-	// $ANTLR start "expressao3"
+    // $ANTLR start "expressao3"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1037:1: expressao3 returns [NoExpressao expressao] : operandoEsquerdo= expressao3_5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )? ;
     public final NoExpressao expressao3() throws RecognitionException
     {
@@ -3878,7 +3882,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1040:2: (operandoEsquerdo= expressao3_5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1040:2: (operandoEsquerdo= expressao3_5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:2: operandoEsquerdo= expressao3_5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )?
             {
                 pushFollow(FOLLOW_expressao3_5_in_expressao32760);
@@ -4017,7 +4021,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao3"
 
-	// $ANTLR start "expressao3_5"
+    // $ANTLR start "expressao3_5"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1056:1: expressao3_5 returns [NoExpressao expressao] : operandoEsquerdo= expressao4_5 ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )* ;
     public final NoExpressao expressao3_5() throws RecognitionException
     {
@@ -4031,7 +4035,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1059:2: (operandoEsquerdo= expressao4_5 ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1059:2: (operandoEsquerdo= expressao4_5 ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1060:2: operandoEsquerdo= expressao4_5 ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )*
             {
                 pushFollow(FOLLOW_expressao4_5_in_expressao3_52831);
@@ -4174,7 +4178,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao3_5"
 
-	// $ANTLR start "expressao4_5"
+    // $ANTLR start "expressao4_5"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1091:1: expressao4_5 returns [NoExpressao expressao] : operandoEsquerdo= expressao5 ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )* ;
     public final NoExpressao expressao4_5() throws RecognitionException
     {
@@ -4188,7 +4192,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1094:2: (operandoEsquerdo= expressao5 ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1094:2: (operandoEsquerdo= expressao5 ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1094:4: operandoEsquerdo= expressao5 ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )*
             {
                 pushFollow(FOLLOW_expressao5_in_expressao4_52921);
@@ -4319,7 +4323,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao4_5"
 
-	// $ANTLR start "expressao5"
+    // $ANTLR start "expressao5"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1124:1: expressao5 returns [NoExpressao expressao] : operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* ;
     public final NoExpressao expressao5() throws RecognitionException
     {
@@ -4333,7 +4337,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1127:2: (operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1127:2: (operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1129:2: operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*
             {
                 pushFollow(FOLLOW_expressao6_in_expressao53004);
@@ -4354,7 +4358,7 @@ public class PortugolParser extends Parser
                         case 1:
                         // C:\\Users\\Paula\\Desktop\\Portugol.g:1131:3: (operador= '+' operandoDireito= expressao6 )
                         {
-					// C:\\Users\\Paula\\Desktop\\Portugol.g:1131:3: (operador= '+' operandoDireito= expressao6 )
+                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1131:3: (operador= '+' operandoDireito= expressao6 )
                             // C:\\Users\\Paula\\Desktop\\Portugol.g:1133:4: operador= '+' operandoDireito= expressao6
                             {
                                 if (state.backtracking == 0)
@@ -4388,7 +4392,7 @@ public class PortugolParser extends Parser
                         case 2:
                         // C:\\Users\\Paula\\Desktop\\Portugol.g:1150:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
                         {
-					// C:\\Users\\Paula\\Desktop\\Portugol.g:1150:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
+                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1150:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
                             // C:\\Users\\Paula\\Desktop\\Portugol.g:1152:5: ( '-' )=>operador= '-' operandoDireito= expressao6
                             {
                                 if (state.backtracking == 0)
@@ -4451,7 +4455,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao5"
 
-	// $ANTLR start "expressao6"
+    // $ANTLR start "expressao6"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1185:1: expressao6 returns [NoExpressao expressao] : operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* ;
     public final NoExpressao expressao6() throws RecognitionException
     {
@@ -4465,7 +4469,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1188:2: (operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1188:2: (operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1190:2: operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )*
             {
                 pushFollow(FOLLOW_expressao7_in_expressao63154);
@@ -4608,7 +4612,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao6"
 
-	// $ANTLR start "expressao7"
+    // $ANTLR start "expressao7"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1222:1: expressao7 returns [NoExpressao expressao] : ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' ) vExpressao= expressao8 ;
     public final NoExpressao expressao7() throws RecognitionException
     {
@@ -4626,7 +4630,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1225:2: ( ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' ) vExpressao= expressao8 )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1225:2: ( ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' ) vExpressao= expressao8 )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' ) vExpressao= expressao8
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' )
@@ -4980,7 +4984,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao7"
 
-	// $ANTLR start "expressao8"
+    // $ANTLR start "expressao8"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1253:1: expressao8 returns [NoExpressao expressao] : (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? ;
     public final NoExpressao expressao8() throws RecognitionException
     {
@@ -4995,7 +4999,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1256:2: ( (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1256:2: ( (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1258:2: (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )?
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:1258:2: (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor )
@@ -5179,7 +5183,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "expressao8"
 
-	// $ANTLR start "tipoPrimitivo"
+    // $ANTLR start "tipoPrimitivo"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1289:1: tipoPrimitivo returns [NoExpressao expressao] : ( REAL | LOGICO | CADEIA | INTEIRO | CARACTER );
     public final NoExpressao tipoPrimitivo() throws RecognitionException
     {
@@ -5328,15 +5332,15 @@ public class PortugolParser extends Parser
                                     {
                                         try
                                         {
-                                            int temp = Integer.parseInt((INTEIRO11 != null ? INTEIRO11.getText() : null));                                        
-                                        
+                                            int temp = Integer.parseInt((INTEIRO11 != null ? INTEIRO11.getText() : null));
+
                                             inteiro = new NoInteiro(temp);
                                         }
                                         catch (Exception e)
                                         {
                                             int linha = INTEIRO11.getLine();
                                             int coluna = INTEIRO11.getCharPositionInLine();
-                                            
+
                                             NoViableAltException error = new NoViableAltException("INT-OVERFLOW:" + INTEIRO11.getText(), 0, 0, input);
                                             error.line = linha;
                                             error.charPositionInLine = coluna;
@@ -5397,7 +5401,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "tipoPrimitivo"
 
-	// $ANTLR start "referencia"
+    // $ANTLR start "referencia"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1382:1: referencia returns [NoReferencia referencia] : (id= ID |id= ID_BIBLIOTECA ) ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] ) ;
     public final NoReferencia referencia() throws RecognitionException
     {
@@ -5410,7 +5414,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1385:2: ( (id= ID |id= ID_BIBLIOTECA ) ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1385:2: ( (id= ID |id= ID_BIBLIOTECA ) ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1387:2: (id= ID |id= ID_BIBLIOTECA ) ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] )
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:1387:2: (id= ID |id= ID_BIBLIOTECA )
@@ -5536,7 +5540,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "referencia"
 
-	// $ANTLR start "referenciaId"
+    // $ANTLR start "referenciaId"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1408:1: referenciaId[String id] returns [NoExpressao expressao] :;
     public final NoExpressao referenciaId(String id) throws RecognitionException
     {
@@ -5546,7 +5550,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1411:2: ()
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1411:2: ()
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1413:2: 
             {
                 if (state.backtracking == 0)
@@ -5580,7 +5584,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "referenciaId"
 
-	// $ANTLR start "referenciaVetorMatriz"
+    // $ANTLR start "referenciaVetorMatriz"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1437:1: referenciaVetorMatriz[ String id] returns [NoExpressao expressao] : '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? ;
     public final NoExpressao referenciaVetorMatriz(String id) throws RecognitionException
     {
@@ -5593,7 +5597,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1440:2: ( '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1440:2: ( '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1442:2: '[' indice1= expressao ']' ( '[' indice2= expressao ']' )?
             {
                 match(input, 73, FOLLOW_73_in_referenciaVetorMatriz3616);
@@ -5693,7 +5697,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "referenciaVetorMatriz"
 
-	// $ANTLR start "chamadaFuncao"
+    // $ANTLR start "chamadaFuncao"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1468:1: chamadaFuncao[String id] returns [NoExpressao expressao] : '(' (vListaParametros= listaParametros )? ')' ;
     public final NoExpressao chamadaFuncao(String id) throws RecognitionException
     {
@@ -5705,7 +5709,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1471:2: ( '(' (vListaParametros= listaParametros )? ')' )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1471:2: ( '(' (vListaParametros= listaParametros )? ')' )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1473:2: '(' (vListaParametros= listaParametros )? ')'
             {
                 match(input, 47, FOLLOW_47_in_chamadaFuncao3667);
@@ -5781,7 +5785,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "chamadaFuncao"
 
-	// $ANTLR start "listaParametros"
+    // $ANTLR start "listaParametros"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1501:1: listaParametros returns [List<NoExpressao> listaParametros] : (vExpressao= expressao ) ( ',' vExpressao= expressao )* ;
     public final List<NoExpressao> listaParametros() throws RecognitionException
     {
@@ -5794,10 +5798,10 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1505:2: ( (vExpressao= expressao ) ( ',' vExpressao= expressao )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1505:2: ( (vExpressao= expressao ) ( ',' vExpressao= expressao )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1506:2: (vExpressao= expressao ) ( ',' vExpressao= expressao )*
             {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1506:2: (vExpressao= expressao )
+                // C:\\Users\\Paula\\Desktop\\Portugol.g:1506:2: (vExpressao= expressao )
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:1506:6: vExpressao= expressao
                 {
                     pushFollow(FOLLOW_expressao_in_listaParametros3713);
@@ -5878,7 +5882,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "listaParametros"
 
-	// $ANTLR start "matrizVetor"
+    // $ANTLR start "matrizVetor"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1531:1: matrizVetor returns [NoExpressao expressao] : ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) ;
     public final NoExpressao matrizVetor() throws RecognitionException
     {
@@ -5890,7 +5894,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1534:2: ( ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1534:2: ( ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
@@ -5980,7 +5984,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "matrizVetor"
 
-	// $ANTLR start "vetor"
+    // $ANTLR start "vetor"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1551:1: vetor returns [NoExpressao expressao] : abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' ;
     public final NoExpressao vetor() throws RecognitionException
     {
@@ -5994,7 +5998,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1554:2: (abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1554:2: (abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1556:2: abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}'
             {
                 abre_ch = (Token) match(input, 79, FOLLOW_79_in_vetor3824);
@@ -6043,7 +6047,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "vetor"
 
-	// $ANTLR start "matriz"
+    // $ANTLR start "matriz"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1573:1: matriz returns [NoExpressao expressao] : abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' ;
     public final NoExpressao matriz() throws RecognitionException
     {
@@ -6057,7 +6061,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1576:2: (abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1576:2: (abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1578:2: abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}'
             {
                 abre_ch = (Token) match(input, 79, FOLLOW_79_in_matriz3869);
@@ -6106,7 +6110,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "matriz"
 
-	// $ANTLR start "listaListaExpressoes"
+    // $ANTLR start "listaListaExpressoes"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1598:1: listaListaExpressoes returns [List<List<Object>> listaListaExpressoes] : ( '{' vListaExpressoes= listaExpressoes '}' )? ( ',' '{' vListaExpressoes= listaExpressoes '}' )* ;
     public final List<List<Object>> listaListaExpressoes() throws RecognitionException
     {
@@ -6119,7 +6123,7 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1602:2: ( ( '{' vListaExpressoes= listaExpressoes '}' )? ( ',' '{' vListaExpressoes= listaExpressoes '}' )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1602:2: ( ( '{' vListaExpressoes= listaExpressoes '}' )? ( ',' '{' vListaExpressoes= listaExpressoes '}' )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1603:2: ( '{' vListaExpressoes= listaExpressoes '}' )? ( ',' '{' vListaExpressoes= listaExpressoes '}' )*
             {
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:1603:2: ( '{' vListaExpressoes= listaExpressoes '}' )?
@@ -6239,7 +6243,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end "listaListaExpressoes"
 
-	// $ANTLR start "listaExpressoes"
+    // $ANTLR start "listaExpressoes"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:1627:1: listaExpressoes returns [List<Object> listaExpressoes] : ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao ) )* ;
     public final List<Object> listaExpressoes() throws RecognitionException
     {
@@ -6252,10 +6256,10 @@ public class PortugolParser extends Parser
 
         try
         {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1631:2: ( ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao ) )* )
+            // C:\\Users\\Paula\\Desktop\\Portugol.g:1631:2: ( ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao ) )* )
             // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:2: ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao ) )*
             {
-			// C:\\Users\\Paula\\Desktop\\Portugol.g:1632:2: ( (vExpressao= expressao )? )
+                // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:2: ( (vExpressao= expressao )? )
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:3: (vExpressao= expressao )?
                 {
                     if (state.backtracking == 0)
@@ -6320,7 +6324,7 @@ public class PortugolParser extends Parser
                             {
                                 return listaExpressoes;
                             }
-					// C:\\Users\\Paula\\Desktop\\Portugol.g:1639:30: (vExpressao= expressao )
+                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1639:30: (vExpressao= expressao )
                             // C:\\Users\\Paula\\Desktop\\Portugol.g:1639:31: vExpressao= expressao
                             {
                                 pushFollow(FOLLOW_expressao_in_listaExpressoes4015);
@@ -6369,7 +6373,7 @@ public class PortugolParser extends Parser
     // $ANTLR start synpred1_Portugol
     public final void synpred1_Portugol_fragment() throws RecognitionException
     {
-		// C:\\Users\\Paula\\Desktop\\Portugol.g:720:2: ( '{' )
+        // C:\\Users\\Paula\\Desktop\\Portugol.g:720:2: ( '{' )
         // C:\\Users\\Paula\\Desktop\\Portugol.g:720:3: '{'
         {
             match(input, 79, FOLLOW_79_in_synpred1_Portugol2014);
@@ -6385,7 +6389,7 @@ public class PortugolParser extends Parser
     // $ANTLR start synpred2_Portugol
     public final void synpred2_Portugol_fragment() throws RecognitionException
     {
-		// C:\\Users\\Paula\\Desktop\\Portugol.g:815:4: ( '{' )
+        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:4: ( '{' )
         // C:\\Users\\Paula\\Desktop\\Portugol.g:815:5: '{'
         {
             match(input, 79, FOLLOW_79_in_synpred2_Portugol2205);
@@ -6401,7 +6405,7 @@ public class PortugolParser extends Parser
     // $ANTLR start synpred3_Portugol
     public final void synpred3_Portugol_fragment() throws RecognitionException
     {
-		// C:\\Users\\Paula\\Desktop\\Portugol.g:1152:5: ( '-' )
+        // C:\\Users\\Paula\\Desktop\\Portugol.g:1152:5: ( '-' )
         // C:\\Users\\Paula\\Desktop\\Portugol.g:1152:6: '-'
         {
             match(input, 55, FOLLOW_55_in_synpred3_Portugol3071);
@@ -6417,7 +6421,7 @@ public class PortugolParser extends Parser
     // $ANTLR start synpred4_Portugol
     public final void synpred4_Portugol_fragment() throws RecognitionException
     {
-		// C:\\Users\\Paula\\Desktop\\Portugol.g:1227:3: ( '-' )
+        // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:3: ( '-' )
         // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:4: '-'
         {
             match(input, 55, FOLLOW_55_in_synpred4_Portugol3238);
@@ -6433,7 +6437,7 @@ public class PortugolParser extends Parser
     // $ANTLR start synpred5_Portugol
     public final void synpred5_Portugol_fragment() throws RecognitionException
     {
-		// C:\\Users\\Paula\\Desktop\\Portugol.g:1389:3: ( '(' )
+        // C:\\Users\\Paula\\Desktop\\Portugol.g:1389:3: ( '(' )
         // C:\\Users\\Paula\\Desktop\\Portugol.g:1389:4: '('
         {
             match(input, 47, FOLLOW_47_in_synpred5_Portugol3516);
@@ -6449,7 +6453,7 @@ public class PortugolParser extends Parser
     // $ANTLR start synpred6_Portugol
     public final void synpred6_Portugol_fragment() throws RecognitionException
     {
-		// C:\\Users\\Paula\\Desktop\\Portugol.g:1390:3: ( '[' )
+        // C:\\Users\\Paula\\Desktop\\Portugol.g:1390:3: ( '[' )
         // C:\\Users\\Paula\\Desktop\\Portugol.g:1390:4: '['
         {
             match(input, 73, FOLLOW_73_in_synpred6_Portugol3533);
@@ -6465,7 +6469,7 @@ public class PortugolParser extends Parser
     // $ANTLR start synpred7_Portugol
     public final void synpred7_Portugol_fragment() throws RecognitionException
     {
-		// C:\\Users\\Paula\\Desktop\\Portugol.g:1536:3: ( '{' '{' )
+        // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:3: ( '{' '{' )
         // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:4: '{' '{'
         {
             match(input, 79, FOLLOW_79_in_synpred7_Portugol3772);
@@ -6483,7 +6487,7 @@ public class PortugolParser extends Parser
     }
 	// $ANTLR end synpred7_Portugol
 
-	// Delegated rules
+    // Delegated rules
     public final boolean synpred4_Portugol()
     {
         state.backtracking++;
