@@ -78,7 +78,7 @@ public class AnalisadorRetornoDeFuncao implements VisitanteASA
      */
     public boolean possuiRetornoObrigatorio(NoDeclaracaoFuncao noDeclaracaoFuncao) throws ExcecaoVisitaASA
     {
-        return (Boolean)visitar(noDeclaracaoFuncao.getBlocos());
+        return (Boolean) visitar(noDeclaracaoFuncao.getBlocos());
     }
 
     @Override
@@ -114,10 +114,25 @@ public class AnalisadorRetornoDeFuncao implements VisitanteASA
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA
     {
         List<NoCaso> noCasos = noEscolha.getCasos();
-
-        for (NoCaso noCaso : noCasos)
+        int tamanhoNoCasos = noCasos.size();
+        for (int indice = 0; indice < tamanhoNoCasos; indice++)
         {
-            if(!(Boolean)visitar(noCaso)){
+            NoCaso noCaso = noCasos.get(indice);
+            boolean retorna;
+            boolean possuiPare = false;
+            //Verifica se possui pare
+            List<NoBloco> noBlocos = noCaso.getBlocos();
+            for (NoBloco noBloco : noBlocos)
+            {
+                if (noBloco instanceof NoPare)
+                {
+                    possuiPare = true;
+                    break;
+                }
+            }
+            //Verifica se possui retorno
+            retorna = (Boolean) visitar(noCaso.getBlocos());
+            if(!retorna && (possuiPare || indice == tamanhoNoCasos-1)){
                 return false;
             }
         }
@@ -127,25 +142,7 @@ public class AnalisadorRetornoDeFuncao implements VisitanteASA
     @Override
     public Object visitar(NoCaso noCaso) throws ExcecaoVisitaASA
     {
-        boolean retorna = false;
-        boolean possuiPare = false;
-        //Verifica se possui pare
-        List<NoBloco> noBlocos = noCaso.getBlocos();
-        for (NoBloco noBloco : noBlocos)
-        {
-            if (noBloco instanceof NoPare)
-            {
-                possuiPare = true;
-                break;
-            }
-        }
-        //Verifica se possui retorno
-        retorna = (Boolean) visitar(noCaso.getBlocos());
-        if (!retorna && (possuiPare || noCaso.getExpressao() == null))
-        {
-            return false;
-        }
-        return true;
+        return null;
     }
 
     @Override
