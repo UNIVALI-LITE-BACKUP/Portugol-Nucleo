@@ -29,6 +29,7 @@ import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosFuncao;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmExpressao;
+import br.univali.portugol.nucleo.analise.semantica.erros.ErroFuncaoSemRetorne;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroPassagemParametroInvalida;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantificadorParametroFuncao;
@@ -61,6 +62,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar
@@ -550,7 +553,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         if (chamadaFuncao.getNome().equals(FUNCAO_ESCREVA))
         {
             int tamanhoTiposPassado = tiposPassado.size();
-            for (int indice = 0; indice < tamanhoTiposPassado ; indice++)
+            for (int indice = 0; indice < tamanhoTiposPassado; indice++)
             {
                 TipoDado tipoPassado = tiposPassado.get(indice);
                 if (tipoPassado.equals(TipoDado.VAZIO))
@@ -823,6 +826,20 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
     }
 
+    private void verificarRetornoFuncao(NoDeclaracaoFuncao noDeclaracaoFuncao) throws ExcecaoVisitaASA
+    {
+        if (noDeclaracaoFuncao.getTipoDado() != TipoDado.VAZIO)
+        {
+            AnalisadorRetornoDeFuncao analisador = new AnalisadorRetornoDeFuncao();
+
+            if (!analisador.possuiRetornoObrigatorio(noDeclaracaoFuncao))
+            {
+                notificarErroSemantico(new ErroFuncaoSemRetorne(noDeclaracaoFuncao));
+            }
+
+        }
+    }
+
     @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA
     {
@@ -835,7 +852,6 @@ public final class AnalisadorSemantico implements VisitanteASA
             Funcao funcao = new Funcao(nome, tipoDado, quantificador, declaracaoFuncao.getParametros(), declaracaoFuncao);
             funcao.setTrechoCodigoFonteNome(declaracaoFuncao.getTrechoCodigoFonteNome());
             funcao.setTrechoCodigoFonteTipoDado(declaracaoFuncao.getTrechoCodigoFonteTipoDado());
-
             try
             {
                 Simbolo simbolo = memoria.getSimbolo(nome);
@@ -860,6 +876,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     noDeclaracaoParametro.aceitar(this);
                 }
                 analisarListaBlocos(declaracaoFuncao.getBlocos());
+                verificarRetornoFuncao(declaracaoFuncao);
             }
             catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
             {
@@ -1017,12 +1034,12 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         linhas = 0;
                     }
-                    
+
                     if (colunas == null)
                     {
                         colunas = 0;
                     }
-                    
+
                     notificarErroSemantico(new ErroAoInicializarMatriz(matriz, noDeclaracaoMatriz.getInicializacao().getTrechoCodigoFonte(), linhas, colunas));
                 }
             }
@@ -1269,7 +1286,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         tamanho = 0;
                     }
-                    
+
                     notificarErroSemantico(new ErroAoInicializarVetor(vetor, noDeclaracaoVetor.getInicializacao().getTrechoCodigoFonte(), tamanho));
                 }
             }
@@ -2125,8 +2142,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                     notificarErroSemantico(new ErroBlocoInvalido(noBloco));
                 }
-                    
-                    
+
                 noBloco.aceitar(this);
             }
             catch (ExcecaoVisitaASA excecao)
@@ -2140,21 +2156,18 @@ public final class AnalisadorSemantico implements VisitanteASA
 
         memoria.desempilharEscopo();
     }
-    
+
     private boolean blocoValido(NoBloco bloco)
     {
         Class classeBloco = bloco.getClass();
-        Class<? extends NoBloco> [] classesPermitidas = new Class[]
+        Class<? extends NoBloco>[] classesPermitidas = new Class[]
         {
             NoDeclaracaoVariavel.class, NoDeclaracaoVetor.class, NoDeclaracaoMatriz.class,
-            
             NoCaso.class, NoEnquanto.class, NoEscolha.class, NoFacaEnquanto.class, NoPara.class, NoSe.class,
-            
-            NoPare.class, NoRetorne.class, NoTitulo.class, NoVaPara.class, 
-            
+            NoPare.class, NoRetorne.class, NoTitulo.class, NoVaPara.class,
             NoOperacaoAtribuicao.class, NoChamadaFuncao.class
         };
-        
+
         for (Class classe : classesPermitidas)
         {
             if (classe.isAssignableFrom(classeBloco))
@@ -2162,7 +2175,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 return true;
             }
         }
-        
+
         return false;
     }
 
