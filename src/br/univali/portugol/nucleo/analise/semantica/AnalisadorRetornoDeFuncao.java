@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.univali.portugol.nucleo.analise.semantica;
 
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
@@ -59,14 +54,14 @@ import br.univali.portugol.nucleo.asa.NoTitulo;
 import br.univali.portugol.nucleo.asa.NoVaPara;
 import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
-import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import java.util.List;
 
 /**
  *
- * @author 4276663
+ * @author Paulo Eduardo Martins
+ * @author Luiz Fernando Noschang
  */
-public class AnalisadorRetornoDeFuncao implements VisitanteASA
+class AnalisadorRetornoDeFuncao implements VisitanteASA
 {
     /**
      * Analisa se na declaração de função passada existe 100% de chance entrar

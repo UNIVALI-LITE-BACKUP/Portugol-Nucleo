@@ -25,7 +25,7 @@ public class ErroFuncaoSemRetorne extends ErroSemantico
         StringBuilder builder = new StringBuilder();
         builder.append("A função \"");
         builder.append(nomeFuncao);
-        builder.append("\" não possui uma instrução de retorno que seja sempre executada, tente colocar na ultima linha da função a instrução \"retorne\"");
+        builder.append("\" possui situações que não retornam nenhum valor. Verifique se todos os desvios condicionais, laços de repetição e casos do comando \"escolha\" possuem o comando \"retorne\". Você também pode incluir o comando \"retorne\" no final da função");
         return builder.toString();
     }
     
