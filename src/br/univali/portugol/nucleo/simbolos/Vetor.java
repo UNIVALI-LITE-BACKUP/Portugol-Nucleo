@@ -17,7 +17,7 @@ public final class Vetor extends Simbolo
 {
     private List<Object> valores;
     private int ultimoIndiceModificado;
-
+    public final static Integer TAMANHO_MAXIMO = 16777216;
     public int getUltimoIndiceModificado()
     {
         return ultimoIndiceModificado;
