@@ -17,7 +17,7 @@ public final class Matriz extends Simbolo
     private int numeroLinhas;
     private int numeroColunas;
     private Object[][] valores;
-
+    public static final Integer TAMANHO_MAXIMO = 16777216;
     private int ultimaLinhaModificada;
     private int ultimaColunaModificada;
 
