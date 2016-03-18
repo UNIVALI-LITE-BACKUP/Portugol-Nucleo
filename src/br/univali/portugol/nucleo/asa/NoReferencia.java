@@ -17,11 +17,14 @@ package br.univali.portugol.nucleo.asa;
  * @see NoReferenciaVariavel
  * @see NoReferenciaVetor
  */
-public abstract class NoReferencia extends NoExpressao
+public abstract class NoReferencia<T extends NoDeclaracao, X extends NoDeclaracaoParametro> extends NoExpressao
 {
     private String nome;
     private String escopo;
     private TrechoCodigoFonte trechoCodigoFonteNome;
+    private T declaracaoOrigem;
+    
+            
 
     /**
      * @param nome     o nome do símbolo referenciado.
@@ -79,5 +82,15 @@ public abstract class NoReferencia extends NoExpressao
     public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
     {
         this.trechoCodigoFonteNome = trechoCodigoFonteNome;
+    }
+
+    public T getOrigemDeclaracao()
+    {
+        return origemDeclaracao;
+    }
+
+    public void setOrigemDeclaracao(T origemDeclaracao)
+    {
+        this.origemDeclaracao = origemDeclaracao;
     }
 }

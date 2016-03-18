@@ -1,6 +1,7 @@
 
 package br.univali.portugol.nucleo;
 
+import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 
 /**
@@ -17,6 +18,11 @@ public final class Portugol
         Programa programa = compilador.compilar(codigo);
         
         return programa;
+    }
+    
+    public static String renomearSimbolo(NoReferenciaVariavel referenciaVariavel)
+    {
+        referenciaVariavel.
     }
     
     public static GerenciadorBibliotecas getGerenciadorBibliotecas()

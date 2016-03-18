@@ -2019,7 +2019,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             if (quantificador == Quantificador.VETOR)
             {
-                simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro, 0, new ArrayList<Object>());
+                simbolo = new Vetor(nome, tipoDado, noDeclaracaoParametro);
             }
             else
             {
@@ -2254,6 +2254,19 @@ public final class AnalisadorSemantico implements VisitanteASA
             if (!(simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passandoReferencia && !passandoParametro)
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
+            }
+            else if ((simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passandoReferencia && !passandoParametro)
+            {
+                Variavel variavel = (Variavel) simbolo;
+                
+                if (variavel.originadoDeParametroDaFuncao())
+                {
+                    variavel.getParametroOrigemDoSimbolo().getReferencias().add(noReferenciaVariavel);
+                }
+                else
+                {
+                    variavel.getOrigemDoSimbolo().getReferencias().add(noReferenciaVariavel);
+                }
             }
 
             return simbolo.getTipoDado();

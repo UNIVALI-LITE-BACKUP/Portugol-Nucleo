@@ -40,10 +40,10 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class NoDeclaracaoMatriz extends NoDeclaracao
+public final class NoDeclaracaoMatriz extends NoDeclaracaoInicializavel<NoReferenciaMatriz>
 {
-    private NoExpressao numeroLinhas;
-    private NoExpressao numeroColunas;
+    private final NoExpressao numeroLinhas;
+    private final NoExpressao numeroColunas;
 
     /**
      * 

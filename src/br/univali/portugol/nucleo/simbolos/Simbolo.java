@@ -1,23 +1,24 @@
 package br.univali.portugol.nucleo.simbolos;
 
-import br.univali.portugol.nucleo.asa.No;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 
 /**
  * Representa um símbolo alocado em memória durante a execução do programa.
  * <p>
- * No Portugol, um símbolo é qualquer estrutura que possa ser acessada 
- * através de um nome (identificador) durante a execução do programa.
+ * No Portugol, um símbolo é qualquer estrutura que possa ser acessada através
+ * de um nome (identificador) durante a execução do programa.
  * <p>
- * Geralmente o símbolo armazena um valor que será recuperado posteriormente, 
- * o qual deve ser do tipo de dado definido na declaração do símbolo, 
- * 
+ * Geralmente o símbolo armazena um valor que será recuperado posteriormente, o
+ * qual deve ser do tipo de dado definido na declaração do símbolo,
+ *
  * @author Luiz Fernando Noschang
  * @version 1.0
+ * @param <T> classe de declaracao
  */
-public abstract class Simbolo
+public abstract class Simbolo<T extends NoDeclaracao>
 {
     private String nome;
     protected TipoDado tipoDado;
@@ -27,23 +28,40 @@ public abstract class Simbolo
     private boolean utilizado = false;
     private boolean inicializado = false;
     private boolean redeclarado = false;
-    private NoDeclaracao origemDoSimbolo = null;
+    private T origemDoSimbolo = null;
+    private NoDeclaracaoParametro parametroOrigemDoSimbolo = null;
+    private boolean originadoDeParametro = false;
+
     /**
-     * 
-     * @param nome         o nome deste símbolo.
-     * @param tipoDado     o tipo de dado armazenado/tratado por este símbolo.
+     *
+     * @param nome o nome deste símbolo.
+     * @param tipoDado o tipo de dado armazenado/tratado por este símbolo.
+     * @param declaracaoOrigem a declaração que originou o símbolo
      */
-    public Simbolo(String nome, TipoDado tipoDado, NoDeclaracao noOrigem)
+    public Simbolo(String nome, TipoDado tipoDado, T declaracaoOrigem)
     {
         setNome(nome);
         setTipoDado(tipoDado);
-        setOrigemDoSimbolo(noOrigem);
+        setOrigemDoSimbolo(declaracaoOrigem);
+    }
+
+    /**
+     *
+     * @param nome o nome deste símbolo.
+     * @param tipoDado o tipo de dado armazenado/tratado por este símbolo.
+     * @param parametroOrigem o parâmetro que originou o símbolo
+     */
+    public Simbolo(String nome, TipoDado tipoDado, NoDeclaracaoParametro parametroOrigem)
+    {
+        setNome(nome);
+        setTipoDado(tipoDado);
+        setParametroOrigemDoSimbolo(parametroOrigemDoSimbolo);
     }
 
     /**
      * Obtém o nome deste símbolo.
-     * 
-     * @return     o nome deste símbolo.
+     *
+     * @return o nome deste símbolo.
      * @since 1.0
      */
     public final String getNome()
@@ -53,8 +71,8 @@ public abstract class Simbolo
 
     /**
      * Obtém o tipo de dado armazenado/tratado por este símbolo.
-     * 
-     * @return     o tipo de dado armazenado/tratado por este símbolo.
+     *
+     * @return o tipo de dado armazenado/tratado por este símbolo.
      * @since 1.0
      */
     public final TipoDado getTipoDado()
@@ -64,13 +82,13 @@ public abstract class Simbolo
 
     /**
      * Verifica se o símbolo foi inicializado.
-     * 
-     * @return          <code>true</code> se o símbolo foi inicializado,
-     *                  caso contrário retorna <code>false</code>.
+     *
+     * @return          <code>true</code> se o símbolo foi inicializado, caso contrário
+     * retorna <code>false</code>.
      * @since 1.0
-     * @deprecated      nem todos os símbolos possuem inicialização, pos isso
-     *                  nas versões futuras este método será removido da classe base
-     *                  e utilizado somente nas classes em que for necessário.
+     * @deprecated nem todos os símbolos possuem inicialização, pos isso nas
+     * versões futuras este método será removido da classe base e utilizado
+     * somente nas classes em que for necessário.
      */
     @Deprecated
     public final boolean inicializado()
@@ -80,9 +98,9 @@ public abstract class Simbolo
 
     /**
      * Verifica se o símbolo está sendo utilizado em algum local do programa.
-     * 
-     * @return     <code>true</code> se o símbolo está sendo utilizado,
-     *             caso contrário retorna <code>false</code>.
+     *
+     * @return     <code>true</code> se o símbolo está sendo utilizado, caso
+     * contrário retorna <code>false</code>.
      * @since 1.0
      */
     public final boolean utilizado()
@@ -92,9 +110,9 @@ public abstract class Simbolo
 
     /**
      * Verifica se o símbolo foi declarado mais de uma vez no mesmo escopo.
-     * 
+     *
      * @return     <code>true</code> se o símbolo foi declarado mais de uma vez,
-     *             caso contrário retorna <code>false</code>.
+     * caso contrário retorna <code>false</code>.
      * @since 1.0
      */
     public final boolean redeclarado()
@@ -103,15 +121,15 @@ public abstract class Simbolo
     }
 
     /**
-     * Verifica se o valor armazenado/tratado pelo símbolo é constante, ou seja, se não poderá
-     * ser alterado após sua inicialização.
-     * 
-     * @return          <code>true</code> se o símbolo for constante,
-     *                  caso contrário retorna <code>false</code>.
+     * Verifica se o valor armazenado/tratado pelo símbolo é constante, ou seja,
+     * se não poderá ser alterado após sua inicialização.
+     *
+     * @return          <code>true</code> se o símbolo for constante, caso contrário
+     * retorna <code>false</code>.
      * @since 1.0
-     * @deprecated      nem todos os símbolos podem ser declarados como constantes, pos isso
-     *                  nas versões futuras este método será removido da classe base
-     *                  e utilizado somente nas classes em que for necessário.
+     * @deprecated nem todos os símbolos podem ser declarados como constantes,
+     * pos isso nas versões futuras este método será removido da classe base e
+     * utilizado somente nas classes em que for necessário.
      */
     public boolean constante()
     {
@@ -120,8 +138,8 @@ public abstract class Simbolo
 
     /**
      * Obtém o trecho do código fonte no qual o nome deste símbolo se encontra.
-     * 
-     * @return     o trecho do código fonte no qual o nome deste símbolo se encontra
+     *
+     * @return o trecho do código fonte no qual o nome deste símbolo se encontra
      * @since 1.0
      */
     public TrechoCodigoFonte getTrechoCodigoFonteNome()
@@ -131,8 +149,9 @@ public abstract class Simbolo
 
     /**
      * Define o trecho do código fonte no qual o nome deste símbolo se encontra.
-     * 
-     * @param trechoCodigoFonteNome     o trecho do código fonte no qual o nome deste símbolo se encontra.
+     *
+     * @param trechoCodigoFonteNome o trecho do código fonte no qual o nome
+     * deste símbolo se encontra.
      * @since 1.0
      */
     public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
@@ -141,9 +160,11 @@ public abstract class Simbolo
     }
 
     /**
-     * Obtém o trecho do código fonte no qual o tipo de dado deste símbolo se encontra.
-     * 
-     * @return     o trecho do código fonte no qual o tipo de dado deste símbolo se encontra
+     * Obtém o trecho do código fonte no qual o tipo de dado deste símbolo se
+     * encontra.
+     *
+     * @return o trecho do código fonte no qual o tipo de dado deste símbolo se
+     * encontra
      * @since 1.0
      */
     public TrechoCodigoFonte getTrechoCodigoFonteTipoDado()
@@ -152,9 +173,11 @@ public abstract class Simbolo
     }
 
     /**
-     * Define o trecho do código fonte no qual o tipo de dado deste símbolo se encontra.
-     * 
-     * @param trechoCodigoFonteTipoDado     o trecho do código fonte no qual o tipo de dado deste símbolo se encontra.
+     * Define o trecho do código fonte no qual o tipo de dado deste símbolo se
+     * encontra.
+     *
+     * @param trechoCodigoFonteTipoDado o trecho do código fonte no qual o tipo
+     * de dado deste símbolo se encontra.
      * @since 1.0
      */
     public void setTrechoCodigoFonteTipoDado(TrechoCodigoFonte trechoCodigoFonteTipoDado)
@@ -164,8 +187,8 @@ public abstract class Simbolo
 
     /**
      * Define o nome deste símbolo.
-     * 
-     * @param nome     o nome deste símbolo.
+     *
+     * @param nome o nome deste símbolo.
      * @since 1.0
      */
     private void setNome(String nome)
@@ -175,8 +198,8 @@ public abstract class Simbolo
 
     /**
      * Define o tipo de dado deste símbolo.
-     * 
-     * @param tipoDado     o tipo de dado deste símbolo.
+     *
+     * @param tipoDado o tipo de dado deste símbolo.
      * @since 1.0
      */
     private void setTipoDado(TipoDado tipoDado)
@@ -186,8 +209,9 @@ public abstract class Simbolo
 
     /**
      * Define se este símbolo foi inicializado ou não.
-     * 
-     * @param inicializado     flag indicando se este símbolo foi inicializado ou não.
+     *
+     * @param inicializado flag indicando se este símbolo foi inicializado ou
+     * não.
      * @since 1.0
      */
     public final void setInicializado(boolean inicializado)
@@ -197,8 +221,9 @@ public abstract class Simbolo
 
     /**
      * Define se este símbolo está sendo utilizado ou não.
-     * 
-     * @param utilizado     flag indicando se este símbolo está sendo utilizado ou não.
+     *
+     * @param utilizado flag indicando se este símbolo está sendo utilizado ou
+     * não.
      * @since 1.0
      */
     public final void setUtilizado(boolean utilizado)
@@ -207,9 +232,11 @@ public abstract class Simbolo
     }
 
     /**
-     * Define se este símbolo foi declarado mais de uma vez no mesmo escopo ou não.
-     * 
-     * @param redeclarado     flag indicando se este símbolo foi declarado mais de uma vez no mesmo escopo ou não.
+     * Define se este símbolo foi declarado mais de uma vez no mesmo escopo ou
+     * não.
+     *
+     * @param redeclarado flag indicando se este símbolo foi declarado mais de
+     * uma vez no mesmo escopo ou não.
      * @since 1.0
      */
     public final void setRedeclarado(boolean redeclarado)
@@ -219,8 +246,9 @@ public abstract class Simbolo
 
     /**
      * Define se o valor armazenado/tratado por este símbolo é constante ou não.
-     * 
-     * @param constante     flag indicando se o valor armazenado/tratado por este símbolo é constante ou não.
+     *
+     * @param constante flag indicando se o valor armazenado/tratado por este
+     * símbolo é constante ou não.
      * @since 1.0
      */
     public final void setConstante(boolean constante)
@@ -228,26 +256,42 @@ public abstract class Simbolo
         this.constante = constante;
     }
 
-    public NoDeclaracao getOrigemDoSimbolo()
+    public T getOrigemDoSimbolo()
     {
         return origemDoSimbolo;
     }
 
-    final void setOrigemDoSimbolo(NoDeclaracao origemDoSimbolo)
+    final void setOrigemDoSimbolo(T origemDoSimbolo)
     {
         this.origemDoSimbolo = origemDoSimbolo;
+        this.originadoDeParametro = false;
     }
 
-    
-    
+    final void setParametroOrigemDoSimbolo(NoDeclaracaoParametro parametroOrigemDoSimbolo)
+    {
+        this.parametroOrigemDoSimbolo = parametroOrigemDoSimbolo;
+        this.originadoDeParametro = true;
+    }
+
+    public NoDeclaracaoParametro getParametroOrigemDoSimbolo()
+    {
+        return parametroOrigemDoSimbolo;
+    }
+
+    public boolean originadoDeParametroDaFuncao()
+    {
+        return originadoDeParametro;
+    }
+
     /**
-     * Cria uma cópia deste símbolo em memória. Este método é utilizado durante a chamada de funções 
-     * para passar o símbolo por valor. A cópia terá os mesmos valores e características do símbolo
-     * original, com exceção de nome.
-     * 
-     * @param novoNome     o nome atribuído a esta cópia do símbolo. Geralmente é o nome do parâmetro
-     *                     da função para o qual este símbolo está sendo passado.
-     * @return             uma cópia deste símbolo.
+     * Cria uma cópia deste símbolo em memória. Este método é utilizado durante
+     * a chamada de funções para passar o símbolo por valor. A cópia terá os
+     * mesmos valores e características do símbolo original, com exceção de
+     * nome.
+     *
+     * @param novoNome o nome atribuído a esta cópia do símbolo. Geralmente é o
+     * nome do parâmetro da função para o qual este símbolo está sendo passado.
+     * @return uma cópia deste símbolo.
      * @since 1.0
      */
     public abstract Simbolo copiar(String novoNome);

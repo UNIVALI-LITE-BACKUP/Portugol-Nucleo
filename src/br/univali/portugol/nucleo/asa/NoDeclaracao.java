@@ -11,16 +11,16 @@ import java.util.List;
  * 
  * @author Luiz Fernando Noschang
  * @version 1.0
+ * @param <T>
  */
-public abstract class NoDeclaracao extends NoBloco
+public abstract class NoDeclaracao<T extends NoReferencia> extends NoBloco
 {
-    private String nome;
-    private boolean constante;
-    private TipoDado tipoDado;
-    private NoExpressao inicializacao;
+    private final String nome;
+    private final boolean constante;
+    private final TipoDado tipoDado;
     private TrechoCodigoFonte trechoCodigoFonteNome;
     private TrechoCodigoFonte trechoCodigoFonteTipoDado;
-    private final List<NoReferencia> referencias = new ArrayList<>();
+    private final List<T> referencias = new ArrayList<>();
 
     /**
      * 
@@ -73,28 +73,6 @@ public abstract class NoDeclaracao extends NoBloco
     }
 
     /**
-     * Obtém a expressão utilizada para inicializar o símbolo declarado.
-     * 
-     * @return     a expressão de inicialização.
-     * @since 1.0
-     */
-    public NoExpressao getInicializacao()
-    {
-        return inicializacao;
-    }
-
-    /**
-     * Define a expressão de inicialização do símbolo.
-     * 
-     * @param inicializacao     a expressão de inicialização.
-     * @since 1.0
-     */
-    public void setInicializacao(NoExpressao inicializacao)
-    {
-        this.inicializacao = inicializacao;
-    }
-
-    /**
      * Obtém o trecho do código fonte no qual o nome do símbolo se encontra.
      * 
      * @return     o trecho do código fonte
@@ -142,7 +120,7 @@ public abstract class NoDeclaracao extends NoBloco
      * 
      * @return a lista de nós
      */
-    public List<NoReferencia> getReferencias()
+    public List<T> getReferencias()
     {
         return referencias;
     }

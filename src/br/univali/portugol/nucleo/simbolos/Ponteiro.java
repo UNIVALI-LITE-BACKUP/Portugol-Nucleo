@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.simbolos;
 
+import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 
 /**
@@ -8,19 +9,20 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
  * @author Luiz Fernando Noschang
  * @since 1.0
  */
-public final class Ponteiro extends Simbolo
+public final class Ponteiro extends Simbolo<NoDeclaracao>
 {
     protected Simbolo simbolo;
 
     /**
      * 
      * @param nome        o nome deste ponteiro.
+     * @param parametroOrigem o parâmetro que originou este ponteiro
      * @param simbolo     o símbolo que está sendo apontado por este ponteiro.
      */
-    public Ponteiro(String nome, NoDeclaracaoParametro origemPonteiro, Simbolo simbolo)
+    public Ponteiro(String nome, NoDeclaracaoParametro parametroOrigem, Simbolo simbolo)
     {
         super(nome, null, null);
-        setOrigemDoSimbolo(origemPonteiro);
+        setOrigemDoSimbolo(parametroOrigem);
         setSimbolo(simbolo);
     }
 

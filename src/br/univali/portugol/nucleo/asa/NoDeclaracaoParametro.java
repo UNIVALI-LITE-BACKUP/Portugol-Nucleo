@@ -7,11 +7,11 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see NoDeclaracaoFuncao
  */
-public final class NoDeclaracaoParametro extends NoDeclaracao
+public final class NoDeclaracaoParametro extends NoDeclaracao<NoReferencia>
 {
     private int indice;
-    private ModoAcesso modoAcesso;
-    private Quantificador quantificador;
+    private final ModoAcesso modoAcesso;
+    private final Quantificador quantificador;
 
 
     /**
@@ -81,5 +81,15 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
     public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         return visitante.visitar(this);
+    }
+
+    @Override
+    public TrechoCodigoFonte getTrechoCodigoFonte()
+    {
+        int caractereInicialTipoDado = getTrechoCodigoFonteTipoDado().getColuna();
+        int caractereFinalNome = getTrechoCodigoFonteNome().getColuna() + getTrechoCodigoFonteNome().getTamanhoTexto();
+        int tamanhoTotal = caractereFinalNome - caractereInicialTipoDado;
+        
+        return new TrechoCodigoFonte(getTrechoCodigoFonteTipoDado().getLinha(), getTrechoCodigoFonteTipoDado().getColuna(), tamanhoTotal);
     }
 }

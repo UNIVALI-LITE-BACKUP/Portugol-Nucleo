@@ -1,18 +1,18 @@
 package br.univali.portugol.nucleo.simbolos;
 
-import br.univali.portugol.nucleo.asa.No;
-import br.univali.portugol.nucleo.asa.NoDeclaracao;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Representa uma matriz alocada em memória durante a execução de um programa.
- * 
+ *
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class Matriz extends Simbolo
+public final class Matriz extends Simbolo<NoDeclaracaoMatriz>
 {
     private int numeroLinhas;
     private int numeroColunas;
@@ -30,51 +30,53 @@ public final class Matriz extends Simbolo
     {
         return ultimaColunaModificada;
     }
-    
-    
-    
+
     /**
      * Aloca uma matriz em memória sem definir seu tamanho nem seus valores.
-     * 
-     * @param nome         o nome desta matriz.
-     * @param tipoDado     o tipo de dado armazenado por esta matriz.
+     *
+     * @param nome o nome desta matriz.
+     * @param tipoDado o tipo de dado armazenado por esta matriz.
+     * @param declaracaoOrigem a declaração que originou esta matriz.
      * @since 1.0
      */
-    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracaoMatriz declaracaoOrigem)
     {
-        super(nome, tipoDado, origem);
+        super(nome, tipoDado, declaracaoOrigem);
         setInicializado(true);
     }
 
     /**
-     * Aloca uma matriz em memória definindo suas dimensões, mas sem definir seus valores.
-     * 
-     * @param nome              o nome desta matriz.
-     * @param tipoDado          o tipo de dado armazenado por esta matriz.
-     * @param numeroLinhas      o número de linhas que esta matriz terá.
-     * @param numeroColunas     o número de colunas que esta matriz terá.
+     * Aloca uma matriz em memória definindo suas dimensões, mas sem definir
+     * seus valores.
+     *
+     * @param nome o nome desta matriz.
+     * @param tipoDado o tipo de dado armazenado por esta matriz.
+     * @param declaracaoOrigem a declaração que originou esta matriz.
+     * @param numeroLinhas o número de linhas que esta matriz terá.
+     * @param numeroColunas o número de colunas que esta matriz terá.
      * @since 1.0
      */
-    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem, int numeroLinhas, int numeroColunas)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracaoMatriz declaracaoOrigem, int numeroLinhas, int numeroColunas)
     {
-        super(nome, tipoDado, origem);
+        super(nome, tipoDado, declaracaoOrigem);
         inicializarComDimensoes(numeroLinhas, numeroColunas);
         setInicializado(true);
     }
 
     /**
      * Aloca uma matriz em memória definindo suas dimensões e seus valores.
-     * 
-     * @param nome              o nome desta matriz.
-     * @param tipoDado          o tipo de dado armazenado por esta matriz.
-     * @param numeroLinhas      o número de linhas que esta matriz terá.
-     * @param numeroColunas     o número de colunas que esta matriz terá.
-     * @param valores           os valores que serão armazenados nesta matriz.
+     *
+     * @param nome o nome desta matriz.
+     * @param tipoDado o tipo de dado armazenado por esta matriz.
+     * @param declaracaoOrigem a declaração que originou esta matriz.
+     * @param numeroLinhas o número de linhas que esta matriz terá.
+     * @param numeroColunas o número de colunas que esta matriz terá.
+     * @param valores os valores que serão armazenados nesta matriz.
      * @since 1.0
      */
-    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem, int numeroLinhas, int numeroColunas, List<List<Object>> valores)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracaoMatriz declaracaoOrigem, int numeroLinhas, int numeroColunas, List<List<Object>> valores)
     {
-        super(nome, tipoDado, origem);
+        super(nome, tipoDado, declaracaoOrigem);
         inicializarComDimensoesValores(numeroLinhas, numeroColunas, valores);
         setInicializado(true);
     }
@@ -82,26 +84,65 @@ public final class Matriz extends Simbolo
     /**
      * Aloca uma matriz em memória definindo apenas seus valores. As dimensões
      * da matriz serão detectadas automaticamente a partir da lista de valores.
-     * 
-     * @param nome              o nome desta matriz.
-     * @param tipoDado          o tipo de dado armazenado por esta matriz.
-     * @param valores           os valores que serão armazenados nesta matriz.
+     *
+     * @param nome o nome desta matriz.
+     * @param tipoDado o tipo de dado armazenado por esta matriz.
+     * @param declaracaoOrigem a declaração que originou esta matriz.
+     * @param valores os valores que serão armazenados nesta matriz.
      * @since 1.0
      */
-    public Matriz(String nome, TipoDado tipoDado, NoDeclaracao origem, List<List<Object>> valores)
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracaoMatriz declaracaoOrigem, List<List<Object>> valores)
     {
-        super(nome, tipoDado, origem);
+        super(nome, tipoDado, declaracaoOrigem);
         if (valores != null)
         {
             inicializarComValores(valores);
             setInicializado(true);
         }
     }
+    
+    /**
+     * Aloca uma matriz em memória definindo apenas seus valores. As dimensões
+     * da matriz serão detectadas automaticamente a partir da lista de valores.
+     *
+     * @param nome o nome desta matriz.
+     * @param tipoDado o tipo de dado armazenado por esta matriz.
+     * @param parametroOrigem a declaração que originou esta matriz.
+     * @param valores os valores que serão armazenados nesta matriz.
+     * @since 1.0
+     */
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracaoParametro parametroOrigem, List<List<Object>> valores)
+    {
+        super(nome, tipoDado, parametroOrigem);
+        if (valores != null)
+        {
+            inicializarComValores(valores);
+            setInicializado(true);
+        }
+    }    
 
     /**
+     * Aloca uma matriz em memória definindo suas dimensões e seus valores.
+     *
+     * @param nome o nome desta matriz.
+     * @param tipoDado o tipo de dado armazenado por esta matriz.
+     * @param parametroOrigem a declaração que originou esta matriz.
+     * @param numeroLinhas o número de linhas que esta matriz terá.
+     * @param numeroColunas o número de colunas que esta matriz terá.
+     * @param valores os valores que serão armazenados nesta matriz.
+     * @since 1.0
+     */
+    public Matriz(String nome, TipoDado tipoDado, NoDeclaracaoParametro parametroOrigem, int numeroLinhas, int numeroColunas, List<List<Object>> valores)
+    {
+        super(nome, tipoDado, parametroOrigem);
+        inicializarComDimensoesValores(numeroLinhas, numeroColunas, valores);
+        setInicializado(true);
+    }    
+    
+    /**
      * Obtém o número de linhas desta matriz.
-     * 
-     * @return     o número de linhas desta matriz.
+     *
+     * @return o número de linhas desta matriz.
      * @since 1.0
      */
     public int getNumeroLinhas()
@@ -111,8 +152,8 @@ public final class Matriz extends Simbolo
 
     /**
      * Obtém o número de colunas desta matriz.
-     * 
-     * @return     o número de colunas desta matriz.
+     *
+     * @return o número de colunas desta matriz.
      * @since 1.0
      */
     public int getNumeroColunas()
@@ -121,11 +162,12 @@ public final class Matriz extends Simbolo
     }
 
     /**
-     * Recupera um valor armazenado nesta matriz na linha e na coluna especificadas.
-     * 
-     * @param linha      linha da matriz onde o valor se encontra.
-     * @param coluna     coluna da matriz onde o valor se encontra.
-     * @return           o valor armazenado nesta matriz na posição especificada.
+     * Recupera um valor armazenado nesta matriz na linha e na coluna
+     * especificadas.
+     *
+     * @param linha linha da matriz onde o valor se encontra.
+     * @param coluna coluna da matriz onde o valor se encontra.
+     * @return o valor armazenado nesta matriz na posição especificada.
      * @since 1.0
      */
     public Object getValor(int linha, int coluna)
@@ -136,10 +178,10 @@ public final class Matriz extends Simbolo
 
     /**
      * Armazena um valor nesta matriz na linha e na coluna especificadas.
-     * 
-     * @param linha      linha da matriz onde o valor se encontra.
-     * @param coluna     coluna da matriz onde o valor se encontra.
-     * @param valor     o valor a ser armazenado nesta matriz.
+     *
+     * @param linha linha da matriz onde o valor se encontra.
+     * @param coluna coluna da matriz onde o valor se encontra.
+     * @param valor o valor a ser armazenado nesta matriz.
      * @since 1.0
      */
     public void setValor(int linha, int coluna, Object valor)
@@ -233,13 +275,15 @@ public final class Matriz extends Simbolo
 
         return matriz;
     }
-    
+
     public List<List<Object>> obterValores()
     {
         List<List<Object>> retorno = new ArrayList<List<Object>>();
-        for (int i = 0; i < numeroLinhas; i++){
+        for (int i = 0; i < numeroLinhas; i++)
+        {
             List<Object> linha = new ArrayList<Object>();
-            for (int j = 0; j < numeroColunas; j++ ){
+            for (int j = 0; j < numeroColunas; j++)
+            {
                 linha.add(this.valores[i][j]);
             }
             retorno.add(linha);
@@ -257,5 +301,5 @@ public final class Matriz extends Simbolo
         }
 
         return copia;
-    }    
+    }
 }
