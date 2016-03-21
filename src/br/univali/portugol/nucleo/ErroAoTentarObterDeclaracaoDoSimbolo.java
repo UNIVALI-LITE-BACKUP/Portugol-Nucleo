@@ -10,10 +10,17 @@ import br.univali.portugol.nucleo.mensagens.Erro;
 public final class ErroAoTentarObterDeclaracaoDoSimbolo extends Erro
 {
     private final String mensagem;
+    private final CausaErroAoTentarObterDeclaracaoDoSimbolo causa;
     
-    public ErroAoTentarObterDeclaracaoDoSimbolo(String mensagem)
+    public ErroAoTentarObterDeclaracaoDoSimbolo(String mensagem, CausaErroAoTentarObterDeclaracaoDoSimbolo causa)
     {
         this.mensagem = mensagem;
+        this.causa = causa;
+    }
+
+    public CausaErroAoTentarObterDeclaracaoDoSimbolo getCausa()
+    {
+        return causa;
     }
     
     @Override

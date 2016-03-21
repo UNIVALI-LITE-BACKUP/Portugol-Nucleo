@@ -152,16 +152,16 @@ final class RenomeadorDeSimbolos
             }
             else
             {
-                throw new ErroAoTentarObterDeclaracaoDoSimbolo(String.format("Não foi encontrado nenhum símbolo na linha %d, coluna %d", linha, coluna));
+                throw new ErroAoTentarObterDeclaracaoDoSimbolo(String.format("Não foi encontrado nenhum símbolo na linha %d, coluna %d", linha, coluna), CausaErroAoTentarObterDeclaracaoDoSimbolo.SIMBOLO_NAO_ENCONTRADO);
             }
         }
         catch (ErroAoRenomearSimbolo ex)
         {
-            throw new ErroAoTentarObterDeclaracaoDoSimbolo(ex.getMensagem());
+            throw new ErroAoTentarObterDeclaracaoDoSimbolo(ex.getMensagem(), CausaErroAoTentarObterDeclaracaoDoSimbolo.OUTRA);
         }
         catch (ErroCompilacao ex)
         {
-            throw new ErroAoTentarObterDeclaracaoDoSimbolo("Não foi possível encontrar o símbolo porque o programa que contém erros");
+            throw new ErroAoTentarObterDeclaracaoDoSimbolo("Não foi possível encontrar o símbolo porque o programa contém erros", CausaErroAoTentarObterDeclaracaoDoSimbolo.PROGRAMA_CONTEM_ERROS);
         }
     }
 
