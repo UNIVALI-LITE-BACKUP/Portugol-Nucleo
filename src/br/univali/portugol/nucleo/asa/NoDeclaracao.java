@@ -124,4 +124,6 @@ public abstract class NoDeclaracao<T extends NoReferencia> extends NoBloco
     {
         return referencias;
     }
+    
+    public abstract void adicionarReferencia(T referencia);
 }

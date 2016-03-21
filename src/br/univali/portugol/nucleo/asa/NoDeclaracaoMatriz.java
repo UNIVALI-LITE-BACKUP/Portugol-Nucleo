@@ -92,4 +92,11 @@ public final class NoDeclaracaoMatriz extends NoDeclaracaoInicializavel<NoRefere
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public void adicionarReferencia(NoReferenciaMatriz referencia)
+    {
+        getReferencias().add(referencia);
+        referencia.setOrigemDaReferencia(this);
+    }
 }

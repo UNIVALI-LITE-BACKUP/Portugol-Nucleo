@@ -21,7 +21,7 @@ import java.util.List;
  * @version 1.0
  *
  */
-public final class NoChamadaFuncao extends NoReferencia
+public final class NoChamadaFuncao extends NoReferencia<NoDeclaracaoFuncao>
 {
     private List<NoExpressao> parametros;
 

@@ -78,4 +78,11 @@ public final class NoDeclaracaoVetor extends NoDeclaracaoInicializavel<NoReferen
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public void adicionarReferencia(NoReferenciaVetor referencia)
+    {
+        getReferencias().add(referencia);
+        referencia.setOrigemDaReferencia(this);
+    }
 }

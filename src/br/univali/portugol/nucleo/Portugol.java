@@ -1,7 +1,7 @@
 
 package br.univali.portugol.nucleo;
 
-import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
+import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 
 /**
@@ -20,9 +20,14 @@ public final class Portugol
         return programa;
     }
     
-    public static String renomearSimbolo(NoReferenciaVariavel referenciaVariavel)
+    public static String renomearSimbolo(String programa, int linha, int coluna, String novoNome) throws ErroAoRenomearSimbolo
     {
-        referenciaVariavel.
+        return new RenomeadorDeSimbolos().renomearSimbolo(programa, linha, coluna, novoNome);
+    }
+    
+    public static NoDeclaracao obterDeclaracaoDoSimbolo(String programa, int linha, int coluna) throws ErroAoTentarObterDeclaracaoDoSimbolo
+    {
+        return new RenomeadorDeSimbolos().obterDeclaracaoDoSimbolo(programa, linha, coluna);
     }
     
     public static GerenciadorBibliotecas getGerenciadorBibliotecas()

@@ -253,7 +253,47 @@ public final class AnalisadorSemantico implements VisitanteASA
         verificarModoAcesso(chamadaFuncao);
         verificarParametrosObsoletos(chamadaFuncao);
 
+        //registrarReferenciasDeVetorEMatriz(chamadaFuncao);
+        
         return obterTipoRetornoFuncao(chamadaFuncao);
+    }
+    
+    private void registrarReferenciasDeVetorEMatriz(NoChamadaFuncao chamadaFuncao)
+    {
+        if (chamadaFuncao.getParametros() != null)
+        {
+            for (NoExpressao parametro : chamadaFuncao.getParametros())
+            {
+                if (parametro instanceof NoReferencia)
+                {
+                    try 
+                    {
+                        
+                        NoReferencia referencia = (NoReferencia) parametro;
+                        Simbolo simbolo = memoria.getSimbolo(referencia.getNome());
+                        
+                        boolean referenciaParaMatriz = (referencia instanceof NoReferenciaVariavel) && (simbolo instanceof Matriz);
+                        boolean referenciaParaVetor = (referencia instanceof NoReferenciaVariavel) && (simbolo instanceof Vetor);
+                        
+                        if (referenciaParaVetor || referenciaParaMatriz)
+                        {
+                            if (simbolo.originadoDeParametroDaFuncao())
+                            {
+                                simbolo.getParametroOrigemDoSimbolo().adicionarReferencia(referencia);
+                            }
+                            else
+                            {
+                                simbolo.getOrigemDoSimbolo().adicionarReferencia(referencia);
+                            }
+                        }
+                    }
+                    catch (ExcecaoSimboloNaoDeclarado ex) 
+                    {
+                        // Não faz nada, já foi verificado em outro local
+                    }
+                }
+            }
+        }
     }
 
     private void verificarModoAcesso(NoChamadaFuncao chamadaFuncao)
@@ -670,7 +710,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
     private List<TipoDado> obterTiposParametrosPassados(NoChamadaFuncao chamadaFuncao, List<ModoAcesso> modosAcesso) throws ExcecaoVisitaASA
     {
-        List<TipoDado> tipos = new ArrayList<TipoDado>();
+        List<TipoDado> tipos = new ArrayList<>();
 
         if (chamadaFuncao.getParametros() != null)
         {
@@ -1846,7 +1886,21 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaMatriz, simbolo));
             }
-
+            else
+            {
+                Matriz matriz = (Matriz) simbolo;
+                
+                if (matriz.originadoDeParametroDaFuncao())
+                {
+                    matriz.getParametroOrigemDoSimbolo().adicionarReferencia(noReferenciaMatriz);
+                }
+                else
+                {
+                    matriz.getOrigemDoSimbolo().adicionarReferencia(noReferenciaMatriz);
+                }
+            }
+            
+            
             return simbolo.getTipoDado();
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
@@ -1904,6 +1958,19 @@ public final class AnalisadorSemantico implements VisitanteASA
             if (!(simbolo instanceof Vetor))
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVetor, simbolo));
+            }
+            else
+            {
+                Vetor vetor = (Vetor) simbolo;
+                
+                if (vetor.originadoDeParametroDaFuncao())
+                {
+                    vetor.getParametroOrigemDoSimbolo().adicionarReferencia(noReferenciaVetor);
+                }
+                else
+                {
+                    vetor.getOrigemDoSimbolo().adicionarReferencia(noReferenciaVetor);
+                }
             }
 
             return simbolo.getTipoDado();
@@ -2255,17 +2322,17 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 notificarErroSemantico(new ErroReferenciaInvalida(noReferenciaVariavel, simbolo));
             }
-            else if ((simbolo instanceof Variavel) && !declarandoVetor && !declarandoMatriz && !passandoReferencia && !passandoParametro)
+            else if (simbolo instanceof Variavel)
             {
                 Variavel variavel = (Variavel) simbolo;
                 
                 if (variavel.originadoDeParametroDaFuncao())
                 {
-                    variavel.getParametroOrigemDoSimbolo().getReferencias().add(noReferenciaVariavel);
+                    variavel.getParametroOrigemDoSimbolo().adicionarReferencia(noReferenciaVariavel);
                 }
                 else
                 {
-                    variavel.getOrigemDoSimbolo().getReferencias().add(noReferenciaVariavel);
+                    variavel.getOrigemDoSimbolo().adicionarReferencia(noReferenciaVariavel);
                 }
             }
 

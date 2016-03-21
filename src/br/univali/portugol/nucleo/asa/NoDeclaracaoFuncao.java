@@ -118,4 +118,11 @@ public final class NoDeclaracaoFuncao extends NoDeclaracao<NoChamadaFuncao>
     {
         return visitante.visitar(this);
     }
+
+    @Override
+    public void adicionarReferencia(NoChamadaFuncao referencia)
+    {
+        getReferencias().add(referencia);
+        referencia.setOrigemDaReferencia(this);
+    }
 }

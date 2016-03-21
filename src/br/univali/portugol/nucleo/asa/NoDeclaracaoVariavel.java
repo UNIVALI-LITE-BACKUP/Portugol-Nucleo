@@ -53,4 +53,11 @@ public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel<NoRefe
         }
         return TRECHO_NULO;
     }
+
+    @Override
+    public void adicionarReferencia(NoReferenciaVariavel referencia)
+    {
+        getReferencias().add(referencia);
+        referencia.setOrigemDaReferencia(this);
+    }
 }

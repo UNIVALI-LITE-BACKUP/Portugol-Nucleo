@@ -55,7 +55,7 @@ public abstract class Simbolo<T extends NoDeclaracao>
     {
         setNome(nome);
         setTipoDado(tipoDado);
-        setParametroOrigemDoSimbolo(parametroOrigemDoSimbolo);
+        setParametroOrigemDoSimbolo(parametroOrigem);
     }
 
     /**

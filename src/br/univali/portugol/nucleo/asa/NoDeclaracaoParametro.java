@@ -92,4 +92,11 @@ public final class NoDeclaracaoParametro extends NoDeclaracao<NoReferencia>
         
         return new TrechoCodigoFonte(getTrechoCodigoFonteTipoDado().getLinha(), getTrechoCodigoFonteTipoDado().getColuna(), tamanhoTotal);
     }
+
+    @Override
+    public void adicionarReferencia(NoReferencia referencia)
+    {
+        getReferencias().add(referencia);
+        referencia.setParametroDeOrigemDaReferencia(this);
+    }
 }
