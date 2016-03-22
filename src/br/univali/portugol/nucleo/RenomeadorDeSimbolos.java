@@ -680,7 +680,7 @@ final class RenomeadorDeSimbolos
 
             if (noReferenciaMatriz.getLinha() != null)
             {
-                noReferenciaMatriz.aceitar(this);
+                noReferenciaMatriz.getLinha().aceitar(this);
             }
 
             if (simboloEncontrado())
