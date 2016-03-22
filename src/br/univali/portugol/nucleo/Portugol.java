@@ -12,6 +12,8 @@ import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
 
 public final class Portugol
 {    
+    public static final String QUEBRA_DE_LINHA = "\n";
+    
     public static Programa compilar(String codigo) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();

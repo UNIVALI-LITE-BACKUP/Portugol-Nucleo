@@ -1,26 +1,29 @@
 programa
 {
-	inteiro inicial = 10
-	inteiro idade = 0
+	inclua biblioteca Util --> u
+
+	inteiro numero = 9
+	inteiro funcionou[] = {1, 2, 3, 4, 5}
 	
 	funcao inicio()
 	{
-		idade = inicial + 5
+		numero = numero * numero
 		
-		escreva("\nSua idade é: " + idade)
+		funcionou[0] = (funcionou[1] + funcionou[2]) * numero		
+		
+		para (inteiro i = 0; i < u.numero_elementos(funcionou); i++)
+		{
+			escreva("vetor[" + i + "] = " + funcionou[i])
+		}
 
-		verificarMaioridade(idade)
+		multiplicaVetor(funcionou)
 	}
 
-	funcao verificarMaioridade(inteiro funcionou)
+	funcao multiplicaVetor(inteiro vetor[])
 	{
-		se (funcionou >= 18)
+		para (inteiro i = 0; i < u.numero_elementos(vetor); i++)
 		{
-			escreva("\n\nVocê é maior de idade!")
-		}
-		senao se (funcionou < 18)
-		{
-			escreva("\n\nVocê é menor de idade!")
+			vetor[i] = vetor[i] * 2
 		}
 	}
 }
@@ -29,5 +32,5 @@ programa
  * Esta seção do arquivo guarda informações do Portugol Studio.
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
- * @POSICAO-CURSOR = 32; 
+ * @POSICAO-CURSOR = 40; 
  */

@@ -4,6 +4,7 @@ import br.univali.portugol.nucleo.FileHandle;
 import br.univali.portugol.nucleo.Portugol;
 import java.io.InputStream;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -66,6 +67,48 @@ public class TesteRenomeadorSimbolos
         testPrograma3(21, 13);
     }
 
+    @Test
+    public void testRenomearVetorGlobal1() throws Exception
+    {
+        testPrograma4(6, 10);
+    }
+
+    @Test
+    public void testRenomearVetorGlobal2() throws Exception
+    {
+        testPrograma4(12, 3);
+    }
+
+    @Test
+    public void testRenomearVetorGlobal3() throws Exception
+    {
+        testPrograma4(12, 15);
+    }
+
+    @Test
+    public void testRenomearVetorGlobal4() throws Exception
+    {
+        testPrograma4(12, 26);
+    }
+
+    @Test
+    public void testRenomearVetorGlobal5() throws Exception
+    {
+        testPrograma4(14, 47);
+    }
+
+    @Test
+    public void testRenomearVetorGlobal6() throws Exception
+    {
+        testPrograma4(16, 36);
+    }
+    
+    @Test
+    public void testRenomearVetorGlobal7() throws Exception
+    {
+        testPrograma4(19, 19);
+    }    
+
     private void testPrograma1(int linha, int coluna) throws Exception
     {
         String renomeado;
@@ -91,6 +134,16 @@ public class TesteRenomeadorSimbolos
         String renomeado;
         String programa = carregarPrograma("programa3", "programa.por");
         String esperado = carregarPrograma("programa3", "esperado.por");
+
+        renomeado = Portugol.renomearSimbolo(programa, linha, coluna, "funcionou");
+        Assert.assertEquals("O símbolo não foi renomeado corretamente em todos os locais do código", esperado, renomeado);
+    }
+
+    private void testPrograma4(int linha, int coluna) throws Exception
+    {
+        String renomeado;
+        String programa = carregarPrograma("programa4", "programa.por");
+        String esperado = carregarPrograma("programa4", "esperado.por");
 
         renomeado = Portugol.renomearSimbolo(programa, linha, coluna, "funcionou");
         Assert.assertEquals("O símbolo não foi renomeado corretamente em todos os locais do código", esperado, renomeado);
@@ -124,8 +177,6 @@ public class TesteRenomeadorSimbolos
         }
 
         // Remove a tag de cursor que foi incluída nas versões anteriores do Portugol Studio
-        codigoFonte = codigoFonte.replace("/*${cursor}*/", "");
-
-        return codigoFonte;
+        return codigoFonte.replace("/*${cursor}*/", "");
     }
 }

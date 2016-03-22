@@ -92,5 +92,4 @@ public abstract class No
     {
         return pontoParada.estaAtivo();
     }
-
 }

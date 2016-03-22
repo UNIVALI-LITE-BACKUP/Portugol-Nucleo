@@ -15,15 +15,19 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel<NoReferenciaVariavel>
+public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel
 {
     /**
      *
      * @param nome define o nome detsa variável.
+     *
      * @param tipoDado define o tipo de dado desta variável.
+     *
      * @param constante define se o valor desta variável será constante ou não.
+     *
      * Se <code>true</code>, o valor não poderá ser alterado após a
      * inicialização.
+     *
      * @since 1.0
      */
     public NoDeclaracaoVariavel(String nome, TipoDado tipoDado, boolean constante)
@@ -52,12 +56,5 @@ public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel<NoRefe
             }
         }
         return TRECHO_NULO;
-    }
-
-    @Override
-    public void adicionarReferencia(NoReferenciaVariavel referencia)
-    {
-        getReferencias().add(referencia);
-        referencia.setOrigemDaReferencia(this);
     }
 }

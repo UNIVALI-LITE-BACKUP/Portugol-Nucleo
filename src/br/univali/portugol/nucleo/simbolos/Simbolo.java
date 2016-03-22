@@ -1,7 +1,6 @@
 package br.univali.portugol.nucleo.simbolos;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 
@@ -15,10 +14,10 @@ import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
  * qual deve ser do tipo de dado definido na declaração do símbolo,
  *
  * @author Luiz Fernando Noschang
+ *
  * @version 1.0
- * @param <T> classe de declaracao
  */
-public abstract class Simbolo<T extends NoDeclaracao>
+public abstract class Simbolo
 {
     private String nome;
     protected TipoDado tipoDado;
@@ -28,17 +27,17 @@ public abstract class Simbolo<T extends NoDeclaracao>
     private boolean utilizado = false;
     private boolean inicializado = false;
     private boolean redeclarado = false;
-    private T origemDoSimbolo = null;
-    private NoDeclaracaoParametro parametroOrigemDoSimbolo = null;
-    private boolean originadoDeParametro = false;
+    private NoDeclaracao origemDoSimbolo = null;
 
     /**
      *
      * @param nome o nome deste símbolo.
+     *
      * @param tipoDado o tipo de dado armazenado/tratado por este símbolo.
+     *
      * @param declaracaoOrigem a declaração que originou o símbolo
      */
-    public Simbolo(String nome, TipoDado tipoDado, T declaracaoOrigem)
+    public Simbolo(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
     {
         setNome(nome);
         setTipoDado(tipoDado);
@@ -46,22 +45,10 @@ public abstract class Simbolo<T extends NoDeclaracao>
     }
 
     /**
-     *
-     * @param nome o nome deste símbolo.
-     * @param tipoDado o tipo de dado armazenado/tratado por este símbolo.
-     * @param parametroOrigem o parâmetro que originou o símbolo
-     */
-    public Simbolo(String nome, TipoDado tipoDado, NoDeclaracaoParametro parametroOrigem)
-    {
-        setNome(nome);
-        setTipoDado(tipoDado);
-        setParametroOrigemDoSimbolo(parametroOrigem);
-    }
-
-    /**
      * Obtém o nome deste símbolo.
      *
      * @return o nome deste símbolo.
+     *
      * @since 1.0
      */
     public final String getNome()
@@ -73,6 +60,7 @@ public abstract class Simbolo<T extends NoDeclaracao>
      * Obtém o tipo de dado armazenado/tratado por este símbolo.
      *
      * @return o tipo de dado armazenado/tratado por este símbolo.
+     *
      * @since 1.0
      */
     public final TipoDado getTipoDado()
@@ -85,7 +73,9 @@ public abstract class Simbolo<T extends NoDeclaracao>
      *
      * @return          <code>true</code> se o símbolo foi inicializado, caso contrário
      * retorna <code>false</code>.
+     *
      * @since 1.0
+     *
      * @deprecated nem todos os símbolos possuem inicialização, pos isso nas
      * versões futuras este método será removido da classe base e utilizado
      * somente nas classes em que for necessário.
@@ -256,31 +246,14 @@ public abstract class Simbolo<T extends NoDeclaracao>
         this.constante = constante;
     }
 
-    public T getOrigemDoSimbolo()
+    public NoDeclaracao getOrigemDoSimbolo()
     {
         return origemDoSimbolo;
     }
 
-    final void setOrigemDoSimbolo(T origemDoSimbolo)
+    final void setOrigemDoSimbolo(NoDeclaracao origemDoSimbolo)
     {
         this.origemDoSimbolo = origemDoSimbolo;
-        this.originadoDeParametro = false;
-    }
-
-    final void setParametroOrigemDoSimbolo(NoDeclaracaoParametro parametroOrigemDoSimbolo)
-    {
-        this.parametroOrigemDoSimbolo = parametroOrigemDoSimbolo;
-        this.originadoDeParametro = true;
-    }
-
-    public NoDeclaracaoParametro getParametroOrigemDoSimbolo()
-    {
-        return parametroOrigemDoSimbolo;
-    }
-
-    public boolean originadoDeParametroDaFuncao()
-    {
-        return originadoDeParametro;
     }
 
     /**

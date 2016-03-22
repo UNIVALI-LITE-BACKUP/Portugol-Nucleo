@@ -18,20 +18,20 @@ package br.univali.portugol.nucleo.asa;
  * @see NoReferenciaVariavel
  * @see NoReferenciaVetor
  */
-public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
+public abstract class NoReferencia extends NoExpressao
 {
     private final String nome;
     private final String escopo;
     private TrechoCodigoFonte trechoCodigoFonteNome;
-    private boolean originadoDeParametro = false;
-    private T origemDaReferencia;
-    private NoDeclaracaoParametro parametroDeOrigemDaReferencia;
+    private NoDeclaracao origemDaReferencia;
 
     /**
      * @param nome o nome do símbolo referenciado.
+     *
      * @param escopo o escopo da referência. Quando for uma referência a um
      * símbolo do programa, será nulo, quando for uma referência a um símbolo de
-     * uma biblioteca, o escopo será o nome ou apelido da bibliotecas
+     * uma biblioteca, o escopo será o nome ou apelido da bibliotecas.
+     *
      * @since 1.0
      */
     public NoReferencia(String escopo, String nome)
@@ -46,7 +46,7 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
      * @return o nome do símbolo referenciado.
      * @since 1.0
      */
-    public String getNome()
+    public final String getNome()
     {
         return nome;
     }
@@ -58,7 +58,7 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
      * @return o escopo do símbolo referenciado.
      *
      */
-    public String getEscopo()
+    public final String getEscopo()
     {
         return escopo;
     }
@@ -69,6 +69,7 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
      *
      * @return o trecho do código fonte no qual o nome do símbolo referenciado
      * se encontra.
+     *
      * @since 1.0
      */
     public TrechoCodigoFonte getTrechoCodigoFonteNome()
@@ -82,6 +83,7 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
      *
      * @param trechoCodigoFonteNome o trecho do código fonte no qual o nome do
      * símbolo referenciado se encontra.
+     *
      * @since 1.0
      */
     public void setTrechoCodigoFonteNome(TrechoCodigoFonte trechoCodigoFonteNome)
@@ -89,29 +91,12 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
         this.trechoCodigoFonteNome = trechoCodigoFonteNome;
     }
 
-    public boolean originadoDeParametroDaFuncao()
-    {
-        return originadoDeParametro;
-    }
-
-    public void setOrigemDaReferencia(T origemDaReferencia)
+    public final void setOrigemDaReferencia(NoDeclaracao origemDaReferencia)
     {
         this.origemDaReferencia = origemDaReferencia;
-        this.originadoDeParametro = false;
     }
 
-    public void setParametroDeOrigemDaReferencia(NoDeclaracaoParametro parametroDeOrigemDaReferencia)
-    {
-        this.parametroDeOrigemDaReferencia = parametroDeOrigemDaReferencia;
-        this.originadoDeParametro = true;
-    }
-
-    public NoDeclaracaoParametro getParametroDeOrigemDaReferencia()
-    {
-        return parametroDeOrigemDaReferencia;
-    }
-
-    public T getOrigemDaReferencia()
+    public final NoDeclaracao getOrigemDaReferencia()
     {
         return origemDaReferencia;
     }

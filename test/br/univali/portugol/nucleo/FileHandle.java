@@ -33,6 +33,6 @@ public final class FileHandle
             LOGGER.log(Level.SEVERE, null, ex);
         }
 
-        return reading.toString();
+        return reading.toString().replaceAll(System.lineSeparator(), Portugol.QUEBRA_DE_LINHA);
     }
 }

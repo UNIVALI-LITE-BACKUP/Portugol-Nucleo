@@ -91,7 +91,7 @@ final class RenomeadorDeSimbolos
     public String renomearSimbolo(String programa, int linha, int coluna, String novoNome) throws ErroAoRenomearSimbolo
     {
         programa = removerInformacoesPortugolStudio(programa);
-        
+
         try
         {
             Programa programaCompilado = Portugol.compilar(programa);
@@ -138,7 +138,7 @@ final class RenomeadorDeSimbolos
     public NoDeclaracao obterDeclaracaoDoSimbolo(String programa, int linha, int coluna) throws ErroAoTentarObterDeclaracaoDoSimbolo
     {
         programa = removerInformacoesPortugolStudio(programa);
-        
+
         try
         {
             Programa programaCompilado = Portugol.compilar(programa);
@@ -360,14 +360,7 @@ final class RenomeadorDeSimbolos
             {
                 if (chamadaFuncao.getEscopo() == null)
                 {
-                    if (chamadaFuncao.originadoDeParametroDaFuncao())
-                    {
-                        declaracaoSimbolo = chamadaFuncao.getParametroDeOrigemDaReferencia();
-                    }
-                    else
-                    {
-                        declaracaoSimbolo = chamadaFuncao.getOrigemDaReferencia();
-                    }
+                    declaracaoSimbolo = chamadaFuncao.getOrigemDaReferencia();
 
                     return null;
                 }
@@ -675,14 +668,7 @@ final class RenomeadorDeSimbolos
             {
                 if (noReferenciaMatriz.getEscopo() == null)
                 {
-                    if (noReferenciaMatriz.originadoDeParametroDaFuncao())
-                    {
-                        declaracaoSimbolo = noReferenciaMatriz.getParametroDeOrigemDaReferencia();
-                    }
-                    else
-                    {
-                        declaracaoSimbolo = noReferenciaMatriz.getOrigemDaReferencia();
-                    }
+                    declaracaoSimbolo = noReferenciaMatriz.getOrigemDaReferencia();
 
                     return null;
                 }
@@ -724,14 +710,7 @@ final class RenomeadorDeSimbolos
             {
                 if (noReferenciaVetor.getEscopo() == null)
                 {
-                    if (noReferenciaVetor.originadoDeParametroDaFuncao())
-                    {
-                        declaracaoSimbolo = noReferenciaVetor.getParametroDeOrigemDaReferencia();
-                    }
-                    else
-                    {
-                        declaracaoSimbolo = noReferenciaVetor.getOrigemDaReferencia();
-                    }
+                    declaracaoSimbolo = noReferenciaVetor.getOrigemDaReferencia();
 
                     return null;
                 }
@@ -944,14 +923,7 @@ final class RenomeadorDeSimbolos
             {
                 if (noReferenciaVariavel.getEscopo() == null)
                 {
-                    if (noReferenciaVariavel.originadoDeParametroDaFuncao())
-                    {
-                        declaracaoSimbolo = noReferenciaVariavel.getParametroDeOrigemDaReferencia();
-                    }
-                    else
-                    {
-                        declaracaoSimbolo = noReferenciaVariavel.getOrigemDaReferencia();
-                    }
+                    declaracaoSimbolo = noReferenciaVariavel.getOrigemDaReferencia();
 
                     return null;
                 }
@@ -1042,9 +1014,11 @@ final class RenomeadorDeSimbolos
             return null;
         }
     }
-    
+
     private String removerInformacoesPortugolStudio(String codigoFonte)
     {
+        codigoFonte = codigoFonte.replaceAll(System.lineSeparator(), Portugol.QUEBRA_DE_LINHA);
+        
         int inicio = codigoFonte.lastIndexOf("/* $$$ Portugol Studio $$$");
 
         if (inicio >= 0)

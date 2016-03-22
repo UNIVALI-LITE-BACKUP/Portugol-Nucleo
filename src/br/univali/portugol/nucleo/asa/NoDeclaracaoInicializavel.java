@@ -3,9 +3,8 @@ package br.univali.portugol.nucleo.asa;
 /**
  *
  * @author Luiz Fernando Noschang
- * @param <T>
  */
-public abstract class NoDeclaracaoInicializavel<T extends NoReferencia> extends NoDeclaracao<T>
+public abstract class NoDeclaracaoInicializavel extends NoDeclaracao
 {
     private NoExpressao inicializacao;
 
@@ -18,6 +17,7 @@ public abstract class NoDeclaracaoInicializavel<T extends NoReferencia> extends 
      * Obtém a expressão utilizada para inicializar o símbolo declarado.
      *
      * @return a expressão de inicialização.
+     *
      * @since 1.0
      */
     public final NoExpressao getInicializacao()
@@ -29,6 +29,7 @@ public abstract class NoDeclaracaoInicializavel<T extends NoReferencia> extends 
      * Define a expressão de inicialização do símbolo.
      *
      * @param inicializacao a expressão de inicialização.
+     *
      * @since 1.0
      */
     public final void setInicializacao(NoExpressao inicializacao)
