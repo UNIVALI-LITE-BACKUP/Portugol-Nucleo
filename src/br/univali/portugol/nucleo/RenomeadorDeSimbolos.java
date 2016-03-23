@@ -323,6 +323,13 @@ final class RenomeadorDeSimbolos
             if (trecho.getLinha() == linha && trecho.getColuna() == coluna)
             {
                 declaracaoSimbolo = noDeclaracaoVariavel;
+                
+                return null;
+            }
+            
+            if (noDeclaracaoVariavel.getInicializacao() != null)
+            {
+                noDeclaracaoVariavel.getInicializacao().aceitar(this);
             }
 
             return null;
