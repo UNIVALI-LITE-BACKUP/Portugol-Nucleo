@@ -45,7 +45,7 @@ public abstract class Interpretador implements VisitanteASA
     private Object valorPassadoParametro;
     
     private boolean lendo = false;
-    private boolean leituraIgnorada = true;
+    private boolean leituraIgnorada = false;
 
     public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
     {

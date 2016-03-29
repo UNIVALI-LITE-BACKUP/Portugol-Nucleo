@@ -787,6 +787,10 @@ public final class AnalisadorSemantico implements VisitanteASA
                         notificarErroSemantico(new ErroReferenciaInvalida(chamadaFuncao, simbolo));
                         throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
                     }
+                    else
+                    {
+                        simbolo.getOrigemDoSimbolo().adicionarReferencia(chamadaFuncao);
+                    }
                 }
                 catch (ExcecaoSimboloNaoDeclarado ex)
                 {
