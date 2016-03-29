@@ -556,6 +556,12 @@ public final class AnalisadorSemantico implements VisitanteASA
             for (int indice = 0; indice < tamanhoTiposPassado; indice++)
             {
                 TipoDado tipoPassado = tiposPassado.get(indice);
+                
+                if (tipoPassado == null)
+                {
+                    continue;
+                }
+                
                 if (tipoPassado.equals(TipoDado.VAZIO))
                 {
                     notificarErroSemantico(new ErroTipoParametroIncompativel(chamadaFuncao.getNome(), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getParametros().get(indice), TipoDado.TODOS, tipoPassado));
