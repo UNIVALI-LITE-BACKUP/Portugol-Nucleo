@@ -31,13 +31,13 @@ public final class Funcao extends Simbolo
      * @param blocos            a lista de blocos a serem executados por esta função.
      * @since 1.0
      */
-    public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, NoDeclaracao origem)
+    public Funcao(String nome, TipoDado tipoDado, Quantificador quantificador, List<NoDeclaracaoParametro> parametros, NoDeclaracaoFuncao declaracaoOrigem)
     {
-        super(nome, tipoDado, origem);
+        super(nome, tipoDado, declaracaoOrigem);
         
-        if (origem != null)
+        if (declaracaoOrigem != null)
         {
-            this.blocos = ((NoDeclaracaoFuncao) origem).getBlocos();
+            this.blocos = ((NoDeclaracaoFuncao) declaracaoOrigem).getBlocos();
         }
         
         this.parametros = parametros;

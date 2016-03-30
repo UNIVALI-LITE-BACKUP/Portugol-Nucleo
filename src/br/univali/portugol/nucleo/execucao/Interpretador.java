@@ -43,6 +43,9 @@ public abstract class Interpretador implements VisitanteASA
     private final OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
 
     private Object valorPassadoParametro;
+    
+    private boolean lendo = false;
+    private boolean leituraIgnorada = false;
 
     public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
     {
@@ -1642,8 +1645,30 @@ public abstract class Interpretador implements VisitanteASA
         }
     }
 
+    protected synchronized void setLendo(boolean lendo)
+    {
+        this.lendo = lendo;
+    }
+
+    protected synchronized boolean isLendo()
+    {
+        return lendo;
+    }    
+
+    protected synchronized void setLeituraIgnorada(boolean leituraIgnorada)
+    {
+        this.leituraIgnorada = leituraIgnorada;
+    }
+
+    private synchronized boolean isLeituraIgnorada()
+    {
+        return leituraIgnorada;
+    }
+    
     private void leia(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
+        setLendo(true);
+        
         final Entrada entrada = programa.getEntrada();
 
         try
@@ -1683,7 +1708,14 @@ public abstract class Interpretador implements VisitanteASA
 
                             if (!mediador.isCancelado())
                             {
-                                valor = mediador.getValor();
+                                if (!isLeituraIgnorada())
+                                {
+                                    valor = mediador.getValor();
+                                }
+                                else
+                                {
+                                     throw new ErroValorEntradaInvalido(tipoDado, chamadaFuncao.getTrechoCodigoFonte().getLinha(), chamadaFuncao.getTrechoCodigoFonte().getColuna());
+                                }
                             }
                             else
                             {
@@ -1721,6 +1753,8 @@ public abstract class Interpretador implements VisitanteASA
         {
             throw new ExcecaoVisitaASA(excecaoSimboloNaoDeclarado, asa, chamadaFuncao);
         }
+        
+        setLendo(false);
     }
 
     private class InputHandler implements InputMediator, Armazenador

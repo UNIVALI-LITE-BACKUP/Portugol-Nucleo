@@ -41,6 +41,11 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 
     public synchronized void continuar(Depurador.Estado estado)
     {
+        if (this.isLendo())
+        {
+            setLeituraIgnorada(true);
+        }
+        
         this.estado = estado;
         notifyAll();
     }

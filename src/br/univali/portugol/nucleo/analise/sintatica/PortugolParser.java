@@ -1019,7 +1019,7 @@ public class PortugolParser extends Parser
                             }
                         }
 
-                        declaracao.setInicializacao(inicializacao);
+                        ((NoDeclaracaoInicializavel)declaracao).setInicializacao(inicializacao);
                         declaracao.setTrechoCodigoFonteNome(criarTrechoCodigoFonte(ID1));
                         declaracao.setTrechoCodigoFonteTipoDado((informacaoTipoDado != null) ? informacaoTipoDado.getTrechoCodigoFonte() : null);
                     }

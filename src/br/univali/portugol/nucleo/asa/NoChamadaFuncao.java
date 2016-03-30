@@ -26,8 +26,11 @@ public final class NoChamadaFuncao extends NoReferencia
     private List<NoExpressao> parametros;
 
     /**
+     * @param escopo o escopo da função sendo referenciada. Se o escopo for
+     * nulo, então é uma função do programa, senão é uma função de biblioteca.
      *
-     * @param nome o nome da função que está sendo chamada
+     * @param nome o nome da função que está sendo chamadada.
+     *
      * @since 1.0
      */
     public NoChamadaFuncao(String escopo, String nome)
@@ -42,6 +45,7 @@ public final class NoChamadaFuncao extends NoReferencia
      * parâmetros.
      *
      * @return a lista de parâmetros passados para a função
+     *
      * @since 1.0
      */
     public List<NoExpressao> getParametros()
@@ -54,6 +58,7 @@ public final class NoChamadaFuncao extends NoReferencia
      *
      * @param parametros lista de parâmetros que estão sendo passados para a
      * função.
+     *
      * @since 1.0
      */
     public void setParametros(List<NoExpressao> parametros)

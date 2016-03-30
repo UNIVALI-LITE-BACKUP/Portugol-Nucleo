@@ -420,7 +420,7 @@ declaracao [Token tokenConst, InformacaoTipoDado informacaoTipoDado] returns[NoD
 			if ((tk1 != null) && (tk2 != null))
 				declaracao = new NoDeclaracaoMatriz(nome, tipoDado, ind1, ind2, constante);
 		
-			declaracao.setInicializacao(inicializacao);
+			((NoDeclaracaoInicializavel) declaracao).setInicializacao(inicializacao);
 			declaracao.setTrechoCodigoFonteNome(criarTrechoCodigoFonte($ID));
 			declaracao.setTrechoCodigoFonteTipoDado((informacaoTipoDado != null)? informacaoTipoDado.getTrechoCodigoFonte(): null);
 		}

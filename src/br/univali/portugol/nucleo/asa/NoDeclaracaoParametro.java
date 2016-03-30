@@ -2,7 +2,7 @@ package br.univali.portugol.nucleo.asa;
 
 /**
  * Representa os parâmetros esperados em uma função.
- * 
+ *
  * @author Luiz Fernando Noschang
  * @version 1.0
  * @see NoDeclaracaoFuncao
@@ -10,15 +10,18 @@ package br.univali.portugol.nucleo.asa;
 public final class NoDeclaracaoParametro extends NoDeclaracao
 {
     private int indice;
-    private ModoAcesso modoAcesso;
-    private Quantificador quantificador;
-
+    private final ModoAcesso modoAcesso;
+    private final Quantificador quantificador;
 
     /**
-     * @param nome              o nome deste parãmetro.
-     * @param tipoDado          o tipo de dado deste parâmetro.
-     * @param quantificador     o quantificador deste parâmetro.
-     * @param modoAcesso        o modo de acesso deste parâmetro.
+     * @param nome o nome deste parãmetro.
+     *
+     * @param tipoDado o tipo de dado deste parâmetro.
+     *
+     * @param quantificador o quantificador deste parâmetro.
+     *
+     * @param modoAcesso o modo de acesso deste parâmetro.
+     *
      * @since 1.0
      */
     public NoDeclaracaoParametro(String nome, TipoDado tipoDado, Quantificador quantificador, ModoAcesso modoAcesso)
@@ -29,22 +32,26 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
     }
 
     /**
-     * Obtém o índice do parâmetro na declaração da função iniciando em 0. Isto significa que, para uma função que espera 4 parâmetros, 
-     * o primeiro terá índice 0, o segundo terá índice 1, o terceiro terá índice 2 e assim por diante.
-     * 
-     * @return     o índice do parâmetro.
+     * Obtém o índice do parâmetro na declaração da função iniciando em 0. Isto
+     * significa que, para uma função que espera 4 parâmetros, o primeiro terá
+     * índice 0, o segundo terá índice 1, o terceiro terá índice 2 e assim por
+     * diante.
+     *
+     * @return o índice do parâmetro.
+     *
      * @since 1.0
-     */    
+     */
     public int getIndice()
     {
         return indice;
     }
 
     /**
-     * 
+     *
      * Obtém o quantificador deste parâmetro.
-     * 
-     * @return     o quantificador deste parâmetro.
+     *
+     * @return o quantificador deste parâmetro.
+     *
      * @since 1.0
      */
     public Quantificador getQuantificador()
@@ -54,8 +61,9 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
 
     /**
      * Obtém o modo de acesso deste parâmetro.
-     * 
+     *
      * @return o modo de acesso deste parâmetro.
+     *
      * @since 1.0
      */
     public ModoAcesso getModoAcesso()
@@ -65,15 +73,16 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
 
     /**
      * Define o índice deste parâmetro na declaração da função.
-     * 
-     * @param indice     o índice do parâmetro.
+     *
+     * @param indice o índice do parâmetro.
+     *
      * @since 1.0
-     */    
+     */
     public void setIndice(int indice)
     {
         this.indice = indice;
     }
- 
+
     /**
      * {@inheritDoc }
      */
@@ -81,5 +90,15 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
     public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         return visitante.visitar(this);
+    }
+
+    @Override
+    public TrechoCodigoFonte getTrechoCodigoFonte()
+    {
+        int caractereInicialTipoDado = getTrechoCodigoFonteTipoDado().getColuna();
+        int caractereFinalNome = getTrechoCodigoFonteNome().getColuna() + getTrechoCodigoFonteNome().getTamanhoTexto();
+        int tamanhoTotal = caractereFinalNome - caractereInicialTipoDado;
+
+        return new TrechoCodigoFonte(getTrechoCodigoFonteTipoDado().getLinha(), getTrechoCodigoFonteTipoDado().getColuna(), tamanhoTotal);
     }
 }

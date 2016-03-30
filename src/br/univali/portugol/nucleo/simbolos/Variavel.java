@@ -1,12 +1,11 @@
 package br.univali.portugol.nucleo.simbolos;
 
-import br.univali.portugol.nucleo.asa.No;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 
 /**
  * Representa uma variável alocada em memória durante a execução de um programa.
- * 
+ *
  * @author Luiz Fernando Noschang
  * @since 1.0
  */
@@ -16,35 +15,44 @@ public final class Variavel extends Simbolo
 
     /**
      * Aloca uma variável em memória sem definir seu valor.
-     * 
-     * @param nome         o nome desta variável.
-     * @param tipoDado     o tipo de dado armazenado por esta variável.
+     *
+     * @param nome o nome desta variável.
+     *
+     * @param tipoDado o tipo de dado armazenado por esta variável.
+     *
+     * @param declaracaoOrigem o nó de declaração que originou a variável
+     *
      * @since 1.0
      */
-    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao origem)
+    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
     {
-        super(nome, tipoDado, origem);
-        //setValor(tipoDado.getValorPadrao());
+        super(nome, tipoDado, declaracaoOrigem);
     }
 
     /**
      * Aloca uma variável em memória inicializando-a com um valor.
-     * 
-     * @param nome         o nome desta variável.
-     * @param tipoDado     o tipo de dado armazenado por esta variável.
-     * @param valor        o valor que será armazenado na variável.
+     *
+     * @param nome o nome desta variável.
+     *
+     * @param tipoDado o tipo de dado armazenado por esta variável.
+     *
+     * @param declaracaoOrigem o nó de declaração que originou a variável
+     *
+     * @param valor o valor que será armazenado na variável.
+     *
      * @since 1.0
      */
-    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao origem, Object valor)
+    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem, Object valor)
     {
-        super(nome, tipoDado, origem);
+        super(nome, tipoDado, declaracaoOrigem);
         setValor(valor);
     }
 
     /**
      * Obtém o valor armazenado nesta variável.
-     * 
-     * @return     o valor armazenado nesta variável.
+     *
+     * @return o valor armazenado nesta variável.
+     *
      * @since 1.0
      */
     public Object getValor()
@@ -55,24 +63,22 @@ public final class Variavel extends Simbolo
 
     /**
      * Armazena um valor nesta variável.
-     * 
-     * @param valor     o valor que será armazenado nesta variável
+     *
+     * @param valor o valor que será armazenado nesta variável
+     *
      * @since 1.0
      */
     public void setValor(Object valor)
     {
-        
         if ((valor instanceof Double) && (tipoDado == TipoDado.INTEIRO))
         {
             double val = (Double) valor;
             valor = (int) val;
         }
 
-        else 
-        
-        if((valor instanceof Integer) && (tipoDado == TipoDado.REAL))
+        else if ((valor instanceof Integer) && (tipoDado == TipoDado.REAL))
         {
-            valor = ((Integer)valor).doubleValue();
+            valor = ((Integer) valor).doubleValue();
         }
 
         setInicializado(true);

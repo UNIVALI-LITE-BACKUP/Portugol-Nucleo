@@ -14,7 +14,7 @@ public final class ErroInicializacaoInvalida extends ErroSemantico
     private Simbolo simbolo;
     private String codigo = "ErroSemantico.ErroInicializacaoInvalida.";
 
-    public ErroInicializacaoInvalida(NoDeclaracao declaracao)
+    public ErroInicializacaoInvalida(NoDeclaracaoInicializavel declaracao)
     {
        
         super(declaracao.getInicializacao().getTrechoCodigoFonte());
@@ -22,7 +22,7 @@ public final class ErroInicializacaoInvalida extends ErroSemantico
         this.inicializacao = declaracao.getInicializacao();
     }
 
-    public ErroInicializacaoInvalida(Simbolo simbolo, NoDeclaracao declaracao)
+    public ErroInicializacaoInvalida(Simbolo simbolo, NoDeclaracaoInicializavel declaracao)
     {
         this(declaracao);
         this.simbolo = simbolo;
