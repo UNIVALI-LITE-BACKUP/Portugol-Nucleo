@@ -1373,7 +1373,7 @@ public abstract class Interpretador implements VisitanteASA
 
                 if (valor == null)
                 {
-                    throw new ExcecaoVisitaASA(new ErroValorVetorMatrizNaoInicializado(noReferenciaMatriz, linha, coluna), asa, noReferenciaMatriz);
+                    throw new ExcecaoVisitaASA(new ErroValorVetorMatrizNaoInicializado(matriz, noReferenciaMatriz, linha, coluna), asa, noReferenciaMatriz);
                 }
 
                 while (valor instanceof NoExpressao)
@@ -1436,7 +1436,7 @@ public abstract class Interpretador implements VisitanteASA
 
                 if (valor == null)
                 {
-                    throw new ExcecaoVisitaASA(new ErroValorVetorMatrizNaoInicializado(noReferenciaVetor, indice), asa, noReferenciaVetor);
+                    throw new ExcecaoVisitaASA(new ErroValorVetorMatrizNaoInicializado(vetor, noReferenciaVetor, indice), asa, noReferenciaVetor);
                 }
 
                 while (valor instanceof NoExpressao)
