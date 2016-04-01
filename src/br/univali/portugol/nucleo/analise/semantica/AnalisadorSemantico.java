@@ -261,27 +261,33 @@ public final class AnalisadorSemantico implements VisitanteASA
         List<ModoAcesso> modosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
         List<ModoAcesso> modosAcessoPassados = obterModosAcessoPassados(chamadaFuncao);
 
-        //Se for a função leia, configura o modo de acesso esperado por referencia.
+        int cont = Math.min(modosAcessoEsperados.size(), modosAcessoPassados.size());
+        
         if (chamadaFuncao.getNome().equals(FUNCAO_LEIA))
         {
-            int qtdAcessosPassados = modosAcessoPassados.size();
-
-            for (int indice = 0; indice < qtdAcessosPassados; indice++)
+            for (int indice = 0; indice < cont; indice++)
             {
-                modosAcessoEsperados.add(ModoAcesso.POR_REFERENCIA);
+                NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
+                
+                if (!(parametro instanceof NoReferenciaVariavel) && (parametro instanceof NoReferenciaVetor) && (parametro instanceof NoReferenciaMatriz))
+                {
+                    notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome(), indice));
+                }
             }
         }
-
-        int cont = Math.min(modosAcessoEsperados.size(), modosAcessoPassados.size());
-
-        for (int indice = 0; indice < cont; indice++)
+        else
         {
-            ModoAcesso modoAcessoEsperado = modosAcessoEsperados.get(indice);
-            ModoAcesso modoAcessoPassado = modosAcessoPassados.get(indice);
-
-            if (modoAcessoEsperado == ModoAcesso.POR_REFERENCIA && modoAcessoPassado == ModoAcesso.POR_VALOR)
+            for (int indice = 0; indice < cont; indice++)
             {
-                notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome(), indice));
+                ModoAcesso modoAcessoEsperado = modosAcessoEsperados.get(indice);
+                ModoAcesso modoAcessoPassado = modosAcessoPassados.get(indice);
+
+                if (modoAcessoEsperado == ModoAcesso.POR_REFERENCIA && modoAcessoPassado == ModoAcesso.POR_VALOR)
+                {
+
+
+                    notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome(), indice));
+                }
             }
         }
     }
