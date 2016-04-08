@@ -1,7901 +1,3322 @@
-// $ANTLR 3.5 C:\\Users\\Paula\\Desktop\\Portugol.g 2013-10-18 19:38:46
+// Generated from C:\Users\4276663\Desktop\Git\Portugol-Nucleo\src\br\u005Cunivali\portugol\nucleo\analise\sintatica\Portugol.g4 by ANTLR 4.1
 package br.univali.portugol.nucleo.analise.sintatica;
-
-import java.util.Stack;
-import org.antlr.runtime.Token;
-import br.univali.portugol.nucleo.asa.*;
-
-import org.antlr.runtime.*;
-import java.util.Stack;
+import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
-@SuppressWarnings("all")
-public class PortugolParser extends Parser
-{
-    public static final String[] tokenNames = new String[]
-    {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "CADEIA", "CARACTER", "COMENTARIO",
-        "DIGIT_HEX", "ESC_OCTAL", "ESC_UNICODE", "ESPACO", "GAMBIARRA", "ID",
-        "ID_BIBLIOTECA", "INTEIRO", "LOGICO", "OPERADOR_NAO", "PR_BIBLIOTECA",
-        "PR_CADEIA", "PR_CARACTER", "PR_CASO", "PR_CONST", "PR_CONTRARIO", "PR_ENQUANTO",
-        "PR_ESCOLHA", "PR_FACA", "PR_FALSO", "PR_FUNCAO", "PR_INCLUA", "PR_INTEIRO",
-        "PR_LOGICO", "PR_PARA", "PR_PARE", "PR_PROGRAMA", "PR_REAL", "PR_RETORNE",
-        "PR_SE", "PR_SENAO", "PR_VAZIO", "PR_VERDADEIRO", "REAL", "SEQ_ESC", "'!='",
-        "'%'", "'%='", "'&'", "'&='", "'('", "')'", "'*'", "'*='", "'+'", "'++'",
-        "'+='", "','", "'-'", "'--'", "'-->'", "'-='", "'/'", "'/='", "':'", "';'",
-        "'<'", "'<<'", "'<<='", "'<='", "'='", "'=='", "'>'", "'>='", "'>>'",
-        "'>>='", "'['", "']'", "'^'", "'^='", "'e'", "'ou'", "'{'", "'|'", "'|='",
-        "'}'", "'~'"
-    };
-    public static final int EOF = -1;
-    public static final int T__42 = 42;
-    public static final int T__43 = 43;
-    public static final int T__44 = 44;
-    public static final int T__45 = 45;
-    public static final int T__46 = 46;
-    public static final int T__47 = 47;
-    public static final int T__48 = 48;
-    public static final int T__49 = 49;
-    public static final int T__50 = 50;
-    public static final int T__51 = 51;
-    public static final int T__52 = 52;
-    public static final int T__53 = 53;
-    public static final int T__54 = 54;
-    public static final int T__55 = 55;
-    public static final int T__56 = 56;
-    public static final int T__57 = 57;
-    public static final int T__58 = 58;
-    public static final int T__59 = 59;
-    public static final int T__60 = 60;
-    public static final int T__61 = 61;
-    public static final int T__62 = 62;
-    public static final int T__63 = 63;
-    public static final int T__64 = 64;
-    public static final int T__65 = 65;
-    public static final int T__66 = 66;
-    public static final int T__67 = 67;
-    public static final int T__68 = 68;
-    public static final int T__69 = 69;
-    public static final int T__70 = 70;
-    public static final int T__71 = 71;
-    public static final int T__72 = 72;
-    public static final int T__73 = 73;
-    public static final int T__74 = 74;
-    public static final int T__75 = 75;
-    public static final int T__76 = 76;
-    public static final int T__77 = 77;
-    public static final int T__78 = 78;
-    public static final int T__79 = 79;
-    public static final int T__80 = 80;
-    public static final int T__81 = 81;
-    public static final int T__82 = 82;
-    public static final int T__83 = 83;
-    public static final int CADEIA = 4;
-    public static final int CARACTER = 5;
-    public static final int COMENTARIO = 6;
-    public static final int DIGIT_HEX = 7;
-    public static final int ESC_OCTAL = 8;
-    public static final int ESC_UNICODE = 9;
-    public static final int ESPACO = 10;
-    public static final int GAMBIARRA = 11;
-    public static final int ID = 12;
-    public static final int ID_BIBLIOTECA = 13;
-    public static final int INTEIRO = 14;
-    public static final int LOGICO = 15;
-    public static final int OPERADOR_NAO = 16;
-    public static final int PR_BIBLIOTECA = 17;
-    public static final int PR_CADEIA = 18;
-    public static final int PR_CARACTER = 19;
-    public static final int PR_CASO = 20;
-    public static final int PR_CONST = 21;
-    public static final int PR_CONTRARIO = 22;
-    public static final int PR_ENQUANTO = 23;
-    public static final int PR_ESCOLHA = 24;
-    public static final int PR_FACA = 25;
-    public static final int PR_FALSO = 26;
-    public static final int PR_FUNCAO = 27;
-    public static final int PR_INCLUA = 28;
-    public static final int PR_INTEIRO = 29;
-    public static final int PR_LOGICO = 30;
-    public static final int PR_PARA = 31;
-    public static final int PR_PARE = 32;
-    public static final int PR_PROGRAMA = 33;
-    public static final int PR_REAL = 34;
-    public static final int PR_RETORNE = 35;
-    public static final int PR_SE = 36;
-    public static final int PR_SENAO = 37;
-    public static final int PR_VAZIO = 38;
-    public static final int PR_VERDADEIRO = 39;
-    public static final int REAL = 40;
-    public static final int SEQ_ESC = 41;
-
-    // delegates
-    public Parser[] getDelegates()
-    {
-        return new Parser[]
-        {
-        };
-    }
-
-    // delegators
-    public PortugolParser(TokenStream input)
-    {
-        this(input, new RecognizerSharedState());
-    }
-
-    public PortugolParser(TokenStream input, RecognizerSharedState state)
-    {
-        super(input, state);
-    }
-
-    @Override
-    public String[] getTokenNames()
-    {
-        return PortugolParser.tokenNames;
-    }
-
-    @Override
-    public String getGrammarFileName()
-    {
-        return "C:\\Users\\Paula\\Desktop\\Portugol.g";
-    }
-
-    private boolean gerarArvore = true;
-    private int quantidadeErros = 0;
-    private Stack<String> pilhaContexto = new Stack<String>();
-    private List<ObservadorParsing> observadores = new ArrayList<ObservadorParsing>();
-
-    public PortugolParser(CommonTokenStream a, RecognizerSharedState b)
-    {
-        super(a, b);
-    }
-
-    public void adicionarObservadorParsing(ObservadorParsing observador)
-    {
-        if (!observadores.contains(observador))
-        {
-            observadores.add(observador);
-        }
-    }
-
-    public void removerObservadorParsing(ObservadorParsing observador)
-    {
-        observadores.remove(observador);
-    }
-
-    @Override
-    public void displayRecognitionError(String[] tokenNames, RecognitionException e)
-    {
-        gerarArvore = false;
-        quantidadeErros = quantidadeErros + 1;
-        String mensagemPadrao = getErrorHeader(e) + " - " + getErrorMessage(e, tokenNames);
-
-        for (ObservadorParsing observador : observadores)
-        {
-            Stack<String> copiaPilha = new Stack<String>();
-            copiaPilha.addAll(pilhaContexto);
-
-            observador.tratarErroParsing(e, tokenNames, copiaPilha, mensagemPadrao);
-        }
-    }
-
-    private class InformacaoTipoDado
-    {
-        private TipoDado tipoDado;
-        private TrechoCodigoFonte trechoCodigoFonte;
-
-        public InformacaoTipoDado()
-        {
-
-        }
-
-        public TipoDado getTipoDado()
-        {
-            return tipoDado;
-        }
-
-        public TrechoCodigoFonte getTrechoCodigoFonte()
-        {
-            return trechoCodigoFonte;
-        }
-
-        public void setTipoDado(TipoDado tipoDado)
-        {
-            this.tipoDado = tipoDado;
-        }
-
-        public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
-        {
-            this.trechoCodigoFonte = trechoCodigoFonte;
-        }
-    }
-
-    private TrechoCodigoFonte criarTrechoCodigoFonte(Token tokenAntlr)
-    {
-        if (tokenAntlr != null)
-        {
-            int linha = tokenAntlr.getLine();
-            int coluna = tokenAntlr.getCharPositionInLine();
-            int tamanhoTexto = tokenAntlr.getText().length();
-
-            return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
-        }
-
-        return null;
-    }
-
-    private TrechoCodigoFonte criarTrechoCodigoFonteLista(Token abreEscopo, Token fechaEscopo)
-    {
-        if ((abreEscopo != null) && (fechaEscopo != null))
-        {
-            int linha = abreEscopo.getLine();
-            int coluna = abreEscopo.getCharPositionInLine();
-            int tamanhoTexto = fechaEscopo.getTokenIndex() + 1 - abreEscopo.getTokenIndex();
-
-            return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
-        }
-
-        return null;
-    }
-
-    private NoExpressao selecionarExpressao(NoExpressao operandoEsquerdo, NoExpressao operandoDireito, Token operador)
-    {
-        if (operandoDireito != null)
-        {
-            NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-            operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-
-            return operacao;
-        }
-
-        else
-        {
-            return operandoEsquerdo;
-        }
-    }
-
-    /**
-     * Varre uma cadeia procurando por "sequências de escape" e substituindo por
-     * seus valores equivalentes.
-     * <p>
-     * As sequências de escape representam caracteres ou valores especiais que
-     * não podem ser escritos diretamente no código-fonte, pois são
-     * interpretados de forma diferente pelo parser do Portugol.
-     *
-     * @param valor a cadeia em seu formato original, como foi declarada no
-     * código fonte.
-     * @return uma nova versão da cadeia com as sequências de escape já
-     * substituídas.
-     *
-     * @since 1.0
-     */
-    private String traduzirSequenciasEscape(String valor)
-    {
-        valor = valor.replace("\\b", "\b");
-        valor = valor.replace("\\t", "\t");
-        valor = valor.replace("\\n", "\n");
-        valor = valor.replace("\f", "\f");
-        valor = valor.replace("\\r", "\r");
-        valor = valor.replace("\\\"", "\"");
-        valor = valor.replace("\\\'", "\'");
-        valor = valor.replace("\\\"", "\"");
-        valor = valor.replace("\\\\", "\\");
-
-        return valor;
-    }
-
-    // $ANTLR start "parse"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:231:1: parse returns [ArvoreSintaticaAbstrata asa] : prog= programa ;
-    public final ArvoreSintaticaAbstrata parse() throws RecognitionException
-    {
-        ArvoreSintaticaAbstrata asa = null;
-
-        ArvoreSintaticaAbstrata prog = null;
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:231:43: (prog= programa )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:233:2: prog= programa
-            {
-                pushFollow(FOLLOW_programa_in_parse920);
-                prog = programa();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return asa;
-                }
-                if (state.backtracking == 0)
-                {
-                    asa = prog;
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-        }
-        return asa;
-    }
-	// $ANTLR end "parse"
-
-    // $ANTLR start "programa"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:240:1: programa returns [ArvoreSintaticaAbstrata asa] : PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' ;
-    public final ArvoreSintaticaAbstrata programa() throws RecognitionException
-    {
-        ArvoreSintaticaAbstrata asa = null;
-
-        pilhaContexto.push("programa");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:243:2: ( PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:245:2: PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}'
-            {
-                match(input, PR_PROGRAMA, FOLLOW_PR_PROGRAMA_in_programa942);
-                if (state.failed)
-                {
-                    return asa;
-                }
-                match(input, 79, FOLLOW_79_in_programa945);
-                if (state.failed)
-                {
-                    return asa;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        asa = new ArvoreSintaticaAbstrataPrograma();
-                        asa.setListaDeclaracoesGlobais(new ArrayList<NoDeclaracao>());
-                        ((ArvoreSintaticaAbstrataPrograma) asa).setListaInclusoesBibliotecas(new ArrayList<NoInclusaoBiblioteca>());
-                    }
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:256:4: ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )*
-                loop1:
-                while (true)
-                {
-                    int alt1 = 2;
-                    int LA1_0 = input.LA(1);
-                    if ((LA1_0 == PR_INCLUA))
-                    {
-                        alt1 = 1;
-                    }
-
-                    switch (alt1)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:256:4: inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa]
-                        {
-                            pushFollow(FOLLOW_inclusaoBiblioteca_in_programa960);
-                            inclusaoBiblioteca((ArvoreSintaticaAbstrataPrograma) asa);
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return asa;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop1;
-                    }
-                }
-
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:258:3: ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )*
-                loop2:
-                while (true)
-                {
-                    int alt2 = 3;
-                    int LA2_0 = input.LA(1);
-                    if (((LA2_0 >= PR_CADEIA && LA2_0 <= PR_CARACTER) || LA2_0 == PR_CONST || (LA2_0 >= PR_INTEIRO && LA2_0 <= PR_LOGICO) || LA2_0 == PR_REAL))
-                    {
-                        alt2 = 1;
-                    }
-                    else
-                    {
-                        if ((LA2_0 == PR_FUNCAO))
-                        {
-                            alt2 = 2;
-                        }
-                    }
-
-                    switch (alt2)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:258:4: declaracoesGlobais[asa]
-                        {
-                            pushFollow(FOLLOW_declaracoesGlobais_in_programa968);
-                            declaracoesGlobais(asa);
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return asa;
-                            }
-                        }
-                        break;
-                        case 2:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:258:30: declaracaoFuncao[asa]
-                        {
-                            pushFollow(FOLLOW_declaracaoFuncao_in_programa973);
-                            declaracaoFuncao(asa);
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return asa;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop2;
-                    }
-                }
-
-                match(input, 82, FOLLOW_82_in_programa979);
-                if (state.failed)
-                {
-                    return asa;
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return asa;
-    }
-	// $ANTLR end "programa"
-
-    // $ANTLR start "inclusaoBiblioteca"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:266:1: inclusaoBiblioteca[ArvoreSintaticaAbstrataPrograma asa] : incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )? ;
-    public final void inclusaoBiblioteca(ArvoreSintaticaAbstrataPrograma asa) throws RecognitionException
-    {
-        Token incl = null;
-        Token nome = null;
-        Token alias = null;
-
-        pilhaContexto.push("inclusaoBiblioteca");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:269:2: (incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:270:2: incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )?
-            {
-                incl = (Token) match(input, PR_INCLUA, FOLLOW_PR_INCLUA_in_inclusaoBiblioteca1002);
-                if (state.failed)
-                {
-                    return;
-                }
-                match(input, PR_BIBLIOTECA, FOLLOW_PR_BIBLIOTECA_in_inclusaoBiblioteca1004);
-                if (state.failed)
-                {
-                    return;
-                }
-                nome = (Token) match(input, ID, FOLLOW_ID_in_inclusaoBiblioteca1010);
-                if (state.failed)
-                {
-                    return;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:270:43: ( '-->' alias= ID )?
-                int alt3 = 2;
-                int LA3_0 = input.LA(1);
-                if ((LA3_0 == 57))
-                {
-                    alt3 = 1;
-                }
-                switch (alt3)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:270:44: '-->' alias= ID
-                    {
-                        match(input, 57, FOLLOW_57_in_inclusaoBiblioteca1013);
-                        if (state.failed)
-                        {
-                            return;
-                        }
-                        alias = (Token) match(input, ID, FOLLOW_ID_in_inclusaoBiblioteca1020);
-                        if (state.failed)
-                        {
-                            return;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        NoInclusaoBiblioteca noInclusaoBiblioteca = new NoInclusaoBiblioteca();
-
-                        noInclusaoBiblioteca.setNome(nome.getText());
-                        noInclusaoBiblioteca.setTrechoCodigoFonteNome(criarTrechoCodigoFonte(nome));
-
-                        if (alias != null)
-                        {
-                            noInclusaoBiblioteca.setAlias(alias.getText());
-                            noInclusaoBiblioteca.setTrechoCodigoFonteAlias(criarTrechoCodigoFonte(alias));
-                        }
-
-                        int linha = incl.getLine();
-                        int coluna = incl.getCharPositionInLine();
-                        int tamanho = coluna;
-
-                        if (alias != null)
-                        {
-                            tamanho = tamanho - alias.getCharPositionInLine() + alias.getText().length();
-                        }
-
-                        else
-                        {
-                            tamanho = tamanho - nome.getCharPositionInLine() + nome.getText().length();
-                        }
-
-                        noInclusaoBiblioteca.setTrechoCodigoFonte(new TrechoCodigoFonte(linha, coluna, tamanho));
-
-                        asa.getListaInclusoesBibliotecas().add(noInclusaoBiblioteca);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-    }
-	// $ANTLR end "inclusaoBiblioteca"
-
-    // $ANTLR start "declaracoesGlobais"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:307:1: declaracoesGlobais[ArvoreSintaticaAbstrata asa] : vListaDeclaracoes= listaDeclaracoes ;
-    public final void declaracoesGlobais(ArvoreSintaticaAbstrata asa) throws RecognitionException
-    {
-        List<NoDeclaracao> vListaDeclaracoes = null;
-
-        pilhaContexto.push("declaracoesGlobais");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:310:2: (vListaDeclaracoes= listaDeclaracoes )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:312:2: vListaDeclaracoes= listaDeclaracoes
-            {
-                pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesGlobais1051);
-                vListaDeclaracoes = listaDeclaracoes();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        if (asa != null)
-                        {
-                            List<NoDeclaracao> listaDeclaracoesGlobais = asa.getListaDeclaracoesGlobais();
-
-                            if (listaDeclaracoesGlobais != null)
-                            {
-                                for (NoDeclaracao declaracao : vListaDeclaracoes)
-                                {
-                                    listaDeclaracoesGlobais.add(declaracao);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-    }
-	// $ANTLR end "declaracoesGlobais"
-
-    // $ANTLR start "declaracoesLocais"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:335:1: declaracoesLocais[List<NoBloco> listaBlocos] : vListaDeclaracoes= listaDeclaracoes ;
-    public final void declaracoesLocais(List<NoBloco> listaBlocos) throws RecognitionException
-    {
-        List<NoDeclaracao> vListaDeclaracoes = null;
-
-        pilhaContexto.push("declaracoesLocais");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:338:2: (vListaDeclaracoes= listaDeclaracoes )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:340:2: vListaDeclaracoes= listaDeclaracoes
-            {
-                pushFollow(FOLLOW_listaDeclaracoes_in_declaracoesLocais1079);
-                vListaDeclaracoes = listaDeclaracoes();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        if ((listaBlocos != null) && (vListaDeclaracoes != null))
-                        {
-                            for (NoDeclaracao declaracao : vListaDeclaracoes)
-                            {
-                                listaBlocos.add(declaracao);
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-    }
-	// $ANTLR end "declaracoesLocais"
-
-    // $ANTLR start "listaDeclaracoes"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:358:1: listaDeclaracoes returns [List<NoDeclaracao> listaDeclaracoes] : ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) ;
-    public final List<NoDeclaracao> listaDeclaracoes() throws RecognitionException
-    {
-        List<NoDeclaracao> listaDeclaracoes = null;
-
-        Token tokenConst = null;
-        InformacaoTipoDado informacaoTipoDado = null;
-        NoDeclaracao vDeclaracao = null;
-
-        pilhaContexto.push("listaDeclaracoes");
-        listaDeclaracoes = new ArrayList<NoDeclaracao>();
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:362:2: ( ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:363:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:363:2: ( (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )* )
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:364:2: (tokenConst= PR_CONST )? informacaoTipoDado= declaracaoTipoDado (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] ) ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )*
-                {
-                    if (state.backtracking == 0)
-                    {
-                        tokenConst = null;
-                    }
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:366:2: (tokenConst= PR_CONST )?
-                    int alt4 = 2;
-                    int LA4_0 = input.LA(1);
-                    if ((LA4_0 == PR_CONST))
-                    {
-                        alt4 = 1;
-                    }
-                    switch (alt4)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:366:3: tokenConst= PR_CONST
-                        {
-                            tokenConst = (Token) match(input, PR_CONST, FOLLOW_PR_CONST_in_listaDeclaracoes1116);
-                            if (state.failed)
-                            {
-                                return listaDeclaracoes;
-                            }
-                        }
-                        break;
-
-                    }
-
-                    pushFollow(FOLLOW_declaracaoTipoDado_in_listaDeclaracoes1124);
-                    informacaoTipoDado = declaracaoTipoDado();
-                    state._fsp--;
-                    if (state.failed)
-                    {
-                        return listaDeclaracoes;
-                    }
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:368:2: (vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:368:4: vDeclaracao= declaracao[tokenConst, informacaoTipoDado]
-                    {
-                        pushFollow(FOLLOW_declaracao_in_listaDeclaracoes1135);
-                        vDeclaracao = declaracao(tokenConst, informacaoTipoDado);
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return listaDeclaracoes;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            if (gerarArvore)
-                            {
-                                if (vDeclaracao != null)
-                                {
-                                    listaDeclaracoes.add(vDeclaracao);
-                                }
-
-                                vDeclaracao = null;
-                            }
-                        }
-                    }
-
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:379:2: ( ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado] )*
-                    loop5:
-                    while (true)
-                    {
-                        int alt5 = 2;
-                        int LA5_0 = input.LA(1);
-                        if ((LA5_0 == 54))
-                        {
-                            alt5 = 1;
-                        }
-
-                        switch (alt5)
-                        {
-                            case 1:
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:379:3: ',' vDeclaracao= declaracao[tokenConst, informacaoTipoDado]
-                            {
-                                match(input, 54, FOLLOW_54_in_listaDeclaracoes1157);
-                                if (state.failed)
-                                {
-                                    return listaDeclaracoes;
-                                }
-                                pushFollow(FOLLOW_declaracao_in_listaDeclaracoes1163);
-                                vDeclaracao = declaracao(tokenConst, informacaoTipoDado);
-                                state._fsp--;
-                                if (state.failed)
-                                {
-                                    return listaDeclaracoes;
-                                }
-                                if (state.backtracking == 0)
-                                {
-                                    if (gerarArvore)
-                                    {
-                                        if (vDeclaracao != null)
-                                        {
-                                            listaDeclaracoes.add(vDeclaracao);
-                                        }
-
-                                        vDeclaracao = null;
-                                    }
-                                }
-                            }
-                            break;
-
-                            default:
-                                break loop5;
-                        }
-                    }
-
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return listaDeclaracoes;
-    }
-	// $ANTLR end "listaDeclaracoes"
-
-    // $ANTLR start "declaracao"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:397:1: declaracao[Token tokenConst, InformacaoTipoDado informacaoTipoDado] returns [NoDeclaracao declaracao] : ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) ;
-    public final NoDeclaracao declaracao(Token tokenConst, InformacaoTipoDado informacaoTipoDado) throws RecognitionException
-    {
-        NoDeclaracao declaracao = null;
-
-        Token tk1 = null;
-        Token tk2 = null;
-        Token ID1 = null;
-        NoExpressao ind1 = null;
-        NoExpressao ind2 = null;
-        NoExpressao inicializacao = null;
-
-        pilhaContexto.push("declaracao");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:400:2: ( ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:402:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:402:2: ( ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )? )
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:402:3: ID (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )? ( '=' inicializacao= expressao )?
-                {
-                    ID1 = (Token) match(input, ID, FOLLOW_ID_in_declaracao1202);
-                    if (state.failed)
-                    {
-                        return declaracao;
-                    }
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:402:6: (tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )? )?
-                    int alt9 = 2;
-                    int LA9_0 = input.LA(1);
-                    if ((LA9_0 == 73))
-                    {
-                        alt9 = 1;
-                    }
-                    switch (alt9)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:402:7: tk1= '[' (ind1= expressao )? ']' (tk2= '[' (ind2= expressao )? ']' )?
-                        {
-                            tk1 = (Token) match(input, 73, FOLLOW_73_in_declaracao1209);
-                            if (state.failed)
-                            {
-                                return declaracao;
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:402:17: (ind1= expressao )?
-                            int alt6 = 2;
-                            int LA6_0 = input.LA(1);
-                            if (((LA6_0 >= CADEIA && LA6_0 <= CARACTER) || (LA6_0 >= ID && LA6_0 <= OPERADOR_NAO) || LA6_0 == REAL || LA6_0 == 47 || LA6_0 == 55 || LA6_0 == 79 || LA6_0 == 83))
-                            {
-                                alt6 = 1;
-                            }
-                            switch (alt6)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:402:18: ind1= expressao
-                                {
-                                    pushFollow(FOLLOW_expressao_in_declaracao1216);
-                                    ind1 = expressao();
-                                    state._fsp--;
-                                    if (state.failed)
-                                    {
-                                        return declaracao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                            match(input, 74, FOLLOW_74_in_declaracao1220);
-                            if (state.failed)
-                            {
-                                return declaracao;
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:402:41: (tk2= '[' (ind2= expressao )? ']' )?
-                            int alt8 = 2;
-                            int LA8_0 = input.LA(1);
-                            if ((LA8_0 == 73))
-                            {
-                                alt8 = 1;
-                            }
-                            switch (alt8)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:402:42: tk2= '[' (ind2= expressao )? ']'
-                                {
-                                    tk2 = (Token) match(input, 73, FOLLOW_73_in_declaracao1227);
-                                    if (state.failed)
-                                    {
-                                        return declaracao;
-                                    }
-                                    // C:\\Users\\Paula\\Desktop\\Portugol.g:402:52: (ind2= expressao )?
-                                    int alt7 = 2;
-                                    int LA7_0 = input.LA(1);
-                                    if (((LA7_0 >= CADEIA && LA7_0 <= CARACTER) || (LA7_0 >= ID && LA7_0 <= OPERADOR_NAO) || LA7_0 == REAL || LA7_0 == 47 || LA7_0 == 55 || LA7_0 == 79 || LA7_0 == 83))
-                                    {
-                                        alt7 = 1;
-                                    }
-                                    switch (alt7)
-                                    {
-                                        case 1:
-                                        // C:\\Users\\Paula\\Desktop\\Portugol.g:402:53: ind2= expressao
-                                        {
-                                            pushFollow(FOLLOW_expressao_in_declaracao1234);
-                                            ind2 = expressao();
-                                            state._fsp--;
-                                            if (state.failed)
-                                            {
-                                                return declaracao;
-                                            }
-                                        }
-                                        break;
-
-                                    }
-
-                                    match(input, 74, FOLLOW_74_in_declaracao1238);
-                                    if (state.failed)
-                                    {
-                                        return declaracao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                        }
-                        break;
-
-                    }
-
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:402:80: ( '=' inicializacao= expressao )?
-                    int alt10 = 2;
-                    int LA10_0 = input.LA(1);
-                    if ((LA10_0 == 67))
-                    {
-                        alt10 = 1;
-                    }
-                    switch (alt10)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:402:81: '=' inicializacao= expressao
-                        {
-                            match(input, 67, FOLLOW_67_in_declaracao1245);
-                            if (state.failed)
-                            {
-                                return declaracao;
-                            }
-                            pushFollow(FOLLOW_expressao_in_declaracao1251);
-                            inicializacao = expressao();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return declaracao;
-                            }
-                        }
-                        break;
-
-                    }
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        boolean constante = (tokenConst != null);
-                        TipoDado tipoDado = (informacaoTipoDado != null) ? informacaoTipoDado.getTipoDado() : null;
-                        String nome = (ID1 != null) ? (ID1 != null ? ID1.getText() : null) : null;
-
-                        if ((tk1 == null) && (tk2 == null))
-                        {
-                            declaracao = new NoDeclaracaoVariavel(nome, tipoDado, constante);
-                        }
-
-                        else
-
-                        {
-                            if ((tk1 != null) && (tk2 == null))
-                            {
-                                declaracao = new NoDeclaracaoVetor(nome, tipoDado, ind1, constante);
-                            }
-
-                            else
-
-                            {
-                                if ((tk1 != null) && (tk2 != null))
-                                {
-                                    declaracao = new NoDeclaracaoMatriz(nome, tipoDado, ind1, ind2, constante);
-                                }
-                            }
-                        }
-
-                        ((NoDeclaracaoInicializavel)declaracao).setInicializacao(inicializacao);
-                        declaracao.setTrechoCodigoFonteNome(criarTrechoCodigoFonte(ID1));
-                        declaracao.setTrechoCodigoFonteTipoDado((informacaoTipoDado != null) ? informacaoTipoDado.getTrechoCodigoFonte() : null);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return declaracao;
-    }
-	// $ANTLR end "declaracao"
-
-    // $ANTLR start "declaracaoTipoDado"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:435:1: declaracaoTipoDado returns [InformacaoTipoDado informacaoTipoDado] : (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) ;
-    public final InformacaoTipoDado declaracaoTipoDado() throws RecognitionException
-    {
-        InformacaoTipoDado informacaoTipoDado = null;
-
-        Token tokenTipoDado = null;
-
-        pilhaContexto.push("declaracaoTipoDado");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:438:2: ( (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:440:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:440:2: (tokenTipoDado= PR_INTEIRO |tokenTipoDado= PR_REAL |tokenTipoDado= PR_CARACTER |tokenTipoDado= PR_CADEIA |tokenTipoDado= PR_LOGICO )
-                int alt11 = 5;
-                switch (input.LA(1))
-                {
-                    case PR_INTEIRO:
-                    {
-                        alt11 = 1;
-                    }
-                    break;
-                    case PR_REAL:
-                    {
-                        alt11 = 2;
-                    }
-                    break;
-                    case PR_CARACTER:
-                    {
-                        alt11 = 3;
-                    }
-                    break;
-                    case PR_CADEIA:
-                    {
-                        alt11 = 4;
-                    }
-                    break;
-                    case PR_LOGICO:
-                    {
-                        alt11 = 5;
-                    }
-                    break;
-                    default:
-                        if (state.backtracking > 0)
-                        {
-                            state.failed = true;
-                            return informacaoTipoDado;
-                        }
-                        NoViableAltException nvae
-                                = new NoViableAltException("", 11, 0, input);
-                        throw nvae;
-                }
-                switch (alt11)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:440:3: tokenTipoDado= PR_INTEIRO
-                    {
-                        tokenTipoDado = (Token) match(input, PR_INTEIRO, FOLLOW_PR_INTEIRO_in_declaracaoTipoDado1286);
-                        if (state.failed)
-                        {
-                            return informacaoTipoDado;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:440:32: tokenTipoDado= PR_REAL
-                    {
-                        tokenTipoDado = (Token) match(input, PR_REAL, FOLLOW_PR_REAL_in_declaracaoTipoDado1294);
-                        if (state.failed)
-                        {
-                            return informacaoTipoDado;
-                        }
-                    }
-                    break;
-                    case 3:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:440:58: tokenTipoDado= PR_CARACTER
-                    {
-                        tokenTipoDado = (Token) match(input, PR_CARACTER, FOLLOW_PR_CARACTER_in_declaracaoTipoDado1302);
-                        if (state.failed)
-                        {
-                            return informacaoTipoDado;
-                        }
-                    }
-                    break;
-                    case 4:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:440:88: tokenTipoDado= PR_CADEIA
-                    {
-                        tokenTipoDado = (Token) match(input, PR_CADEIA, FOLLOW_PR_CADEIA_in_declaracaoTipoDado1310);
-                        if (state.failed)
-                        {
-                            return informacaoTipoDado;
-                        }
-                    }
-                    break;
-                    case 5:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:440:116: tokenTipoDado= PR_LOGICO
-                    {
-                        tokenTipoDado = (Token) match(input, PR_LOGICO, FOLLOW_PR_LOGICO_in_declaracaoTipoDado1318);
-                        if (state.failed)
-                        {
-                            return informacaoTipoDado;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        informacaoTipoDado = new InformacaoTipoDado();
-                        informacaoTipoDado.setTipoDado(TipoDado.obterTipoDadoPeloNome(tokenTipoDado.getText()));
-                        informacaoTipoDado.setTrechoCodigoFonte(criarTrechoCodigoFonte(tokenTipoDado));
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return informacaoTipoDado;
-    }
-	// $ANTLR end "declaracaoTipoDado"
-
-    // $ANTLR start "declaracaoTipoDadoVazio"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:456:1: declaracaoTipoDadoVazio returns [InformacaoTipoDado informacaoTipoDado] : PR_VAZIO ;
-    public final InformacaoTipoDado declaracaoTipoDadoVazio() throws RecognitionException
-    {
-        InformacaoTipoDado informacaoTipoDado = null;
-
-        Token PR_VAZIO2 = null;
-
-        pilhaContexto.push("declaracaoTipoDadoVazio");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:459:2: ( PR_VAZIO )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:461:2: PR_VAZIO
-            {
-                PR_VAZIO2 = (Token) match(input, PR_VAZIO, FOLLOW_PR_VAZIO_in_declaracaoTipoDadoVazio1345);
-                if (state.failed)
-                {
-                    return informacaoTipoDado;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        informacaoTipoDado = new InformacaoTipoDado();
-                        informacaoTipoDado.setTipoDado(TipoDado.VAZIO);
-                        informacaoTipoDado.setTrechoCodigoFonte(criarTrechoCodigoFonte(PR_VAZIO2));
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return informacaoTipoDado;
-    }
-	// $ANTLR end "declaracaoTipoDadoVazio"
-
-    // $ANTLR start "quantificador"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:478:1: quantificador returns [Quantificador quantificador] : (tk1= '[' ']' (tk2= '[' ']' )? )? ;
-    public final Quantificador quantificador() throws RecognitionException
-    {
-        Quantificador quantificador = null;
-
-        Token tk1 = null;
-        Token tk2 = null;
-
-        pilhaContexto.push("quantificador");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:481:2: ( (tk1= '[' ']' (tk2= '[' ']' )? )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:483:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:483:2: (tk1= '[' ']' (tk2= '[' ']' )? )?
-                int alt13 = 2;
-                int LA13_0 = input.LA(1);
-                if ((LA13_0 == 73))
-                {
-                    alt13 = 1;
-                }
-                switch (alt13)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:483:3: tk1= '[' ']' (tk2= '[' ']' )?
-                    {
-                        tk1 = (Token) match(input, 73, FOLLOW_73_in_quantificador1377);
-                        if (state.failed)
-                        {
-                            return quantificador;
-                        }
-                        match(input, 74, FOLLOW_74_in_quantificador1379);
-                        if (state.failed)
-                        {
-                            return quantificador;
-                        }
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:483:17: (tk2= '[' ']' )?
-                        int alt12 = 2;
-                        int LA12_0 = input.LA(1);
-                        if ((LA12_0 == 73))
-                        {
-                            alt12 = 1;
-                        }
-                        switch (alt12)
-                        {
-                            case 1:
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:483:18: tk2= '[' ']'
-                            {
-                                tk2 = (Token) match(input, 73, FOLLOW_73_in_quantificador1386);
-                                if (state.failed)
-                                {
-                                    return quantificador;
-                                }
-                                match(input, 74, FOLLOW_74_in_quantificador1388);
-                                if (state.failed)
-                                {
-                                    return quantificador;
-                                }
-                            }
-                            break;
-
-                        }
-
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        if ((tk1 == null) && (tk2 == null))
-                        {
-                            quantificador = Quantificador.VALOR;
-                        }
-                        else
-                        {
-                            if ((tk1 != null) && (tk2 == null))
-                            {
-                                quantificador = Quantificador.VETOR;
-                            }
-                            else
-                            {
-                                if ((tk1 != null) && (tk2 != null))
-                                {
-                                    quantificador = Quantificador.MATRIZ;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return quantificador;
-    }
-	// $ANTLR end "quantificador"
-
-    // $ANTLR start "tipoRetornoFuncao"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:501:1: tipoRetornoFuncao returns [InformacaoTipoDado informacaoTipoDado] : (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? ;
-    public final InformacaoTipoDado tipoRetornoFuncao() throws RecognitionException
-    {
-        InformacaoTipoDado informacaoTipoDado = null;
-
-        InformacaoTipoDado informacao = null;
-
-        pilhaContexto.push("tipoRetornoFuncao");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:504:2: ( (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:506:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:506:2: (informacao= declaracaoTipoDado |informacao= declaracaoTipoDadoVazio )?
-                int alt14 = 3;
-                int LA14_0 = input.LA(1);
-                if (((LA14_0 >= PR_CADEIA && LA14_0 <= PR_CARACTER) || (LA14_0 >= PR_INTEIRO && LA14_0 <= PR_LOGICO) || LA14_0 == PR_REAL))
-                {
-                    alt14 = 1;
-                }
-                else
-                {
-                    if ((LA14_0 == PR_VAZIO))
-                    {
-                        alt14 = 2;
-                    }
-                }
-                switch (alt14)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:506:3: informacao= declaracaoTipoDado
-                    {
-                        pushFollow(FOLLOW_declaracaoTipoDado_in_tipoRetornoFuncao1424);
-                        informacao = declaracaoTipoDado();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return informacaoTipoDado;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:506:37: informacao= declaracaoTipoDadoVazio
-                    {
-                        pushFollow(FOLLOW_declaracaoTipoDadoVazio_in_tipoRetornoFuncao1432);
-                        informacao = declaracaoTipoDadoVazio();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return informacaoTipoDado;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        if (informacao != null)
-                        {
-                            informacaoTipoDado = informacao;
-                        }
-
-                        else
-                        {
-                            informacaoTipoDado = new InformacaoTipoDado();
-                            informacaoTipoDado.setTipoDado(TipoDado.VAZIO);
-                        }
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return informacaoTipoDado;
-    }
-	// $ANTLR end "tipoRetornoFuncao"
-
-    // $ANTLR start "declaracaoFuncao"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:526:1: declaracaoFuncao[ArvoreSintaticaAbstrata asa] : PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' ;
-    public final void declaracaoFuncao(ArvoreSintaticaAbstrata asa) throws RecognitionException
-    {
-        Token ID3 = null;
-        InformacaoTipoDado informacaoTipoDado = null;
-        Quantificador vQuantificador = null;
-        List<NoDeclaracaoParametro> vListaParametros = null;
-        List<NoBloco> vBlocos = null;
-
-        pilhaContexto.push("declaracaoFuncao");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:529:2: ( PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:531:2: PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}'
-            {
-                match(input, PR_FUNCAO, FOLLOW_PR_FUNCAO_in_declaracaoFuncao1459);
-                if (state.failed)
-                {
-                    return;
-                }
-                pushFollow(FOLLOW_tipoRetornoFuncao_in_declaracaoFuncao1469);
-                informacaoTipoDado = tipoRetornoFuncao();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return;
-                }
-                pushFollow(FOLLOW_quantificador_in_declaracaoFuncao1478);
-                vQuantificador = quantificador();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return;
-                }
-                ID3 = (Token) match(input, ID, FOLLOW_ID_in_declaracaoFuncao1485);
-                if (state.failed)
-                {
-                    return;
-                }
-                match(input, 47, FOLLOW_47_in_declaracaoFuncao1487);
-                if (state.failed)
-                {
-                    return;
-                }
-                pushFollow(FOLLOW_listaParametrosFuncao_in_declaracaoFuncao1493);
-                vListaParametros = listaParametrosFuncao();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return;
-                }
-                match(input, 48, FOLLOW_48_in_declaracaoFuncao1495);
-                if (state.failed)
-                {
-                    return;
-                }
-                match(input, 79, FOLLOW_79_in_declaracaoFuncao1515);
-                if (state.failed)
-                {
-                    return;
-                }
-                pushFollow(FOLLOW_blocos_in_declaracaoFuncao1523);
-                vBlocos = blocos();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return;
-                }
-                match(input, 82, FOLLOW_82_in_declaracaoFuncao1533);
-                if (state.failed)
-                {
-                    return;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        NoDeclaracaoFuncao declaracaoFuncao = new NoDeclaracaoFuncao((ID3 != null ? ID3.getText() : null), informacaoTipoDado.getTipoDado(), vQuantificador);
-                        declaracaoFuncao.setParametros(vListaParametros);
-                        declaracaoFuncao.setBlocos(vBlocos);
-
-                        declaracaoFuncao.setTrechoCodigoFonteNome(criarTrechoCodigoFonte(ID3));
-                        declaracaoFuncao.setTrechoCodigoFonteTipoDado(informacaoTipoDado.getTrechoCodigoFonte());
-
-                        asa.getListaDeclaracoesGlobais().add(declaracaoFuncao);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-    }
-	// $ANTLR end "declaracaoFuncao"
-
-    // $ANTLR start "listaParametrosFuncao"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:562:1: listaParametrosFuncao returns [List<NoDeclaracaoParametro> listaParametros] : ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? ;
-    public final List<NoDeclaracaoParametro> listaParametrosFuncao() throws RecognitionException
-    {
-        List<NoDeclaracaoParametro> listaParametros = null;
-
-        NoDeclaracaoParametro vDeclaracaoParametro = null;
-
-        pilhaContexto.push("listaParametrosFuncao");
-        listaParametros = new ArrayList<NoDeclaracaoParametro>();
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:566:2: ( ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:567:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:567:2: ( (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )* )?
-                int alt16 = 2;
-                int LA16_0 = input.LA(1);
-                if (((LA16_0 >= PR_CADEIA && LA16_0 <= PR_CARACTER) || (LA16_0 >= PR_INTEIRO && LA16_0 <= PR_LOGICO) || LA16_0 == PR_REAL))
-                {
-                    alt16 = 1;
-                }
-                switch (alt16)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:568:3: (vDeclaracaoParametro= declaracaoParametro ) ( ',' vDeclaracaoParametro= declaracaoParametro )*
-                    {
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:568:3: (vDeclaracaoParametro= declaracaoParametro )
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:568:8: vDeclaracaoParametro= declaracaoParametro
-                        {
-                            pushFollow(FOLLOW_declaracaoParametro_in_listaParametrosFuncao1588);
-                            vDeclaracaoParametro = declaracaoParametro();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return listaParametros;
-                            }
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    listaParametros.add(vDeclaracaoParametro);
-                                }
-                            }
-                        }
-
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:577:3: ( ',' vDeclaracaoParametro= declaracaoParametro )*
-                        loop15:
-                        while (true)
-                        {
-                            int alt15 = 2;
-                            int LA15_0 = input.LA(1);
-                            if ((LA15_0 == 54))
-                            {
-                                alt15 = 1;
-                            }
-
-                            switch (alt15)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:577:4: ',' vDeclaracaoParametro= declaracaoParametro
-                                {
-                                    match(input, 54, FOLLOW_54_in_listaParametrosFuncao1616);
-                                    if (state.failed)
-                                    {
-                                        return listaParametros;
-                                    }
-                                    pushFollow(FOLLOW_declaracaoParametro_in_listaParametrosFuncao1622);
-                                    vDeclaracaoParametro = declaracaoParametro();
-                                    state._fsp--;
-                                    if (state.failed)
-                                    {
-                                        return listaParametros;
-                                    }
-                                    if (state.backtracking == 0)
-                                    {
-                                        if (gerarArvore)
-                                        {
-                                            listaParametros.add(vDeclaracaoParametro);
-                                        }
-                                    }
-                                }
-                                break;
-
-                                default:
-                                    break loop15;
-                            }
-                        }
-
-                    }
-                    break;
-
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return listaParametros;
-    }
-	// $ANTLR end "listaParametrosFuncao"
-
-    // $ANTLR start "declaracaoParametro"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:593:1: declaracaoParametro returns [NoDeclaracaoParametro parametro] : informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador ;
-    public final NoDeclaracaoParametro declaracaoParametro() throws RecognitionException
-    {
-        NoDeclaracaoParametro parametro = null;
-
-        Token tkr = null;
-        Token ID4 = null;
-        InformacaoTipoDado informacaoTipoDado = null;
-        Quantificador vQuantificador = null;
-
-        pilhaContexto.push("declaracaoParametro");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:596:2: (informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:598:2: informacaoTipoDado= declaracaoTipoDado (tkr= '&' )? ID vQuantificador= quantificador
-            {
-                pushFollow(FOLLOW_declaracaoTipoDado_in_declaracaoParametro1669);
-                informacaoTipoDado = declaracaoTipoDado();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return parametro;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:598:42: (tkr= '&' )?
-                int alt17 = 2;
-                int LA17_0 = input.LA(1);
-                if ((LA17_0 == 45))
-                {
-                    alt17 = 1;
-                }
-                switch (alt17)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:598:43: tkr= '&'
-                    {
-                        tkr = (Token) match(input, 45, FOLLOW_45_in_declaracaoParametro1676);
-                        if (state.failed)
-                        {
-                            return parametro;
-                        }
-                    }
-                    break;
-
-                }
-
-                ID4 = (Token) match(input, ID, FOLLOW_ID_in_declaracaoParametro1680);
-                if (state.failed)
-                {
-                    return parametro;
-                }
-                pushFollow(FOLLOW_quantificador_in_declaracaoParametro1686);
-                vQuantificador = quantificador();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return parametro;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        ModoAcesso modoAcesso = null;
-                        TipoDado tipoDado = null;
-                        TrechoCodigoFonte trechoCodigoFonteTipoDado = null;
-
-                        if (tkr == null)
-                        {
-                            modoAcesso = ModoAcesso.POR_VALOR;
-                        }
-                        else
-                        {
-                            if (tkr != null)
-                            {
-                                modoAcesso = ModoAcesso.POR_REFERENCIA;
-                            }
-                        }
-
-                        if (informacaoTipoDado != null)
-                        {
-                            tipoDado = informacaoTipoDado.getTipoDado();
-                            trechoCodigoFonteTipoDado = informacaoTipoDado.getTrechoCodigoFonte();
-                        }
-
-                        parametro = new NoDeclaracaoParametro((ID4 != null ? ID4.getText() : null), tipoDado, vQuantificador, modoAcesso);
-                        parametro.setTrechoCodigoFonteNome(criarTrechoCodigoFonte(ID4));
-                        parametro.setTrechoCodigoFonteTipoDado(trechoCodigoFonteTipoDado);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return parametro;
-    }
-	// $ANTLR end "declaracaoParametro"
-
-    // $ANTLR start "blocos"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:629:1: blocos returns [List<NoBloco> blocos] : (vBloco= bloco | declaracoesLocais[blocos] )* ;
-    public final List<NoBloco> blocos() throws RecognitionException
-    {
-        List<NoBloco> blocos = null;
-
-        NoBloco vBloco = null;
-
-        pilhaContexto.push("blocos");
-        blocos = new ArrayList<NoBloco>();
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:633:2: ( (vBloco= bloco | declaracoesLocais[blocos] )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:634:2: (vBloco= bloco | declaracoesLocais[blocos] )*
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:634:2: (vBloco= bloco | declaracoesLocais[blocos] )*
-                loop18:
-                while (true)
-                {
-                    int alt18 = 3;
-                    int LA18_0 = input.LA(1);
-                    if (((LA18_0 >= CADEIA && LA18_0 <= CARACTER) || (LA18_0 >= ID && LA18_0 <= OPERADOR_NAO) || (LA18_0 >= PR_ENQUANTO && LA18_0 <= PR_FACA) || (LA18_0 >= PR_PARA && LA18_0 <= PR_PARE) || (LA18_0 >= PR_RETORNE && LA18_0 <= PR_SE) || LA18_0 == REAL || LA18_0 == 47 || LA18_0 == 55 || LA18_0 == 79 || LA18_0 == 83))
-                    {
-                        alt18 = 1;
-                    }
-                    else
-                    {
-                        if (((LA18_0 >= PR_CADEIA && LA18_0 <= PR_CARACTER) || LA18_0 == PR_CONST || (LA18_0 >= PR_INTEIRO && LA18_0 <= PR_LOGICO) || LA18_0 == PR_REAL))
-                        {
-                            alt18 = 2;
-                        }
-                    }
-
-                    switch (alt18)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:635:2: vBloco= bloco
-                        {
-                            pushFollow(FOLLOW_bloco_in_blocos1718);
-                            vBloco = bloco();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return blocos;
-                            }
-                            if (state.backtracking == 0)
-                            {
-                                blocos.add(vBloco);
-                            }
-                        }
-                        break;
-                        case 2:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:635:43: declaracoesLocais[blocos]
-                        {
-                            pushFollow(FOLLOW_declaracoesLocais_in_blocos1724);
-                            declaracoesLocais(blocos);
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return blocos;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop18;
-                    }
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return blocos;
-    }
-	// $ANTLR end "blocos"
-
-    // $ANTLR start "bloco"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:644:1: bloco returns [NoBloco bloco] : (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) ;
-    public final NoBloco bloco() throws RecognitionException
-    {
-        NoBloco bloco = null;
-
-        NoExpressao vExpressao = null;
-        NoPara vPara = null;
-        NoPare vPare = null;
-        NoRetorne vRetorne = null;
-        NoSe vSe = null;
-        NoEnquanto vEnquanto = null;
-        NoFacaEnquanto vFacaEnquanto = null;
-        NoEscolha vEscolha = null;
-
-        pilhaContexto.push("bloco");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:647:2: ( (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:648:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:648:3: (vExpressao= expressao |vPara= para |vPare= pare |vRetorne= retorne |vSe= se |vEnquanto= enquanto |vFacaEnquanto= facaEnquanto |vEscolha= escolha )
-                int alt19 = 8;
-                switch (input.LA(1))
-                {
-                    case CADEIA:
-                    case CARACTER:
-                    case ID:
-                    case ID_BIBLIOTECA:
-                    case INTEIRO:
-                    case LOGICO:
-                    case OPERADOR_NAO:
-                    case REAL:
-                    case 47:
-                    case 55:
-                    case 79:
-                    case 83:
-                    {
-                        alt19 = 1;
-                    }
-                    break;
-                    case PR_PARA:
-                    {
-                        alt19 = 2;
-                    }
-                    break;
-                    case PR_PARE:
-                    {
-                        alt19 = 3;
-                    }
-                    break;
-                    case PR_RETORNE:
-                    {
-                        alt19 = 4;
-                    }
-                    break;
-                    case PR_SE:
-                    {
-                        alt19 = 5;
-                    }
-                    break;
-                    case PR_ENQUANTO:
-                    {
-                        alt19 = 6;
-                    }
-                    break;
-                    case PR_FACA:
-                    {
-                        alt19 = 7;
-                    }
-                    break;
-                    case PR_ESCOLHA:
-                    {
-                        alt19 = 8;
-                    }
-                    break;
-                    default:
-                        if (state.backtracking > 0)
-                        {
-                            state.failed = true;
-                            return bloco;
-                        }
-                        NoViableAltException nvae
-                                = new NoViableAltException("", 19, 0, input);
-                        throw nvae;
-                }
-                switch (alt19)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:649:3: vExpressao= expressao
-                    {
-                        pushFollow(FOLLOW_expressao_in_bloco1758);
-                        vExpressao = expressao();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vExpressao;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:650:3: vPara= para
-                    {
-                        pushFollow(FOLLOW_para_in_bloco1773);
-                        vPara = para();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vPara;
-                        }
-                    }
-                    break;
-                    case 3:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:651:3: vPare= pare
-                    {
-                        pushFollow(FOLLOW_pare_in_bloco1791);
-                        vPare = pare();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vPare;
-                        }
-                    }
-                    break;
-                    case 4:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:652:3: vRetorne= retorne
-                    {
-                        pushFollow(FOLLOW_retorne_in_bloco1808);
-                        vRetorne = retorne();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vRetorne;
-                        }
-                    }
-                    break;
-                    case 5:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:653:3: vSe= se
-                    {
-                        pushFollow(FOLLOW_se_in_bloco1824);
-                        vSe = se();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vSe;
-                        }
-                    }
-                    break;
-                    case 6:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:654:3: vEnquanto= enquanto
-                    {
-                        pushFollow(FOLLOW_enquanto_in_bloco1841);
-                        vEnquanto = enquanto();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vEnquanto;
-                        }
-                    }
-                    break;
-                    case 7:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:655:3: vFacaEnquanto= facaEnquanto
-                    {
-                        pushFollow(FOLLOW_facaEnquanto_in_bloco1855);
-                        vFacaEnquanto = facaEnquanto();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vFacaEnquanto;
-                        }
-                    }
-                    break;
-                    case 8:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:656:3: vEscolha= escolha
-                    {
-                        pushFollow(FOLLOW_escolha_in_bloco1869);
-                        vEscolha = escolha();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            bloco = vEscolha;
-                        }
-                    }
-                    break;
-
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return bloco;
-    }
-	// $ANTLR end "bloco"
-
-    // $ANTLR start "para"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:665:1: para returns [NoPara para] : PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? fp= ')' vBlocos= listaBlocos ;
-    public final NoPara para() throws RecognitionException
-    {
-        NoPara para = null;
-
-        Token fp = null;
-        Token PR_PARA5 = null;
-        NoBloco inicializacao = null;
-        NoExpressao condicao = null;
-        NoExpressao incremento = null;
-        List<NoBloco> vBlocos = null;
-
-        pilhaContexto.push("para");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:668:2: ( PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? fp= ')' vBlocos= listaBlocos )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:670:2: PR_PARA '(' (inicializacao= inicializacaoPara )? ';' (condicao= expressao )? ';' (incremento= expressao )? fp= ')' vBlocos= listaBlocos
-            {
-                PR_PARA5 = (Token) match(input, PR_PARA, FOLLOW_PR_PARA_in_para1901);
-                if (state.failed)
-                {
-                    return para;
-                }
-                match(input, 47, FOLLOW_47_in_para1903);
-                if (state.failed)
-                {
-                    return para;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:670:14: (inicializacao= inicializacaoPara )?
-                int alt20 = 2;
-                int LA20_0 = input.LA(1);
-                if (((LA20_0 >= CADEIA && LA20_0 <= CARACTER) || (LA20_0 >= ID && LA20_0 <= OPERADOR_NAO) || (LA20_0 >= PR_CADEIA && LA20_0 <= PR_CARACTER) || LA20_0 == PR_CONST || (LA20_0 >= PR_INTEIRO && LA20_0 <= PR_LOGICO) || LA20_0 == PR_REAL || LA20_0 == REAL || LA20_0 == 47 || LA20_0 == 55 || LA20_0 == 79 || LA20_0 == 83))
-                {
-                    alt20 = 1;
-                }
-                switch (alt20)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:670:15: inicializacao= inicializacaoPara
-                    {
-                        pushFollow(FOLLOW_inicializacaoPara_in_para1910);
-                        inicializacao = inicializacaoPara();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return para;
-                        }
-                    }
-                    break;
-
-                }
-
-                match(input, 62, FOLLOW_62_in_para1914);
-                if (state.failed)
-                {
-                    return para;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:670:55: (condicao= expressao )?
-                int alt21 = 2;
-                int LA21_0 = input.LA(1);
-                if (((LA21_0 >= CADEIA && LA21_0 <= CARACTER) || (LA21_0 >= ID && LA21_0 <= OPERADOR_NAO) || LA21_0 == REAL || LA21_0 == 47 || LA21_0 == 55 || LA21_0 == 79 || LA21_0 == 83))
-                {
-                    alt21 = 1;
-                }
-                switch (alt21)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:670:56: condicao= expressao
-                    {
-                        pushFollow(FOLLOW_expressao_in_para1921);
-                        condicao = expressao();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return para;
-                        }
-                    }
-                    break;
-
-                }
-
-                match(input, 62, FOLLOW_62_in_para1925);
-                if (state.failed)
-                {
-                    return para;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:670:83: (incremento= expressao )?
-                int alt22 = 2;
-                int LA22_0 = input.LA(1);
-                if (((LA22_0 >= CADEIA && LA22_0 <= CARACTER) || (LA22_0 >= ID && LA22_0 <= OPERADOR_NAO) || LA22_0 == REAL || LA22_0 == 47 || LA22_0 == 55 || LA22_0 == 79 || LA22_0 == 83))
-                {
-                    alt22 = 1;
-                }
-                switch (alt22)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:670:84: incremento= expressao
-                    {
-                        pushFollow(FOLLOW_expressao_in_para1932);
-                        incremento = expressao();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return para;
-                        }
-                    }
-                    break;
-
-                }
-
-                fp = (Token) match(input, 48, FOLLOW_48_in_para1940);
-                if (state.failed)
-                {
-                    return para;
-                }
-                pushFollow(FOLLOW_listaBlocos_in_para1946);
-                vBlocos = listaBlocos();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return para;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        para = new NoPara();
-                        para.setInicializacao(inicializacao);
-                        para.setCondicao(condicao);
-                        //A condição não pode ser nula, mas o erro será capturado no semantico.
-                        if (condicao != null)
-                        {
-                            condicao.setPai(para);
-                        }
-                        para.setIncremento(incremento);
-                        para.setBlocos(vBlocos);
-
-                        int linha = PR_PARA5.getLine();
-                        int coluna = PR_PARA5.getCharPositionInLine();
-                        int tamanhoTexto = fp.getCharPositionInLine() - PR_PARA5.getCharPositionInLine();
-
-                        para.setTrechoCodigoFonte(new TrechoCodigoFonte(linha, coluna, tamanhoTexto));
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return para;
-    }
-	// $ANTLR end "para"
-
-    // $ANTLR start "inicializacaoPara"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:694:1: inicializacaoPara returns [NoBloco bloco] : (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) ;
-    public final NoBloco inicializacaoPara() throws RecognitionException
-    {
-        NoBloco bloco = null;
-
-        NoExpressao vExpressao = null;
-        List<NoDeclaracao> vListaDeclaracoes = null;
-
-        pilhaContexto.push("inicializacaoPara");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:697:2: ( (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:699:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:699:2: (vExpressao= expressao |vListaDeclaracoes= listaDeclaracoes )
-                int alt23 = 2;
-                int LA23_0 = input.LA(1);
-                if (((LA23_0 >= CADEIA && LA23_0 <= CARACTER) || (LA23_0 >= ID && LA23_0 <= OPERADOR_NAO) || LA23_0 == REAL || LA23_0 == 47 || LA23_0 == 55 || LA23_0 == 79 || LA23_0 == 83))
-                {
-                    alt23 = 1;
-                }
-                else
-                {
-                    if (((LA23_0 >= PR_CADEIA && LA23_0 <= PR_CARACTER) || LA23_0 == PR_CONST || (LA23_0 >= PR_INTEIRO && LA23_0 <= PR_LOGICO) || LA23_0 == PR_REAL))
-                    {
-                        alt23 = 2;
-                    }
-
-                    else
-                    {
-                        if (state.backtracking > 0)
-                        {
-                            state.failed = true;
-                            return bloco;
-                        }
-                        NoViableAltException nvae
-                                = new NoViableAltException("", 23, 0, input);
-                        throw nvae;
-                    }
-                }
-
-                switch (alt23)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:699:3: vExpressao= expressao
-                    {
-                        pushFollow(FOLLOW_expressao_in_inicializacaoPara1977);
-                        vExpressao = expressao();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:699:28: vListaDeclaracoes= listaDeclaracoes
-                    {
-                        pushFollow(FOLLOW_listaDeclaracoes_in_inicializacaoPara1985);
-                        vListaDeclaracoes = listaDeclaracoes();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return bloco;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        if (vExpressao != null)
-                        {
-                            bloco = vExpressao;
-                        }
-                        else
-                        {
-                            if (vExpressao == null)
-                            {
-                                bloco = vListaDeclaracoes.get(0);
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return bloco;
-    }
-	// $ANTLR end "inicializacaoPara"
-
-    // $ANTLR start "listaBlocos"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:715:1: listaBlocos returns [List<NoBloco> listaBlocos] : ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) ;
-    public final List<NoBloco> listaBlocos() throws RecognitionException
-    {
-        List<NoBloco> listaBlocos = null;
-
-        List<NoBloco> vListaBlocos = null;
-        NoBloco vBloco = null;
-
-        pilhaContexto.push("listaBlocos");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:718:2: ( ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:719:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:719:2: ( ( '{' )=> '{' vListaBlocos= blocos '}' |vBloco= bloco )
-                int alt24 = 2;
-                int LA24_0 = input.LA(1);
-                if ((LA24_0 == 79))
-                {
-                    int LA24_1 = input.LA(2);
-                    if ((synpred1_Portugol()))
-                    {
-                        alt24 = 1;
-                    }
-                    else
-                    {
-                        if ((true))
-                        {
-                            alt24 = 2;
-                        }
-                    }
-
-                }
-                else
-                {
-                    if (((LA24_0 >= CADEIA && LA24_0 <= CARACTER) || (LA24_0 >= ID && LA24_0 <= OPERADOR_NAO) || (LA24_0 >= PR_ENQUANTO && LA24_0 <= PR_FACA) || (LA24_0 >= PR_PARA && LA24_0 <= PR_PARE) || (LA24_0 >= PR_RETORNE && LA24_0 <= PR_SE) || LA24_0 == REAL || LA24_0 == 47 || LA24_0 == 55 || LA24_0 == 83))
-                    {
-                        alt24 = 2;
-                    }
-
-                    else
-                    {
-                        if (state.backtracking > 0)
-                        {
-                            state.failed = true;
-                            return listaBlocos;
-                        }
-                        NoViableAltException nvae
-                                = new NoViableAltException("", 24, 0, input);
-                        throw nvae;
-                    }
-                }
-
-                switch (alt24)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:720:2: ( '{' )=> '{' vListaBlocos= blocos '}'
-                    {
-                        match(input, 79, FOLLOW_79_in_listaBlocos2018);
-                        if (state.failed)
-                        {
-                            return listaBlocos;
-                        }
-                        pushFollow(FOLLOW_blocos_in_listaBlocos2024);
-                        vListaBlocos = blocos();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return listaBlocos;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            listaBlocos = vListaBlocos;
-                        }
-                        match(input, 82, FOLLOW_82_in_listaBlocos2028);
-                        if (state.failed)
-                        {
-                            return listaBlocos;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:724:2: vBloco= bloco
-                    {
-                        pushFollow(FOLLOW_bloco_in_listaBlocos2044);
-                        vBloco = bloco();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return listaBlocos;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            if (gerarArvore)
-                            {
-                                listaBlocos = new ArrayList<NoBloco>();
-                                listaBlocos.add(vBloco);
-                            }
-                        }
-                    }
-                    break;
-
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return listaBlocos;
-    }
-	// $ANTLR end "listaBlocos"
-
-    // $ANTLR start "pare"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:740:1: pare returns [NoPare pare] : PR_PARE ;
-    public final NoPare pare() throws RecognitionException
-    {
-        NoPare pare = null;
-
-        Token PR_PARE6 = null;
-
-        pilhaContexto.push("pare");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:743:2: ( PR_PARE )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:745:2: PR_PARE
-            {
-                PR_PARE6 = (Token) match(input, PR_PARE, FOLLOW_PR_PARE_in_pare2072);
-                if (state.failed)
-                {
-                    return pare;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        pare = new NoPare();
-                        pare.setTrechoCodigoFonte(criarTrechoCodigoFonte(PR_PARE6));
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return pare;
-    }
-	// $ANTLR end "pare"
-
-    // $ANTLR start "escolha"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:761:1: escolha returns [NoEscolha escolha] : PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}' ;
-    public final NoEscolha escolha() throws RecognitionException
-    {
-        NoEscolha escolha = null;
-
-        NoExpressao vExpressaoEscolha = null;
-        NoExpressao vExpressao = null;
-        List<NoBloco> vBlocos = null;
-
-        pilhaContexto.push("escolha");
-        List<NoCaso> casos = new ArrayList<NoCaso>();
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:765:2: ( PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}' )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:767:2: PR_ESCOLHA '(' vExpressaoEscolha= expressao ')' '{' ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+ ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )? '}'
-            {
-                match(input, PR_ESCOLHA, FOLLOW_PR_ESCOLHA_in_escolha2099);
-                if (state.failed)
-                {
-                    return escolha;
-                }
-                match(input, 47, FOLLOW_47_in_escolha2101);
-                if (state.failed)
-                {
-                    return escolha;
-                }
-                pushFollow(FOLLOW_expressao_in_escolha2107);
-                vExpressaoEscolha = expressao();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return escolha;
-                }
-                match(input, 48, FOLLOW_48_in_escolha2109);
-                if (state.failed)
-                {
-                    return escolha;
-                }
-                match(input, 79, FOLLOW_79_in_escolha2112);
-                if (state.failed)
-                {
-                    return escolha;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:770:3: ( PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso )+
-                int cnt25 = 0;
-                loop25:
-                while (true)
-                {
-                    int alt25 = 2;
-                    int LA25_0 = input.LA(1);
-                    if ((LA25_0 == PR_CASO))
-                    {
-                        int LA25_1 = input.LA(2);
-                        if (((LA25_1 >= CADEIA && LA25_1 <= CARACTER) || (LA25_1 >= ID && LA25_1 <= OPERADOR_NAO) || LA25_1 == REAL || LA25_1 == 47 || LA25_1 == 55 || LA25_1 == 79 || LA25_1 == 83))
-                        {
-                            alt25 = 1;
-                        }
-
-                    }
-
-                    switch (alt25)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:770:4: PR_CASO vExpressao= expressao ':' vBlocos= blocosCaso
-                        {
-                            match(input, PR_CASO, FOLLOW_PR_CASO_in_escolha2121);
-                            if (state.failed)
-                            {
-                                return escolha;
-                            }
-                            pushFollow(FOLLOW_expressao_in_escolha2127);
-                            vExpressao = expressao();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return escolha;
-                            }
-                            match(input, 61, FOLLOW_61_in_escolha2129);
-                            if (state.failed)
-                            {
-                                return escolha;
-                            }
-                            pushFollow(FOLLOW_blocosCaso_in_escolha2135);
-                            vBlocos = blocosCaso();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return escolha;
-                            }
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    NoCaso caso = new NoCaso(vExpressao);
-                                    caso.setBlocos(vBlocos);
-                                    casos.add(caso);
-
-                                    vExpressao = null;
-                                }
-                            }
-                        }
-                        break;
-
-                        default:
-                            if (cnt25 >= 1)
-                            {
-                                break loop25;
-                            }
-                            if (state.backtracking > 0)
-                            {
-                                state.failed = true;
-                                return escolha;
-                            }
-                            EarlyExitException eee = new EarlyExitException(25, input);
-                            throw eee;
-                    }
-                    cnt25++;
-                }
-
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:782:4: ( PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso )?
-                int alt26 = 2;
-                int LA26_0 = input.LA(1);
-                if ((LA26_0 == PR_CASO))
-                {
-                    alt26 = 1;
-                }
-                switch (alt26)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:782:5: PR_CASO PR_CONTRARIO ':' vBlocos= blocosCaso
-                    {
-                        match(input, PR_CASO, FOLLOW_PR_CASO_in_escolha2150);
-                        if (state.failed)
-                        {
-                            return escolha;
-                        }
-                        match(input, PR_CONTRARIO, FOLLOW_PR_CONTRARIO_in_escolha2152);
-                        if (state.failed)
-                        {
-                            return escolha;
-                        }
-                        match(input, 61, FOLLOW_61_in_escolha2154);
-                        if (state.failed)
-                        {
-                            return escolha;
-                        }
-                        pushFollow(FOLLOW_blocosCaso_in_escolha2160);
-                        vBlocos = blocosCaso();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return escolha;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            if (gerarArvore)
-                            {
-                                NoCaso caso = new NoCaso(vExpressao);
-                                caso.setBlocos(vBlocos);
-                                casos.add(caso);
-
-                                vExpressao = null;
-                            }
-                        }
-                    }
-                    break;
-
-                }
-
-                match(input, 82, FOLLOW_82_in_escolha2174);
-                if (state.failed)
-                {
-                    return escolha;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        escolha = new NoEscolha(vExpressaoEscolha);
-                        escolha.setCasos(casos);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return escolha;
-    }
-	// $ANTLR end "escolha"
-
-    // $ANTLR start "blocosCaso"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:810:1: blocosCaso returns [List<NoBloco> listaBlocos] : ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) ;
-    public final List<NoBloco> blocosCaso() throws RecognitionException
-    {
-        List<NoBloco> listaBlocos = null;
-
-        List<NoBloco> vBlocos = null;
-
-        pilhaContexto.push("blocosCaso");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:813:2: ( ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:815:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:815:2: ( ( '{' )=> ( '{' vBlocos= blocos '}' ) | (vBlocos= blocos ) )
-                int alt27 = 2;
-                int LA27_0 = input.LA(1);
-                if ((LA27_0 == 79))
-                {
-                    int LA27_1 = input.LA(2);
-                    if ((synpred2_Portugol()))
-                    {
-                        alt27 = 1;
-                    }
-                    else
-                    {
-                        if ((true))
-                        {
-                            alt27 = 2;
-                        }
-                    }
-
-                }
-                else
-                {
-                    if (((LA27_0 >= CADEIA && LA27_0 <= CARACTER) || (LA27_0 >= ID && LA27_0 <= OPERADOR_NAO) || (LA27_0 >= PR_CADEIA && LA27_0 <= PR_CONST) || (LA27_0 >= PR_ENQUANTO && LA27_0 <= PR_FACA) || (LA27_0 >= PR_INTEIRO && LA27_0 <= PR_PARE) || (LA27_0 >= PR_REAL && LA27_0 <= PR_SE) || LA27_0 == REAL || LA27_0 == 47 || LA27_0 == 55 || (LA27_0 >= 82 && LA27_0 <= 83)))
-                    {
-                        alt27 = 2;
-                    }
-
-                    else
-                    {
-                        if (state.backtracking > 0)
-                        {
-                            state.failed = true;
-                            return listaBlocos;
-                        }
-                        NoViableAltException nvae
-                                = new NoViableAltException("", 27, 0, input);
-                        throw nvae;
-                    }
-                }
-
-                switch (alt27)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:815:4: ( '{' )=> ( '{' vBlocos= blocos '}' )
-                    {
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:12: ( '{' vBlocos= blocos '}' )
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:13: '{' vBlocos= blocos '}'
-                        {
-                            match(input, 79, FOLLOW_79_in_blocosCaso2210);
-                            if (state.failed)
-                            {
-                                return listaBlocos;
-                            }
-                            pushFollow(FOLLOW_blocos_in_blocosCaso2216);
-                            vBlocos = blocos();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return listaBlocos;
-                            }
-                            match(input, 82, FOLLOW_82_in_blocosCaso2218);
-                            if (state.failed)
-                            {
-                                return listaBlocos;
-                            }
-                        }
-
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:815:41: (vBlocos= blocos )
-                    {
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:41: (vBlocos= blocos )
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:42: vBlocos= blocos
-                        {
-                            pushFollow(FOLLOW_blocos_in_blocosCaso2228);
-                            vBlocos = blocos();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return listaBlocos;
-                            }
-                        }
-
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    listaBlocos = vBlocos;
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return listaBlocos;
-    }
-	// $ANTLR end "blocosCaso"
-
-    // $ANTLR start "enquanto"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:826:1: enquanto returns [NoEnquanto enquanto] : PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ;
-    public final NoEnquanto enquanto() throws RecognitionException
-    {
-        NoEnquanto enquanto = null;
-
-        NoExpressao vExpressao = null;
-        List<NoBloco> vListaBlocos = null;
-
-        pilhaContexto.push("enquanto");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:829:2: ( PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:831:2: PR_ENQUANTO '(' vExpressao= expressao ')' vListaBlocos= listaBlocos
-            {
-                match(input, PR_ENQUANTO, FOLLOW_PR_ENQUANTO_in_enquanto2257);
-                if (state.failed)
-                {
-                    return enquanto;
-                }
-                match(input, 47, FOLLOW_47_in_enquanto2259);
-                if (state.failed)
-                {
-                    return enquanto;
-                }
-                pushFollow(FOLLOW_expressao_in_enquanto2265);
-                vExpressao = expressao();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return enquanto;
-                }
-                match(input, 48, FOLLOW_48_in_enquanto2267);
-                if (state.failed)
-                {
-                    return enquanto;
-                }
-                pushFollow(FOLLOW_listaBlocos_in_enquanto2273);
-                vListaBlocos = listaBlocos();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return enquanto;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        enquanto = new NoEnquanto(vExpressao);
-                        enquanto.setBlocos(vListaBlocos);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return enquanto;
-    }
-	// $ANTLR end "enquanto"
-
-    // $ANTLR start "facaEnquanto"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:846:1: facaEnquanto returns [NoFacaEnquanto facaEnquanto] : PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' ;
-    public final NoFacaEnquanto facaEnquanto() throws RecognitionException
-    {
-        NoFacaEnquanto facaEnquanto = null;
-
-        List<NoBloco> vListaBlocos = null;
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("facaEnquanto");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:849:2: ( PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')' )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:851:2: PR_FACA vListaBlocos= listaBlocos PR_ENQUANTO '(' vExpressao= expressao ')'
-            {
-                match(input, PR_FACA, FOLLOW_PR_FACA_in_facaEnquanto2299);
-                if (state.failed)
-                {
-                    return facaEnquanto;
-                }
-                pushFollow(FOLLOW_listaBlocos_in_facaEnquanto2305);
-                vListaBlocos = listaBlocos();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return facaEnquanto;
-                }
-                match(input, PR_ENQUANTO, FOLLOW_PR_ENQUANTO_in_facaEnquanto2307);
-                if (state.failed)
-                {
-                    return facaEnquanto;
-                }
-                match(input, 47, FOLLOW_47_in_facaEnquanto2309);
-                if (state.failed)
-                {
-                    return facaEnquanto;
-                }
-                pushFollow(FOLLOW_expressao_in_facaEnquanto2315);
-                vExpressao = expressao();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return facaEnquanto;
-                }
-                match(input, 48, FOLLOW_48_in_facaEnquanto2317);
-                if (state.failed)
-                {
-                    return facaEnquanto;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        facaEnquanto = new NoFacaEnquanto(vExpressao);
-                        facaEnquanto.setBlocos(vListaBlocos);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return facaEnquanto;
-    }
-	// $ANTLR end "facaEnquanto"
-
-    // $ANTLR start "se"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:867:1: se returns [NoSe se] : PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? ;
-    public final NoSe se() throws RecognitionException
-    {
-        NoSe se = null;
-
-        NoExpressao vExpressao = null;
-        List<NoBloco> vListaBlocos = null;
-        List<NoBloco> listaBlocosSenao = null;
-
-        pilhaContexto.push("se");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:870:2: ( PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:872:2: PR_SE '(' vExpressao= expressao ')' vListaBlocos= listaBlocos ( PR_SENAO listaBlocosSenao= listaBlocos )?
-            {
-                match(input, PR_SE, FOLLOW_PR_SE_in_se2345);
-                if (state.failed)
-                {
-                    return se;
-                }
-                match(input, 47, FOLLOW_47_in_se2347);
-                if (state.failed)
-                {
-                    return se;
-                }
-                pushFollow(FOLLOW_expressao_in_se2353);
-                vExpressao = expressao();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return se;
-                }
-                match(input, 48, FOLLOW_48_in_se2355);
-                if (state.failed)
-                {
-                    return se;
-                }
-                pushFollow(FOLLOW_listaBlocos_in_se2361);
-                vListaBlocos = listaBlocos();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return se;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:872:66: ( PR_SENAO listaBlocosSenao= listaBlocos )?
-                int alt28 = 2;
-                int LA28_0 = input.LA(1);
-                if ((LA28_0 == PR_SENAO))
-                {
-                    alt28 = 1;
-                }
-                switch (alt28)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:872:67: PR_SENAO listaBlocosSenao= listaBlocos
-                    {
-                        match(input, PR_SENAO, FOLLOW_PR_SENAO_in_se2364);
-                        if (state.failed)
-                        {
-                            return se;
-                        }
-                        pushFollow(FOLLOW_listaBlocos_in_se2370);
-                        listaBlocosSenao = listaBlocos();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return se;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        se = new NoSe(vExpressao);
-                        se.setBlocosVerdadeiros(vListaBlocos);
-                        se.setBlocosFalsos(listaBlocosSenao);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return se;
-    }
-	// $ANTLR end "se"
-
-    // $ANTLR start "retorne"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:888:1: retorne returns [NoRetorne retorne] : PR_RETORNE (vExpressao= expressao )? ;
-    public final NoRetorne retorne() throws RecognitionException
-    {
-        NoRetorne retorne = null;
-
-        Token PR_RETORNE7 = null;
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("retorne");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:891:2: ( PR_RETORNE (vExpressao= expressao )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:893:2: PR_RETORNE (vExpressao= expressao )?
-            {
-                PR_RETORNE7 = (Token) match(input, PR_RETORNE, FOLLOW_PR_RETORNE_in_retorne2399);
-                if (state.failed)
-                {
-                    return retorne;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:893:24: (vExpressao= expressao )?
-                int alt29 = 2;
-                switch (input.LA(1))
-                {
-                    case 55:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case 47:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case ID:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case ID_BIBLIOTECA:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case REAL:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case LOGICO:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case CADEIA:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case INTEIRO:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case CARACTER:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case 79:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case OPERADOR_NAO:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                    case 83:
-                    {
-                        alt29 = 1;
-                    }
-                    break;
-                }
-                switch (alt29)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:893:24: vExpressao= expressao
-                    {
-                        pushFollow(FOLLOW_expressao_in_retorne2405);
-                        vExpressao = expressao();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return retorne;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        retorne = new NoRetorne(criarTrechoCodigoFonte(PR_RETORNE7), vExpressao);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return retorne;
-    }
-	// $ANTLR end "retorne"
-
-    // $ANTLR start "pilha"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:907:1: pilha returns [Stack<Object> pilha] :;
-    public final Stack<Object> pilha() throws RecognitionException
-    {
-        Stack<Object> pilha = null;
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:907:35: ()
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:908:1: 
-            {
-                if (state.backtracking == 0)
-                {
-                    pilha = new Stack<Object>();
-                }
-            }
-
-        }
-        finally
-        {
-            // do for sure before leaving
-        }
-        return pilha;
-    }
-	// $ANTLR end "pilha"
-
-    // $ANTLR start "expressao"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:914:1: expressao returns [NoExpressao expressao] : operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )* ;
-    public final NoExpressao expressao() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        Stack<Object> vPilha = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:917:2: (operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:919:2: operandoEsquerdo= expressao2 vPilha= pilha ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )*
-            {
-                pushFollow(FOLLOW_expressao2_in_expressao2450);
-                operandoEsquerdo = expressao2();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                pushFollow(FOLLOW_pilha_in_expressao2456);
-                vPilha = pilha();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                if (state.backtracking == 0)
-                {
-                    vPilha.push(operandoEsquerdo);
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:920:2: ( (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2 )*
-                loop31:
-                while (true)
-                {
-                    int alt31 = 2;
-                    int LA31_0 = input.LA(1);
-                    if ((LA31_0 == 44 || LA31_0 == 46 || LA31_0 == 50 || LA31_0 == 53 || LA31_0 == 58 || LA31_0 == 60 || LA31_0 == 65 || LA31_0 == 67 || LA31_0 == 72 || LA31_0 == 76 || LA31_0 == 81))
-                    {
-                        alt31 = 1;
-                    }
-
-                    switch (alt31)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:921:3: (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' ) operandoDireito= expressao2
-                        {
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:921:3: (operador= '=' |operador= '+=' |operador= '-=' |operador= '/=' |operador= '*=' |operador= '%=' |operador= '>>=' |operador= '<<=' |operador= '|=' |operador= '&=' |operador= '^=' )
-                            int alt30 = 11;
-                            switch (input.LA(1))
-                            {
-                                case 67:
-                                {
-                                    alt30 = 1;
-                                }
-                                break;
-                                case 53:
-                                {
-                                    alt30 = 2;
-                                }
-                                break;
-                                case 58:
-                                {
-                                    alt30 = 3;
-                                }
-                                break;
-                                case 60:
-                                {
-                                    alt30 = 4;
-                                }
-                                break;
-                                case 50:
-                                {
-                                    alt30 = 5;
-                                }
-                                break;
-                                case 44:
-                                {
-                                    alt30 = 6;
-                                }
-                                break;
-                                case 72:
-                                {
-                                    alt30 = 7;
-                                }
-                                break;
-                                case 65:
-                                {
-                                    alt30 = 8;
-                                }
-                                break;
-                                case 81:
-                                {
-                                    alt30 = 9;
-                                }
-                                break;
-                                case 46:
-                                {
-                                    alt30 = 10;
-                                }
-                                break;
-                                case 76:
-                                {
-                                    alt30 = 11;
-                                }
-                                break;
-                                default:
-                                    if (state.backtracking > 0)
-                                    {
-                                        state.failed = true;
-                                        return expressao;
-                                    }
-                                    NoViableAltException nvae
-                                            = new NoViableAltException("", 30, 0, input);
-                                    throw nvae;
-                            }
-                            switch (alt30)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:4: operador= '='
-                                {
-                                    operador = (Token) match(input, 67, FOLLOW_67_in_expressao2470);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 2:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:21: operador= '+='
-                                {
-                                    operador = (Token) match(input, 53, FOLLOW_53_in_expressao2478);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 3:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:39: operador= '-='
-                                {
-                                    operador = (Token) match(input, 58, FOLLOW_58_in_expressao2486);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 4:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:57: operador= '/='
-                                {
-                                    operador = (Token) match(input, 60, FOLLOW_60_in_expressao2494);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 5:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:75: operador= '*='
-                                {
-                                    operador = (Token) match(input, 50, FOLLOW_50_in_expressao2502);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 6:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:93: operador= '%='
-                                {
-                                    operador = (Token) match(input, 44, FOLLOW_44_in_expressao2510);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 7:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:111: operador= '>>='
-                                {
-                                    operador = (Token) match(input, 72, FOLLOW_72_in_expressao2518);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 8:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:130: operador= '<<='
-                                {
-                                    operador = (Token) match(input, 65, FOLLOW_65_in_expressao2526);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 9:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:149: operador= '|='
-                                {
-                                    operador = (Token) match(input, 81, FOLLOW_81_in_expressao2534);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 10:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:167: operador= '&='
-                                {
-                                    operador = (Token) match(input, 46, FOLLOW_46_in_expressao2542);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 11:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:921:185: operador= '^='
-                                {
-                                    operador = (Token) match(input, 76, FOLLOW_76_in_expressao2550);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                            pushFollow(FOLLOW_expressao2_in_expressao2563);
-                            operandoDireito = expressao2();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return expressao;
-                            }
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    vPilha.push(operador);
-                                    vPilha.push(operandoDireito);
-                                }
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop31;
-                    }
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        while (vPilha.size() > 1)
-                        {
-                            operandoDireito = (NoExpressao) vPilha.pop();
-                            operador = ((Token) vPilha.pop());
-                            operandoEsquerdo = (NoExpressao) vPilha.pop();
-
-                            if (!operador.getText().equals("="))
-                            {
-                                operandoDireito = FabricaNoOperacao.novoNo(operador.getText().substring(0, 1), operandoEsquerdo, operandoDireito);
-                            }
-
-                            NoOperacao operacao = FabricaNoOperacao.novoNo("=", operandoEsquerdo, operandoDireito);
-                            operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-
-                            vPilha.push(operacao);
-                        }
-
-                        expressao = (NoExpressao) vPilha.pop();
-
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao"
-
-    // $ANTLR start "expressao2"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:964:1: expressao2 returns [NoExpressao expressao] : operandoEsquerdo= expressao2_5 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )* ;
-    public final NoExpressao expressao2() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao2");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:967:2: (operandoEsquerdo= expressao2_5 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:969:2: operandoEsquerdo= expressao2_5 ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )*
-            {
-                pushFollow(FOLLOW_expressao2_5_in_expressao22602);
-                operandoEsquerdo = expressao2_5();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:970:2: ( (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5 )*
-                loop33:
-                while (true)
-                {
-                    int alt33 = 2;
-                    int LA33_0 = input.LA(1);
-                    if (((LA33_0 >= 77 && LA33_0 <= 78)))
-                    {
-                        alt33 = 1;
-                    }
-
-                    switch (alt33)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:971:3: (operador= 'e' |operador= 'ou' ) operandoDireito= expressao2_5
-                        {
-                            if (state.backtracking == 0)
-                            {
-
-                                if (gerarArvore)
-                                {
-                                    if (operandoDireito != null)
-                                    {
-                                        NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-                                        operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                                        operandoEsquerdo = operacao;
-                                    }
-                                }
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:984:3: (operador= 'e' |operador= 'ou' )
-                            int alt32 = 2;
-                            int LA32_0 = input.LA(1);
-                            if ((LA32_0 == 77))
-                            {
-                                alt32 = 1;
-                            }
-                            else
-                            {
-                                if ((LA32_0 == 78))
-                                {
-                                    alt32 = 2;
-                                }
-
-                                else
-                                {
-                                    if (state.backtracking > 0)
-                                    {
-                                        state.failed = true;
-                                        return expressao;
-                                    }
-                                    NoViableAltException nvae
-                                            = new NoViableAltException("", 32, 0, input);
-                                    throw nvae;
-                                }
-                            }
-
-                            switch (alt32)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:984:4: operador= 'e'
-                                {
-                                    operador = (Token) match(input, 77, FOLLOW_77_in_expressao22631);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 2:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:984:21: operador= 'ou'
-                                {
-                                    operador = (Token) match(input, 78, FOLLOW_78_in_expressao22639);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                            pushFollow(FOLLOW_expressao2_5_in_expressao22651);
-                            operandoDireito = expressao2_5();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return expressao;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop33;
-                    }
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao2"
-
-    // $ANTLR start "expressao2_5"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1000:1: expressao2_5 returns [NoExpressao expressao] : operandoEsquerdo= expressao3 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )* ;
-    public final NoExpressao expressao2_5() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao2_5");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1003:2: (operandoEsquerdo= expressao3 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1005:2: operandoEsquerdo= expressao3 ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )*
-            {
-                pushFollow(FOLLOW_expressao3_in_expressao2_52684);
-                operandoEsquerdo = expressao3();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1006:2: ( (operador= '==' |operador= '!=' ) operandoDireito= expressao3 )*
-                loop35:
-                while (true)
-                {
-                    int alt35 = 2;
-                    int LA35_0 = input.LA(1);
-                    if ((LA35_0 == 42 || LA35_0 == 68))
-                    {
-                        alt35 = 1;
-                    }
-
-                    switch (alt35)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1007:3: (operador= '==' |operador= '!=' ) operandoDireito= expressao3
-                        {
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-
-                                    if (operandoDireito != null)
-                                    {
-                                        NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-                                        operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                                        operandoEsquerdo = operacao;
-                                    }
-                                }
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1020:3: (operador= '==' |operador= '!=' )
-                            int alt34 = 2;
-                            int LA34_0 = input.LA(1);
-                            if ((LA34_0 == 68))
-                            {
-                                alt34 = 1;
-                            }
-                            else
-                            {
-                                if ((LA34_0 == 42))
-                                {
-                                    alt34 = 2;
-                                }
-
-                                else
-                                {
-                                    if (state.backtracking > 0)
-                                    {
-                                        state.failed = true;
-                                        return expressao;
-                                    }
-                                    NoViableAltException nvae
-                                            = new NoViableAltException("", 34, 0, input);
-                                    throw nvae;
-                                }
-                            }
-
-                            switch (alt34)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1020:4: operador= '=='
-                                {
-                                    operador = (Token) match(input, 68, FOLLOW_68_in_expressao2_52705);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 2:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1020:22: operador= '!='
-                                {
-                                    operador = (Token) match(input, 42, FOLLOW_42_in_expressao2_52713);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                            pushFollow(FOLLOW_expressao3_in_expressao2_52726);
-                            operandoDireito = expressao3();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return expressao;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop35;
-                    }
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao2_5"
-
-    // $ANTLR start "expressao3"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1037:1: expressao3 returns [NoExpressao expressao] : operandoEsquerdo= expressao3_5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )? ;
-    public final NoExpressao expressao3() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao3");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1040:2: (operandoEsquerdo= expressao3_5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:2: operandoEsquerdo= expressao3_5 ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )?
-            {
-                pushFollow(FOLLOW_expressao3_5_in_expressao32760);
-                operandoEsquerdo = expressao3_5();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:34: ( (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5 )?
-                int alt37 = 2;
-                int LA37_0 = input.LA(1);
-                if ((LA37_0 == 63 || LA37_0 == 66 || (LA37_0 >= 69 && LA37_0 <= 70)))
-                {
-                    alt37 = 1;
-                }
-                switch (alt37)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:35: (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' ) operandoDireito= expressao3_5
-                    {
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:35: (operador= '>=' |operador= '<=' |operador= '<' |operador= '>' )
-                        int alt36 = 4;
-                        switch (input.LA(1))
-                        {
-                            case 70:
-                            {
-                                alt36 = 1;
-                            }
-                            break;
-                            case 66:
-                            {
-                                alt36 = 2;
-                            }
-                            break;
-                            case 63:
-                            {
-                                alt36 = 3;
-                            }
-                            break;
-                            case 69:
-                            {
-                                alt36 = 4;
-                            }
-                            break;
-                            default:
-                                if (state.backtracking > 0)
-                                {
-                                    state.failed = true;
-                                    return expressao;
-                                }
-                                NoViableAltException nvae
-                                        = new NoViableAltException("", 36, 0, input);
-                                throw nvae;
-                        }
-                        switch (alt36)
-                        {
-                            case 1:
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:36: operador= '>='
-                            {
-                                operador = (Token) match(input, 70, FOLLOW_70_in_expressao32768);
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                            }
-                            break;
-                            case 2:
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:54: operador= '<='
-                            {
-                                operador = (Token) match(input, 66, FOLLOW_66_in_expressao32776);
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                            }
-                            break;
-                            case 3:
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:72: operador= '<'
-                            {
-                                operador = (Token) match(input, 63, FOLLOW_63_in_expressao32784);
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                            }
-                            break;
-                            case 4:
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1042:89: operador= '>'
-                            {
-                                operador = (Token) match(input, 69, FOLLOW_69_in_expressao32792);
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                            }
-                            break;
-
-                        }
-
-                        pushFollow(FOLLOW_expressao3_5_in_expressao32799);
-                        operandoDireito = expressao3_5();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao3"
-
-    // $ANTLR start "expressao3_5"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1056:1: expressao3_5 returns [NoExpressao expressao] : operandoEsquerdo= expressao4_5 ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )* ;
-    public final NoExpressao expressao3_5() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao3_5");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1059:2: (operandoEsquerdo= expressao4_5 ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1060:2: operandoEsquerdo= expressao4_5 ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )*
-            {
-                pushFollow(FOLLOW_expressao4_5_in_expressao3_52831);
-                operandoEsquerdo = expressao4_5();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1061:5: ( (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5 )*
-                loop39:
-                while (true)
-                {
-                    int alt39 = 2;
-                    int LA39_0 = input.LA(1);
-                    if ((LA39_0 == 45 || LA39_0 == 75 || LA39_0 == 80))
-                    {
-                        alt39 = 1;
-                    }
-
-                    switch (alt39)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1062:3: (operador= '&' |operador= '|' |operador= '^' ) operandoDireito= expressao4_5
-                        {
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    if (operandoDireito != null)
-                                    {
-                                        NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-                                        operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                                        operandoEsquerdo = operacao;
-                                    }
-                                }
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1074:3: (operador= '&' |operador= '|' |operador= '^' )
-                            int alt38 = 3;
-                            switch (input.LA(1))
-                            {
-                                case 45:
-                                {
-                                    alt38 = 1;
-                                }
-                                break;
-                                case 80:
-                                {
-                                    alt38 = 2;
-                                }
-                                break;
-                                case 75:
-                                {
-                                    alt38 = 3;
-                                }
-                                break;
-                                default:
-                                    if (state.backtracking > 0)
-                                    {
-                                        state.failed = true;
-                                        return expressao;
-                                    }
-                                    NoViableAltException nvae
-                                            = new NoViableAltException("", 38, 0, input);
-                                    throw nvae;
-                            }
-                            switch (alt38)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1074:4: operador= '&'
-                                {
-                                    operador = (Token) match(input, 45, FOLLOW_45_in_expressao3_52860);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 2:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1074:21: operador= '|'
-                                {
-                                    operador = (Token) match(input, 80, FOLLOW_80_in_expressao3_52868);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 3:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1074:38: operador= '^'
-                                {
-                                    operador = (Token) match(input, 75, FOLLOW_75_in_expressao3_52876);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                            pushFollow(FOLLOW_expressao4_5_in_expressao3_52888);
-                            operandoDireito = expressao4_5();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return expressao;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop39;
-                    }
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao3_5"
-
-    // $ANTLR start "expressao4_5"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1091:1: expressao4_5 returns [NoExpressao expressao] : operandoEsquerdo= expressao5 ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )* ;
-    public final NoExpressao expressao4_5() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao4_5");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1094:2: (operandoEsquerdo= expressao5 ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1094:4: operandoEsquerdo= expressao5 ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )*
-            {
-                pushFollow(FOLLOW_expressao5_in_expressao4_52921);
-                operandoEsquerdo = expressao5();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1095:5: ( (operador= '<<' |operador= '>>' ) operandoDireito= expressao5 )*
-                loop41:
-                while (true)
-                {
-                    int alt41 = 2;
-                    int LA41_0 = input.LA(1);
-                    if ((LA41_0 == 64 || LA41_0 == 71))
-                    {
-                        alt41 = 1;
-                    }
-
-                    switch (alt41)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1096:3: (operador= '<<' |operador= '>>' ) operandoDireito= expressao5
-                        {
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    if (operandoDireito != null)
-                                    {
-                                        NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-                                        operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                                        operandoEsquerdo = operacao;
-                                    }
-                                }
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1108:3: (operador= '<<' |operador= '>>' )
-                            int alt40 = 2;
-                            int LA40_0 = input.LA(1);
-                            if ((LA40_0 == 64))
-                            {
-                                alt40 = 1;
-                            }
-                            else
-                            {
-                                if ((LA40_0 == 71))
-                                {
-                                    alt40 = 2;
-                                }
-
-                                else
-                                {
-                                    if (state.backtracking > 0)
-                                    {
-                                        state.failed = true;
-                                        return expressao;
-                                    }
-                                    NoViableAltException nvae
-                                            = new NoViableAltException("", 40, 0, input);
-                                    throw nvae;
-                                }
-                            }
-
-                            switch (alt40)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1108:4: operador= '<<'
-                                {
-                                    operador = (Token) match(input, 64, FOLLOW_64_in_expressao4_52950);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 2:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1108:22: operador= '>>'
-                                {
-                                    operador = (Token) match(input, 71, FOLLOW_71_in_expressao4_52958);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                            pushFollow(FOLLOW_expressao5_in_expressao4_52970);
-                            operandoDireito = expressao5();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return expressao;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop41;
-                    }
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao4_5"
-
-    // $ANTLR start "expressao5"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1124:1: expressao5 returns [NoExpressao expressao] : operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* ;
-    public final NoExpressao expressao5() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao5");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1127:2: (operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1129:2: operandoEsquerdo= expressao6 ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*
-            {
-                pushFollow(FOLLOW_expressao6_in_expressao53004);
-                operandoEsquerdo = expressao6();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1130:2: ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*
-                loop42:
-                while (true)
-                {
-                    int alt42 = 3;
-                    alt42 = dfa42.predict(input);
-                    switch (alt42)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1131:3: (operador= '+' operandoDireito= expressao6 )
-                        {
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1131:3: (operador= '+' operandoDireito= expressao6 )
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1133:4: operador= '+' operandoDireito= expressao6
-                            {
-                                if (state.backtracking == 0)
-                                {
-                                    if (gerarArvore)
-                                    {
-                                        if (operandoDireito != null)
-                                        {
-                                            NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-                                            operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                                            operandoEsquerdo = operacao;
-                                        }
-                                    }
-                                }
-                                operador = (Token) match(input, 51, FOLLOW_51_in_expressao53035);
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                                pushFollow(FOLLOW_expressao6_in_expressao53041);
-                                operandoDireito = expressao6();
-                                state._fsp--;
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                            }
-
-                        }
-                        break;
-                        case 2:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1150:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
-                        {
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1150:3: ( ( '-' )=>operador= '-' operandoDireito= expressao6 )
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1152:5: ( '-' )=>operador= '-' operandoDireito= expressao6
-                            {
-                                if (state.backtracking == 0)
-                                {
-                                    if (gerarArvore)
-                                    {
-                                        if (operandoDireito != null)
-                                        {
-                                            NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-                                            operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                                            operandoEsquerdo = operacao;
-                                        }
-                                    }
-                                }
-                                operador = (Token) match(input, 55, FOLLOW_55_in_expressao53099);
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                                pushFollow(FOLLOW_expressao6_in_expressao53105);
-                                operandoDireito = expressao6();
-                                state._fsp--;
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                            }
-
-                        }
-                        break;
-
-                        default:
-                            break loop42;
-                    }
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao5"
-
-    // $ANTLR start "expressao6"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1185:1: expressao6 returns [NoExpressao expressao] : operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* ;
-    public final NoExpressao expressao6() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token operador = null;
-        NoExpressao operandoEsquerdo = null;
-        NoExpressao operandoDireito = null;
-
-        pilhaContexto.push("expressao6");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1188:2: (operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1190:2: operandoEsquerdo= expressao7 ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )*
-            {
-                pushFollow(FOLLOW_expressao7_in_expressao63154);
-                operandoEsquerdo = expressao7();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1191:2: ( (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7 )*
-                loop44:
-                while (true)
-                {
-                    int alt44 = 2;
-                    int LA44_0 = input.LA(1);
-                    if ((LA44_0 == 43 || LA44_0 == 49 || LA44_0 == 59))
-                    {
-                        alt44 = 1;
-                    }
-
-                    switch (alt44)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1192:3: (operador= '*' |operador= '/' |operador= '%' ) operandoDireito= expressao7
-                        {
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    if (operandoDireito != null)
-                                    {
-                                        NoOperacao operacao = FabricaNoOperacao.novoNo(operador.getText(), operandoEsquerdo, operandoDireito);
-                                        operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                                        operandoEsquerdo = operacao;
-                                    }
-                                }
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1205:3: (operador= '*' |operador= '/' |operador= '%' )
-                            int alt43 = 3;
-                            switch (input.LA(1))
-                            {
-                                case 49:
-                                {
-                                    alt43 = 1;
-                                }
-                                break;
-                                case 59:
-                                {
-                                    alt43 = 2;
-                                }
-                                break;
-                                case 43:
-                                {
-                                    alt43 = 3;
-                                }
-                                break;
-                                default:
-                                    if (state.backtracking > 0)
-                                    {
-                                        state.failed = true;
-                                        return expressao;
-                                    }
-                                    NoViableAltException nvae
-                                            = new NoViableAltException("", 43, 0, input);
-                                    throw nvae;
-                            }
-                            switch (alt43)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1205:4: operador= '*'
-                                {
-                                    operador = (Token) match(input, 49, FOLLOW_49_in_expressao63177);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 2:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1205:21: operador= '/'
-                                {
-                                    operador = (Token) match(input, 59, FOLLOW_59_in_expressao63185);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-                                case 3:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1205:38: operador= '%'
-                                {
-                                    operador = (Token) match(input, 43, FOLLOW_43_in_expressao63193);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                }
-                                break;
-
-                            }
-
-                            pushFollow(FOLLOW_expressao7_in_expressao63206);
-                            operandoDireito = expressao7();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return expressao;
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop44;
-                    }
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = selecionarExpressao(operandoEsquerdo, operandoDireito, operador);
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao6"
-
-    // $ANTLR start "expressao7"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1222:1: expressao7 returns [NoExpressao expressao] : ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' ) vExpressao= expressao8 ;
-    public final NoExpressao expressao7() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token listaTokenMenos = null;
-        Token listaTokenNao = null;
-        Token listaTokenNot = null;
-        List<Object> list_listaTokenMenos = null;
-        List<Object> list_listaTokenNao = null;
-        List<Object> list_listaTokenNot = null;
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("expressao7");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1225:2: ( ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' ) vExpressao= expressao8 )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' ) vExpressao= expressao8
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:2: ( ( '-' )=> (listaTokenMenos+= '-' )? | (listaTokenNao+= OPERADOR_NAO )* |listaTokenNot+= '~' )
-                int alt47 = 3;
-                int LA47_0 = input.LA(1);
-                if ((LA47_0 == 55) && (synpred4_Portugol()))
-                {
-                    alt47 = 1;
-                }
-                else
-                {
-                    if ((LA47_0 == 47))
-                    {
-                        int LA47_2 = input.LA(2);
-                        if ((synpred4_Portugol()))
-                        {
-                            alt47 = 1;
-                        }
-                        else
-                        {
-                            if ((true))
-                            {
-                                alt47 = 2;
-                            }
-                        }
-
-                    }
-                    else
-                    {
-                        if ((LA47_0 == ID))
-                        {
-                            int LA47_3 = input.LA(2);
-                            if ((synpred4_Portugol()))
-                            {
-                                alt47 = 1;
-                            }
-                            else
-                            {
-                                if ((true))
-                                {
-                                    alt47 = 2;
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            if ((LA47_0 == ID_BIBLIOTECA))
-                            {
-                                int LA47_4 = input.LA(2);
-                                if ((synpred4_Portugol()))
-                                {
-                                    alt47 = 1;
-                                }
-                                else
-                                {
-                                    if ((true))
-                                    {
-                                        alt47 = 2;
-                                    }
-                                }
-
-                            }
-                            else
-                            {
-                                if ((LA47_0 == REAL))
-                                {
-                                    int LA47_5 = input.LA(2);
-                                    if ((synpred4_Portugol()))
-                                    {
-                                        alt47 = 1;
-                                    }
-                                    else
-                                    {
-                                        if ((true))
-                                        {
-                                            alt47 = 2;
-                                        }
-                                    }
-
-                                }
-                                else
-                                {
-                                    if ((LA47_0 == LOGICO))
-                                    {
-                                        int LA47_6 = input.LA(2);
-                                        if ((synpred4_Portugol()))
-                                        {
-                                            alt47 = 1;
-                                        }
-                                        else
-                                        {
-                                            if ((true))
-                                            {
-                                                alt47 = 2;
-                                            }
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        if ((LA47_0 == CADEIA))
-                                        {
-                                            int LA47_7 = input.LA(2);
-                                            if ((synpred4_Portugol()))
-                                            {
-                                                alt47 = 1;
-                                            }
-                                            else
-                                            {
-                                                if ((true))
-                                                {
-                                                    alt47 = 2;
-                                                }
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            if ((LA47_0 == INTEIRO))
-                                            {
-                                                int LA47_8 = input.LA(2);
-                                                if ((synpred4_Portugol()))
-                                                {
-                                                    alt47 = 1;
-                                                }
-                                                else
-                                                {
-                                                    if ((true))
-                                                    {
-                                                        alt47 = 2;
-                                                    }
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                if ((LA47_0 == CARACTER))
-                                                {
-                                                    int LA47_9 = input.LA(2);
-                                                    if ((synpred4_Portugol()))
-                                                    {
-                                                        alt47 = 1;
-                                                    }
-                                                    else
-                                                    {
-                                                        if ((true))
-                                                        {
-                                                            alt47 = 2;
-                                                        }
-                                                    }
-
-                                                }
-                                                else
-                                                {
-                                                    if ((LA47_0 == 79))
-                                                    {
-                                                        int LA47_10 = input.LA(2);
-                                                        if ((synpred4_Portugol()))
-                                                        {
-                                                            alt47 = 1;
-                                                        }
-                                                        else
-                                                        {
-                                                            if ((true))
-                                                            {
-                                                                alt47 = 2;
-                                                            }
-                                                        }
-
-                                                    }
-                                                    else
-                                                    {
-                                                        if ((LA47_0 == OPERADOR_NAO))
-                                                        {
-                                                            alt47 = 2;
-                                                        }
-                                                        else
-                                                        {
-                                                            if ((LA47_0 == 83))
-                                                            {
-                                                                alt47 = 3;
-                                                            }
-
-                                                            else
-                                                            {
-                                                                if (state.backtracking > 0)
-                                                                {
-                                                                    state.failed = true;
-                                                                    return expressao;
-                                                                }
-                                                                NoViableAltException nvae
-                                                                        = new NoViableAltException("", 47, 0, input);
-                                                                throw nvae;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                switch (alt47)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:3: ( '-' )=> (listaTokenMenos+= '-' )?
-                    {
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:12: (listaTokenMenos+= '-' )?
-                        int alt45 = 2;
-                        int LA45_0 = input.LA(1);
-                        if ((LA45_0 == 55))
-                        {
-                            alt45 = 1;
-                        }
-                        switch (alt45)
-                        {
-                            case 1:
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:13: listaTokenMenos+= '-'
-                            {
-                                listaTokenMenos = (Token) match(input, 55, FOLLOW_55_in_expressao73248);
-                                if (state.failed)
-                                {
-                                    return expressao;
-                                }
-                                if (list_listaTokenMenos == null)
-                                {
-                                    list_listaTokenMenos = new ArrayList<Object>();
-                                }
-                                list_listaTokenMenos.add(listaTokenMenos);
-                            }
-                            break;
-
-                        }
-
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:40: (listaTokenNao+= OPERADOR_NAO )*
-                    {
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:40: (listaTokenNao+= OPERADOR_NAO )*
-                        loop46:
-                        while (true)
-                        {
-                            int alt46 = 2;
-                            int LA46_0 = input.LA(1);
-                            if ((LA46_0 == OPERADOR_NAO))
-                            {
-                                alt46 = 1;
-                            }
-
-                            switch (alt46)
-                            {
-                                case 1:
-                                // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:41: listaTokenNao+= OPERADOR_NAO
-                                {
-                                    listaTokenNao = (Token) match(input, OPERADOR_NAO, FOLLOW_OPERADOR_NAO_in_expressao73259);
-                                    if (state.failed)
-                                    {
-                                        return expressao;
-                                    }
-                                    if (list_listaTokenNao == null)
-                                    {
-                                        list_listaTokenNao = new ArrayList<Object>();
-                                    }
-                                    list_listaTokenNao.add(listaTokenNao);
-                                }
-                                break;
-
-                                default:
-                                    break loop46;
-                            }
-                        }
-
-                    }
-                    break;
-                    case 3:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:75: listaTokenNot+= '~'
-                    {
-                        listaTokenNot = (Token) match(input, 83, FOLLOW_83_in_expressao73269);
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                        if (list_listaTokenNot == null)
-                        {
-                            list_listaTokenNot = new ArrayList<Object>();
-                        }
-                        list_listaTokenNot.add(listaTokenNot);
-                    }
-                    break;
-
-                }
-
-                pushFollow(FOLLOW_expressao8_in_expressao73278);
-                vExpressao = expressao8();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        if (list_listaTokenNot != null)
-                        {
-                            vExpressao = new NoBitwiseNao(vExpressao);
-                        }
-
-                        if (list_listaTokenNao != null)
-                        {
-                            for (int i = 0; i < list_listaTokenNao.size(); i++)
-                            {
-                                vExpressao = new NoNao(vExpressao);
-                            }
-                        }
-
-                        else
-
-                        {
-                            if (list_listaTokenMenos != null)
-                            {
-                                vExpressao = new NoMenosUnario(vExpressao);
-                            }
-                        }
-
-                        expressao = vExpressao;
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao7"
-
-    // $ANTLR start "expressao8"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1253:1: expressao8 returns [NoExpressao expressao] : (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? ;
-    public final NoExpressao expressao8() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token ab = null;
-        Token fp = null;
-        Token operador = null;
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("expressao8");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1256:2: ( (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1258:2: (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor ) (operador= '++' |operador= '--' )?
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1258:2: (ab= '(' vExpressao= expressao fp= ')' |vExpressao= referencia |vExpressao= tipoPrimitivo |vExpressao= matrizVetor )
-                int alt48 = 4;
-                switch (input.LA(1))
-                {
-                    case 47:
-                    {
-                        alt48 = 1;
-                    }
-                    break;
-                    case ID:
-                    case ID_BIBLIOTECA:
-                    {
-                        alt48 = 2;
-                    }
-                    break;
-                    case CADEIA:
-                    case CARACTER:
-                    case INTEIRO:
-                    case LOGICO:
-                    case REAL:
-                    {
-                        alt48 = 3;
-                    }
-                    break;
-                    case 79:
-                    {
-                        alt48 = 4;
-                    }
-                    break;
-                    default:
-                        if (state.backtracking > 0)
-                        {
-                            state.failed = true;
-                            return expressao;
-                        }
-                        NoViableAltException nvae
-                                = new NoViableAltException("", 48, 0, input);
-                        throw nvae;
-                }
-                switch (alt48)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1258:4: ab= '(' vExpressao= expressao fp= ')'
-                    {
-                        ab = (Token) match(input, 47, FOLLOW_47_in_expressao83312);
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                        pushFollow(FOLLOW_expressao_in_expressao83318);
-                        vExpressao = expressao();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                        fp = (Token) match(input, 48, FOLLOW_48_in_expressao83324);
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1259:4: vExpressao= referencia
-                    {
-                        pushFollow(FOLLOW_referencia_in_expressao83334);
-                        vExpressao = referencia();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-                    case 3:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1260:4: vExpressao= tipoPrimitivo
-                    {
-                        pushFollow(FOLLOW_tipoPrimitivo_in_expressao83343);
-                        vExpressao = tipoPrimitivo();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-                    case 4:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1261:4: vExpressao= matrizVetor
-                    {
-                        pushFollow(FOLLOW_matrizVetor_in_expressao83353);
-                        vExpressao = matrizVetor();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-
-                }
-
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1263:3: (operador= '++' |operador= '--' )?
-                int alt49 = 3;
-                int LA49_0 = input.LA(1);
-                if ((LA49_0 == 52))
-                {
-                    alt49 = 1;
-                }
-                else
-                {
-                    if ((LA49_0 == 56))
-                    {
-                        alt49 = 2;
-                    }
-                }
-                switch (alt49)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1263:4: operador= '++'
-                    {
-                        operador = (Token) match(input, 52, FOLLOW_52_in_expressao83366);
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1263:22: operador= '--'
-                    {
-                        operador = (Token) match(input, 56, FOLLOW_56_in_expressao83374);
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-
-                        if (operador != null)
-                        {
-                            NoInteiro inteiro = new NoInteiro(1);
-                            inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte(operador));
-                            NoOperacao operandoDireito = FabricaNoOperacao.novoNo(operador.getText().substring(0, 1), vExpressao, inteiro);
-                            NoOperacao operacao = FabricaNoOperacao.novoNo("=", vExpressao, operandoDireito);
-                            operacao.setTrechoCodigoFonteOperador(criarTrechoCodigoFonte(operador));
-                            expressao = operacao;
-                        }
-
-                        else
-                        {
-                            expressao = vExpressao;
-                        }
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "expressao8"
-
-    // $ANTLR start "tipoPrimitivo"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1289:1: tipoPrimitivo returns [NoExpressao expressao] : ( REAL | LOGICO | CADEIA | INTEIRO | CARACTER );
-    public final NoExpressao tipoPrimitivo() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token REAL8 = null;
-        Token LOGICO9 = null;
-        Token CADEIA10 = null;
-        Token INTEIRO11 = null;
-        Token CARACTER12 = null;
-
-        pilhaContexto.push("tipoPrimitivo");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1292:2: ( REAL | LOGICO | CADEIA | INTEIRO | CARACTER )
-            int alt50 = 5;
-            switch (input.LA(1))
-            {
-                case REAL:
-                {
-                    alt50 = 1;
-                }
-                break;
-                case LOGICO:
-                {
-                    alt50 = 2;
-                }
-                break;
-                case CADEIA:
-                {
-                    alt50 = 3;
-                }
-                break;
-                case INTEIRO:
-                {
-                    alt50 = 4;
-                }
-                break;
-                case CARACTER:
-                {
-                    alt50 = 5;
-                }
-                break;
-                default:
-                    if (state.backtracking > 0)
-                    {
-                        state.failed = true;
-                        return expressao;
-                    }
-                    NoViableAltException nvae
-                            = new NoViableAltException("", 50, 0, input);
-                    throw nvae;
-            }
-            switch (alt50)
-            {
-                case 1:
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1294:2: REAL
-                {
-                    REAL8 = (Token) match(input, REAL, FOLLOW_REAL_in_tipoPrimitivo3403);
-                    if (state.failed)
-                    {
-                        return expressao;
-                    }
-                    if (state.backtracking == 0)
-                    {
-                        if (gerarArvore)
-                        {
-                            NoReal real = new NoReal(Double.parseDouble((REAL8 != null ? REAL8.getText() : null)));
-                            real.setTrechoCodigoFonte(criarTrechoCodigoFonte(REAL8));
-                            expressao = real;
-                        }
-                    }
-                }
-                break;
-                case 2:
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1306:2: LOGICO
-                {
-                    LOGICO9 = (Token) match(input, LOGICO, FOLLOW_LOGICO_in_tipoPrimitivo3423);
-                    if (state.failed)
-                    {
-                        return expressao;
-                    }
-                    if (state.backtracking == 0)
-                    {
-                        if (gerarArvore)
-                        {
-                            NoLogico logico = new NoLogico(((LOGICO9 != null ? LOGICO9.getText() : null).equals("verdadeiro") ? true : false));
-                            logico.setTrechoCodigoFonte(criarTrechoCodigoFonte(LOGICO9));
-                            expressao = logico;
-                        }
-                    }
-                }
-                break;
-                case 3:
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1318:2: CADEIA
-                {
-                    CADEIA10 = (Token) match(input, CADEIA, FOLLOW_CADEIA_in_tipoPrimitivo3437);
-                    if (state.failed)
-                    {
-                        return expressao;
-                    }
-                    if (state.backtracking == 0)
-                    {
-                        if (gerarArvore)
-                        {
-                            String texto = (CADEIA10 != null ? CADEIA10.getText() : null);
-
-                            texto = texto.substring(1, texto.length() - 1);
-                            texto = traduzirSequenciasEscape(texto);
-
-                            NoCadeia cadeia = new NoCadeia(texto);
-                            cadeia.setTrechoCodigoFonte(criarTrechoCodigoFonte(CADEIA10));
-                            expressao = cadeia;
-                        }
-                    }
-                }
-                break;
-                case 4:
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1335:2: INTEIRO
-                {
-                    INTEIRO11 = (Token) match(input, INTEIRO, FOLLOW_INTEIRO_in_tipoPrimitivo3450);
-                    if (state.failed)
-                    {
-                        return expressao;
-                    }
-                    if (state.backtracking == 0)
-                    {
-                        try
-                        {
-
-                            if (gerarArvore)
-                            {
-                                NoInteiro inteiro = null;
-                                if ((INTEIRO11 != null ? INTEIRO11.getText() : null).matches("(0x|0X).+"))
-                                {
-                                    inteiro = new NoInteiro(Integer.valueOf((INTEIRO11 != null ? INTEIRO11.getText() : null).replaceAll("0x|0X", ""), 16));
-                                }
-                                else
-                                {
-                                    if ((INTEIRO11 != null ? INTEIRO11.getText() : null).matches("(0b|0B).+"))
-                                    {
-                                        inteiro = new NoInteiro(Integer.valueOf((INTEIRO11 != null ? INTEIRO11.getText() : null).replaceAll("0b|0B", ""), 2));
-                                    }
-                                    else
-                                    {
-                                        try
-                                        {
-                                            int temp = Integer.parseInt((INTEIRO11 != null ? INTEIRO11.getText() : null));
-
-                                            inteiro = new NoInteiro(temp);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            int linha = INTEIRO11.getLine();
-                                            int coluna = INTEIRO11.getCharPositionInLine();
-
-                                            NoViableAltException error = new NoViableAltException("INT-OVERFLOW:" + INTEIRO11.getText(), 0, 0, input);
-                                            error.line = linha;
-                                            error.charPositionInLine = coluna;
-                                            throw error;
-                                        }
-                                    }
-                                }
-                                inteiro.setTrechoCodigoFonte(criarTrechoCodigoFonte(INTEIRO11));
-                                expressao = inteiro;
-                            }
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                            RecognitionException a = new RecognitionException();
-                            a.addSuppressed(new RuntimeException("Caracter inválido detectado"));
-                        }
-                    }
-                }
-                break;
-                case 5:
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1363:2: CARACTER
-                {
-                    CARACTER12 = (Token) match(input, CARACTER, FOLLOW_CARACTER_in_tipoPrimitivo3465);
-                    if (state.failed)
-                    {
-                        return expressao;
-                    }
-                    if (state.backtracking == 0)
-                    {
-                        if (gerarArvore)
-                        {
-                            String car = (CARACTER12 != null ? CARACTER12.getText() : null);
-                            car = traduzirSequenciasEscape(car);
-
-                            NoCaracter caracter = new NoCaracter(car.charAt(1));
-                            caracter.setTrechoCodigoFonte(criarTrechoCodigoFonte(CARACTER12));
-                            expressao = caracter;
-                        }
-                    }
-                }
-                break;
-
-            }
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "tipoPrimitivo"
-
-    // $ANTLR start "referencia"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1382:1: referencia returns [NoReferencia referencia] : (id= ID |id= ID_BIBLIOTECA ) ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] ) ;
-    public final NoReferencia referencia() throws RecognitionException
-    {
-        NoReferencia referencia = null;
-
-        Token id = null;
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("referencia");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1385:2: ( (id= ID |id= ID_BIBLIOTECA ) ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1387:2: (id= ID |id= ID_BIBLIOTECA ) ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1387:2: (id= ID |id= ID_BIBLIOTECA )
-                int alt51 = 2;
-                int LA51_0 = input.LA(1);
-                if ((LA51_0 == ID))
-                {
-                    alt51 = 1;
-                }
-                else
-                {
-                    if ((LA51_0 == ID_BIBLIOTECA))
-                    {
-                        alt51 = 2;
-                    }
-
-                    else
-                    {
-                        if (state.backtracking > 0)
-                        {
-                            state.failed = true;
-                            return referencia;
-                        }
-                        NoViableAltException nvae
-                                = new NoViableAltException("", 51, 0, input);
-                        throw nvae;
-                    }
-                }
-
-                switch (alt51)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1387:3: id= ID
-                    {
-                        id = (Token) match(input, ID, FOLLOW_ID_in_referencia3499);
-                        if (state.failed)
-                        {
-                            return referencia;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1387:13: id= ID_BIBLIOTECA
-                    {
-                        id = (Token) match(input, ID_BIBLIOTECA, FOLLOW_ID_BIBLIOTECA_in_referencia3507);
-                        if (state.failed)
-                        {
-                            return referencia;
-                        }
-                    }
-                    break;
-
-                }
-
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1388:2: ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] )
-                int alt52 = 3;
-                alt52 = dfa52.predict(input);
-                switch (alt52)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1389:3: ( '(' )=>vExpressao= chamadaFuncao[$id.getText()]
-                    {
-                        pushFollow(FOLLOW_chamadaFuncao_in_referencia3525);
-                        vExpressao = chamadaFuncao(id.getText());
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return referencia;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1390:3: ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()]
-                    {
-                        pushFollow(FOLLOW_referenciaVetorMatriz_in_referencia3542);
-                        vExpressao = referenciaVetorMatriz(id.getText());
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return referencia;
-                        }
-                    }
-                    break;
-                    case 3:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1391:5: vExpressao= referenciaId[$id.getText()]
-                    {
-                        pushFollow(FOLLOW_referenciaId_in_referencia3555);
-                        vExpressao = referenciaId(id.getText());
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return referencia;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        referencia = (NoReferencia) vExpressao;
-                        referencia.setTrechoCodigoFonteNome(criarTrechoCodigoFonte(id));
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return referencia;
-    }
-	// $ANTLR end "referencia"
-
-    // $ANTLR start "referenciaId"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1408:1: referenciaId[String id] returns [NoExpressao expressao] :;
-    public final NoExpressao referenciaId(String id) throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        pilhaContexto.push("referenciaId");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1411:2: ()
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1413:2: 
-            {
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        String nome = id;
-                        String escopo = null;
-
-                        if (id.contains("."))
-                        {
-                            String[] ref = id.split("\\.");
-                            escopo = ref[0];
-                            nome = ref[1];
-                        }
-
-                        expressao = new NoReferenciaVariavel(escopo, nome);
-                    }
-                }
-            }
-
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "referenciaId"
-
-    // $ANTLR start "referenciaVetorMatriz"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1437:1: referenciaVetorMatriz[ String id] returns [NoExpressao expressao] : '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? ;
-    public final NoExpressao referenciaVetorMatriz(String id) throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        NoExpressao indice1 = null;
-        NoExpressao indice2 = null;
-
-        pilhaContexto.push("referenciaVetorMatriz");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1440:2: ( '[' indice1= expressao ']' ( '[' indice2= expressao ']' )? )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1442:2: '[' indice1= expressao ']' ( '[' indice2= expressao ']' )?
-            {
-                match(input, 73, FOLLOW_73_in_referenciaVetorMatriz3616);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                pushFollow(FOLLOW_expressao_in_referenciaVetorMatriz3622);
-                indice1 = expressao();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                match(input, 74, FOLLOW_74_in_referenciaVetorMatriz3624);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1442:30: ( '[' indice2= expressao ']' )?
-                int alt53 = 2;
-                int LA53_0 = input.LA(1);
-                if ((LA53_0 == 73))
-                {
-                    alt53 = 1;
-                }
-                switch (alt53)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1442:31: '[' indice2= expressao ']'
-                    {
-                        match(input, 73, FOLLOW_73_in_referenciaVetorMatriz3627);
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                        pushFollow(FOLLOW_expressao_in_referenciaVetorMatriz3633);
-                        indice2 = expressao();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                        match(input, 74, FOLLOW_74_in_referenciaVetorMatriz3635);
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        String nome = id;
-                        String escopo = null;
-
-                        if (id.contains("."))
-                        {
-                            String[] ref = id.split("\\.");
-                            escopo = ref[0];
-                            nome = ref[1];
-                        }
-
-                        if ((indice1 != null) && (indice2 == null))
-                        {
-                            expressao = new NoReferenciaVetor(escopo, nome, indice1);
-                        }
-                        else
-                        {
-                            if ((indice1 != null) && (indice2 != null))
-                            {
-                                expressao = new NoReferenciaMatriz(escopo, nome, indice1, indice2);
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "referenciaVetorMatriz"
-
-    // $ANTLR start "chamadaFuncao"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1468:1: chamadaFuncao[String id] returns [NoExpressao expressao] : '(' (vListaParametros= listaParametros )? ')' ;
-    public final NoExpressao chamadaFuncao(String id) throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        List<NoExpressao> vListaParametros = null;
-
-        pilhaContexto.push("chamadaFuncao");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1471:2: ( '(' (vListaParametros= listaParametros )? ')' )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1473:2: '(' (vListaParametros= listaParametros )? ')'
-            {
-                match(input, 47, FOLLOW_47_in_chamadaFuncao3667);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1473:6: (vListaParametros= listaParametros )?
-                int alt54 = 2;
-                int LA54_0 = input.LA(1);
-                if (((LA54_0 >= CADEIA && LA54_0 <= CARACTER) || (LA54_0 >= ID && LA54_0 <= OPERADOR_NAO) || LA54_0 == REAL || LA54_0 == 47 || LA54_0 == 55 || LA54_0 == 79 || LA54_0 == 83))
-                {
-                    alt54 = 1;
-                }
-                switch (alt54)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1473:7: vListaParametros= listaParametros
-                    {
-                        pushFollow(FOLLOW_listaParametros_in_chamadaFuncao3674);
-                        vListaParametros = listaParametros();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-
-                }
-
-                match(input, 48, FOLLOW_48_in_chamadaFuncao3678);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-
-                        String nome = id;
-                        String escopo = null;
-
-                        if (id.contains("."))
-                        {
-                            String[] ref = id.split("\\.");
-                            escopo = ref[0];
-                            nome = ref[1];
-                        }
-
-                        NoChamadaFuncao chamadaFuncao = new NoChamadaFuncao(escopo, nome);
-                        chamadaFuncao.setParametros(vListaParametros);
-                        expressao = chamadaFuncao;
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "chamadaFuncao"
-
-    // $ANTLR start "listaParametros"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1501:1: listaParametros returns [List<NoExpressao> listaParametros] : (vExpressao= expressao ) ( ',' vExpressao= expressao )* ;
-    public final List<NoExpressao> listaParametros() throws RecognitionException
-    {
-        List<NoExpressao> listaParametros = null;
-
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("listaParametros");
-        listaParametros = new ArrayList<NoExpressao>();
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1505:2: ( (vExpressao= expressao ) ( ',' vExpressao= expressao )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1506:2: (vExpressao= expressao ) ( ',' vExpressao= expressao )*
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1506:2: (vExpressao= expressao )
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1506:6: vExpressao= expressao
-                {
-                    pushFollow(FOLLOW_expressao_in_listaParametros3713);
-                    vExpressao = expressao();
-                    state._fsp--;
-                    if (state.failed)
-                    {
-                        return listaParametros;
-                    }
-                    if (state.backtracking == 0)
-                    {
-                        if (gerarArvore)
-                        {
-                            listaParametros.add(vExpressao);
-                        }
-                    }
-                }
-
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1515:2: ( ',' vExpressao= expressao )*
-                loop55:
-                while (true)
-                {
-                    int alt55 = 2;
-                    int LA55_0 = input.LA(1);
-                    if ((LA55_0 == 54))
-                    {
-                        alt55 = 1;
-                    }
-
-                    switch (alt55)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1515:3: ',' vExpressao= expressao
-                        {
-                            match(input, 54, FOLLOW_54_in_listaParametros3729);
-                            if (state.failed)
-                            {
-                                return listaParametros;
-                            }
-                            pushFollow(FOLLOW_expressao_in_listaParametros3735);
-                            vExpressao = expressao();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return listaParametros;
-                            }
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    listaParametros.add(vExpressao);
-                                }
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop55;
-                    }
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return listaParametros;
-    }
-	// $ANTLR end "listaParametros"
-
-    // $ANTLR start "matrizVetor"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1531:1: matrizVetor returns [NoExpressao expressao] : ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) ;
-    public final NoExpressao matrizVetor() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("matrizVetor");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1534:2: ( ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor ) )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:2: ( ( '{' '{' )=>vExpressao= matriz |vExpressao= vetor )
-                int alt56 = 2;
-                int LA56_0 = input.LA(1);
-                if ((LA56_0 == 79))
-                {
-                    int LA56_1 = input.LA(2);
-                    if ((synpred7_Portugol()))
-                    {
-                        alt56 = 1;
-                    }
-                    else
-                    {
-                        if ((true))
-                        {
-                            alt56 = 2;
-                        }
-                    }
-
-                }
-
-                else
-                {
-                    if (state.backtracking > 0)
-                    {
-                        state.failed = true;
-                        return expressao;
-                    }
-                    NoViableAltException nvae
-                            = new NoViableAltException("", 56, 0, input);
-                    throw nvae;
-                }
-
-                switch (alt56)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:3: ( '{' '{' )=>vExpressao= matriz
-                    {
-                        pushFollow(FOLLOW_matriz_in_matrizVetor3782);
-                        vExpressao = matriz();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-                    case 2:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:37: vExpressao= vetor
-                    {
-                        pushFollow(FOLLOW_vetor_in_matrizVetor3790);
-                        vExpressao = vetor();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return expressao;
-                        }
-                    }
-                    break;
-
-                }
-
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        expressao = vExpressao;
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "matrizVetor"
-
-    // $ANTLR start "vetor"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1551:1: vetor returns [NoExpressao expressao] : abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' ;
-    public final NoExpressao vetor() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token abre_ch = null;
-        Token fecha_ch = null;
-        List<Object> vListaExpressoes = null;
-
-        pilhaContexto.push("vetor");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1554:2: (abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}' )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1556:2: abre_ch= '{' vListaExpressoes= listaExpressoes fecha_ch= '}'
-            {
-                abre_ch = (Token) match(input, 79, FOLLOW_79_in_vetor3824);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                pushFollow(FOLLOW_listaExpressoes_in_vetor3830);
-                vListaExpressoes = listaExpressoes();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                fecha_ch = (Token) match(input, 82, FOLLOW_82_in_vetor3836);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        NoVetor noVetor = new NoVetor(vListaExpressoes);
-                        noVetor.setTrechoCodigoFonte(criarTrechoCodigoFonteLista(abre_ch, fecha_ch));
-
-                        expressao = noVetor;
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "vetor"
-
-    // $ANTLR start "matriz"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1573:1: matriz returns [NoExpressao expressao] : abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' ;
-    public final NoExpressao matriz() throws RecognitionException
-    {
-        NoExpressao expressao = null;
-
-        Token abre_ch = null;
-        Token fecha_ch = null;
-        List<List<Object>> vListaListaExpressoes = null;
-
-        pilhaContexto.push("matriz");
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1576:2: (abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}' )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1578:2: abre_ch= '{' vListaListaExpressoes= listaListaExpressoes fecha_ch= '}'
-            {
-                abre_ch = (Token) match(input, 79, FOLLOW_79_in_matriz3869);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                pushFollow(FOLLOW_listaListaExpressoes_in_matriz3877);
-                vListaListaExpressoes = listaListaExpressoes();
-                state._fsp--;
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                fecha_ch = (Token) match(input, 82, FOLLOW_82_in_matriz3884);
-                if (state.failed)
-                {
-                    return expressao;
-                }
-                if (state.backtracking == 0)
-                {
-                    if (gerarArvore)
-                    {
-                        NoMatriz noMatriz = new NoMatriz(vListaListaExpressoes);
-                        noMatriz.setTrechoCodigoFonte(criarTrechoCodigoFonteLista(abre_ch, fecha_ch));
-
-                        expressao = noMatriz;
-                    }
-                }
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return expressao;
-    }
-	// $ANTLR end "matriz"
-
-    // $ANTLR start "listaListaExpressoes"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1598:1: listaListaExpressoes returns [List<List<Object>> listaListaExpressoes] : ( '{' vListaExpressoes= listaExpressoes '}' )? ( ',' '{' vListaExpressoes= listaExpressoes '}' )* ;
-    public final List<List<Object>> listaListaExpressoes() throws RecognitionException
-    {
-        List<List<Object>> listaListaExpressoes = null;
-
-        List<Object> vListaExpressoes = null;
-
-        pilhaContexto.push("listaListaExpressoes");
-        listaListaExpressoes = new ArrayList<List<Object>>();
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1602:2: ( ( '{' vListaExpressoes= listaExpressoes '}' )? ( ',' '{' vListaExpressoes= listaExpressoes '}' )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1603:2: ( '{' vListaExpressoes= listaExpressoes '}' )? ( ',' '{' vListaExpressoes= listaExpressoes '}' )*
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1603:2: ( '{' vListaExpressoes= listaExpressoes '}' )?
-                int alt57 = 2;
-                int LA57_0 = input.LA(1);
-                if ((LA57_0 == 79))
-                {
-                    alt57 = 1;
-                }
-                switch (alt57)
-                {
-                    case 1:
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1603:4: '{' vListaExpressoes= listaExpressoes '}'
-                    {
-                        match(input, 79, FOLLOW_79_in_listaListaExpressoes3913);
-                        if (state.failed)
-                        {
-                            return listaListaExpressoes;
-                        }
-                        pushFollow(FOLLOW_listaExpressoes_in_listaListaExpressoes3919);
-                        vListaExpressoes = listaExpressoes();
-                        state._fsp--;
-                        if (state.failed)
-                        {
-                            return listaListaExpressoes;
-                        }
-                        match(input, 82, FOLLOW_82_in_listaListaExpressoes3921);
-                        if (state.failed)
-                        {
-                            return listaListaExpressoes;
-                        }
-                        if (state.backtracking == 0)
-                        {
-                            if (gerarArvore)
-                            {
-                                listaListaExpressoes.add(vListaExpressoes);
-                            }
-                        }
-                    }
-                    break;
-
-                }
-
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1611:2: ( ',' '{' vListaExpressoes= listaExpressoes '}' )*
-                loop58:
-                while (true)
-                {
-                    int alt58 = 2;
-                    int LA58_0 = input.LA(1);
-                    if ((LA58_0 == 54))
-                    {
-                        alt58 = 1;
-                    }
-
-                    switch (alt58)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1611:4: ',' '{' vListaExpressoes= listaExpressoes '}'
-                        {
-                            if (state.backtracking == 0)
-                            {
-                                vListaExpressoes = null;
-                            }
-                            match(input, 54, FOLLOW_54_in_listaListaExpressoes3937);
-                            if (state.failed)
-                            {
-                                return listaListaExpressoes;
-                            }
-                            match(input, 79, FOLLOW_79_in_listaListaExpressoes3940);
-                            if (state.failed)
-                            {
-                                return listaListaExpressoes;
-                            }
-                            pushFollow(FOLLOW_listaExpressoes_in_listaListaExpressoes3946);
-                            vListaExpressoes = listaExpressoes();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return listaListaExpressoes;
-                            }
-                            match(input, 82, FOLLOW_82_in_listaListaExpressoes3948);
-                            if (state.failed)
-                            {
-                                return listaListaExpressoes;
-                            }
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    listaListaExpressoes.add(vListaExpressoes);
-                                }
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop58;
-                    }
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return listaListaExpressoes;
-    }
-	// $ANTLR end "listaListaExpressoes"
-
-    // $ANTLR start "listaExpressoes"
-    // C:\\Users\\Paula\\Desktop\\Portugol.g:1627:1: listaExpressoes returns [List<Object> listaExpressoes] : ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao ) )* ;
-    public final List<Object> listaExpressoes() throws RecognitionException
-    {
-        List<Object> listaExpressoes = null;
-
-        NoExpressao vExpressao = null;
-
-        pilhaContexto.push("listaExpressoes");
-        listaExpressoes = new ArrayList<Object>();
-
-        try
-        {
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1631:2: ( ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao ) )* )
-            // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:2: ( (vExpressao= expressao )? ) ( ',' (vExpressao= expressao ) )*
-            {
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:2: ( (vExpressao= expressao )? )
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:3: (vExpressao= expressao )?
-                {
-                    if (state.backtracking == 0)
-                    {
-                        vExpressao = null;
-                    }
-                    // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:30: (vExpressao= expressao )?
-                    int alt59 = 2;
-                    int LA59_0 = input.LA(1);
-                    if (((LA59_0 >= CADEIA && LA59_0 <= CARACTER) || (LA59_0 >= ID && LA59_0 <= OPERADOR_NAO) || LA59_0 == REAL || LA59_0 == 47 || LA59_0 == 55 || LA59_0 == 79 || LA59_0 == 83))
-                    {
-                        alt59 = 1;
-                    }
-                    switch (alt59)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1632:31: vExpressao= expressao
-                        {
-                            pushFollow(FOLLOW_expressao_in_listaExpressoes3994);
-                            vExpressao = expressao();
-                            state._fsp--;
-                            if (state.failed)
-                            {
-                                return listaExpressoes;
-                            }
-                        }
-                        break;
-
-                    }
-
-                    if (state.backtracking == 0)
-                    {
-                        if (gerarArvore)
-                        {
-                            listaExpressoes.add(vExpressao);
-                        }
-                    }
-                }
-
-                // C:\\Users\\Paula\\Desktop\\Portugol.g:1639:2: ( ',' (vExpressao= expressao ) )*
-                loop60:
-                while (true)
-                {
-                    int alt60 = 2;
-                    int LA60_0 = input.LA(1);
-                    if ((LA60_0 == 54))
-                    {
-                        alt60 = 1;
-                    }
-
-                    switch (alt60)
-                    {
-                        case 1:
-                        // C:\\Users\\Paula\\Desktop\\Portugol.g:1639:3: ',' (vExpressao= expressao )
-                        {
-                            if (state.backtracking == 0)
-                            {
-                                vExpressao = null;
-                            }
-                            match(input, 54, FOLLOW_54_in_listaExpressoes4008);
-                            if (state.failed)
-                            {
-                                return listaExpressoes;
-                            }
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1639:30: (vExpressao= expressao )
-                            // C:\\Users\\Paula\\Desktop\\Portugol.g:1639:31: vExpressao= expressao
-                            {
-                                pushFollow(FOLLOW_expressao_in_listaExpressoes4015);
-                                vExpressao = expressao();
-                                state._fsp--;
-                                if (state.failed)
-                                {
-                                    return listaExpressoes;
-                                }
-                            }
-
-                            if (state.backtracking == 0)
-                            {
-                                if (gerarArvore)
-                                {
-                                    listaExpressoes.add(vExpressao);
-                                }
-                            }
-                        }
-                        break;
-
-                        default:
-                            break loop60;
-                    }
-                }
-
-            }
-
-        }
-        catch (RecognitionException re)
-        {
-            reportError(re);
-            recover(input, re);
-        }
-        finally
-        {
-            // do for sure before leaving
-
-            pilhaContexto.pop();
-
-        }
-        return listaExpressoes;
-    }
-	// $ANTLR end "listaExpressoes"
-
-    // $ANTLR start synpred1_Portugol
-    public final void synpred1_Portugol_fragment() throws RecognitionException
-    {
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:720:2: ( '{' )
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:720:3: '{'
-        {
-            match(input, 79, FOLLOW_79_in_synpred1_Portugol2014);
-            if (state.failed)
-            {
-                return;
-            }
-        }
-
-    }
-	// $ANTLR end synpred1_Portugol
-
-    // $ANTLR start synpred2_Portugol
-    public final void synpred2_Portugol_fragment() throws RecognitionException
-    {
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:4: ( '{' )
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:815:5: '{'
-        {
-            match(input, 79, FOLLOW_79_in_synpred2_Portugol2205);
-            if (state.failed)
-            {
-                return;
-            }
-        }
-
-    }
-	// $ANTLR end synpred2_Portugol
-
-    // $ANTLR start synpred3_Portugol
-    public final void synpred3_Portugol_fragment() throws RecognitionException
-    {
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1152:5: ( '-' )
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1152:6: '-'
-        {
-            match(input, 55, FOLLOW_55_in_synpred3_Portugol3071);
-            if (state.failed)
-            {
-                return;
-            }
-        }
-
-    }
-	// $ANTLR end synpred3_Portugol
-
-    // $ANTLR start synpred4_Portugol
-    public final void synpred4_Portugol_fragment() throws RecognitionException
-    {
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:3: ( '-' )
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1227:4: '-'
-        {
-            match(input, 55, FOLLOW_55_in_synpred4_Portugol3238);
-            if (state.failed)
-            {
-                return;
-            }
-        }
-
-    }
-	// $ANTLR end synpred4_Portugol
-
-    // $ANTLR start synpred5_Portugol
-    public final void synpred5_Portugol_fragment() throws RecognitionException
-    {
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1389:3: ( '(' )
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1389:4: '('
-        {
-            match(input, 47, FOLLOW_47_in_synpred5_Portugol3516);
-            if (state.failed)
-            {
-                return;
-            }
-        }
-
-    }
-	// $ANTLR end synpred5_Portugol
-
-    // $ANTLR start synpred6_Portugol
-    public final void synpred6_Portugol_fragment() throws RecognitionException
-    {
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1390:3: ( '[' )
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1390:4: '['
-        {
-            match(input, 73, FOLLOW_73_in_synpred6_Portugol3533);
-            if (state.failed)
-            {
-                return;
-            }
-        }
-
-    }
-	// $ANTLR end synpred6_Portugol
-
-    // $ANTLR start synpred7_Portugol
-    public final void synpred7_Portugol_fragment() throws RecognitionException
-    {
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:3: ( '{' '{' )
-        // C:\\Users\\Paula\\Desktop\\Portugol.g:1536:4: '{' '{'
-        {
-            match(input, 79, FOLLOW_79_in_synpred7_Portugol3772);
-            if (state.failed)
-            {
-                return;
-            }
-            match(input, 79, FOLLOW_79_in_synpred7_Portugol3774);
-            if (state.failed)
-            {
-                return;
-            }
-        }
-
-    }
-	// $ANTLR end synpred7_Portugol
-
-    // Delegated rules
-    public final boolean synpred4_Portugol()
-    {
-        state.backtracking++;
-        int start = input.mark();
-        try
-        {
-            synpred4_Portugol_fragment(); // can never throw exception
-        }
-        catch (RecognitionException re)
-        {
-            System.err.println("impossible: " + re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed = false;
-        return success;
-    }
-
-    public final boolean synpred2_Portugol()
-    {
-        state.backtracking++;
-        int start = input.mark();
-        try
-        {
-            synpred2_Portugol_fragment(); // can never throw exception
-        }
-        catch (RecognitionException re)
-        {
-            System.err.println("impossible: " + re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed = false;
-        return success;
-    }
-
-    public final boolean synpred6_Portugol()
-    {
-        state.backtracking++;
-        int start = input.mark();
-        try
-        {
-            synpred6_Portugol_fragment(); // can never throw exception
-        }
-        catch (RecognitionException re)
-        {
-            System.err.println("impossible: " + re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed = false;
-        return success;
-    }
-
-    public final boolean synpred1_Portugol()
-    {
-        state.backtracking++;
-        int start = input.mark();
-        try
-        {
-            synpred1_Portugol_fragment(); // can never throw exception
-        }
-        catch (RecognitionException re)
-        {
-            System.err.println("impossible: " + re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed = false;
-        return success;
-    }
-
-    public final boolean synpred5_Portugol()
-    {
-        state.backtracking++;
-        int start = input.mark();
-        try
-        {
-            synpred5_Portugol_fragment(); // can never throw exception
-        }
-        catch (RecognitionException re)
-        {
-            System.err.println("impossible: " + re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed = false;
-        return success;
-    }
-
-    public final boolean synpred7_Portugol()
-    {
-        state.backtracking++;
-        int start = input.mark();
-        try
-        {
-            synpred7_Portugol_fragment(); // can never throw exception
-        }
-        catch (RecognitionException re)
-        {
-            System.err.println("impossible: " + re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed = false;
-        return success;
-    }
-
-    public final boolean synpred3_Portugol()
-    {
-        state.backtracking++;
-        int start = input.mark();
-        try
-        {
-            synpred3_Portugol_fragment(); // can never throw exception
-        }
-        catch (RecognitionException re)
-        {
-            System.err.println("impossible: " + re);
-        }
-        boolean success = !state.failed;
-        input.rewind(start);
-        state.backtracking--;
-        state.failed = false;
-        return success;
-    }
-
-    protected DFA42 dfa42 = new DFA42(this);
-    protected DFA52 dfa52 = new DFA52(this);
-    static final String DFA42_eotS
-            = "\75\uffff";
-    static final String DFA42_eofS
-            = "\75\uffff";
-    static final String DFA42_minS
-            = "\1\4\43\uffff\1\0\30\uffff";
-    static final String DFA42_maxS
-            = "\1\123\43\uffff\1\0\30\uffff";
-    static final String DFA42_acceptS
-            = "\1\uffff\1\3\71\uffff\1\1\1\2";
-    static final String DFA42_specialS
-            = "\44\uffff\1\0\30\uffff}>";
-    static final String[] DFA42_transitionS =
-    {
-        "\2\1\6\uffff\5\1\1\uffff\4\1\1\uffff\3\1\1\uffff\1\1\1\uffff\4\1\1\uffff"
-        + "\4\1\2\uffff\1\1\1\uffff\1\1\1\uffff\5\1\1\uffff\1\1\1\73\1\uffff\2\1"
-        + "\1\44\2\uffff\1\1\1\uffff\15\1\1\uffff\12\1",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "\1\uffff",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-    };
-
-    static final short[] DFA42_eot = DFA.unpackEncodedString(DFA42_eotS);
-    static final short[] DFA42_eof = DFA.unpackEncodedString(DFA42_eofS);
-    static final char[] DFA42_min = DFA.unpackEncodedStringToUnsignedChars(DFA42_minS);
-    static final char[] DFA42_max = DFA.unpackEncodedStringToUnsignedChars(DFA42_maxS);
-    static final short[] DFA42_accept = DFA.unpackEncodedString(DFA42_acceptS);
-    static final short[] DFA42_special = DFA.unpackEncodedString(DFA42_specialS);
-    static final short[][] DFA42_transition;
-
-    static
-    {
-        int numStates = DFA42_transitionS.length;
-        DFA42_transition = new short[numStates][];
-        for (int i = 0; i < numStates; i++)
-        {
-            DFA42_transition[i] = DFA.unpackEncodedString(DFA42_transitionS[i]);
-        }
-    }
-
-    protected class DFA42 extends DFA
-    {
-
-        public DFA42(BaseRecognizer recognizer)
-        {
-            this.recognizer = recognizer;
-            this.decisionNumber = 42;
-            this.eot = DFA42_eot;
-            this.eof = DFA42_eof;
-            this.min = DFA42_min;
-            this.max = DFA42_max;
-            this.accept = DFA42_accept;
-            this.special = DFA42_special;
-            this.transition = DFA42_transition;
-        }
-
-        @Override
-        public String getDescription()
-        {
-            return "()* loopback of 1130:2: ( (operador= '+' operandoDireito= expressao6 ) | ( ( '-' )=>operador= '-' operandoDireito= expressao6 ) )*";
-        }
-
-        @Override
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException
-        {
-            TokenStream input = (TokenStream) _input;
-            int _s = s;
-            switch (s)
-            {
-                case 0:
-                    int LA42_36 = input.LA(1);
-
-                    int index42_36 = input.index();
-                    input.rewind();
-                    s = -1;
-                    if ((synpred3_Portugol()))
-                    {
-                        s = 60;
-                    }
-                    else
-                    {
-                        if ((true))
-                        {
-                            s = 1;
-                        }
-                    }
-
-                    input.seek(index42_36);
-                    if (s >= 0)
-                    {
-                        return s;
-                    }
-                    break;
-            }
-            if (state.backtracking > 0)
-            {
-                state.failed = true;
-                return -1;
-            }
-            NoViableAltException nvae
-                    = new NoViableAltException(getDescription(), 42, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-
-    static final String DFA52_eotS
-            = "\103\uffff";
-    static final String DFA52_eofS
-            = "\103\uffff";
-    static final String DFA52_minS
-            = "\1\4\1\0\101\uffff";
-    static final String DFA52_maxS
-            = "\1\123\1\0\101\uffff";
-    static final String DFA52_acceptS
-            = "\2\uffff\1\2\1\3\76\uffff\1\1";
-    static final String DFA52_specialS
-            = "\1\0\1\1\101\uffff}>";
-    static final String[] DFA52_transitionS =
-    {
-        "\2\3\6\uffff\5\3\1\uffff\4\3\1\uffff\3\3\1\uffff\1\3\1\uffff\4\3\1\uffff"
-        + "\4\3\2\uffff\1\3\1\uffff\5\3\1\1\11\3\1\uffff\17\3\1\2\12\3",
-        "\1\uffff",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-    };
-
-    static final short[] DFA52_eot = DFA.unpackEncodedString(DFA52_eotS);
-    static final short[] DFA52_eof = DFA.unpackEncodedString(DFA52_eofS);
-    static final char[] DFA52_min = DFA.unpackEncodedStringToUnsignedChars(DFA52_minS);
-    static final char[] DFA52_max = DFA.unpackEncodedStringToUnsignedChars(DFA52_maxS);
-    static final short[] DFA52_accept = DFA.unpackEncodedString(DFA52_acceptS);
-    static final short[] DFA52_special = DFA.unpackEncodedString(DFA52_specialS);
-    static final short[][] DFA52_transition;
-
-    static
-    {
-        int numStates = DFA52_transitionS.length;
-        DFA52_transition = new short[numStates][];
-        for (int i = 0; i < numStates; i++)
-        {
-            DFA52_transition[i] = DFA.unpackEncodedString(DFA52_transitionS[i]);
-        }
-    }
-
-    protected class DFA52 extends DFA
-    {
-
-        public DFA52(BaseRecognizer recognizer)
-        {
-            this.recognizer = recognizer;
-            this.decisionNumber = 52;
-            this.eot = DFA52_eot;
-            this.eof = DFA52_eof;
-            this.min = DFA52_min;
-            this.max = DFA52_max;
-            this.accept = DFA52_accept;
-            this.special = DFA52_special;
-            this.transition = DFA52_transition;
-        }
-
-        @Override
-        public String getDescription()
-        {
-            return "1388:2: ( ( '(' )=>vExpressao= chamadaFuncao[$id.getText()] | ( '[' )=>vExpressao= referenciaVetorMatriz[$id.getText()] |vExpressao= referenciaId[$id.getText()] )";
-        }
-
-        @Override
-        public int specialStateTransition(int s, IntStream _input) throws NoViableAltException
-        {
-            TokenStream input = (TokenStream) _input;
-            int _s = s;
-            switch (s)
-            {
-                case 0:
-                    int LA52_0 = input.LA(1);
-
-                    int index52_0 = input.index();
-                    input.rewind();
-                    s = -1;
-                    if ((LA52_0 == 47))
-                    {
-                        s = 1;
-                    }
-                    else
-                    {
-                        if ((LA52_0 == 73) && (synpred6_Portugol()))
-                        {
-                            s = 2;
-                        }
-                        else
-                        {
-                            if (((LA52_0 >= CADEIA && LA52_0 <= CARACTER) || (LA52_0 >= ID && LA52_0 <= OPERADOR_NAO) || (LA52_0 >= PR_CADEIA && LA52_0 <= PR_CONST) || (LA52_0 >= PR_ENQUANTO && LA52_0 <= PR_FACA) || LA52_0 == PR_FUNCAO || (LA52_0 >= PR_INTEIRO && LA52_0 <= PR_PARE) || (LA52_0 >= PR_REAL && LA52_0 <= PR_SENAO) || LA52_0 == REAL || (LA52_0 >= 42 && LA52_0 <= 46) || (LA52_0 >= 48 && LA52_0 <= 56) || (LA52_0 >= 58 && LA52_0 <= 72) || (LA52_0 >= 74 && LA52_0 <= 83)))
-                            {
-                                s = 3;
-                            }
-                        }
-                    }
-
-                    input.seek(index52_0);
-                    if (s >= 0)
-                    {
-                        return s;
-                    }
-                    break;
-
-                case 1:
-                    int LA52_1 = input.LA(1);
-
-                    int index52_1 = input.index();
-                    input.rewind();
-                    s = -1;
-                    if ((synpred5_Portugol()))
-                    {
-                        s = 66;
-                    }
-                    else
-                    {
-                        if ((true))
-                        {
-                            s = 3;
-                        }
-                    }
-
-                    input.seek(index52_1);
-                    if (s >= 0)
-                    {
-                        return s;
-                    }
-                    break;
-            }
-            if (state.backtracking > 0)
-            {
-                state.failed = true;
-                return -1;
-            }
-            NoViableAltException nvae
-                    = new NoViableAltException(getDescription(), 52, _s, input);
-            error(nvae);
-            throw nvae;
-        }
-    }
-
-    public static final BitSet FOLLOW_programa_in_parse920 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_PROGRAMA_in_programa942 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_79_in_programa945 = new BitSet(new long[]
-    {
-        0x00000004782C0000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_inclusaoBiblioteca_in_programa960 = new BitSet(new long[]
-    {
-        0x00000004782C0000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_declaracoesGlobais_in_programa968 = new BitSet(new long[]
-    {
-        0x00000004682C0000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_declaracaoFuncao_in_programa973 = new BitSet(new long[]
-    {
-        0x00000004682C0000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_programa979 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_INCLUA_in_inclusaoBiblioteca1002 = new BitSet(new long[]
-    {
-        0x0000000000020000L
-    });
-    public static final BitSet FOLLOW_PR_BIBLIOTECA_in_inclusaoBiblioteca1004 = new BitSet(new long[]
-    {
-        0x0000000000001000L
-    });
-    public static final BitSet FOLLOW_ID_in_inclusaoBiblioteca1010 = new BitSet(new long[]
-    {
-        0x0200000000000002L
-    });
-    public static final BitSet FOLLOW_57_in_inclusaoBiblioteca1013 = new BitSet(new long[]
-    {
-        0x0000000000001000L
-    });
-    public static final BitSet FOLLOW_ID_in_inclusaoBiblioteca1020 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_listaDeclaracoes_in_declaracoesGlobais1051 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_listaDeclaracoes_in_declaracoesLocais1079 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_CONST_in_listaDeclaracoes1116 = new BitSet(new long[]
-    {
-        0x00000004600C0000L
-    });
-    public static final BitSet FOLLOW_declaracaoTipoDado_in_listaDeclaracoes1124 = new BitSet(new long[]
-    {
-        0x0000000000001000L
-    });
-    public static final BitSet FOLLOW_declaracao_in_listaDeclaracoes1135 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_54_in_listaDeclaracoes1157 = new BitSet(new long[]
-    {
-        0x0000000000001000L
-    });
-    public static final BitSet FOLLOW_declaracao_in_listaDeclaracoes1163 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_ID_in_declaracao1202 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000000208L
-    });
-    public static final BitSet FOLLOW_73_in_declaracao1209 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088400L
-    });
-    public static final BitSet FOLLOW_expressao_in_declaracao1216 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000000400L
-    });
-    public static final BitSet FOLLOW_74_in_declaracao1220 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000000208L
-    });
-    public static final BitSet FOLLOW_73_in_declaracao1227 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088400L
-    });
-    public static final BitSet FOLLOW_expressao_in_declaracao1234 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000000400L
-    });
-    public static final BitSet FOLLOW_74_in_declaracao1238 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000000008L
-    });
-    public static final BitSet FOLLOW_67_in_declaracao1245 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_declaracao1251 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_INTEIRO_in_declaracaoTipoDado1286 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_REAL_in_declaracaoTipoDado1294 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_CARACTER_in_declaracaoTipoDado1302 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_CADEIA_in_declaracaoTipoDado1310 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_LOGICO_in_declaracaoTipoDado1318 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_VAZIO_in_declaracaoTipoDadoVazio1345 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_73_in_quantificador1377 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000000400L
-    });
-    public static final BitSet FOLLOW_74_in_quantificador1379 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000000200L
-    });
-    public static final BitSet FOLLOW_73_in_quantificador1386 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000000400L
-    });
-    public static final BitSet FOLLOW_74_in_quantificador1388 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_declaracaoTipoDado_in_tipoRetornoFuncao1424 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_declaracaoTipoDadoVazio_in_tipoRetornoFuncao1432 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_FUNCAO_in_declaracaoFuncao1459 = new BitSet(new long[]
-    {
-        0x00000044600C1000L, 0x0000000000000200L
-    });
-    public static final BitSet FOLLOW_tipoRetornoFuncao_in_declaracaoFuncao1469 = new BitSet(new long[]
-    {
-        0x0000000000001000L, 0x0000000000000200L
-    });
-    public static final BitSet FOLLOW_quantificador_in_declaracaoFuncao1478 = new BitSet(new long[]
-    {
-        0x0000000000001000L
-    });
-    public static final BitSet FOLLOW_ID_in_declaracaoFuncao1485 = new BitSet(new long[]
-    {
-        0x0000800000000000L
-    });
-    public static final BitSet FOLLOW_47_in_declaracaoFuncao1487 = new BitSet(new long[]
-    {
-        0x00010004600C0000L
-    });
-    public static final BitSet FOLLOW_listaParametrosFuncao_in_declaracaoFuncao1493 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_declaracaoFuncao1495 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_79_in_declaracaoFuncao1515 = new BitSet(new long[]
-    {
-        0x0080811DE3ADF030L, 0x00000000000C8000L
-    });
-    public static final BitSet FOLLOW_blocos_in_declaracaoFuncao1523 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_declaracaoFuncao1533 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_declaracaoParametro_in_listaParametrosFuncao1588 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_54_in_listaParametrosFuncao1616 = new BitSet(new long[]
-    {
-        0x00000004600C0000L
-    });
-    public static final BitSet FOLLOW_declaracaoParametro_in_listaParametrosFuncao1622 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_declaracaoTipoDado_in_declaracaoParametro1669 = new BitSet(new long[]
-    {
-        0x0000200000001000L
-    });
-    public static final BitSet FOLLOW_45_in_declaracaoParametro1676 = new BitSet(new long[]
-    {
-        0x0000000000001000L
-    });
-    public static final BitSet FOLLOW_ID_in_declaracaoParametro1680 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000000200L
-    });
-    public static final BitSet FOLLOW_quantificador_in_declaracaoParametro1686 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_bloco_in_blocos1718 = new BitSet(new long[]
-    {
-        0x0080811DE3ADF032L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_declaracoesLocais_in_blocos1724 = new BitSet(new long[]
-    {
-        0x0080811DE3ADF032L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_bloco1758 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_para_in_bloco1773 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_pare_in_bloco1791 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_retorne_in_bloco1808 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_se_in_bloco1824 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_enquanto_in_bloco1841 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_facaEnquanto_in_bloco1855 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_escolha_in_bloco1869 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_PARA_in_para1901 = new BitSet(new long[]
-    {
-        0x0000800000000000L
-    });
-    public static final BitSet FOLLOW_47_in_para1903 = new BitSet(new long[]
-    {
-        0x40808104602DF030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_inicializacaoPara_in_para1910 = new BitSet(new long[]
-    {
-        0x4000000000000000L
-    });
-    public static final BitSet FOLLOW_62_in_para1914 = new BitSet(new long[]
-    {
-        0x408081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_para1921 = new BitSet(new long[]
-    {
-        0x4000000000000000L
-    });
-    public static final BitSet FOLLOW_62_in_para1925 = new BitSet(new long[]
-    {
-        0x008181000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_para1932 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_para1940 = new BitSet(new long[]
-    {
-        0x008081198381F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_listaBlocos_in_para1946 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_expressao_in_inicializacaoPara1977 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_listaDeclaracoes_in_inicializacaoPara1985 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_listaBlocos2018 = new BitSet(new long[]
-    {
-        0x0080811DE3ADF030L, 0x00000000000C8000L
-    });
-    public static final BitSet FOLLOW_blocos_in_listaBlocos2024 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_listaBlocos2028 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_bloco_in_listaBlocos2044 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_PARE_in_pare2072 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_ESCOLHA_in_escolha2099 = new BitSet(new long[]
-    {
-        0x0000800000000000L
-    });
-    public static final BitSet FOLLOW_47_in_escolha2101 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_escolha2107 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_escolha2109 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_79_in_escolha2112 = new BitSet(new long[]
-    {
-        0x0000000000100000L
-    });
-    public static final BitSet FOLLOW_PR_CASO_in_escolha2121 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_escolha2127 = new BitSet(new long[]
-    {
-        0x2000000000000000L
-    });
-    public static final BitSet FOLLOW_61_in_escolha2129 = new BitSet(new long[]
-    {
-        0x0080811DE3ADF030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_blocosCaso_in_escolha2135 = new BitSet(new long[]
-    {
-        0x0000000000100000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_PR_CASO_in_escolha2150 = new BitSet(new long[]
-    {
-        0x0000000000400000L
-    });
-    public static final BitSet FOLLOW_PR_CONTRARIO_in_escolha2152 = new BitSet(new long[]
-    {
-        0x2000000000000000L
-    });
-    public static final BitSet FOLLOW_61_in_escolha2154 = new BitSet(new long[]
-    {
-        0x0080811DE3ADF030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_blocosCaso_in_escolha2160 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_escolha2174 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_blocosCaso2210 = new BitSet(new long[]
-    {
-        0x0080811DE3ADF030L, 0x00000000000C8000L
-    });
-    public static final BitSet FOLLOW_blocos_in_blocosCaso2216 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_blocosCaso2218 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_blocos_in_blocosCaso2228 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_ENQUANTO_in_enquanto2257 = new BitSet(new long[]
-    {
-        0x0000800000000000L
-    });
-    public static final BitSet FOLLOW_47_in_enquanto2259 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_enquanto2265 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_enquanto2267 = new BitSet(new long[]
-    {
-        0x008081198381F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_listaBlocos_in_enquanto2273 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_FACA_in_facaEnquanto2299 = new BitSet(new long[]
-    {
-        0x008081198381F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_listaBlocos_in_facaEnquanto2305 = new BitSet(new long[]
-    {
-        0x0000000000800000L
-    });
-    public static final BitSet FOLLOW_PR_ENQUANTO_in_facaEnquanto2307 = new BitSet(new long[]
-    {
-        0x0000800000000000L
-    });
-    public static final BitSet FOLLOW_47_in_facaEnquanto2309 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_facaEnquanto2315 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_facaEnquanto2317 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_SE_in_se2345 = new BitSet(new long[]
-    {
-        0x0000800000000000L
-    });
-    public static final BitSet FOLLOW_47_in_se2347 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_se2353 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_se2355 = new BitSet(new long[]
-    {
-        0x008081198381F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_listaBlocos_in_se2361 = new BitSet(new long[]
-    {
-        0x0000002000000002L
-    });
-    public static final BitSet FOLLOW_PR_SENAO_in_se2364 = new BitSet(new long[]
-    {
-        0x008081198381F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_listaBlocos_in_se2370 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_PR_RETORNE_in_retorne2399 = new BitSet(new long[]
-    {
-        0x008081000001F032L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_retorne2405 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_expressao2_in_expressao2450 = new BitSet(new long[]
-    {
-        0x1424500000000000L, 0x000000000002110AL
-    });
-    public static final BitSet FOLLOW_pilha_in_expressao2456 = new BitSet(new long[]
-    {
-        0x1424500000000002L, 0x000000000002110AL
-    });
-    public static final BitSet FOLLOW_67_in_expressao2470 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_53_in_expressao2478 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_58_in_expressao2486 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_60_in_expressao2494 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_50_in_expressao2502 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_44_in_expressao2510 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_72_in_expressao2518 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_65_in_expressao2526 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_81_in_expressao2534 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_46_in_expressao2542 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_76_in_expressao2550 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao2_in_expressao2563 = new BitSet(new long[]
-    {
-        0x1424500000000002L, 0x000000000002110AL
-    });
-    public static final BitSet FOLLOW_expressao2_5_in_expressao22602 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000006000L
-    });
-    public static final BitSet FOLLOW_77_in_expressao22631 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_78_in_expressao22639 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao2_5_in_expressao22651 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000006000L
-    });
-    public static final BitSet FOLLOW_expressao3_in_expressao2_52684 = new BitSet(new long[]
-    {
-        0x0000040000000002L, 0x0000000000000010L
-    });
-    public static final BitSet FOLLOW_68_in_expressao2_52705 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_42_in_expressao2_52713 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao3_in_expressao2_52726 = new BitSet(new long[]
-    {
-        0x0000040000000002L, 0x0000000000000010L
-    });
-    public static final BitSet FOLLOW_expressao3_5_in_expressao32760 = new BitSet(new long[]
-    {
-        0x8000000000000002L, 0x0000000000000064L
-    });
-    public static final BitSet FOLLOW_70_in_expressao32768 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_66_in_expressao32776 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_63_in_expressao32784 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_69_in_expressao32792 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao3_5_in_expressao32799 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_expressao4_5_in_expressao3_52831 = new BitSet(new long[]
-    {
-        0x0000200000000002L, 0x0000000000010800L
-    });
-    public static final BitSet FOLLOW_45_in_expressao3_52860 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_80_in_expressao3_52868 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_75_in_expressao3_52876 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao4_5_in_expressao3_52888 = new BitSet(new long[]
-    {
-        0x0000200000000002L, 0x0000000000010800L
-    });
-    public static final BitSet FOLLOW_expressao5_in_expressao4_52921 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000000081L
-    });
-    public static final BitSet FOLLOW_64_in_expressao4_52950 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_71_in_expressao4_52958 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao5_in_expressao4_52970 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000000081L
-    });
-    public static final BitSet FOLLOW_expressao6_in_expressao53004 = new BitSet(new long[]
-    {
-        0x0088000000000002L
-    });
-    public static final BitSet FOLLOW_51_in_expressao53035 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao6_in_expressao53041 = new BitSet(new long[]
-    {
-        0x0088000000000002L
-    });
-    public static final BitSet FOLLOW_55_in_expressao53099 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao6_in_expressao53105 = new BitSet(new long[]
-    {
-        0x0088000000000002L
-    });
-    public static final BitSet FOLLOW_expressao7_in_expressao63154 = new BitSet(new long[]
-    {
-        0x0802080000000002L
-    });
-    public static final BitSet FOLLOW_49_in_expressao63177 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_59_in_expressao63185 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_43_in_expressao63193 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao7_in_expressao63206 = new BitSet(new long[]
-    {
-        0x0802080000000002L
-    });
-    public static final BitSet FOLLOW_55_in_expressao73248 = new BitSet(new long[]
-    {
-        0x000081000000F030L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_OPERADOR_NAO_in_expressao73259 = new BitSet(new long[]
-    {
-        0x000081000001F030L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_83_in_expressao73269 = new BitSet(new long[]
-    {
-        0x000081000000F030L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_expressao8_in_expressao73278 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_47_in_expressao83312 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_expressao83318 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_expressao83324 = new BitSet(new long[]
-    {
-        0x0110000000000002L
-    });
-    public static final BitSet FOLLOW_referencia_in_expressao83334 = new BitSet(new long[]
-    {
-        0x0110000000000002L
-    });
-    public static final BitSet FOLLOW_tipoPrimitivo_in_expressao83343 = new BitSet(new long[]
-    {
-        0x0110000000000002L
-    });
-    public static final BitSet FOLLOW_matrizVetor_in_expressao83353 = new BitSet(new long[]
-    {
-        0x0110000000000002L
-    });
-    public static final BitSet FOLLOW_52_in_expressao83366 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_56_in_expressao83374 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_REAL_in_tipoPrimitivo3403 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_LOGICO_in_tipoPrimitivo3423 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_CADEIA_in_tipoPrimitivo3437 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_INTEIRO_in_tipoPrimitivo3450 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_CARACTER_in_tipoPrimitivo3465 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_ID_in_referencia3499 = new BitSet(new long[]
-    {
-        0x0000800000000000L, 0x0000000000000200L
-    });
-    public static final BitSet FOLLOW_ID_BIBLIOTECA_in_referencia3507 = new BitSet(new long[]
-    {
-        0x0000800000000000L, 0x0000000000000200L
-    });
-    public static final BitSet FOLLOW_chamadaFuncao_in_referencia3525 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_referenciaVetorMatriz_in_referencia3542 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_referenciaId_in_referencia3555 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_73_in_referenciaVetorMatriz3616 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_referenciaVetorMatriz3622 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000000400L
-    });
-    public static final BitSet FOLLOW_74_in_referenciaVetorMatriz3624 = new BitSet(new long[]
-    {
-        0x0000000000000002L, 0x0000000000000200L
-    });
-    public static final BitSet FOLLOW_73_in_referenciaVetorMatriz3627 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_referenciaVetorMatriz3633 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000000400L
-    });
-    public static final BitSet FOLLOW_74_in_referenciaVetorMatriz3635 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_47_in_chamadaFuncao3667 = new BitSet(new long[]
-    {
-        0x008181000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_listaParametros_in_chamadaFuncao3674 = new BitSet(new long[]
-    {
-        0x0001000000000000L
-    });
-    public static final BitSet FOLLOW_48_in_chamadaFuncao3678 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_expressao_in_listaParametros3713 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_54_in_listaParametros3729 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_listaParametros3735 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_matriz_in_matrizVetor3782 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_vetor_in_matrizVetor3790 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_vetor3824 = new BitSet(new long[]
-    {
-        0x00C081000001F030L, 0x00000000000C8000L
-    });
-    public static final BitSet FOLLOW_listaExpressoes_in_vetor3830 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_vetor3836 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_matriz3869 = new BitSet(new long[]
-    {
-        0x0040000000000000L, 0x0000000000048000L
-    });
-    public static final BitSet FOLLOW_listaListaExpressoes_in_matriz3877 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_matriz3884 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_listaListaExpressoes3913 = new BitSet(new long[]
-    {
-        0x00C081000001F030L, 0x00000000000C8000L
-    });
-    public static final BitSet FOLLOW_listaExpressoes_in_listaListaExpressoes3919 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_listaListaExpressoes3921 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_54_in_listaListaExpressoes3937 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_79_in_listaListaExpressoes3940 = new BitSet(new long[]
-    {
-        0x00C081000001F030L, 0x00000000000C8000L
-    });
-    public static final BitSet FOLLOW_listaExpressoes_in_listaListaExpressoes3946 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000040000L
-    });
-    public static final BitSet FOLLOW_82_in_listaListaExpressoes3948 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_expressao_in_listaExpressoes3994 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_54_in_listaExpressoes4008 = new BitSet(new long[]
-    {
-        0x008081000001F030L, 0x0000000000088000L
-    });
-    public static final BitSet FOLLOW_expressao_in_listaExpressoes4015 = new BitSet(new long[]
-    {
-        0x0040000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_synpred1_Portugol2014 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_synpred2_Portugol2205 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_55_in_synpred3_Portugol3071 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_55_in_synpred4_Portugol3238 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_47_in_synpred5_Portugol3516 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_73_in_synpred6_Portugol3533 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
-    public static final BitSet FOLLOW_79_in_synpred7_Portugol3772 = new BitSet(new long[]
-    {
-        0x0000000000000000L, 0x0000000000008000L
-    });
-    public static final BitSet FOLLOW_79_in_synpred7_Portugol3774 = new BitSet(new long[]
-    {
-        0x0000000000000002L
-    });
+
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+public class PortugolParser extends Parser {
+	protected static final DFA[] _decisionToDFA;
+	protected static final PredictionContextCache _sharedContextCache =
+		new PredictionContextCache();
+	public static final int
+		T__41=1, T__40=2, T__39=3, T__38=4, T__37=5, T__36=6, T__35=7, T__34=8, 
+		T__33=9, T__32=10, T__31=11, T__30=12, T__29=13, T__28=14, T__27=15, T__26=16, 
+		T__25=17, T__24=18, T__23=19, T__22=20, T__21=21, T__20=22, T__19=23, 
+		T__18=24, T__17=25, T__16=26, T__15=27, T__14=28, T__13=29, T__12=30, 
+		T__11=31, T__10=32, T__9=33, T__8=34, T__7=35, T__6=36, T__5=37, T__4=38, 
+		T__3=39, T__2=40, T__1=41, T__0=42, PR_PROGRAMA=43, PR_REAL=44, PR_VAZIO=45, 
+		PR_LOGICO=46, PR_CADEIA=47, PR_INTEIRO=48, PR_CARACTER=49, PR_ESCOLHA=50, 
+		PR_CASO=51, PR_CONTRARIO=52, PR_CONST=53, PR_FUNCAO=54, PR_RETORNE=55, 
+		PR_PARA=56, PR_PARE=57, PR_FACA=58, PR_ENQUANTO=59, PR_SE=60, PR_SENAO=61, 
+		PR_INCLUA=62, PR_BIBLIOTECA=63, GAMBIARRA=64, OPERADOR_NAO=65, LOGICO=66, 
+		ID=67, ID_BIBLIOTECA=68, INTEIRO=69, REAL=70, CADEIA=71, CARACTER=72, 
+		ESPACO=73, COMENTARIO=74;
+	public static final String[] tokenNames = {
+		"<INVALID>", "'/'", "'*='", "'+='", "'&='", "'%='", "'!='", "'>>='", "';'", 
+		"'{'", "'>>'", "'<<'", "'^='", "'='", "'}'", "'^'", "'<<='", "'<='", "'|='", 
+		"'ou'", "'&'", "'('", "'*'", "'-='", "','", "'/='", "':'", "'>='", "'['", 
+		"'--'", "'++'", "'|'", "'<'", "'=='", "']'", "'~'", "'>'", "'-->'", "'%'", 
+		"'e'", "')'", "'+'", "'-'", "'programa'", "'real'", "'vazio'", "'logico'", 
+		"'cadeia'", "'inteiro'", "'caracter'", "'escolha'", "'caso'", "'contrario'", 
+		"'const'", "'funcao'", "'retorne'", "'para'", "'pare'", "'faca'", "'enquanto'", 
+		"'se'", "'senao'", "'inclua'", "'biblioteca'", "GAMBIARRA", "'nao'", "LOGICO", 
+		"ID", "ID_BIBLIOTECA", "INTEIRO", "REAL", "CADEIA", "CARACTER", "ESPACO", 
+		"COMENTARIO"
+	};
+	public static final int
+		RULE_programa = 0, RULE_inclusaoBiblioteca = 1, RULE_declaracoesGlobais = 2, 
+		RULE_declaracoesLocais = 3, RULE_listaDeclaracoes = 4, RULE_declaracao = 5, 
+		RULE_declaracaoTipoDado = 6, RULE_declaracaoTipoDadoVazio = 7, RULE_quantificador = 8, 
+		RULE_tipoRetornoFuncao = 9, RULE_declaracaoFuncao = 10, RULE_listaParametrosFuncao = 11, 
+		RULE_declaracaoParametro = 12, RULE_blocos = 13, RULE_bloco = 14, RULE_para = 15, 
+		RULE_inicializacaoPara = 16, RULE_listaBlocos = 17, RULE_pare = 18, RULE_escolha = 19, 
+		RULE_blocosCaso = 20, RULE_enquanto = 21, RULE_facaEnquanto = 22, RULE_se = 23, 
+		RULE_retorne = 24, RULE_pilha = 25, RULE_expressao = 26, RULE_expressao2 = 27, 
+		RULE_expressao2_5 = 28, RULE_expressao3 = 29, RULE_expressao3_5 = 30, 
+		RULE_expressao4_5 = 31, RULE_expressao5 = 32, RULE_expressao6 = 33, RULE_expressao7 = 34, 
+		RULE_expressao8 = 35, RULE_tipoPrimitivo = 36, RULE_referencia = 37, RULE_referenciaId = 38, 
+		RULE_referenciaVetorMatriz = 39, RULE_chamadaFuncao = 40, RULE_listaParametros = 41, 
+		RULE_matrizVetor = 42, RULE_vetor = 43, RULE_matriz = 44, RULE_listaListaExpressoes = 45, 
+		RULE_listaExpressoes = 46;
+	public static final String[] ruleNames = {
+		"programa", "inclusaoBiblioteca", "declaracoesGlobais", "declaracoesLocais", 
+		"listaDeclaracoes", "declaracao", "declaracaoTipoDado", "declaracaoTipoDadoVazio", 
+		"quantificador", "tipoRetornoFuncao", "declaracaoFuncao", "listaParametrosFuncao", 
+		"declaracaoParametro", "blocos", "bloco", "para", "inicializacaoPara", 
+		"listaBlocos", "pare", "escolha", "blocosCaso", "enquanto", "facaEnquanto", 
+		"se", "retorne", "pilha", "expressao", "expressao2", "expressao2_5", "expressao3", 
+		"expressao3_5", "expressao4_5", "expressao5", "expressao6", "expressao7", 
+		"expressao8", "tipoPrimitivo", "referencia", "referenciaId", "referenciaVetorMatriz", 
+		"chamadaFuncao", "listaParametros", "matrizVetor", "vetor", "matriz", 
+		"listaListaExpressoes", "listaExpressoes"
+	};
+
+	@Override
+	public String getGrammarFileName() { return "Portugol.g4"; }
+
+	@Override
+	public String[] getTokenNames() { return tokenNames; }
+
+	@Override
+	public String[] getRuleNames() { return ruleNames; }
+
+	@Override
+	public ATN getATN() { return _ATN; }
+
+	public PortugolParser(TokenStream input) {
+		super(input);
+		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
+	}
+	public static class ProgramaContext extends ParserRuleContext {
+		public DeclaracaoFuncaoContext declaracaoFuncao(int i) {
+			return getRuleContext(DeclaracaoFuncaoContext.class,i);
+		}
+		public DeclaracoesGlobaisContext declaracoesGlobais(int i) {
+			return getRuleContext(DeclaracoesGlobaisContext.class,i);
+		}
+		public List<DeclaracaoFuncaoContext> declaracaoFuncao() {
+			return getRuleContexts(DeclaracaoFuncaoContext.class);
+		}
+		public List<DeclaracoesGlobaisContext> declaracoesGlobais() {
+			return getRuleContexts(DeclaracoesGlobaisContext.class);
+		}
+		public List<InclusaoBibliotecaContext> inclusaoBiblioteca() {
+			return getRuleContexts(InclusaoBibliotecaContext.class);
+		}
+		public TerminalNode PR_PROGRAMA() { return getToken(PortugolParser.PR_PROGRAMA, 0); }
+		public InclusaoBibliotecaContext inclusaoBiblioteca(int i) {
+			return getRuleContext(InclusaoBibliotecaContext.class,i);
+		}
+		public ProgramaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_programa; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitPrograma(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ProgramaContext programa() throws RecognitionException {
+		ProgramaContext _localctx = new ProgramaContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_programa);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(94); match(PR_PROGRAMA);
+			setState(95); match(9);
+			setState(99);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==PR_INCLUA) {
+				{
+				{
+				setState(96); inclusaoBiblioteca();
+				}
+				}
+				setState(101);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(106);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PR_REAL) | (1L << PR_LOGICO) | (1L << PR_CADEIA) | (1L << PR_INTEIRO) | (1L << PR_CARACTER) | (1L << PR_CONST) | (1L << PR_FUNCAO))) != 0)) {
+				{
+				setState(104);
+				switch (_input.LA(1)) {
+				case PR_REAL:
+				case PR_LOGICO:
+				case PR_CADEIA:
+				case PR_INTEIRO:
+				case PR_CARACTER:
+				case PR_CONST:
+					{
+					setState(102); declaracoesGlobais();
+					}
+					break;
+				case PR_FUNCAO:
+					{
+					setState(103); declaracaoFuncao();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				setState(108);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(109); match(14);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class InclusaoBibliotecaContext extends ParserRuleContext {
+		public Token nome;
+		public Token alias;
+		public List<TerminalNode> ID() { return getTokens(PortugolParser.ID); }
+		public TerminalNode PR_BIBLIOTECA() { return getToken(PortugolParser.PR_BIBLIOTECA, 0); }
+		public TerminalNode PR_INCLUA() { return getToken(PortugolParser.PR_INCLUA, 0); }
+		public TerminalNode ID(int i) {
+			return getToken(PortugolParser.ID, i);
+		}
+		public InclusaoBibliotecaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_inclusaoBiblioteca; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitInclusaoBiblioteca(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final InclusaoBibliotecaContext inclusaoBiblioteca() throws RecognitionException {
+		InclusaoBibliotecaContext _localctx = new InclusaoBibliotecaContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_inclusaoBiblioteca);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(111); match(PR_INCLUA);
+			setState(112); match(PR_BIBLIOTECA);
+			setState(113); ((InclusaoBibliotecaContext)_localctx).nome = match(ID);
+			setState(116);
+			_la = _input.LA(1);
+			if (_la==37) {
+				{
+				setState(114); match(37);
+				setState(115); ((InclusaoBibliotecaContext)_localctx).alias = match(ID);
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclaracoesGlobaisContext extends ParserRuleContext {
+		public ListaDeclaracoesContext vListaDeclaracoes;
+		public ListaDeclaracoesContext listaDeclaracoes() {
+			return getRuleContext(ListaDeclaracoesContext.class,0);
+		}
+		public DeclaracoesGlobaisContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaracoesGlobais; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitDeclaracoesGlobais(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclaracoesGlobaisContext declaracoesGlobais() throws RecognitionException {
+		DeclaracoesGlobaisContext _localctx = new DeclaracoesGlobaisContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_declaracoesGlobais);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(118); ((DeclaracoesGlobaisContext)_localctx).vListaDeclaracoes = listaDeclaracoes();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclaracoesLocaisContext extends ParserRuleContext {
+		public ListaDeclaracoesContext vListaDeclaracoes;
+		public ListaDeclaracoesContext listaDeclaracoes() {
+			return getRuleContext(ListaDeclaracoesContext.class,0);
+		}
+		public DeclaracoesLocaisContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaracoesLocais; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitDeclaracoesLocais(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclaracoesLocaisContext declaracoesLocais() throws RecognitionException {
+		DeclaracoesLocaisContext _localctx = new DeclaracoesLocaisContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_declaracoesLocais);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(120); ((DeclaracoesLocaisContext)_localctx).vListaDeclaracoes = listaDeclaracoes();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ListaDeclaracoesContext extends ParserRuleContext {
+		public Token tokenConst;
+		public DeclaracaoTipoDadoContext informacaoTipoDado;
+		public DeclaracaoContext vDeclaracao;
+		public DeclaracaoContext declaracao(int i) {
+			return getRuleContext(DeclaracaoContext.class,i);
+		}
+		public DeclaracaoTipoDadoContext declaracaoTipoDado() {
+			return getRuleContext(DeclaracaoTipoDadoContext.class,0);
+		}
+		public TerminalNode PR_CONST() { return getToken(PortugolParser.PR_CONST, 0); }
+		public List<DeclaracaoContext> declaracao() {
+			return getRuleContexts(DeclaracaoContext.class);
+		}
+		public ListaDeclaracoesContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_listaDeclaracoes; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitListaDeclaracoes(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ListaDeclaracoesContext listaDeclaracoes() throws RecognitionException {
+		ListaDeclaracoesContext _localctx = new ListaDeclaracoesContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_listaDeclaracoes);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(123);
+			_la = _input.LA(1);
+			if (_la==PR_CONST) {
+				{
+				setState(122); ((ListaDeclaracoesContext)_localctx).tokenConst = match(PR_CONST);
+				}
+			}
+
+			setState(125); ((ListaDeclaracoesContext)_localctx).informacaoTipoDado = declaracaoTipoDado();
+			{
+			setState(126); ((ListaDeclaracoesContext)_localctx).vDeclaracao = declaracao();
+			}
+			setState(131);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==24) {
+				{
+				{
+				setState(127); match(24);
+				setState(128); ((ListaDeclaracoesContext)_localctx).vDeclaracao = declaracao();
+				}
+				}
+				setState(133);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclaracaoContext extends ParserRuleContext {
+		public Token tk1;
+		public ExpressaoContext ind1;
+		public Token tk2;
+		public ExpressaoContext ind2;
+		public ExpressaoContext inicializacao;
+		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
+		public List<ExpressaoContext> expressao() {
+			return getRuleContexts(ExpressaoContext.class);
+		}
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
+		}
+		public DeclaracaoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaracao; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitDeclaracao(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclaracaoContext declaracao() throws RecognitionException {
+		DeclaracaoContext _localctx = new DeclaracaoContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_declaracao);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(134); match(ID);
+			setState(147);
+			_la = _input.LA(1);
+			if (_la==28) {
+				{
+				setState(135); ((DeclaracaoContext)_localctx).tk1 = match(28);
+				setState(137);
+				_la = _input.LA(1);
+				if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+					{
+					setState(136); ((DeclaracaoContext)_localctx).ind1 = expressao();
+					}
+				}
+
+				setState(139); match(34);
+				setState(145);
+				_la = _input.LA(1);
+				if (_la==28) {
+					{
+					setState(140); ((DeclaracaoContext)_localctx).tk2 = match(28);
+					setState(142);
+					_la = _input.LA(1);
+					if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+						{
+						setState(141); ((DeclaracaoContext)_localctx).ind2 = expressao();
+						}
+					}
+
+					setState(144); match(34);
+					}
+				}
+
+				}
+			}
+
+			setState(151);
+			_la = _input.LA(1);
+			if (_la==13) {
+				{
+				setState(149); match(13);
+				setState(150); ((DeclaracaoContext)_localctx).inicializacao = expressao();
+				}
+			}
+
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclaracaoTipoDadoContext extends ParserRuleContext {
+		public Token tokenTipoDado;
+		public TerminalNode PR_REAL() { return getToken(PortugolParser.PR_REAL, 0); }
+		public TerminalNode PR_INTEIRO() { return getToken(PortugolParser.PR_INTEIRO, 0); }
+		public TerminalNode PR_LOGICO() { return getToken(PortugolParser.PR_LOGICO, 0); }
+		public TerminalNode PR_CARACTER() { return getToken(PortugolParser.PR_CARACTER, 0); }
+		public TerminalNode PR_CADEIA() { return getToken(PortugolParser.PR_CADEIA, 0); }
+		public DeclaracaoTipoDadoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaracaoTipoDado; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitDeclaracaoTipoDado(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclaracaoTipoDadoContext declaracaoTipoDado() throws RecognitionException {
+		DeclaracaoTipoDadoContext _localctx = new DeclaracaoTipoDadoContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_declaracaoTipoDado);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(158);
+			switch (_input.LA(1)) {
+			case PR_INTEIRO:
+				{
+				setState(153); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_INTEIRO);
+				}
+				break;
+			case PR_REAL:
+				{
+				setState(154); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_REAL);
+				}
+				break;
+			case PR_CARACTER:
+				{
+				setState(155); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_CARACTER);
+				}
+				break;
+			case PR_CADEIA:
+				{
+				setState(156); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_CADEIA);
+				}
+				break;
+			case PR_LOGICO:
+				{
+				setState(157); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_LOGICO);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclaracaoTipoDadoVazioContext extends ParserRuleContext {
+		public TerminalNode PR_VAZIO() { return getToken(PortugolParser.PR_VAZIO, 0); }
+		public DeclaracaoTipoDadoVazioContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaracaoTipoDadoVazio; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitDeclaracaoTipoDadoVazio(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclaracaoTipoDadoVazioContext declaracaoTipoDadoVazio() throws RecognitionException {
+		DeclaracaoTipoDadoVazioContext _localctx = new DeclaracaoTipoDadoVazioContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_declaracaoTipoDadoVazio);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(160); match(PR_VAZIO);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class QuantificadorContext extends ParserRuleContext {
+		public Token tk1;
+		public Token tk2;
+		public QuantificadorContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_quantificador; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitQuantificador(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final QuantificadorContext quantificador() throws RecognitionException {
+		QuantificadorContext _localctx = new QuantificadorContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_quantificador);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(168);
+			_la = _input.LA(1);
+			if (_la==28) {
+				{
+				setState(162); ((QuantificadorContext)_localctx).tk1 = match(28);
+				setState(163); match(34);
+				setState(166);
+				_la = _input.LA(1);
+				if (_la==28) {
+					{
+					setState(164); ((QuantificadorContext)_localctx).tk2 = match(28);
+					setState(165); match(34);
+					}
+				}
+
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class TipoRetornoFuncaoContext extends ParserRuleContext {
+		public DeclaracaoTipoDadoContext informacao;
+		public DeclaracaoTipoDadoContext declaracaoTipoDado() {
+			return getRuleContext(DeclaracaoTipoDadoContext.class,0);
+		}
+		public DeclaracaoTipoDadoVazioContext declaracaoTipoDadoVazio() {
+			return getRuleContext(DeclaracaoTipoDadoVazioContext.class,0);
+		}
+		public TipoRetornoFuncaoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_tipoRetornoFuncao; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitTipoRetornoFuncao(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final TipoRetornoFuncaoContext tipoRetornoFuncao() throws RecognitionException {
+		TipoRetornoFuncaoContext _localctx = new TipoRetornoFuncaoContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_tipoRetornoFuncao);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(172);
+			switch (_input.LA(1)) {
+			case PR_REAL:
+			case PR_LOGICO:
+			case PR_CADEIA:
+			case PR_INTEIRO:
+			case PR_CARACTER:
+				{
+				setState(170); ((TipoRetornoFuncaoContext)_localctx).informacao = declaracaoTipoDado();
+				}
+				break;
+			case PR_VAZIO:
+				{
+				setState(171); ((TipoRetornoFuncaoContext)_localctx).informacao = declaracaoTipoDadoVazio();
+				}
+				break;
+			case 28:
+			case ID:
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclaracaoFuncaoContext extends ParserRuleContext {
+		public TipoRetornoFuncaoContext informacaoTipoDado;
+		public QuantificadorContext vQuantificador;
+		public ListaParametrosFuncaoContext vListaParametros;
+		public BlocosContext vBlocos;
+		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
+		public QuantificadorContext quantificador() {
+			return getRuleContext(QuantificadorContext.class,0);
+		}
+		public ListaParametrosFuncaoContext listaParametrosFuncao() {
+			return getRuleContext(ListaParametrosFuncaoContext.class,0);
+		}
+		public BlocosContext blocos() {
+			return getRuleContext(BlocosContext.class,0);
+		}
+		public TerminalNode PR_FUNCAO() { return getToken(PortugolParser.PR_FUNCAO, 0); }
+		public TipoRetornoFuncaoContext tipoRetornoFuncao() {
+			return getRuleContext(TipoRetornoFuncaoContext.class,0);
+		}
+		public DeclaracaoFuncaoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaracaoFuncao; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitDeclaracaoFuncao(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclaracaoFuncaoContext declaracaoFuncao() throws RecognitionException {
+		DeclaracaoFuncaoContext _localctx = new DeclaracaoFuncaoContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_declaracaoFuncao);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(174); match(PR_FUNCAO);
+			setState(175); ((DeclaracaoFuncaoContext)_localctx).informacaoTipoDado = tipoRetornoFuncao();
+			setState(176); ((DeclaracaoFuncaoContext)_localctx).vQuantificador = quantificador();
+			setState(177); match(ID);
+			setState(178); match(21);
+			setState(179); ((DeclaracaoFuncaoContext)_localctx).vListaParametros = listaParametrosFuncao();
+			setState(180); match(40);
+			setState(181); match(9);
+			setState(182); ((DeclaracaoFuncaoContext)_localctx).vBlocos = blocos();
+			setState(183); match(14);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ListaParametrosFuncaoContext extends ParserRuleContext {
+		public DeclaracaoParametroContext vDeclaracaoParametro;
+		public DeclaracaoParametroContext declaracaoParametro(int i) {
+			return getRuleContext(DeclaracaoParametroContext.class,i);
+		}
+		public List<DeclaracaoParametroContext> declaracaoParametro() {
+			return getRuleContexts(DeclaracaoParametroContext.class);
+		}
+		public ListaParametrosFuncaoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_listaParametrosFuncao; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitListaParametrosFuncao(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ListaParametrosFuncaoContext listaParametrosFuncao() throws RecognitionException {
+		ListaParametrosFuncaoContext _localctx = new ListaParametrosFuncaoContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_listaParametrosFuncao);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(193);
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PR_REAL) | (1L << PR_LOGICO) | (1L << PR_CADEIA) | (1L << PR_INTEIRO) | (1L << PR_CARACTER))) != 0)) {
+				{
+				{
+				setState(185); ((ListaParametrosFuncaoContext)_localctx).vDeclaracaoParametro = declaracaoParametro();
+				}
+				setState(190);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la==24) {
+					{
+					{
+					setState(186); match(24);
+					setState(187); ((ListaParametrosFuncaoContext)_localctx).vDeclaracaoParametro = declaracaoParametro();
+					}
+					}
+					setState(192);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclaracaoParametroContext extends ParserRuleContext {
+		public DeclaracaoTipoDadoContext informacaoTipoDado;
+		public Token tkr;
+		public QuantificadorContext vQuantificador;
+		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
+		public QuantificadorContext quantificador() {
+			return getRuleContext(QuantificadorContext.class,0);
+		}
+		public DeclaracaoTipoDadoContext declaracaoTipoDado() {
+			return getRuleContext(DeclaracaoTipoDadoContext.class,0);
+		}
+		public DeclaracaoParametroContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_declaracaoParametro; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitDeclaracaoParametro(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclaracaoParametroContext declaracaoParametro() throws RecognitionException {
+		DeclaracaoParametroContext _localctx = new DeclaracaoParametroContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_declaracaoParametro);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(195); ((DeclaracaoParametroContext)_localctx).informacaoTipoDado = declaracaoTipoDado();
+			setState(197);
+			_la = _input.LA(1);
+			if (_la==20) {
+				{
+				setState(196); ((DeclaracaoParametroContext)_localctx).tkr = match(20);
+				}
+			}
+
+			setState(199); match(ID);
+			setState(200); ((DeclaracaoParametroContext)_localctx).vQuantificador = quantificador();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BlocosContext extends ParserRuleContext {
+		public BlocoContext vBloco;
+		public BlocoContext bloco(int i) {
+			return getRuleContext(BlocoContext.class,i);
+		}
+		public List<BlocoContext> bloco() {
+			return getRuleContexts(BlocoContext.class);
+		}
+		public List<DeclaracoesLocaisContext> declaracoesLocais() {
+			return getRuleContexts(DeclaracoesLocaisContext.class);
+		}
+		public DeclaracoesLocaisContext declaracoesLocais(int i) {
+			return getRuleContext(DeclaracoesLocaisContext.class,i);
+		}
+		public BlocosContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_blocos; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitBlocos(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BlocosContext blocos() throws RecognitionException {
+		BlocosContext _localctx = new BlocosContext(_ctx, getState());
+		enterRule(_localctx, 26, RULE_blocos);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(206);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (PR_REAL - 9)) | (1L << (PR_LOGICO - 9)) | (1L << (PR_CADEIA - 9)) | (1L << (PR_INTEIRO - 9)) | (1L << (PR_CARACTER - 9)) | (1L << (PR_ESCOLHA - 9)) | (1L << (PR_CONST - 9)) | (1L << (PR_RETORNE - 9)) | (1L << (PR_PARA - 9)) | (1L << (PR_PARE - 9)) | (1L << (PR_FACA - 9)) | (1L << (PR_ENQUANTO - 9)) | (1L << (PR_SE - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+				{
+				setState(204);
+				switch (_input.LA(1)) {
+				case 9:
+				case 21:
+				case 35:
+				case 42:
+				case PR_ESCOLHA:
+				case PR_RETORNE:
+				case PR_PARA:
+				case PR_PARE:
+				case PR_FACA:
+				case PR_ENQUANTO:
+				case PR_SE:
+				case OPERADOR_NAO:
+				case LOGICO:
+				case ID:
+				case ID_BIBLIOTECA:
+				case INTEIRO:
+				case REAL:
+				case CADEIA:
+				case CARACTER:
+					{
+					setState(202); ((BlocosContext)_localctx).vBloco = bloco();
+					}
+					break;
+				case PR_REAL:
+				case PR_LOGICO:
+				case PR_CADEIA:
+				case PR_INTEIRO:
+				case PR_CARACTER:
+				case PR_CONST:
+					{
+					setState(203); declaracoesLocais();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				setState(208);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BlocoContext extends ParserRuleContext {
+		public ExpressaoContext vExpressao;
+		public ParaContext vPara;
+		public PareContext vPare;
+		public RetorneContext vRetorne;
+		public SeContext vSe;
+		public EnquantoContext vEnquanto;
+		public FacaEnquantoContext vFacaEnquanto;
+		public EscolhaContext vEscolha;
+		public ParaContext para() {
+			return getRuleContext(ParaContext.class,0);
+		}
+		public PareContext pare() {
+			return getRuleContext(PareContext.class,0);
+		}
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
+		public FacaEnquantoContext facaEnquanto() {
+			return getRuleContext(FacaEnquantoContext.class,0);
+		}
+		public SeContext se() {
+			return getRuleContext(SeContext.class,0);
+		}
+		public EscolhaContext escolha() {
+			return getRuleContext(EscolhaContext.class,0);
+		}
+		public EnquantoContext enquanto() {
+			return getRuleContext(EnquantoContext.class,0);
+		}
+		public RetorneContext retorne() {
+			return getRuleContext(RetorneContext.class,0);
+		}
+		public BlocoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bloco; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitBloco(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BlocoContext bloco() throws RecognitionException {
+		BlocoContext _localctx = new BlocoContext(_ctx, getState());
+		enterRule(_localctx, 28, RULE_bloco);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(217);
+			switch (_input.LA(1)) {
+			case 9:
+			case 21:
+			case 35:
+			case 42:
+			case OPERADOR_NAO:
+			case LOGICO:
+			case ID:
+			case ID_BIBLIOTECA:
+			case INTEIRO:
+			case REAL:
+			case CADEIA:
+			case CARACTER:
+				{
+				setState(209); ((BlocoContext)_localctx).vExpressao = expressao();
+				}
+				break;
+			case PR_PARA:
+				{
+				setState(210); ((BlocoContext)_localctx).vPara = para();
+				}
+				break;
+			case PR_PARE:
+				{
+				setState(211); ((BlocoContext)_localctx).vPare = pare();
+				}
+				break;
+			case PR_RETORNE:
+				{
+				setState(212); ((BlocoContext)_localctx).vRetorne = retorne();
+				}
+				break;
+			case PR_SE:
+				{
+				setState(213); ((BlocoContext)_localctx).vSe = se();
+				}
+				break;
+			case PR_ENQUANTO:
+				{
+				setState(214); ((BlocoContext)_localctx).vEnquanto = enquanto();
+				}
+				break;
+			case PR_FACA:
+				{
+				setState(215); ((BlocoContext)_localctx).vFacaEnquanto = facaEnquanto();
+				}
+				break;
+			case PR_ESCOLHA:
+				{
+				setState(216); ((BlocoContext)_localctx).vEscolha = escolha();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ParaContext extends ParserRuleContext {
+		public InicializacaoParaContext inicializacao;
+		public ExpressaoContext condicao;
+		public ExpressaoContext incremento;
+		public Token fp;
+		public ListaBlocosContext vBlocos;
+		public InicializacaoParaContext inicializacaoPara() {
+			return getRuleContext(InicializacaoParaContext.class,0);
+		}
+		public List<ExpressaoContext> expressao() {
+			return getRuleContexts(ExpressaoContext.class);
+		}
+		public TerminalNode PR_PARA() { return getToken(PortugolParser.PR_PARA, 0); }
+		public ListaBlocosContext listaBlocos() {
+			return getRuleContext(ListaBlocosContext.class,0);
+		}
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
+		}
+		public ParaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_para; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitPara(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ParaContext para() throws RecognitionException {
+		ParaContext _localctx = new ParaContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_para);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(219); match(PR_PARA);
+			setState(220); match(21);
+			setState(222);
+			_la = _input.LA(1);
+			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (PR_REAL - 9)) | (1L << (PR_LOGICO - 9)) | (1L << (PR_CADEIA - 9)) | (1L << (PR_INTEIRO - 9)) | (1L << (PR_CARACTER - 9)) | (1L << (PR_CONST - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+				{
+				setState(221); ((ParaContext)_localctx).inicializacao = inicializacaoPara();
+				}
+			}
+
+			setState(224); match(8);
+			setState(226);
+			_la = _input.LA(1);
+			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+				{
+				setState(225); ((ParaContext)_localctx).condicao = expressao();
+				}
+			}
+
+			setState(228); match(8);
+			setState(230);
+			_la = _input.LA(1);
+			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+				{
+				setState(229); ((ParaContext)_localctx).incremento = expressao();
+				}
+			}
+
+			setState(232); ((ParaContext)_localctx).fp = match(40);
+			setState(233); ((ParaContext)_localctx).vBlocos = listaBlocos();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class InicializacaoParaContext extends ParserRuleContext {
+		public ExpressaoContext vExpressao;
+		public ListaDeclaracoesContext vListaDeclaracoes;
+		public ListaDeclaracoesContext listaDeclaracoes() {
+			return getRuleContext(ListaDeclaracoesContext.class,0);
+		}
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
+		public InicializacaoParaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_inicializacaoPara; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitInicializacaoPara(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final InicializacaoParaContext inicializacaoPara() throws RecognitionException {
+		InicializacaoParaContext _localctx = new InicializacaoParaContext(_ctx, getState());
+		enterRule(_localctx, 32, RULE_inicializacaoPara);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(237);
+			switch (_input.LA(1)) {
+			case 9:
+			case 21:
+			case 35:
+			case 42:
+			case OPERADOR_NAO:
+			case LOGICO:
+			case ID:
+			case ID_BIBLIOTECA:
+			case INTEIRO:
+			case REAL:
+			case CADEIA:
+			case CARACTER:
+				{
+				setState(235); ((InicializacaoParaContext)_localctx).vExpressao = expressao();
+				}
+				break;
+			case PR_REAL:
+			case PR_LOGICO:
+			case PR_CADEIA:
+			case PR_INTEIRO:
+			case PR_CARACTER:
+			case PR_CONST:
+				{
+				setState(236); ((InicializacaoParaContext)_localctx).vListaDeclaracoes = listaDeclaracoes();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ListaBlocosContext extends ParserRuleContext {
+		public BlocosContext vListaBlocos;
+		public BlocoContext vBloco;
+		public BlocosContext blocos() {
+			return getRuleContext(BlocosContext.class,0);
+		}
+		public BlocoContext bloco() {
+			return getRuleContext(BlocoContext.class,0);
+		}
+		public ListaBlocosContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_listaBlocos; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitListaBlocos(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ListaBlocosContext listaBlocos() throws RecognitionException {
+		ListaBlocosContext _localctx = new ListaBlocosContext(_ctx, getState());
+		enterRule(_localctx, 34, RULE_listaBlocos);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(244);
+			switch ( getInterpreter().adaptivePredict(_input,25,_ctx) ) {
+			case 1:
+				{
+				setState(239); match(9);
+				setState(240); ((ListaBlocosContext)_localctx).vListaBlocos = blocos();
+				setState(241); match(14);
+				}
+				break;
+
+			case 2:
+				{
+				setState(243); ((ListaBlocosContext)_localctx).vBloco = bloco();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PareContext extends ParserRuleContext {
+		public TerminalNode PR_PARE() { return getToken(PortugolParser.PR_PARE, 0); }
+		public PareContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_pare; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitPare(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PareContext pare() throws RecognitionException {
+		PareContext _localctx = new PareContext(_ctx, getState());
+		enterRule(_localctx, 36, RULE_pare);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(246); match(PR_PARE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class EscolhaContext extends ParserRuleContext {
+		public ExpressaoContext vExpressaoEscolha;
+		public ExpressaoContext vExpressao;
+		public BlocosCasoContext vBlocos;
+		public List<BlocosCasoContext> blocosCaso() {
+			return getRuleContexts(BlocosCasoContext.class);
+		}
+		public TerminalNode PR_CASO(int i) {
+			return getToken(PortugolParser.PR_CASO, i);
+		}
+		public List<ExpressaoContext> expressao() {
+			return getRuleContexts(ExpressaoContext.class);
+		}
+		public BlocosCasoContext blocosCaso(int i) {
+			return getRuleContext(BlocosCasoContext.class,i);
+		}
+		public List<TerminalNode> PR_CASO() { return getTokens(PortugolParser.PR_CASO); }
+		public TerminalNode PR_CONTRARIO() { return getToken(PortugolParser.PR_CONTRARIO, 0); }
+		public TerminalNode PR_ESCOLHA() { return getToken(PortugolParser.PR_ESCOLHA, 0); }
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
+		}
+		public EscolhaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_escolha; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitEscolha(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final EscolhaContext escolha() throws RecognitionException {
+		EscolhaContext _localctx = new EscolhaContext(_ctx, getState());
+		enterRule(_localctx, 38, RULE_escolha);
+		int _la;
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(248); match(PR_ESCOLHA);
+			setState(249); match(21);
+			setState(250); ((EscolhaContext)_localctx).vExpressaoEscolha = expressao();
+			setState(251); match(40);
+			setState(252); match(9);
+			setState(258); 
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
+			do {
+				switch (_alt) {
+				case 1:
+					{
+					{
+					setState(253); match(PR_CASO);
+					setState(254); ((EscolhaContext)_localctx).vExpressao = expressao();
+					setState(255); match(26);
+					setState(256); ((EscolhaContext)_localctx).vBlocos = blocosCaso();
+					}
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(260); 
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
+			} while ( _alt!=2 && _alt!=-1 );
+			setState(266);
+			_la = _input.LA(1);
+			if (_la==PR_CASO) {
+				{
+				setState(262); match(PR_CASO);
+				setState(263); match(PR_CONTRARIO);
+				setState(264); match(26);
+				setState(265); ((EscolhaContext)_localctx).vBlocos = blocosCaso();
+				}
+			}
+
+			setState(268); match(14);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BlocosCasoContext extends ParserRuleContext {
+		public BlocosContext vBlocos;
+		public BlocosContext blocos() {
+			return getRuleContext(BlocosContext.class,0);
+		}
+		public BlocosCasoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_blocosCaso; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitBlocosCaso(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BlocosCasoContext blocosCaso() throws RecognitionException {
+		BlocosCasoContext _localctx = new BlocosCasoContext(_ctx, getState());
+		enterRule(_localctx, 40, RULE_blocosCaso);
+		try {
+			setState(275);
+			switch ( getInterpreter().adaptivePredict(_input,28,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				{
+				setState(270); match(9);
+				setState(271); ((BlocosCasoContext)_localctx).vBlocos = blocos();
+				setState(272); match(14);
+				}
+				}
+				break;
+
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				{
+				setState(274); ((BlocosCasoContext)_localctx).vBlocos = blocos();
+				}
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class EnquantoContext extends ParserRuleContext {
+		public ExpressaoContext vExpressao;
+		public ListaBlocosContext vListaBlocos;
+		public TerminalNode PR_ENQUANTO() { return getToken(PortugolParser.PR_ENQUANTO, 0); }
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
+		public ListaBlocosContext listaBlocos() {
+			return getRuleContext(ListaBlocosContext.class,0);
+		}
+		public EnquantoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_enquanto; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitEnquanto(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final EnquantoContext enquanto() throws RecognitionException {
+		EnquantoContext _localctx = new EnquantoContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_enquanto);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(277); match(PR_ENQUANTO);
+			setState(278); match(21);
+			setState(279); ((EnquantoContext)_localctx).vExpressao = expressao();
+			setState(280); match(40);
+			setState(281); ((EnquantoContext)_localctx).vListaBlocos = listaBlocos();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class FacaEnquantoContext extends ParserRuleContext {
+		public ListaBlocosContext vListaBlocos;
+		public ExpressaoContext vExpressao;
+		public TerminalNode PR_ENQUANTO() { return getToken(PortugolParser.PR_ENQUANTO, 0); }
+		public TerminalNode PR_FACA() { return getToken(PortugolParser.PR_FACA, 0); }
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
+		public ListaBlocosContext listaBlocos() {
+			return getRuleContext(ListaBlocosContext.class,0);
+		}
+		public FacaEnquantoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_facaEnquanto; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitFacaEnquanto(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final FacaEnquantoContext facaEnquanto() throws RecognitionException {
+		FacaEnquantoContext _localctx = new FacaEnquantoContext(_ctx, getState());
+		enterRule(_localctx, 44, RULE_facaEnquanto);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(283); match(PR_FACA);
+			setState(284); ((FacaEnquantoContext)_localctx).vListaBlocos = listaBlocos();
+			setState(285); match(PR_ENQUANTO);
+			setState(286); match(21);
+			setState(287); ((FacaEnquantoContext)_localctx).vExpressao = expressao();
+			setState(288); match(40);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class SeContext extends ParserRuleContext {
+		public ExpressaoContext vExpressao;
+		public ListaBlocosContext vListaBlocos;
+		public ListaBlocosContext listaBlocosSenao;
+		public TerminalNode PR_SE() { return getToken(PortugolParser.PR_SE, 0); }
+		public ListaBlocosContext listaBlocos(int i) {
+			return getRuleContext(ListaBlocosContext.class,i);
+		}
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
+		public TerminalNode PR_SENAO() { return getToken(PortugolParser.PR_SENAO, 0); }
+		public List<ListaBlocosContext> listaBlocos() {
+			return getRuleContexts(ListaBlocosContext.class);
+		}
+		public SeContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_se; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitSe(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final SeContext se() throws RecognitionException {
+		SeContext _localctx = new SeContext(_ctx, getState());
+		enterRule(_localctx, 46, RULE_se);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(290); match(PR_SE);
+			setState(291); match(21);
+			setState(292); ((SeContext)_localctx).vExpressao = expressao();
+			setState(293); match(40);
+			setState(294); ((SeContext)_localctx).vListaBlocos = listaBlocos();
+			setState(297);
+			switch ( getInterpreter().adaptivePredict(_input,29,_ctx) ) {
+			case 1:
+				{
+				setState(295); match(PR_SENAO);
+				setState(296); ((SeContext)_localctx).listaBlocosSenao = listaBlocos();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class RetorneContext extends ParserRuleContext {
+		public ExpressaoContext vExpressao;
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
+		public TerminalNode PR_RETORNE() { return getToken(PortugolParser.PR_RETORNE, 0); }
+		public RetorneContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_retorne; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitRetorne(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final RetorneContext retorne() throws RecognitionException {
+		RetorneContext _localctx = new RetorneContext(_ctx, getState());
+		enterRule(_localctx, 48, RULE_retorne);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(299); match(PR_RETORNE);
+			setState(301);
+			switch ( getInterpreter().adaptivePredict(_input,30,_ctx) ) {
+			case 1:
+				{
+				setState(300); ((RetorneContext)_localctx).vExpressao = expressao();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class PilhaContext extends ParserRuleContext {
+		public PilhaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_pilha; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitPilha(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final PilhaContext pilha() throws RecognitionException {
+		PilhaContext _localctx = new PilhaContext(_ctx, getState());
+		enterRule(_localctx, 50, RULE_pilha);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ExpressaoContext extends ParserRuleContext {
+		public Expressao2Context operandoEsquerdo;
+		public PilhaContext vPilha;
+		public Token operador;
+		public Expressao2Context operandoDireito;
+		public List<Expressao2Context> expressao2() {
+			return getRuleContexts(Expressao2Context.class);
+		}
+		public PilhaContext pilha() {
+			return getRuleContext(PilhaContext.class,0);
+		}
+		public Expressao2Context expressao2(int i) {
+			return getRuleContext(Expressao2Context.class,i);
+		}
+		public ExpressaoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ExpressaoContext expressao() throws RecognitionException {
+		ExpressaoContext _localctx = new ExpressaoContext(_ctx, getState());
+		enterRule(_localctx, 52, RULE_expressao);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(305); ((ExpressaoContext)_localctx).operandoEsquerdo = expressao2();
+			setState(306); ((ExpressaoContext)_localctx).vPilha = pilha();
+			setState(323);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 2) | (1L << 3) | (1L << 4) | (1L << 5) | (1L << 7) | (1L << 12) | (1L << 13) | (1L << 16) | (1L << 18) | (1L << 23) | (1L << 25))) != 0)) {
+				{
+				{
+				setState(318);
+				switch (_input.LA(1)) {
+				case 13:
+					{
+					setState(307); ((ExpressaoContext)_localctx).operador = match(13);
+					}
+					break;
+				case 3:
+					{
+					setState(308); ((ExpressaoContext)_localctx).operador = match(3);
+					}
+					break;
+				case 23:
+					{
+					setState(309); ((ExpressaoContext)_localctx).operador = match(23);
+					}
+					break;
+				case 25:
+					{
+					setState(310); ((ExpressaoContext)_localctx).operador = match(25);
+					}
+					break;
+				case 2:
+					{
+					setState(311); ((ExpressaoContext)_localctx).operador = match(2);
+					}
+					break;
+				case 5:
+					{
+					setState(312); ((ExpressaoContext)_localctx).operador = match(5);
+					}
+					break;
+				case 7:
+					{
+					setState(313); ((ExpressaoContext)_localctx).operador = match(7);
+					}
+					break;
+				case 16:
+					{
+					setState(314); ((ExpressaoContext)_localctx).operador = match(16);
+					}
+					break;
+				case 18:
+					{
+					setState(315); ((ExpressaoContext)_localctx).operador = match(18);
+					}
+					break;
+				case 4:
+					{
+					setState(316); ((ExpressaoContext)_localctx).operador = match(4);
+					}
+					break;
+				case 12:
+					{
+					setState(317); ((ExpressaoContext)_localctx).operador = match(12);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(320); ((ExpressaoContext)_localctx).operandoDireito = expressao2();
+				}
+				}
+				setState(325);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao2Context extends ParserRuleContext {
+		public Expressao2_5Context operandoEsquerdo;
+		public Token operador;
+		public Expressao2_5Context operandoDireito;
+		public List<Expressao2_5Context> expressao2_5() {
+			return getRuleContexts(Expressao2_5Context.class);
+		}
+		public Expressao2_5Context expressao2_5(int i) {
+			return getRuleContext(Expressao2_5Context.class,i);
+		}
+		public Expressao2Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao2; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao2(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao2Context expressao2() throws RecognitionException {
+		Expressao2Context _localctx = new Expressao2Context(_ctx, getState());
+		enterRule(_localctx, 54, RULE_expressao2);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(326); ((Expressao2Context)_localctx).operandoEsquerdo = expressao2_5();
+			setState(334);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==19 || _la==39) {
+				{
+				{
+				setState(329);
+				switch (_input.LA(1)) {
+				case 39:
+					{
+					setState(327); ((Expressao2Context)_localctx).operador = match(39);
+					}
+					break;
+				case 19:
+					{
+					setState(328); ((Expressao2Context)_localctx).operador = match(19);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(331); ((Expressao2Context)_localctx).operandoDireito = expressao2_5();
+				}
+				}
+				setState(336);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao2_5Context extends ParserRuleContext {
+		public Expressao3Context operandoEsquerdo;
+		public Token operador;
+		public Expressao3Context operandoDireito;
+		public List<Expressao3Context> expressao3() {
+			return getRuleContexts(Expressao3Context.class);
+		}
+		public Expressao3Context expressao3(int i) {
+			return getRuleContext(Expressao3Context.class,i);
+		}
+		public Expressao2_5Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao2_5; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao2_5(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao2_5Context expressao2_5() throws RecognitionException {
+		Expressao2_5Context _localctx = new Expressao2_5Context(_ctx, getState());
+		enterRule(_localctx, 56, RULE_expressao2_5);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(337); ((Expressao2_5Context)_localctx).operandoEsquerdo = expressao3();
+			setState(345);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==6 || _la==33) {
+				{
+				{
+				setState(340);
+				switch (_input.LA(1)) {
+				case 33:
+					{
+					setState(338); ((Expressao2_5Context)_localctx).operador = match(33);
+					}
+					break;
+				case 6:
+					{
+					setState(339); ((Expressao2_5Context)_localctx).operador = match(6);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(342); ((Expressao2_5Context)_localctx).operandoDireito = expressao3();
+				}
+				}
+				setState(347);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao3Context extends ParserRuleContext {
+		public Expressao3_5Context operandoEsquerdo;
+		public Token operador;
+		public Expressao3_5Context operandoDireito;
+		public List<Expressao3_5Context> expressao3_5() {
+			return getRuleContexts(Expressao3_5Context.class);
+		}
+		public Expressao3_5Context expressao3_5(int i) {
+			return getRuleContext(Expressao3_5Context.class,i);
+		}
+		public Expressao3Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao3; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao3(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao3Context expressao3() throws RecognitionException {
+		Expressao3Context _localctx = new Expressao3Context(_ctx, getState());
+		enterRule(_localctx, 58, RULE_expressao3);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(348); ((Expressao3Context)_localctx).operandoEsquerdo = expressao3_5();
+			setState(356);
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 17) | (1L << 27) | (1L << 32) | (1L << 36))) != 0)) {
+				{
+				setState(353);
+				switch (_input.LA(1)) {
+				case 27:
+					{
+					setState(349); ((Expressao3Context)_localctx).operador = match(27);
+					}
+					break;
+				case 17:
+					{
+					setState(350); ((Expressao3Context)_localctx).operador = match(17);
+					}
+					break;
+				case 32:
+					{
+					setState(351); ((Expressao3Context)_localctx).operador = match(32);
+					}
+					break;
+				case 36:
+					{
+					setState(352); ((Expressao3Context)_localctx).operador = match(36);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(355); ((Expressao3Context)_localctx).operandoDireito = expressao3_5();
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao3_5Context extends ParserRuleContext {
+		public Expressao4_5Context operandoEsquerdo;
+		public Token operador;
+		public Expressao4_5Context operandoDireito;
+		public Expressao4_5Context expressao4_5(int i) {
+			return getRuleContext(Expressao4_5Context.class,i);
+		}
+		public List<Expressao4_5Context> expressao4_5() {
+			return getRuleContexts(Expressao4_5Context.class);
+		}
+		public Expressao3_5Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao3_5; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao3_5(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao3_5Context expressao3_5() throws RecognitionException {
+		Expressao3_5Context _localctx = new Expressao3_5Context(_ctx, getState());
+		enterRule(_localctx, 60, RULE_expressao3_5);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(358); ((Expressao3_5Context)_localctx).operandoEsquerdo = expressao4_5();
+			setState(367);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 15) | (1L << 20) | (1L << 31))) != 0)) {
+				{
+				{
+				setState(362);
+				switch (_input.LA(1)) {
+				case 20:
+					{
+					setState(359); ((Expressao3_5Context)_localctx).operador = match(20);
+					}
+					break;
+				case 31:
+					{
+					setState(360); ((Expressao3_5Context)_localctx).operador = match(31);
+					}
+					break;
+				case 15:
+					{
+					setState(361); ((Expressao3_5Context)_localctx).operador = match(15);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(364); ((Expressao3_5Context)_localctx).operandoDireito = expressao4_5();
+				}
+				}
+				setState(369);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao4_5Context extends ParserRuleContext {
+		public Expressao5Context operandoEsquerdo;
+		public Token operador;
+		public Expressao5Context operandoDireito;
+		public Expressao5Context expressao5(int i) {
+			return getRuleContext(Expressao5Context.class,i);
+		}
+		public List<Expressao5Context> expressao5() {
+			return getRuleContexts(Expressao5Context.class);
+		}
+		public Expressao4_5Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao4_5; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao4_5(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao4_5Context expressao4_5() throws RecognitionException {
+		Expressao4_5Context _localctx = new Expressao4_5Context(_ctx, getState());
+		enterRule(_localctx, 62, RULE_expressao4_5);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(370); ((Expressao4_5Context)_localctx).operandoEsquerdo = expressao5();
+			setState(378);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==10 || _la==11) {
+				{
+				{
+				setState(373);
+				switch (_input.LA(1)) {
+				case 11:
+					{
+					setState(371); ((Expressao4_5Context)_localctx).operador = match(11);
+					}
+					break;
+				case 10:
+					{
+					setState(372); ((Expressao4_5Context)_localctx).operador = match(10);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(375); ((Expressao4_5Context)_localctx).operandoDireito = expressao5();
+				}
+				}
+				setState(380);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao5Context extends ParserRuleContext {
+		public Expressao6Context operandoEsquerdo;
+		public Token operador;
+		public Expressao6Context operandoDireito;
+		public Expressao6Context expressao6(int i) {
+			return getRuleContext(Expressao6Context.class,i);
+		}
+		public List<Expressao6Context> expressao6() {
+			return getRuleContexts(Expressao6Context.class);
+		}
+		public Expressao5Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao5; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao5(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao5Context expressao5() throws RecognitionException {
+		Expressao5Context _localctx = new Expressao5Context(_ctx, getState());
+		enterRule(_localctx, 64, RULE_expressao5);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(381); ((Expressao5Context)_localctx).operandoEsquerdo = expressao6();
+			setState(388);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
+			while ( _alt!=2 && _alt!=-1 ) {
+				if ( _alt==1 ) {
+					{
+					setState(386);
+					switch (_input.LA(1)) {
+					case 41:
+						{
+						{
+						setState(382); ((Expressao5Context)_localctx).operador = match(41);
+						setState(383); ((Expressao5Context)_localctx).operandoDireito = expressao6();
+						}
+						}
+						break;
+					case 42:
+						{
+						{
+						setState(384); ((Expressao5Context)_localctx).operador = match(42);
+						setState(385); ((Expressao5Context)_localctx).operandoDireito = expressao6();
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					} 
+				}
+				setState(390);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao6Context extends ParserRuleContext {
+		public Expressao7Context operandoEsquerdo;
+		public Token operador;
+		public Expressao7Context operandoDireito;
+		public Expressao7Context expressao7(int i) {
+			return getRuleContext(Expressao7Context.class,i);
+		}
+		public List<Expressao7Context> expressao7() {
+			return getRuleContexts(Expressao7Context.class);
+		}
+		public Expressao6Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao6; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao6(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao6Context expressao6() throws RecognitionException {
+		Expressao6Context _localctx = new Expressao6Context(_ctx, getState());
+		enterRule(_localctx, 66, RULE_expressao6);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(391); ((Expressao6Context)_localctx).operandoEsquerdo = expressao7();
+			setState(400);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 1) | (1L << 22) | (1L << 38))) != 0)) {
+				{
+				{
+				setState(395);
+				switch (_input.LA(1)) {
+				case 22:
+					{
+					setState(392); ((Expressao6Context)_localctx).operador = match(22);
+					}
+					break;
+				case 1:
+					{
+					setState(393); ((Expressao6Context)_localctx).operador = match(1);
+					}
+					break;
+				case 38:
+					{
+					setState(394); ((Expressao6Context)_localctx).operador = match(38);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(397); ((Expressao6Context)_localctx).operandoDireito = expressao7();
+				}
+				}
+				setState(402);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao7Context extends ParserRuleContext {
+		public Token s42;
+		public List<Token> listaTokenMenos = new ArrayList<Token>();
+		public Token OPERADOR_NAO;
+		public List<Token> listaTokenNao = new ArrayList<Token>();
+		public Token s35;
+		public List<Token> listaTokenNot = new ArrayList<Token>();
+		public Expressao8Context vExpressao;
+		public TerminalNode OPERADOR_NAO() { return getToken(PortugolParser.OPERADOR_NAO, 0); }
+		public Expressao8Context expressao8() {
+			return getRuleContext(Expressao8Context.class,0);
+		}
+		public Expressao7Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao7; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao7(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao7Context expressao7() throws RecognitionException {
+		Expressao7Context _localctx = new Expressao7Context(_ctx, getState());
+		enterRule(_localctx, 68, RULE_expressao7);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(413);
+			switch ( getInterpreter().adaptivePredict(_input,49,_ctx) ) {
+			case 1:
+				{
+				setState(404);
+				_la = _input.LA(1);
+				if (_la==42) {
+					{
+					setState(403); ((Expressao7Context)_localctx).s42 = match(42);
+					((Expressao7Context)_localctx).listaTokenMenos.add(((Expressao7Context)_localctx).s42);
+					}
+				}
+
+				}
+				break;
+
+			case 2:
+				{
+				setState(409);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				while (_la==OPERADOR_NAO) {
+					{
+					{
+					setState(406); ((Expressao7Context)_localctx).OPERADOR_NAO = match(OPERADOR_NAO);
+					((Expressao7Context)_localctx).listaTokenNao.add(((Expressao7Context)_localctx).OPERADOR_NAO);
+					}
+					}
+					setState(411);
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				}
+				}
+				break;
+
+			case 3:
+				{
+				setState(412); ((Expressao7Context)_localctx).s35 = match(35);
+				((Expressao7Context)_localctx).listaTokenNot.add(((Expressao7Context)_localctx).s35);
+				}
+				break;
+			}
+			setState(415); ((Expressao7Context)_localctx).vExpressao = expressao8();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Expressao8Context extends ParserRuleContext {
+		public Token ab;
+		public ExpressaoContext vExpressao;
+		public Token fp;
+		public Token operador;
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
+		public TipoPrimitivoContext tipoPrimitivo() {
+			return getRuleContext(TipoPrimitivoContext.class,0);
+		}
+		public ReferenciaContext referencia() {
+			return getRuleContext(ReferenciaContext.class,0);
+		}
+		public MatrizVetorContext matrizVetor() {
+			return getRuleContext(MatrizVetorContext.class,0);
+		}
+		public Expressao8Context(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_expressao8; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitExpressao8(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Expressao8Context expressao8() throws RecognitionException {
+		Expressao8Context _localctx = new Expressao8Context(_ctx, getState());
+		enterRule(_localctx, 70, RULE_expressao8);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(424);
+			switch (_input.LA(1)) {
+			case 21:
+				{
+				setState(417); ((Expressao8Context)_localctx).ab = match(21);
+				setState(418); ((Expressao8Context)_localctx).vExpressao = expressao();
+				setState(419); ((Expressao8Context)_localctx).fp = match(40);
+				}
+				break;
+			case ID:
+			case ID_BIBLIOTECA:
+				{
+				setState(421); ((Expressao8Context)_localctx).vExpressao = referencia();
+				}
+				break;
+			case LOGICO:
+			case INTEIRO:
+			case REAL:
+			case CADEIA:
+			case CARACTER:
+				{
+				setState(422); ((Expressao8Context)_localctx).vExpressao = tipoPrimitivo();
+				}
+				break;
+			case 9:
+				{
+				setState(423); ((Expressao8Context)_localctx).vExpressao = matrizVetor();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			setState(428);
+			switch (_input.LA(1)) {
+			case 30:
+				{
+				setState(426); ((Expressao8Context)_localctx).operador = match(30);
+				}
+				break;
+			case 29:
+				{
+				setState(427); ((Expressao8Context)_localctx).operador = match(29);
+				}
+				break;
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+			case 12:
+			case 13:
+			case 14:
+			case 15:
+			case 16:
+			case 17:
+			case 18:
+			case 19:
+			case 20:
+			case 21:
+			case 22:
+			case 23:
+			case 24:
+			case 25:
+			case 26:
+			case 27:
+			case 31:
+			case 32:
+			case 33:
+			case 34:
+			case 35:
+			case 36:
+			case 38:
+			case 39:
+			case 40:
+			case 41:
+			case 42:
+			case PR_REAL:
+			case PR_LOGICO:
+			case PR_CADEIA:
+			case PR_INTEIRO:
+			case PR_CARACTER:
+			case PR_ESCOLHA:
+			case PR_CASO:
+			case PR_CONST:
+			case PR_FUNCAO:
+			case PR_RETORNE:
+			case PR_PARA:
+			case PR_PARE:
+			case PR_FACA:
+			case PR_ENQUANTO:
+			case PR_SE:
+			case PR_SENAO:
+			case OPERADOR_NAO:
+			case LOGICO:
+			case ID:
+			case ID_BIBLIOTECA:
+			case INTEIRO:
+			case REAL:
+			case CADEIA:
+			case CARACTER:
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class TipoPrimitivoContext extends ParserRuleContext {
+		public TerminalNode REAL() { return getToken(PortugolParser.REAL, 0); }
+		public TerminalNode CARACTER() { return getToken(PortugolParser.CARACTER, 0); }
+		public TerminalNode INTEIRO() { return getToken(PortugolParser.INTEIRO, 0); }
+		public TerminalNode LOGICO() { return getToken(PortugolParser.LOGICO, 0); }
+		public TerminalNode CADEIA() { return getToken(PortugolParser.CADEIA, 0); }
+		public TipoPrimitivoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_tipoPrimitivo; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitTipoPrimitivo(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final TipoPrimitivoContext tipoPrimitivo() throws RecognitionException {
+		TipoPrimitivoContext _localctx = new TipoPrimitivoContext(_ctx, getState());
+		enterRule(_localctx, 72, RULE_tipoPrimitivo);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(430);
+			_la = _input.LA(1);
+			if ( !(((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (LOGICO - 66)) | (1L << (INTEIRO - 66)) | (1L << (REAL - 66)) | (1L << (CADEIA - 66)) | (1L << (CARACTER - 66)))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			consume();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ReferenciaContext extends ParserRuleContext {
+		public Token id;
+		public ChamadaFuncaoContext vExpressao;
+		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
+		public ReferenciaVetorMatrizContext referenciaVetorMatriz() {
+			return getRuleContext(ReferenciaVetorMatrizContext.class,0);
+		}
+		public TerminalNode ID_BIBLIOTECA() { return getToken(PortugolParser.ID_BIBLIOTECA, 0); }
+		public ReferenciaIdContext referenciaId() {
+			return getRuleContext(ReferenciaIdContext.class,0);
+		}
+		public ChamadaFuncaoContext chamadaFuncao() {
+			return getRuleContext(ChamadaFuncaoContext.class,0);
+		}
+		public ReferenciaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_referencia; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitReferencia(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ReferenciaContext referencia() throws RecognitionException {
+		ReferenciaContext _localctx = new ReferenciaContext(_ctx, getState());
+		enterRule(_localctx, 74, RULE_referencia);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(434);
+			switch (_input.LA(1)) {
+			case ID:
+				{
+				setState(432); ((ReferenciaContext)_localctx).id = match(ID);
+				}
+				break;
+			case ID_BIBLIOTECA:
+				{
+				setState(433); ((ReferenciaContext)_localctx).id = match(ID_BIBLIOTECA);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			setState(439);
+			switch ( getInterpreter().adaptivePredict(_input,53,_ctx) ) {
+			case 1:
+				{
+				setState(436); ((ReferenciaContext)_localctx).vExpressao = chamadaFuncao();
+				}
+				break;
+
+			case 2:
+				{
+				setState(437); ((ReferenciaContext)_localctx).vExpressao = referenciaVetorMatriz();
+				}
+				break;
+
+			case 3:
+				{
+				setState(438); ((ReferenciaContext)_localctx).vExpressao = referenciaId();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ReferenciaIdContext extends ParserRuleContext {
+		public ReferenciaIdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_referenciaId; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitReferenciaId(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ReferenciaIdContext referenciaId() throws RecognitionException {
+		ReferenciaIdContext _localctx = new ReferenciaIdContext(_ctx, getState());
+		enterRule(_localctx, 76, RULE_referenciaId);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ReferenciaVetorMatrizContext extends ParserRuleContext {
+		public ExpressaoContext indice1;
+		public ExpressaoContext indice2;
+		public List<ExpressaoContext> expressao() {
+			return getRuleContexts(ExpressaoContext.class);
+		}
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
+		}
+		public ReferenciaVetorMatrizContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_referenciaVetorMatriz; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitReferenciaVetorMatriz(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ReferenciaVetorMatrizContext referenciaVetorMatriz() throws RecognitionException {
+		ReferenciaVetorMatrizContext _localctx = new ReferenciaVetorMatrizContext(_ctx, getState());
+		enterRule(_localctx, 78, RULE_referenciaVetorMatriz);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(443); match(28);
+			setState(444); ((ReferenciaVetorMatrizContext)_localctx).indice1 = expressao();
+			setState(445); match(34);
+			setState(450);
+			_la = _input.LA(1);
+			if (_la==28) {
+				{
+				setState(446); match(28);
+				setState(447); ((ReferenciaVetorMatrizContext)_localctx).indice2 = expressao();
+				setState(448); match(34);
+				}
+			}
+
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ChamadaFuncaoContext extends ParserRuleContext {
+		public ListaParametrosContext vListaParametros;
+		public ListaParametrosContext listaParametros() {
+			return getRuleContext(ListaParametrosContext.class,0);
+		}
+		public ChamadaFuncaoContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_chamadaFuncao; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitChamadaFuncao(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ChamadaFuncaoContext chamadaFuncao() throws RecognitionException {
+		ChamadaFuncaoContext _localctx = new ChamadaFuncaoContext(_ctx, getState());
+		enterRule(_localctx, 80, RULE_chamadaFuncao);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(452); match(21);
+			setState(454);
+			_la = _input.LA(1);
+			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+				{
+				setState(453); ((ChamadaFuncaoContext)_localctx).vListaParametros = listaParametros();
+				}
+			}
+
+			setState(456); match(40);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ListaParametrosContext extends ParserRuleContext {
+		public ExpressaoContext vExpressao;
+		public List<ExpressaoContext> expressao() {
+			return getRuleContexts(ExpressaoContext.class);
+		}
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
+		}
+		public ListaParametrosContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_listaParametros; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitListaParametros(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ListaParametrosContext listaParametros() throws RecognitionException {
+		ListaParametrosContext _localctx = new ListaParametrosContext(_ctx, getState());
+		enterRule(_localctx, 82, RULE_listaParametros);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(458); ((ListaParametrosContext)_localctx).vExpressao = expressao();
+			}
+			setState(463);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==24) {
+				{
+				{
+				setState(459); match(24);
+				setState(460); ((ListaParametrosContext)_localctx).vExpressao = expressao();
+				}
+				}
+				setState(465);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class MatrizVetorContext extends ParserRuleContext {
+		public MatrizContext vExpressao;
+		public VetorContext vetor() {
+			return getRuleContext(VetorContext.class,0);
+		}
+		public MatrizContext matriz() {
+			return getRuleContext(MatrizContext.class,0);
+		}
+		public MatrizVetorContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_matrizVetor; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitMatrizVetor(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final MatrizVetorContext matrizVetor() throws RecognitionException {
+		MatrizVetorContext _localctx = new MatrizVetorContext(_ctx, getState());
+		enterRule(_localctx, 84, RULE_matrizVetor);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(468);
+			switch ( getInterpreter().adaptivePredict(_input,57,_ctx) ) {
+			case 1:
+				{
+				setState(466); ((MatrizVetorContext)_localctx).vExpressao = matriz();
+				}
+				break;
+
+			case 2:
+				{
+				setState(467); ((MatrizVetorContext)_localctx).vExpressao = vetor();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VetorContext extends ParserRuleContext {
+		public Token abre_ch;
+		public ListaExpressoesContext vListaExpressoes;
+		public Token fecha_ch;
+		public ListaExpressoesContext listaExpressoes() {
+			return getRuleContext(ListaExpressoesContext.class,0);
+		}
+		public VetorContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_vetor; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitVetor(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final VetorContext vetor() throws RecognitionException {
+		VetorContext _localctx = new VetorContext(_ctx, getState());
+		enterRule(_localctx, 86, RULE_vetor);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(470); ((VetorContext)_localctx).abre_ch = match(9);
+			setState(471); ((VetorContext)_localctx).vListaExpressoes = listaExpressoes();
+			setState(472); ((VetorContext)_localctx).fecha_ch = match(14);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class MatrizContext extends ParserRuleContext {
+		public Token abre_ch;
+		public ListaListaExpressoesContext vListaListaExpressoes;
+		public Token fecha_ch;
+		public ListaListaExpressoesContext listaListaExpressoes() {
+			return getRuleContext(ListaListaExpressoesContext.class,0);
+		}
+		public MatrizContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_matriz; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitMatriz(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final MatrizContext matriz() throws RecognitionException {
+		MatrizContext _localctx = new MatrizContext(_ctx, getState());
+		enterRule(_localctx, 88, RULE_matriz);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(474); ((MatrizContext)_localctx).abre_ch = match(9);
+			setState(475); ((MatrizContext)_localctx).vListaListaExpressoes = listaListaExpressoes();
+			setState(476); ((MatrizContext)_localctx).fecha_ch = match(14);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ListaListaExpressoesContext extends ParserRuleContext {
+		public ListaExpressoesContext vListaExpressoes;
+		public ListaExpressoesContext listaExpressoes(int i) {
+			return getRuleContext(ListaExpressoesContext.class,i);
+		}
+		public List<ListaExpressoesContext> listaExpressoes() {
+			return getRuleContexts(ListaExpressoesContext.class);
+		}
+		public ListaListaExpressoesContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_listaListaExpressoes; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitListaListaExpressoes(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ListaListaExpressoesContext listaListaExpressoes() throws RecognitionException {
+		ListaListaExpressoesContext _localctx = new ListaListaExpressoesContext(_ctx, getState());
+		enterRule(_localctx, 90, RULE_listaListaExpressoes);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(482);
+			_la = _input.LA(1);
+			if (_la==9) {
+				{
+				setState(478); match(9);
+				setState(479); ((ListaListaExpressoesContext)_localctx).vListaExpressoes = listaExpressoes();
+				setState(480); match(14);
+				}
+			}
+
+			setState(491);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==24) {
+				{
+				{
+				setState(484); match(24);
+				setState(485); match(9);
+				setState(486); ((ListaListaExpressoesContext)_localctx).vListaExpressoes = listaExpressoes();
+				setState(487); match(14);
+				}
+				}
+				setState(493);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ListaExpressoesContext extends ParserRuleContext {
+		public ExpressaoContext vExpressao;
+		public List<ExpressaoContext> expressao() {
+			return getRuleContexts(ExpressaoContext.class);
+		}
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
+		}
+		public ListaExpressoesContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_listaExpressoes; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof PortugolVisitor ) return ((PortugolVisitor<? extends T>)visitor).visitListaExpressoes(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ListaExpressoesContext listaExpressoes() throws RecognitionException {
+		ListaExpressoesContext _localctx = new ListaExpressoesContext(_ctx, getState());
+		enterRule(_localctx, 92, RULE_listaExpressoes);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(495);
+			_la = _input.LA(1);
+			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
+				{
+				setState(494); ((ListaExpressoesContext)_localctx).vExpressao = expressao();
+				}
+			}
+
+			}
+			setState(501);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==24) {
+				{
+				{
+				setState(497); match(24);
+				{
+				setState(498); ((ListaExpressoesContext)_localctx).vExpressao = expressao();
+				}
+				}
+				}
+				setState(503);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static final String _serializedATN =
+		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3L\u01fb\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
+		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
+		"\4\32\t\32\4\33\t\33\4\34\t\34\4\35\t\35\4\36\t\36\4\37\t\37\4 \t \4!"+
+		"\t!\4\"\t\"\4#\t#\4$\t$\4%\t%\4&\t&\4\'\t\'\4(\t(\4)\t)\4*\t*\4+\t+\4"+
+		",\t,\4-\t-\4.\t.\4/\t/\4\60\t\60\3\2\3\2\3\2\7\2d\n\2\f\2\16\2g\13\2\3"+
+		"\2\3\2\7\2k\n\2\f\2\16\2n\13\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\5\3w\n\3\3"+
+		"\4\3\4\3\5\3\5\3\6\5\6~\n\6\3\6\3\6\3\6\3\6\7\6\u0084\n\6\f\6\16\6\u0087"+
+		"\13\6\3\7\3\7\3\7\5\7\u008c\n\7\3\7\3\7\3\7\5\7\u0091\n\7\3\7\5\7\u0094"+
+		"\n\7\5\7\u0096\n\7\3\7\3\7\5\7\u009a\n\7\3\b\3\b\3\b\3\b\3\b\5\b\u00a1"+
+		"\n\b\3\t\3\t\3\n\3\n\3\n\3\n\5\n\u00a9\n\n\5\n\u00ab\n\n\3\13\3\13\5\13"+
+		"\u00af\n\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3\r\7"+
+		"\r\u00bf\n\r\f\r\16\r\u00c2\13\r\5\r\u00c4\n\r\3\16\3\16\5\16\u00c8\n"+
+		"\16\3\16\3\16\3\16\3\17\3\17\7\17\u00cf\n\17\f\17\16\17\u00d2\13\17\3"+
+		"\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\5\20\u00dc\n\20\3\21\3\21\3\21"+
+		"\5\21\u00e1\n\21\3\21\3\21\5\21\u00e5\n\21\3\21\3\21\5\21\u00e9\n\21\3"+
+		"\21\3\21\3\21\3\22\3\22\5\22\u00f0\n\22\3\23\3\23\3\23\3\23\3\23\5\23"+
+		"\u00f7\n\23\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25"+
+		"\6\25\u0105\n\25\r\25\16\25\u0106\3\25\3\25\3\25\3\25\5\25\u010d\n\25"+
+		"\3\25\3\25\3\26\3\26\3\26\3\26\3\26\5\26\u0116\n\26\3\27\3\27\3\27\3\27"+
+		"\3\27\3\27\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31"+
+		"\3\31\3\31\5\31\u012c\n\31\3\32\3\32\5\32\u0130\n\32\3\33\3\33\3\34\3"+
+		"\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\5\34\u0141"+
+		"\n\34\3\34\7\34\u0144\n\34\f\34\16\34\u0147\13\34\3\35\3\35\3\35\5\35"+
+		"\u014c\n\35\3\35\7\35\u014f\n\35\f\35\16\35\u0152\13\35\3\36\3\36\3\36"+
+		"\5\36\u0157\n\36\3\36\7\36\u015a\n\36\f\36\16\36\u015d\13\36\3\37\3\37"+
+		"\3\37\3\37\3\37\5\37\u0164\n\37\3\37\5\37\u0167\n\37\3 \3 \3 \3 \5 \u016d"+
+		"\n \3 \7 \u0170\n \f \16 \u0173\13 \3!\3!\3!\5!\u0178\n!\3!\7!\u017b\n"+
+		"!\f!\16!\u017e\13!\3\"\3\"\3\"\3\"\3\"\7\"\u0185\n\"\f\"\16\"\u0188\13"+
+		"\"\3#\3#\3#\3#\5#\u018e\n#\3#\7#\u0191\n#\f#\16#\u0194\13#\3$\5$\u0197"+
+		"\n$\3$\7$\u019a\n$\f$\16$\u019d\13$\3$\5$\u01a0\n$\3$\3$\3%\3%\3%\3%\3"+
+		"%\3%\3%\5%\u01ab\n%\3%\3%\5%\u01af\n%\3&\3&\3\'\3\'\5\'\u01b5\n\'\3\'"+
+		"\3\'\3\'\5\'\u01ba\n\'\3(\3(\3)\3)\3)\3)\3)\3)\3)\5)\u01c5\n)\3*\3*\5"+
+		"*\u01c9\n*\3*\3*\3+\3+\3+\7+\u01d0\n+\f+\16+\u01d3\13+\3,\3,\5,\u01d7"+
+		"\n,\3-\3-\3-\3-\3.\3.\3.\3.\3/\3/\3/\3/\5/\u01e5\n/\3/\3/\3/\3/\3/\7/"+
+		"\u01ec\n/\f/\16/\u01ef\13/\3\60\5\60\u01f2\n\60\3\60\3\60\7\60\u01f6\n"+
+		"\60\f\60\16\60\u01f9\13\60\3\60\2\61\2\4\6\b\n\f\16\20\22\24\26\30\32"+
+		"\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\^\2\3\4\2DDGJ\u0225\2`"+
+		"\3\2\2\2\4q\3\2\2\2\6x\3\2\2\2\bz\3\2\2\2\n}\3\2\2\2\f\u0088\3\2\2\2\16"+
+		"\u00a0\3\2\2\2\20\u00a2\3\2\2\2\22\u00aa\3\2\2\2\24\u00ae\3\2\2\2\26\u00b0"+
+		"\3\2\2\2\30\u00c3\3\2\2\2\32\u00c5\3\2\2\2\34\u00d0\3\2\2\2\36\u00db\3"+
+		"\2\2\2 \u00dd\3\2\2\2\"\u00ef\3\2\2\2$\u00f6\3\2\2\2&\u00f8\3\2\2\2(\u00fa"+
+		"\3\2\2\2*\u0115\3\2\2\2,\u0117\3\2\2\2.\u011d\3\2\2\2\60\u0124\3\2\2\2"+
+		"\62\u012d\3\2\2\2\64\u0131\3\2\2\2\66\u0133\3\2\2\28\u0148\3\2\2\2:\u0153"+
+		"\3\2\2\2<\u015e\3\2\2\2>\u0168\3\2\2\2@\u0174\3\2\2\2B\u017f\3\2\2\2D"+
+		"\u0189\3\2\2\2F\u019f\3\2\2\2H\u01aa\3\2\2\2J\u01b0\3\2\2\2L\u01b4\3\2"+
+		"\2\2N\u01bb\3\2\2\2P\u01bd\3\2\2\2R\u01c6\3\2\2\2T\u01cc\3\2\2\2V\u01d6"+
+		"\3\2\2\2X\u01d8\3\2\2\2Z\u01dc\3\2\2\2\\\u01e4\3\2\2\2^\u01f1\3\2\2\2"+
+		"`a\7-\2\2ae\7\13\2\2bd\5\4\3\2cb\3\2\2\2dg\3\2\2\2ec\3\2\2\2ef\3\2\2\2"+
+		"fl\3\2\2\2ge\3\2\2\2hk\5\6\4\2ik\5\26\f\2jh\3\2\2\2ji\3\2\2\2kn\3\2\2"+
+		"\2lj\3\2\2\2lm\3\2\2\2mo\3\2\2\2nl\3\2\2\2op\7\20\2\2p\3\3\2\2\2qr\7@"+
+		"\2\2rs\7A\2\2sv\7E\2\2tu\7\'\2\2uw\7E\2\2vt\3\2\2\2vw\3\2\2\2w\5\3\2\2"+
+		"\2xy\5\n\6\2y\7\3\2\2\2z{\5\n\6\2{\t\3\2\2\2|~\7\67\2\2}|\3\2\2\2}~\3"+
+		"\2\2\2~\177\3\2\2\2\177\u0080\5\16\b\2\u0080\u0085\5\f\7\2\u0081\u0082"+
+		"\7\32\2\2\u0082\u0084\5\f\7\2\u0083\u0081\3\2\2\2\u0084\u0087\3\2\2\2"+
+		"\u0085\u0083\3\2\2\2\u0085\u0086\3\2\2\2\u0086\13\3\2\2\2\u0087\u0085"+
+		"\3\2\2\2\u0088\u0095\7E\2\2\u0089\u008b\7\36\2\2\u008a\u008c\5\66\34\2"+
+		"\u008b\u008a\3\2\2\2\u008b\u008c\3\2\2\2\u008c\u008d\3\2\2\2\u008d\u0093"+
+		"\7$\2\2\u008e\u0090\7\36\2\2\u008f\u0091\5\66\34\2\u0090\u008f\3\2\2\2"+
+		"\u0090\u0091\3\2\2\2\u0091\u0092\3\2\2\2\u0092\u0094\7$\2\2\u0093\u008e"+
+		"\3\2\2\2\u0093\u0094\3\2\2\2\u0094\u0096\3\2\2\2\u0095\u0089\3\2\2\2\u0095"+
+		"\u0096\3\2\2\2\u0096\u0099\3\2\2\2\u0097\u0098\7\17\2\2\u0098\u009a\5"+
+		"\66\34\2\u0099\u0097\3\2\2\2\u0099\u009a\3\2\2\2\u009a\r\3\2\2\2\u009b"+
+		"\u00a1\7\62\2\2\u009c\u00a1\7.\2\2\u009d\u00a1\7\63\2\2\u009e\u00a1\7"+
+		"\61\2\2\u009f\u00a1\7\60\2\2\u00a0\u009b\3\2\2\2\u00a0\u009c\3\2\2\2\u00a0"+
+		"\u009d\3\2\2\2\u00a0\u009e\3\2\2\2\u00a0\u009f\3\2\2\2\u00a1\17\3\2\2"+
+		"\2\u00a2\u00a3\7/\2\2\u00a3\21\3\2\2\2\u00a4\u00a5\7\36\2\2\u00a5\u00a8"+
+		"\7$\2\2\u00a6\u00a7\7\36\2\2\u00a7\u00a9\7$\2\2\u00a8\u00a6\3\2\2\2\u00a8"+
+		"\u00a9\3\2\2\2\u00a9\u00ab\3\2\2\2\u00aa\u00a4\3\2\2\2\u00aa\u00ab\3\2"+
+		"\2\2\u00ab\23\3\2\2\2\u00ac\u00af\5\16\b\2\u00ad\u00af\5\20\t\2\u00ae"+
+		"\u00ac\3\2\2\2\u00ae\u00ad\3\2\2\2\u00ae\u00af\3\2\2\2\u00af\25\3\2\2"+
+		"\2\u00b0\u00b1\78\2\2\u00b1\u00b2\5\24\13\2\u00b2\u00b3\5\22\n\2\u00b3"+
+		"\u00b4\7E\2\2\u00b4\u00b5\7\27\2\2\u00b5\u00b6\5\30\r\2\u00b6\u00b7\7"+
+		"*\2\2\u00b7\u00b8\7\13\2\2\u00b8\u00b9\5\34\17\2\u00b9\u00ba\7\20\2\2"+
+		"\u00ba\27\3\2\2\2\u00bb\u00c0\5\32\16\2\u00bc\u00bd\7\32\2\2\u00bd\u00bf"+
+		"\5\32\16\2\u00be\u00bc\3\2\2\2\u00bf\u00c2\3\2\2\2\u00c0\u00be\3\2\2\2"+
+		"\u00c0\u00c1\3\2\2\2\u00c1\u00c4\3\2\2\2\u00c2\u00c0\3\2\2\2\u00c3\u00bb"+
+		"\3\2\2\2\u00c3\u00c4\3\2\2\2\u00c4\31\3\2\2\2\u00c5\u00c7\5\16\b\2\u00c6"+
+		"\u00c8\7\26\2\2\u00c7\u00c6\3\2\2\2\u00c7\u00c8\3\2\2\2\u00c8\u00c9\3"+
+		"\2\2\2\u00c9\u00ca\7E\2\2\u00ca\u00cb\5\22\n\2\u00cb\33\3\2\2\2\u00cc"+
+		"\u00cf\5\36\20\2\u00cd\u00cf\5\b\5\2\u00ce\u00cc\3\2\2\2\u00ce\u00cd\3"+
+		"\2\2\2\u00cf\u00d2\3\2\2\2\u00d0\u00ce\3\2\2\2\u00d0\u00d1\3\2\2\2\u00d1"+
+		"\35\3\2\2\2\u00d2\u00d0\3\2\2\2\u00d3\u00dc\5\66\34\2\u00d4\u00dc\5 \21"+
+		"\2\u00d5\u00dc\5&\24\2\u00d6\u00dc\5\62\32\2\u00d7\u00dc\5\60\31\2\u00d8"+
+		"\u00dc\5,\27\2\u00d9\u00dc\5.\30\2\u00da\u00dc\5(\25\2\u00db\u00d3\3\2"+
+		"\2\2\u00db\u00d4\3\2\2\2\u00db\u00d5\3\2\2\2\u00db\u00d6\3\2\2\2\u00db"+
+		"\u00d7\3\2\2\2\u00db\u00d8\3\2\2\2\u00db\u00d9\3\2\2\2\u00db\u00da\3\2"+
+		"\2\2\u00dc\37\3\2\2\2\u00dd\u00de\7:\2\2\u00de\u00e0\7\27\2\2\u00df\u00e1"+
+		"\5\"\22\2\u00e0\u00df\3\2\2\2\u00e0\u00e1\3\2\2\2\u00e1\u00e2\3\2\2\2"+
+		"\u00e2\u00e4\7\n\2\2\u00e3\u00e5\5\66\34\2\u00e4\u00e3\3\2\2\2\u00e4\u00e5"+
+		"\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6\u00e8\7\n\2\2\u00e7\u00e9\5\66\34\2"+
+		"\u00e8\u00e7\3\2\2\2\u00e8\u00e9\3\2\2\2\u00e9\u00ea\3\2\2\2\u00ea\u00eb"+
+		"\7*\2\2\u00eb\u00ec\5$\23\2\u00ec!\3\2\2\2\u00ed\u00f0\5\66\34\2\u00ee"+
+		"\u00f0\5\n\6\2\u00ef\u00ed\3\2\2\2\u00ef\u00ee\3\2\2\2\u00f0#\3\2\2\2"+
+		"\u00f1\u00f2\7\13\2\2\u00f2\u00f3\5\34\17\2\u00f3\u00f4\7\20\2\2\u00f4"+
+		"\u00f7\3\2\2\2\u00f5\u00f7\5\36\20\2\u00f6\u00f1\3\2\2\2\u00f6\u00f5\3"+
+		"\2\2\2\u00f7%\3\2\2\2\u00f8\u00f9\7;\2\2\u00f9\'\3\2\2\2\u00fa\u00fb\7"+
+		"\64\2\2\u00fb\u00fc\7\27\2\2\u00fc\u00fd\5\66\34\2\u00fd\u00fe\7*\2\2"+
+		"\u00fe\u0104\7\13\2\2\u00ff\u0100\7\65\2\2\u0100\u0101\5\66\34\2\u0101"+
+		"\u0102\7\34\2\2\u0102\u0103\5*\26\2\u0103\u0105\3\2\2\2\u0104\u00ff\3"+
+		"\2\2\2\u0105\u0106\3\2\2\2\u0106\u0104\3\2\2\2\u0106\u0107\3\2\2\2\u0107"+
+		"\u010c\3\2\2\2\u0108\u0109\7\65\2\2\u0109\u010a\7\66\2\2\u010a\u010b\7"+
+		"\34\2\2\u010b\u010d\5*\26\2\u010c\u0108\3\2\2\2\u010c\u010d\3\2\2\2\u010d"+
+		"\u010e\3\2\2\2\u010e\u010f\7\20\2\2\u010f)\3\2\2\2\u0110\u0111\7\13\2"+
+		"\2\u0111\u0112\5\34\17\2\u0112\u0113\7\20\2\2\u0113\u0116\3\2\2\2\u0114"+
+		"\u0116\5\34\17\2\u0115\u0110\3\2\2\2\u0115\u0114\3\2\2\2\u0116+\3\2\2"+
+		"\2\u0117\u0118\7=\2\2\u0118\u0119\7\27\2\2\u0119\u011a\5\66\34\2\u011a"+
+		"\u011b\7*\2\2\u011b\u011c\5$\23\2\u011c-\3\2\2\2\u011d\u011e\7<\2\2\u011e"+
+		"\u011f\5$\23\2\u011f\u0120\7=\2\2\u0120\u0121\7\27\2\2\u0121\u0122\5\66"+
+		"\34\2\u0122\u0123\7*\2\2\u0123/\3\2\2\2\u0124\u0125\7>\2\2\u0125\u0126"+
+		"\7\27\2\2\u0126\u0127\5\66\34\2\u0127\u0128\7*\2\2\u0128\u012b\5$\23\2"+
+		"\u0129\u012a\7?\2\2\u012a\u012c\5$\23\2\u012b\u0129\3\2\2\2\u012b\u012c"+
+		"\3\2\2\2\u012c\61\3\2\2\2\u012d\u012f\79\2\2\u012e\u0130\5\66\34\2\u012f"+
+		"\u012e\3\2\2\2\u012f\u0130\3\2\2\2\u0130\63\3\2\2\2\u0131\u0132\3\2\2"+
+		"\2\u0132\65\3\2\2\2\u0133\u0134\58\35\2\u0134\u0145\5\64\33\2\u0135\u0141"+
+		"\7\17\2\2\u0136\u0141\7\5\2\2\u0137\u0141\7\31\2\2\u0138\u0141\7\33\2"+
+		"\2\u0139\u0141\7\4\2\2\u013a\u0141\7\7\2\2\u013b\u0141\7\t\2\2\u013c\u0141"+
+		"\7\22\2\2\u013d\u0141\7\24\2\2\u013e\u0141\7\6\2\2\u013f\u0141\7\16\2"+
+		"\2\u0140\u0135\3\2\2\2\u0140\u0136\3\2\2\2\u0140\u0137\3\2\2\2\u0140\u0138"+
+		"\3\2\2\2\u0140\u0139\3\2\2\2\u0140\u013a\3\2\2\2\u0140\u013b\3\2\2\2\u0140"+
+		"\u013c\3\2\2\2\u0140\u013d\3\2\2\2\u0140\u013e\3\2\2\2\u0140\u013f\3\2"+
+		"\2\2\u0141\u0142\3\2\2\2\u0142\u0144\58\35\2\u0143\u0140\3\2\2\2\u0144"+
+		"\u0147\3\2\2\2\u0145\u0143\3\2\2\2\u0145\u0146\3\2\2\2\u0146\67\3\2\2"+
+		"\2\u0147\u0145\3\2\2\2\u0148\u0150\5:\36\2\u0149\u014c\7)\2\2\u014a\u014c"+
+		"\7\25\2\2\u014b\u0149\3\2\2\2\u014b\u014a\3\2\2\2\u014c\u014d\3\2\2\2"+
+		"\u014d\u014f\5:\36\2\u014e\u014b\3\2\2\2\u014f\u0152\3\2\2\2\u0150\u014e"+
+		"\3\2\2\2\u0150\u0151\3\2\2\2\u01519\3\2\2\2\u0152\u0150\3\2\2\2\u0153"+
+		"\u015b\5<\37\2\u0154\u0157\7#\2\2\u0155\u0157\7\b\2\2\u0156\u0154\3\2"+
+		"\2\2\u0156\u0155\3\2\2\2\u0157\u0158\3\2\2\2\u0158\u015a\5<\37\2\u0159"+
+		"\u0156\3\2\2\2\u015a\u015d\3\2\2\2\u015b\u0159\3\2\2\2\u015b\u015c\3\2"+
+		"\2\2\u015c;\3\2\2\2\u015d\u015b\3\2\2\2\u015e\u0166\5> \2\u015f\u0164"+
+		"\7\35\2\2\u0160\u0164\7\23\2\2\u0161\u0164\7\"\2\2\u0162\u0164\7&\2\2"+
+		"\u0163\u015f\3\2\2\2\u0163\u0160\3\2\2\2\u0163\u0161\3\2\2\2\u0163\u0162"+
+		"\3\2\2\2\u0164\u0165\3\2\2\2\u0165\u0167\5> \2\u0166\u0163\3\2\2\2\u0166"+
+		"\u0167\3\2\2\2\u0167=\3\2\2\2\u0168\u0171\5@!\2\u0169\u016d\7\26\2\2\u016a"+
+		"\u016d\7!\2\2\u016b\u016d\7\21\2\2\u016c\u0169\3\2\2\2\u016c\u016a\3\2"+
+		"\2\2\u016c\u016b\3\2\2\2\u016d\u016e\3\2\2\2\u016e\u0170\5@!\2\u016f\u016c"+
+		"\3\2\2\2\u0170\u0173\3\2\2\2\u0171\u016f\3\2\2\2\u0171\u0172\3\2\2\2\u0172"+
+		"?\3\2\2\2\u0173\u0171\3\2\2\2\u0174\u017c\5B\"\2\u0175\u0178\7\r\2\2\u0176"+
+		"\u0178\7\f\2\2\u0177\u0175\3\2\2\2\u0177\u0176\3\2\2\2\u0178\u0179\3\2"+
+		"\2\2\u0179\u017b\5B\"\2\u017a\u0177\3\2\2\2\u017b\u017e\3\2\2\2\u017c"+
+		"\u017a\3\2\2\2\u017c\u017d\3\2\2\2\u017dA\3\2\2\2\u017e\u017c\3\2\2\2"+
+		"\u017f\u0186\5D#\2\u0180\u0181\7+\2\2\u0181\u0185\5D#\2\u0182\u0183\7"+
+		",\2\2\u0183\u0185\5D#\2\u0184\u0180\3\2\2\2\u0184\u0182\3\2\2\2\u0185"+
+		"\u0188\3\2\2\2\u0186\u0184\3\2\2\2\u0186\u0187\3\2\2\2\u0187C\3\2\2\2"+
+		"\u0188\u0186\3\2\2\2\u0189\u0192\5F$\2\u018a\u018e\7\30\2\2\u018b\u018e"+
+		"\7\3\2\2\u018c\u018e\7(\2\2\u018d\u018a\3\2\2\2\u018d\u018b\3\2\2\2\u018d"+
+		"\u018c\3\2\2\2\u018e\u018f\3\2\2\2\u018f\u0191\5F$\2\u0190\u018d\3\2\2"+
+		"\2\u0191\u0194\3\2\2\2\u0192\u0190\3\2\2\2\u0192\u0193\3\2\2\2\u0193E"+
+		"\3\2\2\2\u0194\u0192\3\2\2\2\u0195\u0197\7,\2\2\u0196\u0195\3\2\2\2\u0196"+
+		"\u0197\3\2\2\2\u0197\u01a0\3\2\2\2\u0198\u019a\7C\2\2\u0199\u0198\3\2"+
+		"\2\2\u019a\u019d\3\2\2\2\u019b\u0199\3\2\2\2\u019b\u019c\3\2\2\2\u019c"+
+		"\u01a0\3\2\2\2\u019d\u019b\3\2\2\2\u019e\u01a0\7%\2\2\u019f\u0196\3\2"+
+		"\2\2\u019f\u019b\3\2\2\2\u019f\u019e\3\2\2\2\u01a0\u01a1\3\2\2\2\u01a1"+
+		"\u01a2\5H%\2\u01a2G\3\2\2\2\u01a3\u01a4\7\27\2\2\u01a4\u01a5\5\66\34\2"+
+		"\u01a5\u01a6\7*\2\2\u01a6\u01ab\3\2\2\2\u01a7\u01ab\5L\'\2\u01a8\u01ab"+
+		"\5J&\2\u01a9\u01ab\5V,\2\u01aa\u01a3\3\2\2\2\u01aa\u01a7\3\2\2\2\u01aa"+
+		"\u01a8\3\2\2\2\u01aa\u01a9\3\2\2\2\u01ab\u01ae\3\2\2\2\u01ac\u01af\7 "+
+		"\2\2\u01ad\u01af\7\37\2\2\u01ae\u01ac\3\2\2\2\u01ae\u01ad\3\2\2\2\u01ae"+
+		"\u01af\3\2\2\2\u01afI\3\2\2\2\u01b0\u01b1\t\2\2\2\u01b1K\3\2\2\2\u01b2"+
+		"\u01b5\7E\2\2\u01b3\u01b5\7F\2\2\u01b4\u01b2\3\2\2\2\u01b4\u01b3\3\2\2"+
+		"\2\u01b5\u01b9\3\2\2\2\u01b6\u01ba\5R*\2\u01b7\u01ba\5P)\2\u01b8\u01ba"+
+		"\5N(\2\u01b9\u01b6\3\2\2\2\u01b9\u01b7\3\2\2\2\u01b9\u01b8\3\2\2\2\u01ba"+
+		"M\3\2\2\2\u01bb\u01bc\3\2\2\2\u01bcO\3\2\2\2\u01bd\u01be\7\36\2\2\u01be"+
+		"\u01bf\5\66\34\2\u01bf\u01c4\7$\2\2\u01c0\u01c1\7\36\2\2\u01c1\u01c2\5"+
+		"\66\34\2\u01c2\u01c3\7$\2\2\u01c3\u01c5\3\2\2\2\u01c4\u01c0\3\2\2\2\u01c4"+
+		"\u01c5\3\2\2\2\u01c5Q\3\2\2\2\u01c6\u01c8\7\27\2\2\u01c7\u01c9\5T+\2\u01c8"+
+		"\u01c7\3\2\2\2\u01c8\u01c9\3\2\2\2\u01c9\u01ca\3\2\2\2\u01ca\u01cb\7*"+
+		"\2\2\u01cbS\3\2\2\2\u01cc\u01d1\5\66\34\2\u01cd\u01ce\7\32\2\2\u01ce\u01d0"+
+		"\5\66\34\2\u01cf\u01cd\3\2\2\2\u01d0\u01d3\3\2\2\2\u01d1\u01cf\3\2\2\2"+
+		"\u01d1\u01d2\3\2\2\2\u01d2U\3\2\2\2\u01d3\u01d1\3\2\2\2\u01d4\u01d7\5"+
+		"Z.\2\u01d5\u01d7\5X-\2\u01d6\u01d4\3\2\2\2\u01d6\u01d5\3\2\2\2\u01d7W"+
+		"\3\2\2\2\u01d8\u01d9\7\13\2\2\u01d9\u01da\5^\60\2\u01da\u01db\7\20\2\2"+
+		"\u01dbY\3\2\2\2\u01dc\u01dd\7\13\2\2\u01dd\u01de\5\\/\2\u01de\u01df\7"+
+		"\20\2\2\u01df[\3\2\2\2\u01e0\u01e1\7\13\2\2\u01e1\u01e2\5^\60\2\u01e2"+
+		"\u01e3\7\20\2\2\u01e3\u01e5\3\2\2\2\u01e4\u01e0\3\2\2\2\u01e4\u01e5\3"+
+		"\2\2\2\u01e5\u01ed\3\2\2\2\u01e6\u01e7\7\32\2\2\u01e7\u01e8\7\13\2\2\u01e8"+
+		"\u01e9\5^\60\2\u01e9\u01ea\7\20\2\2\u01ea\u01ec\3\2\2\2\u01eb\u01e6\3"+
+		"\2\2\2\u01ec\u01ef\3\2\2\2\u01ed\u01eb\3\2\2\2\u01ed\u01ee\3\2\2\2\u01ee"+
+		"]\3\2\2\2\u01ef\u01ed\3\2\2\2\u01f0\u01f2\5\66\34\2\u01f1\u01f0\3\2\2"+
+		"\2\u01f1\u01f2\3\2\2\2\u01f2\u01f7\3\2\2\2\u01f3\u01f4\7\32\2\2\u01f4"+
+		"\u01f6\5\66\34\2\u01f5\u01f3\3\2\2\2\u01f6\u01f9\3\2\2\2\u01f7\u01f5\3"+
+		"\2\2\2\u01f7\u01f8\3\2\2\2\u01f8_\3\2\2\2\u01f9\u01f7\3\2\2\2@ejlv}\u0085"+
+		"\u008b\u0090\u0093\u0095\u0099\u00a0\u00a8\u00aa\u00ae\u00c0\u00c3\u00c7"+
+		"\u00ce\u00d0\u00db\u00e0\u00e4\u00e8\u00ef\u00f6\u0106\u010c\u0115\u012b"+
+		"\u012f\u0140\u0145\u014b\u0150\u0156\u015b\u0163\u0166\u016c\u0171\u0177"+
+		"\u017c\u0184\u0186\u018d\u0192\u0196\u019b\u019f\u01aa\u01ae\u01b4\u01b9"+
+		"\u01c4\u01c8\u01d1\u01d6\u01e4\u01ed\u01f1\u01f7";
+	public static final ATN _ATN =
+		ATNSimulator.deserialize(_serializedATN.toCharArray());
+	static {
+		_decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
+		for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {
+			_decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
+		}
+	}
 }

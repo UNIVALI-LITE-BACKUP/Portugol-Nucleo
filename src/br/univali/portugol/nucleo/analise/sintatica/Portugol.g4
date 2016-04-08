@@ -86,7 +86,7 @@ listaParametrosFuncao:((vDeclaracaoParametro = declaracaoParametro)(',' vDeclara
 
 declaracaoParametro: informacaoTipoDado = declaracaoTipoDado (tkr = '&')? ID vQuantificador = quantificador;
 
-blocos:(vBloco = bloco { blocos.add(vBloco); } | declaracoesLocais)*;
+blocos:(vBloco = bloco | declaracoesLocais)*;
 
 bloco:	(
           vExpressao = expressao
@@ -103,7 +103,7 @@ para: PR_PARA '(' (inicializacao = inicializacaoPara)? ';' (condicao = expressao
 
 inicializacaoPara: (vExpressao = expressao | vListaDeclaracoes = listaDeclaracoes);
 
-listaBlocos: ('{' vListaBlocos = blocos { listaBlocos = vListaBlocos; } '}' | vBloco = bloco);
+listaBlocos: ('{' vListaBlocos = blocos '}' | vBloco = bloco);
 
 pare: PR_PARE;
 
@@ -178,6 +178,6 @@ vetor: abre_ch = '{' vListaExpressoes = listaExpressoes fecha_ch = '}';
 
 matriz:	abre_ch = '{' vListaListaExpressoes = listaListaExpressoes fecha_ch = '}';
 
-listaListaExpressoes:( '{' vListaExpressoes = listaExpressoes '}')? ( { vListaExpressoes = null; } ','  '{' vListaExpressoes = listaExpressoes '}' )*;
+listaListaExpressoes:( '{' vListaExpressoes = listaExpressoes '}')? (','  '{' vListaExpressoes = listaExpressoes '}' )*;
 
 listaExpressoes: ((vExpressao = expressao)?) (',' (vExpressao = expressao))*;
