@@ -22,7 +22,7 @@ PR_SENAO        :   'senao';
 PR_INCLUA       :   'inclua';
 PR_BIBLIOTECA   :   'biblioteca';
 
-GAMBIARRA 	:	'.' |'Ã¡'| 'Ã '| 'Ã£'|'Ã¢'|'Ã©'|'Ãª'|'Ã­'|'Ã³'|'Ã´'|'Ãµ'|'Ãº'|'Ã¼'|'Ã§'|'ï¿½?'|'Ã€'|'Ãƒ'|'Ã‚'|'Ã‰'|'ÃŠ'|'ï¿½?'|'Ã“'|'Ã”'|'Ã•'|'Ãš'|'Ãœ'|'Ã‡'|'#'|'$'|'"'|'Â§'|'?'|'Â¹'|'Â²'|'Â³'|'Â£'|'Â¢'|'Â¬'|'Âª'|'Âº'|'~'|'\''|'`'|'\\'|'@';
+GAMBIARRA 	:	'.' |'á'| 'à'| 'ã'|'â'|'é'|'ê'|'í'|'ó'|'ô'|'õ'|'ú'|'ü'|'ç'|'??'|'À'|'Ã'|'Â'|'É'|'Ê'|'??'|'Ó'|'Ô'|'Õ'|'Ú'|'Ü'|'Ç'|'#'|'$'|'"'|'§'|'?'|'¹'|'²'|'³'|'£'|'¢'|'¬'|'ª'|'º'|'~'|'\''|'`'|'\\'|'@';
 
 fragment PR_FALSO       :	'falso';
 fragment PR_VERDADEIRO	:	'verdadeiro';
@@ -53,131 +53,126 @@ fragment ESC_OCTAL	:	'\\' ('0'..'3') ('0'..'7') ('0'..'7')  |   '\\' ('0'..'7') 
 
 fragment ESC_UNICODE	:	'\\' 'u' DIGIT_HEX DIGIT_HEX DIGIT_HEX DIGIT_HEX;
 
-COMENTARIO	
+COMENTARIO
     :   
-        ( '//' ~[\r\n]* '\r'? '\n'
-        | '/*' .*? '*/'
-        ) -> channel(HIDDEN)
-    ;
+	('//' ~('\n'|'\r')* '\r'? '\n'
+        | 
+        '/*' .*? '*/') -> channel(HIDDEN)
+ ;
 
 programa: PR_PROGRAMA '{' inclusaoBiblioteca* (declaracoesGlobais | declaracaoFuncao)* '}';
 
-inclusaoBiblioteca: PR_INCLUA PR_BIBLIOTECA nome = ID ('-->'  alias = ID)?;
+inclusaoBiblioteca: PR_INCLUA PR_BIBLIOTECA ID ('-->' ID)?;
 
-declaracoesGlobais: vListaDeclaracoes = listaDeclaracoes;
+declaracoesGlobais: listaDeclaracoes;
 
-declaracoesLocais: vListaDeclaracoes = listaDeclaracoes;
+declaracoesLocais: listaDeclaracoes;
 
-listaDeclaracoes: ((tokenConst = PR_CONST)? informacaoTipoDado = declaracaoTipoDado ( vDeclaracao = declaracao)(',' vDeclaracao = declaracao)*);
+listaDeclaracoes: ((PR_CONST)? declaracaoTipoDado (declaracao)(',' declaracao)*);
 
-declaracao: (ID (tk1 = '[' (ind1 = expressao)? ']' (tk2 = '[' (ind2 = expressao)? ']')?)? ('=' inicializacao = expressao)?);
+declaracao: (ID ('[' (expressao)? ']' ('[' (expressao)? ']')?)? (expressao)?);
 
-declaracaoTipoDado: (tokenTipoDado = PR_INTEIRO | tokenTipoDado = PR_REAL | tokenTipoDado = PR_CARACTER | tokenTipoDado = PR_CADEIA | tokenTipoDado = PR_LOGICO);
+declaracaoTipoDado: (PR_INTEIRO | PR_REAL | PR_CARACTER | PR_CADEIA | PR_LOGICO);
 
 declaracaoTipoDadoVazio: PR_VAZIO;
 
-quantificador: (tk1 = '[' ']' (tk2 = '[' ']')? )?;
+quantificador: ('[' ']' ('[' ']')? )?;
 
-tipoRetornoFuncao: (informacao = declaracaoTipoDado | informacao = declaracaoTipoDadoVazio)?;
+tipoRetornoFuncao: (declaracaoTipoDado | declaracaoTipoDadoVazio)?;
 
-declaracaoFuncao: PR_FUNCAO informacaoTipoDado = tipoRetornoFuncao vQuantificador = quantificador ID '(' vListaParametros = listaParametrosFuncao ')' '{' vBlocos = blocos '}';
+declaracaoFuncao: PR_FUNCAO tipoRetornoFuncao quantificador ID '(' listaParametrosFuncao ')' '{' blocos '}';
 
-listaParametrosFuncao:((vDeclaracaoParametro = declaracaoParametro)(',' vDeclaracaoParametro = declaracaoParametro)*)?;
+listaParametrosFuncao:((declaracaoParametro)(',' declaracaoParametro)*)?;
 
-declaracaoParametro: informacaoTipoDado = declaracaoTipoDado (tkr = '&')? ID vQuantificador = quantificador;
+declaracaoParametro: declaracaoTipoDado ('&')? ID quantificador;
 
-blocos:(vBloco = bloco | declaracoesLocais)*;
+blocos:(bloco | declaracoesLocais)*;
 
 bloco:	(
-          vExpressao = expressao
-        | vPara = para
-        | vPare = pare
-        | vRetorne = retorne
-        | vSe = se
-        | vEnquanto = enquanto
-        | vFacaEnquanto = facaEnquanto
-        | vEscolha = escolha
+          expressao
+        | para
+        | pare
+        | retorne
+        | se
+        | enquanto
+        | facaEnquanto
+        | escolha
         );
 
-para: PR_PARA '(' (inicializacao = inicializacaoPara)? ';' (condicao = expressao)? ';' (incremento = expressao)? fp = ')' vBlocos = listaBlocos;
+para: PR_PARA '(' (inicializacaoPara)? ';' (expressao)? ';' (expressao)? ')'listaBlocos;
 
-inicializacaoPara: (vExpressao = expressao | vListaDeclaracoes = listaDeclaracoes);
+inicializacaoPara: (expressao | listaDeclaracoes);
 
-listaBlocos: ('{' vListaBlocos = blocos '}' | vBloco = bloco);
+listaBlocos: ('{' blocos '}' | bloco);
 
 pare: PR_PARE;
 
-escolha: PR_ESCOLHA '(' vExpressaoEscolha = expressao ')' '{' (PR_CASO vExpressao = expressao ':' vBlocos = blocosCaso)+ (PR_CASO PR_CONTRARIO ':' vBlocos = blocosCaso)?'}';
+escolha: PR_ESCOLHA '(' expressao ')' '{' (PR_CASO  expressao ':' blocosCaso)+ (PR_CASO PR_CONTRARIO ':' blocosCaso)?'}';
 
-blocosCaso:('{' vBlocos = blocos '}') | (vBlocos = blocos);
+blocosCaso:('{' blocos '}') | (blocos);
 
-enquanto: PR_ENQUANTO '(' vExpressao = expressao ')' vListaBlocos = listaBlocos;
+enquanto: PR_ENQUANTO '(' expressao ')' listaBlocos;
 
-facaEnquanto: PR_FACA vListaBlocos = listaBlocos PR_ENQUANTO '(' vExpressao = expressao ')';
+facaEnquanto: PR_FACA listaBlocos PR_ENQUANTO '(' expressao ')';
 
-se: PR_SE '(' vExpressao = expressao ')' vListaBlocos = listaBlocos (PR_SENAO listaBlocosSenao = listaBlocos)?;
+se: PR_SE '(' expressao ')' listaBlocos (PR_SENAO listaBlocos)?;
 
-retorne: PR_RETORNE vExpressao = expressao?;	
+retorne: PR_RETORNE expressao?;	
 
-pilha:;
-
-expressao: operandoEsquerdo = expressao2 vPilha = pilha (
+expressao: expressao2 (
 	(
-           operador = '='   | 
-           operador = '+='  | 
-           operador = '-='  | 
-           operador = '/='  | 
-           operador = '*='  | 
-           operador = '%='  | 
-           operador = '>>=' |
-           operador = '<<=' | 
-           operador = '|='  | 
-           operador = '&='  | 
-           operador = '^='
+           '='   | 
+           '+='  | 
+           '-='  | 
+           '/='  | 
+           '*='  | 
+           '%='  | 
+           '>>=' |
+           '<<=' | 
+           '|='  | 
+           '&='  | 
+           '^='
         ) 	
-	operandoDireito = expressao2)*;
+	expressao2)*;
 
-expressao2: operandoEsquerdo = expressao2_5 ((operador = 'e' | operador = 'ou') operandoDireito = expressao2_5)*;
+expressao2: expressao2_5 (( 'e' |  'ou')  expressao2_5)*;
 
-expressao2_5: operandoEsquerdo = expressao3((operador = '==' | operador = '!=') operandoDireito = expressao3)*;
+expressao2_5:  expressao3(( '==' |  '!=')  expressao3)*;
 
-expressao3: operandoEsquerdo = expressao3_5 ((operador = '>=' | operador = '<=' | operador = '<' | operador = '>') operandoDireito = expressao3_5)?;
+expressao3:  expressao3_5 (( '>=' |  '<=' |  '<' |  '>')  expressao3_5)?;
 
-expressao3_5: operandoEsquerdo = expressao4_5 ((operador = '&' | operador = '|' | operador = '^') operandoDireito = expressao4_5)*;
+expressao3_5:  expressao4_5 (( '&' |  '|' |  '^')  expressao4_5)*;
 
-expressao4_5: operandoEsquerdo = expressao5 ((operador = '<<' | operador = '>>')operandoDireito = expressao5)*;
+expressao4_5:  expressao5 (( '<<' |  '>>') expressao5)*;
 
-expressao5: operandoEsquerdo = expressao6 ((operador = '+' operandoDireito = expressao6) | (operador = '-' operandoDireito = expressao6))*;
+expressao5:  expressao6 (( '+'  expressao6) | ( '-'  expressao6))*;
 
-expressao6: operandoEsquerdo = expressao7 ((operador = '*' | operador = '/' | operador = '%') operandoDireito = expressao7)*;
+expressao6:  expressao7 (( '*' |  '/' |  '%')  expressao7)*;
 
-expressao7: ((listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)* | listaTokenNot += '~' )  vExpressao = expressao8;
+expressao7: ((listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)* | listaTokenNot += '~' )   expressao8;
 
-expressao8:( ab = '(' vExpressao = expressao fp = ')' | vExpressao = referencia| vExpressao = tipoPrimitivo | vExpressao = matrizVetor) (operador = '++' | operador = '--')?;
+expressao8:(  '('  expressao  ')' |  referencia|  tipoPrimitivo |  matrizVetor) ( '++' |  '--')?;
 
 tipoPrimitivo: REAL | LOGICO | CADEIA | INTEIRO | CARACTER; 
 
-referencia: (id = ID | id = ID_BIBLIOTECA) 
+referencia: ( ID |  ID_BIBLIOTECA) 
             (
-            vExpressao = chamadaFuncao | 
-            vExpressao = referenciaVetorMatriz |
-            vExpressao = referenciaId
+             chamadaFuncao | 
+             referenciaVetorMatriz
             );
 
-referenciaId:;
+referenciaVetorMatriz: '['  expressao ']' ('['  expressao ']')?;
 
-referenciaVetorMatriz: '[' indice1 = expressao ']' ('[' indice2 = expressao ']')?;
+chamadaFuncao: '(' ( listaParametros)? ')';
 
-chamadaFuncao: '(' (vListaParametros = listaParametros)? ')';
+listaParametros: ( expressao)(','  expressao)*;
 
-listaParametros: (vExpressao = expressao)(',' vExpressao = expressao)*;
+matrizVetor: ( matriz |  vetor);
 
-matrizVetor: (vExpressao = matriz | vExpressao = vetor);
+vetor:  '{'  listaExpressoes  '}';
 
-vetor: abre_ch = '{' vListaExpressoes = listaExpressoes fecha_ch = '}';
+matriz:	 '{'  listaListaExpressoes  '}';
 
-matriz:	abre_ch = '{' vListaListaExpressoes = listaListaExpressoes fecha_ch = '}';
+listaListaExpressoes:( '{'  listaExpressoes '}')? (','  '{'  listaExpressoes '}' )*;
 
-listaListaExpressoes:( '{' vListaExpressoes = listaExpressoes '}')? (','  '{' vListaExpressoes = listaExpressoes '}' )*;
-
-listaExpressoes: ((vExpressao = expressao)?) (',' (vExpressao = expressao))*;
+listaExpressoes: (( expressao)?) (',' ( expressao))*;

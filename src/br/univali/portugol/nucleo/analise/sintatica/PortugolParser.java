@@ -181,8 +181,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class InclusaoBibliotecaContext extends ParserRuleContext {
-		public Token nome;
-		public Token alias;
 		public List<TerminalNode> ID() { return getTokens(PortugolParser.ID); }
 		public TerminalNode PR_BIBLIOTECA() { return getToken(PortugolParser.PR_BIBLIOTECA, 0); }
 		public TerminalNode PR_INCLUA() { return getToken(PortugolParser.PR_INCLUA, 0); }
@@ -209,13 +207,13 @@ public class PortugolParser extends Parser {
 			{
 			setState(111); match(PR_INCLUA);
 			setState(112); match(PR_BIBLIOTECA);
-			setState(113); ((InclusaoBibliotecaContext)_localctx).nome = match(ID);
+			setState(113); match(ID);
 			setState(116);
 			_la = _input.LA(1);
 			if (_la==37) {
 				{
 				setState(114); match(37);
-				setState(115); ((InclusaoBibliotecaContext)_localctx).alias = match(ID);
+				setState(115); match(ID);
 				}
 			}
 
@@ -233,7 +231,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class DeclaracoesGlobaisContext extends ParserRuleContext {
-		public ListaDeclaracoesContext vListaDeclaracoes;
 		public ListaDeclaracoesContext listaDeclaracoes() {
 			return getRuleContext(ListaDeclaracoesContext.class,0);
 		}
@@ -254,7 +251,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(118); ((DeclaracoesGlobaisContext)_localctx).vListaDeclaracoes = listaDeclaracoes();
+			setState(118); listaDeclaracoes();
 			}
 		}
 		catch (RecognitionException re) {
@@ -269,7 +266,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class DeclaracoesLocaisContext extends ParserRuleContext {
-		public ListaDeclaracoesContext vListaDeclaracoes;
 		public ListaDeclaracoesContext listaDeclaracoes() {
 			return getRuleContext(ListaDeclaracoesContext.class,0);
 		}
@@ -290,7 +286,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(120); ((DeclaracoesLocaisContext)_localctx).vListaDeclaracoes = listaDeclaracoes();
+			setState(120); listaDeclaracoes();
 			}
 		}
 		catch (RecognitionException re) {
@@ -305,9 +301,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ListaDeclaracoesContext extends ParserRuleContext {
-		public Token tokenConst;
-		public DeclaracaoTipoDadoContext informacaoTipoDado;
-		public DeclaracaoContext vDeclaracao;
 		public DeclaracaoContext declaracao(int i) {
 			return getRuleContext(DeclaracaoContext.class,i);
 		}
@@ -341,13 +334,13 @@ public class PortugolParser extends Parser {
 			_la = _input.LA(1);
 			if (_la==PR_CONST) {
 				{
-				setState(122); ((ListaDeclaracoesContext)_localctx).tokenConst = match(PR_CONST);
+				setState(122); match(PR_CONST);
 				}
 			}
 
-			setState(125); ((ListaDeclaracoesContext)_localctx).informacaoTipoDado = declaracaoTipoDado();
+			setState(125); declaracaoTipoDado();
 			{
-			setState(126); ((ListaDeclaracoesContext)_localctx).vDeclaracao = declaracao();
+			setState(126); declaracao();
 			}
 			setState(131);
 			_errHandler.sync(this);
@@ -356,7 +349,7 @@ public class PortugolParser extends Parser {
 				{
 				{
 				setState(127); match(24);
-				setState(128); ((ListaDeclaracoesContext)_localctx).vDeclaracao = declaracao();
+				setState(128); declaracao();
 				}
 				}
 				setState(133);
@@ -378,11 +371,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class DeclaracaoContext extends ParserRuleContext {
-		public Token tk1;
-		public ExpressaoContext ind1;
-		public Token tk2;
-		public ExpressaoContext ind2;
-		public ExpressaoContext inicializacao;
 		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
@@ -414,12 +402,12 @@ public class PortugolParser extends Parser {
 			_la = _input.LA(1);
 			if (_la==28) {
 				{
-				setState(135); ((DeclaracaoContext)_localctx).tk1 = match(28);
+				setState(135); match(28);
 				setState(137);
 				_la = _input.LA(1);
 				if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 					{
-					setState(136); ((DeclaracaoContext)_localctx).ind1 = expressao();
+					setState(136); expressao();
 					}
 				}
 
@@ -428,12 +416,12 @@ public class PortugolParser extends Parser {
 				_la = _input.LA(1);
 				if (_la==28) {
 					{
-					setState(140); ((DeclaracaoContext)_localctx).tk2 = match(28);
+					setState(140); match(28);
 					setState(142);
 					_la = _input.LA(1);
 					if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 						{
-						setState(141); ((DeclaracaoContext)_localctx).ind2 = expressao();
+						setState(141); expressao();
 						}
 					}
 
@@ -444,15 +432,14 @@ public class PortugolParser extends Parser {
 				}
 			}
 
-			setState(151);
-			_la = _input.LA(1);
-			if (_la==13) {
+			setState(150);
+			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+			case 1:
 				{
-				setState(149); match(13);
-				setState(150); ((DeclaracaoContext)_localctx).inicializacao = expressao();
+				setState(149); expressao();
 				}
+				break;
 			}
-
 			}
 			}
 		}
@@ -468,7 +455,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class DeclaracaoTipoDadoContext extends ParserRuleContext {
-		public Token tokenTipoDado;
 		public TerminalNode PR_REAL() { return getToken(PortugolParser.PR_REAL, 0); }
 		public TerminalNode PR_INTEIRO() { return getToken(PortugolParser.PR_INTEIRO, 0); }
 		public TerminalNode PR_LOGICO() { return getToken(PortugolParser.PR_LOGICO, 0); }
@@ -488,39 +474,16 @@ public class PortugolParser extends Parser {
 	public final DeclaracaoTipoDadoContext declaracaoTipoDado() throws RecognitionException {
 		DeclaracaoTipoDadoContext _localctx = new DeclaracaoTipoDadoContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_declaracaoTipoDado);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(158);
-			switch (_input.LA(1)) {
-			case PR_INTEIRO:
-				{
-				setState(153); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_INTEIRO);
-				}
-				break;
-			case PR_REAL:
-				{
-				setState(154); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_REAL);
-				}
-				break;
-			case PR_CARACTER:
-				{
-				setState(155); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_CARACTER);
-				}
-				break;
-			case PR_CADEIA:
-				{
-				setState(156); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_CADEIA);
-				}
-				break;
-			case PR_LOGICO:
-				{
-				setState(157); ((DeclaracaoTipoDadoContext)_localctx).tokenTipoDado = match(PR_LOGICO);
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			setState(152);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PR_REAL) | (1L << PR_LOGICO) | (1L << PR_CADEIA) | (1L << PR_INTEIRO) | (1L << PR_CARACTER))) != 0)) ) {
+			_errHandler.recoverInline(this);
 			}
+			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -553,7 +516,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(160); match(PR_VAZIO);
+			setState(154); match(PR_VAZIO);
 			}
 		}
 		catch (RecognitionException re) {
@@ -568,8 +531,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class QuantificadorContext extends ParserRuleContext {
-		public Token tk1;
-		public Token tk2;
 		public QuantificadorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -588,18 +549,18 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(168);
+			setState(162);
 			_la = _input.LA(1);
 			if (_la==28) {
 				{
-				setState(162); ((QuantificadorContext)_localctx).tk1 = match(28);
-				setState(163); match(34);
-				setState(166);
+				setState(156); match(28);
+				setState(157); match(34);
+				setState(160);
 				_la = _input.LA(1);
 				if (_la==28) {
 					{
-					setState(164); ((QuantificadorContext)_localctx).tk2 = match(28);
-					setState(165); match(34);
+					setState(158); match(28);
+					setState(159); match(34);
 					}
 				}
 
@@ -620,7 +581,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class TipoRetornoFuncaoContext extends ParserRuleContext {
-		public DeclaracaoTipoDadoContext informacao;
 		public DeclaracaoTipoDadoContext declaracaoTipoDado() {
 			return getRuleContext(DeclaracaoTipoDadoContext.class,0);
 		}
@@ -644,7 +604,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(172);
+			setState(166);
 			switch (_input.LA(1)) {
 			case PR_REAL:
 			case PR_LOGICO:
@@ -652,12 +612,12 @@ public class PortugolParser extends Parser {
 			case PR_INTEIRO:
 			case PR_CARACTER:
 				{
-				setState(170); ((TipoRetornoFuncaoContext)_localctx).informacao = declaracaoTipoDado();
+				setState(164); declaracaoTipoDado();
 				}
 				break;
 			case PR_VAZIO:
 				{
-				setState(171); ((TipoRetornoFuncaoContext)_localctx).informacao = declaracaoTipoDadoVazio();
+				setState(165); declaracaoTipoDadoVazio();
 				}
 				break;
 			case 28:
@@ -680,10 +640,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class DeclaracaoFuncaoContext extends ParserRuleContext {
-		public TipoRetornoFuncaoContext informacaoTipoDado;
-		public QuantificadorContext vQuantificador;
-		public ListaParametrosFuncaoContext vListaParametros;
-		public BlocosContext vBlocos;
 		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
 		public QuantificadorContext quantificador() {
 			return getRuleContext(QuantificadorContext.class,0);
@@ -715,16 +671,16 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(174); match(PR_FUNCAO);
-			setState(175); ((DeclaracaoFuncaoContext)_localctx).informacaoTipoDado = tipoRetornoFuncao();
-			setState(176); ((DeclaracaoFuncaoContext)_localctx).vQuantificador = quantificador();
-			setState(177); match(ID);
-			setState(178); match(21);
-			setState(179); ((DeclaracaoFuncaoContext)_localctx).vListaParametros = listaParametrosFuncao();
-			setState(180); match(40);
-			setState(181); match(9);
-			setState(182); ((DeclaracaoFuncaoContext)_localctx).vBlocos = blocos();
-			setState(183); match(14);
+			setState(168); match(PR_FUNCAO);
+			setState(169); tipoRetornoFuncao();
+			setState(170); quantificador();
+			setState(171); match(ID);
+			setState(172); match(21);
+			setState(173); listaParametrosFuncao();
+			setState(174); match(40);
+			setState(175); match(9);
+			setState(176); blocos();
+			setState(177); match(14);
 			}
 		}
 		catch (RecognitionException re) {
@@ -739,7 +695,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ListaParametrosFuncaoContext extends ParserRuleContext {
-		public DeclaracaoParametroContext vDeclaracaoParametro;
 		public DeclaracaoParametroContext declaracaoParametro(int i) {
 			return getRuleContext(DeclaracaoParametroContext.class,i);
 		}
@@ -764,24 +719,24 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(193);
+			setState(187);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << PR_REAL) | (1L << PR_LOGICO) | (1L << PR_CADEIA) | (1L << PR_INTEIRO) | (1L << PR_CARACTER))) != 0)) {
 				{
 				{
-				setState(185); ((ListaParametrosFuncaoContext)_localctx).vDeclaracaoParametro = declaracaoParametro();
+				setState(179); declaracaoParametro();
 				}
-				setState(190);
+				setState(184);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==24) {
 					{
 					{
-					setState(186); match(24);
-					setState(187); ((ListaParametrosFuncaoContext)_localctx).vDeclaracaoParametro = declaracaoParametro();
+					setState(180); match(24);
+					setState(181); declaracaoParametro();
 					}
 					}
-					setState(192);
+					setState(186);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
@@ -802,9 +757,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class DeclaracaoParametroContext extends ParserRuleContext {
-		public DeclaracaoTipoDadoContext informacaoTipoDado;
-		public Token tkr;
-		public QuantificadorContext vQuantificador;
 		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
 		public QuantificadorContext quantificador() {
 			return getRuleContext(QuantificadorContext.class,0);
@@ -830,17 +782,17 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(195); ((DeclaracaoParametroContext)_localctx).informacaoTipoDado = declaracaoTipoDado();
-			setState(197);
+			setState(189); declaracaoTipoDado();
+			setState(191);
 			_la = _input.LA(1);
 			if (_la==20) {
 				{
-				setState(196); ((DeclaracaoParametroContext)_localctx).tkr = match(20);
+				setState(190); match(20);
 				}
 			}
 
-			setState(199); match(ID);
-			setState(200); ((DeclaracaoParametroContext)_localctx).vQuantificador = quantificador();
+			setState(193); match(ID);
+			setState(194); quantificador();
 			}
 		}
 		catch (RecognitionException re) {
@@ -855,7 +807,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class BlocosContext extends ParserRuleContext {
-		public BlocoContext vBloco;
 		public BlocoContext bloco(int i) {
 			return getRuleContext(BlocoContext.class,i);
 		}
@@ -886,12 +837,12 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(206);
+			setState(200);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (PR_REAL - 9)) | (1L << (PR_LOGICO - 9)) | (1L << (PR_CADEIA - 9)) | (1L << (PR_INTEIRO - 9)) | (1L << (PR_CARACTER - 9)) | (1L << (PR_ESCOLHA - 9)) | (1L << (PR_CONST - 9)) | (1L << (PR_RETORNE - 9)) | (1L << (PR_PARA - 9)) | (1L << (PR_PARE - 9)) | (1L << (PR_FACA - 9)) | (1L << (PR_ENQUANTO - 9)) | (1L << (PR_SE - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 				{
-				setState(204);
+				setState(198);
 				switch (_input.LA(1)) {
 				case 9:
 				case 21:
@@ -913,7 +864,7 @@ public class PortugolParser extends Parser {
 				case CADEIA:
 				case CARACTER:
 					{
-					setState(202); ((BlocosContext)_localctx).vBloco = bloco();
+					setState(196); bloco();
 					}
 					break;
 				case PR_REAL:
@@ -923,14 +874,14 @@ public class PortugolParser extends Parser {
 				case PR_CARACTER:
 				case PR_CONST:
 					{
-					setState(203); declaracoesLocais();
+					setState(197); declaracoesLocais();
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(208);
+				setState(202);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -948,14 +899,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class BlocoContext extends ParserRuleContext {
-		public ExpressaoContext vExpressao;
-		public ParaContext vPara;
-		public PareContext vPare;
-		public RetorneContext vRetorne;
-		public SeContext vSe;
-		public EnquantoContext vEnquanto;
-		public FacaEnquantoContext vFacaEnquanto;
-		public EscolhaContext vEscolha;
 		public ParaContext para() {
 			return getRuleContext(ParaContext.class,0);
 		}
@@ -997,7 +940,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(217);
+			setState(211);
 			switch (_input.LA(1)) {
 			case 9:
 			case 21:
@@ -1012,42 +955,42 @@ public class PortugolParser extends Parser {
 			case CADEIA:
 			case CARACTER:
 				{
-				setState(209); ((BlocoContext)_localctx).vExpressao = expressao();
+				setState(203); expressao();
 				}
 				break;
 			case PR_PARA:
 				{
-				setState(210); ((BlocoContext)_localctx).vPara = para();
+				setState(204); para();
 				}
 				break;
 			case PR_PARE:
 				{
-				setState(211); ((BlocoContext)_localctx).vPare = pare();
+				setState(205); pare();
 				}
 				break;
 			case PR_RETORNE:
 				{
-				setState(212); ((BlocoContext)_localctx).vRetorne = retorne();
+				setState(206); retorne();
 				}
 				break;
 			case PR_SE:
 				{
-				setState(213); ((BlocoContext)_localctx).vSe = se();
+				setState(207); se();
 				}
 				break;
 			case PR_ENQUANTO:
 				{
-				setState(214); ((BlocoContext)_localctx).vEnquanto = enquanto();
+				setState(208); enquanto();
 				}
 				break;
 			case PR_FACA:
 				{
-				setState(215); ((BlocoContext)_localctx).vFacaEnquanto = facaEnquanto();
+				setState(209); facaEnquanto();
 				}
 				break;
 			case PR_ESCOLHA:
 				{
-				setState(216); ((BlocoContext)_localctx).vEscolha = escolha();
+				setState(210); escolha();
 				}
 				break;
 			default:
@@ -1067,11 +1010,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ParaContext extends ParserRuleContext {
-		public InicializacaoParaContext inicializacao;
-		public ExpressaoContext condicao;
-		public ExpressaoContext incremento;
-		public Token fp;
-		public ListaBlocosContext vBlocos;
 		public InicializacaoParaContext inicializacaoPara() {
 			return getRuleContext(InicializacaoParaContext.class,0);
 		}
@@ -1103,36 +1041,36 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(219); match(PR_PARA);
-			setState(220); match(21);
-			setState(222);
+			setState(213); match(PR_PARA);
+			setState(214); match(21);
+			setState(216);
 			_la = _input.LA(1);
 			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (PR_REAL - 9)) | (1L << (PR_LOGICO - 9)) | (1L << (PR_CADEIA - 9)) | (1L << (PR_INTEIRO - 9)) | (1L << (PR_CARACTER - 9)) | (1L << (PR_CONST - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 				{
-				setState(221); ((ParaContext)_localctx).inicializacao = inicializacaoPara();
+				setState(215); inicializacaoPara();
 				}
 			}
 
-			setState(224); match(8);
-			setState(226);
+			setState(218); match(8);
+			setState(220);
 			_la = _input.LA(1);
 			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 				{
-				setState(225); ((ParaContext)_localctx).condicao = expressao();
+				setState(219); expressao();
 				}
 			}
 
-			setState(228); match(8);
-			setState(230);
+			setState(222); match(8);
+			setState(224);
 			_la = _input.LA(1);
 			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 				{
-				setState(229); ((ParaContext)_localctx).incremento = expressao();
+				setState(223); expressao();
 				}
 			}
 
-			setState(232); ((ParaContext)_localctx).fp = match(40);
-			setState(233); ((ParaContext)_localctx).vBlocos = listaBlocos();
+			setState(226); match(40);
+			setState(227); listaBlocos();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1147,8 +1085,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class InicializacaoParaContext extends ParserRuleContext {
-		public ExpressaoContext vExpressao;
-		public ListaDeclaracoesContext vListaDeclaracoes;
 		public ListaDeclaracoesContext listaDeclaracoes() {
 			return getRuleContext(ListaDeclaracoesContext.class,0);
 		}
@@ -1172,7 +1108,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(237);
+			setState(231);
 			switch (_input.LA(1)) {
 			case 9:
 			case 21:
@@ -1187,7 +1123,7 @@ public class PortugolParser extends Parser {
 			case CADEIA:
 			case CARACTER:
 				{
-				setState(235); ((InicializacaoParaContext)_localctx).vExpressao = expressao();
+				setState(229); expressao();
 				}
 				break;
 			case PR_REAL:
@@ -1197,7 +1133,7 @@ public class PortugolParser extends Parser {
 			case PR_CARACTER:
 			case PR_CONST:
 				{
-				setState(236); ((InicializacaoParaContext)_localctx).vListaDeclaracoes = listaDeclaracoes();
+				setState(230); listaDeclaracoes();
 				}
 				break;
 			default:
@@ -1217,8 +1153,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ListaBlocosContext extends ParserRuleContext {
-		public BlocosContext vListaBlocos;
-		public BlocoContext vBloco;
 		public BlocosContext blocos() {
 			return getRuleContext(BlocosContext.class,0);
 		}
@@ -1242,19 +1176,19 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(244);
-			switch ( getInterpreter().adaptivePredict(_input,25,_ctx) ) {
+			setState(238);
+			switch ( getInterpreter().adaptivePredict(_input,24,_ctx) ) {
 			case 1:
 				{
-				setState(239); match(9);
-				setState(240); ((ListaBlocosContext)_localctx).vListaBlocos = blocos();
-				setState(241); match(14);
+				setState(233); match(9);
+				setState(234); blocos();
+				setState(235); match(14);
 				}
 				break;
 
 			case 2:
 				{
-				setState(243); ((ListaBlocosContext)_localctx).vBloco = bloco();
+				setState(237); bloco();
 				}
 				break;
 			}
@@ -1290,7 +1224,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(246); match(PR_PARE);
+			setState(240); match(PR_PARE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1305,9 +1239,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class EscolhaContext extends ParserRuleContext {
-		public ExpressaoContext vExpressaoEscolha;
-		public ExpressaoContext vExpressao;
-		public BlocosCasoContext vBlocos;
 		public List<BlocosCasoContext> blocosCaso() {
 			return getRuleContexts(BlocosCasoContext.class);
 		}
@@ -1345,45 +1276,45 @@ public class PortugolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(248); match(PR_ESCOLHA);
-			setState(249); match(21);
-			setState(250); ((EscolhaContext)_localctx).vExpressaoEscolha = expressao();
-			setState(251); match(40);
-			setState(252); match(9);
-			setState(258); 
+			setState(242); match(PR_ESCOLHA);
+			setState(243); match(21);
+			setState(244); expressao();
+			setState(245); match(40);
+			setState(246); match(9);
+			setState(252); 
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,25,_ctx);
 			do {
 				switch (_alt) {
 				case 1:
 					{
 					{
-					setState(253); match(PR_CASO);
-					setState(254); ((EscolhaContext)_localctx).vExpressao = expressao();
-					setState(255); match(26);
-					setState(256); ((EscolhaContext)_localctx).vBlocos = blocosCaso();
+					setState(247); match(PR_CASO);
+					setState(248); expressao();
+					setState(249); match(26);
+					setState(250); blocosCaso();
 					}
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(260); 
+				setState(254); 
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,25,_ctx);
 			} while ( _alt!=2 && _alt!=-1 );
-			setState(266);
+			setState(260);
 			_la = _input.LA(1);
 			if (_la==PR_CASO) {
 				{
-				setState(262); match(PR_CASO);
-				setState(263); match(PR_CONTRARIO);
-				setState(264); match(26);
-				setState(265); ((EscolhaContext)_localctx).vBlocos = blocosCaso();
+				setState(256); match(PR_CASO);
+				setState(257); match(PR_CONTRARIO);
+				setState(258); match(26);
+				setState(259); blocosCaso();
 				}
 			}
 
-			setState(268); match(14);
+			setState(262); match(14);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1398,7 +1329,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class BlocosCasoContext extends ParserRuleContext {
-		public BlocosContext vBlocos;
 		public BlocosContext blocos() {
 			return getRuleContext(BlocosContext.class,0);
 		}
@@ -1417,15 +1347,15 @@ public class PortugolParser extends Parser {
 		BlocosCasoContext _localctx = new BlocosCasoContext(_ctx, getState());
 		enterRule(_localctx, 40, RULE_blocosCaso);
 		try {
-			setState(275);
-			switch ( getInterpreter().adaptivePredict(_input,28,_ctx) ) {
+			setState(269);
+			switch ( getInterpreter().adaptivePredict(_input,27,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
 				{
-				setState(270); match(9);
-				setState(271); ((BlocosCasoContext)_localctx).vBlocos = blocos();
-				setState(272); match(14);
+				setState(264); match(9);
+				setState(265); blocos();
+				setState(266); match(14);
 				}
 				}
 				break;
@@ -1434,7 +1364,7 @@ public class PortugolParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				{
-				setState(274); ((BlocosCasoContext)_localctx).vBlocos = blocos();
+				setState(268); blocos();
 				}
 				}
 				break;
@@ -1452,8 +1382,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class EnquantoContext extends ParserRuleContext {
-		public ExpressaoContext vExpressao;
-		public ListaBlocosContext vListaBlocos;
 		public TerminalNode PR_ENQUANTO() { return getToken(PortugolParser.PR_ENQUANTO, 0); }
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
@@ -1478,11 +1406,11 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(277); match(PR_ENQUANTO);
-			setState(278); match(21);
-			setState(279); ((EnquantoContext)_localctx).vExpressao = expressao();
-			setState(280); match(40);
-			setState(281); ((EnquantoContext)_localctx).vListaBlocos = listaBlocos();
+			setState(271); match(PR_ENQUANTO);
+			setState(272); match(21);
+			setState(273); expressao();
+			setState(274); match(40);
+			setState(275); listaBlocos();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1497,8 +1425,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class FacaEnquantoContext extends ParserRuleContext {
-		public ListaBlocosContext vListaBlocos;
-		public ExpressaoContext vExpressao;
 		public TerminalNode PR_ENQUANTO() { return getToken(PortugolParser.PR_ENQUANTO, 0); }
 		public TerminalNode PR_FACA() { return getToken(PortugolParser.PR_FACA, 0); }
 		public ExpressaoContext expressao() {
@@ -1524,12 +1450,12 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(283); match(PR_FACA);
-			setState(284); ((FacaEnquantoContext)_localctx).vListaBlocos = listaBlocos();
-			setState(285); match(PR_ENQUANTO);
-			setState(286); match(21);
-			setState(287); ((FacaEnquantoContext)_localctx).vExpressao = expressao();
-			setState(288); match(40);
+			setState(277); match(PR_FACA);
+			setState(278); listaBlocos();
+			setState(279); match(PR_ENQUANTO);
+			setState(280); match(21);
+			setState(281); expressao();
+			setState(282); match(40);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1544,9 +1470,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class SeContext extends ParserRuleContext {
-		public ExpressaoContext vExpressao;
-		public ListaBlocosContext vListaBlocos;
-		public ListaBlocosContext listaBlocosSenao;
 		public TerminalNode PR_SE() { return getToken(PortugolParser.PR_SE, 0); }
 		public ListaBlocosContext listaBlocos(int i) {
 			return getRuleContext(ListaBlocosContext.class,i);
@@ -1575,17 +1498,17 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(290); match(PR_SE);
-			setState(291); match(21);
-			setState(292); ((SeContext)_localctx).vExpressao = expressao();
-			setState(293); match(40);
-			setState(294); ((SeContext)_localctx).vListaBlocos = listaBlocos();
-			setState(297);
-			switch ( getInterpreter().adaptivePredict(_input,29,_ctx) ) {
+			setState(284); match(PR_SE);
+			setState(285); match(21);
+			setState(286); expressao();
+			setState(287); match(40);
+			setState(288); listaBlocos();
+			setState(291);
+			switch ( getInterpreter().adaptivePredict(_input,28,_ctx) ) {
 			case 1:
 				{
-				setState(295); match(PR_SENAO);
-				setState(296); ((SeContext)_localctx).listaBlocosSenao = listaBlocos();
+				setState(289); match(PR_SENAO);
+				setState(290); listaBlocos();
 				}
 				break;
 			}
@@ -1603,7 +1526,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class RetorneContext extends ParserRuleContext {
-		public ExpressaoContext vExpressao;
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
@@ -1625,12 +1547,12 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(299); match(PR_RETORNE);
-			setState(301);
-			switch ( getInterpreter().adaptivePredict(_input,30,_ctx) ) {
+			setState(293); match(PR_RETORNE);
+			setState(295);
+			switch ( getInterpreter().adaptivePredict(_input,29,_ctx) ) {
 			case 1:
 				{
-				setState(300); ((RetorneContext)_localctx).vExpressao = expressao();
+				setState(294); expressao();
 				}
 				break;
 			}
@@ -1679,10 +1601,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ExpressaoContext extends ParserRuleContext {
-		public Expressao2Context operandoEsquerdo;
-		public PilhaContext vPilha;
-		public Token operador;
-		public Expressao2Context operandoDireito;
 		public List<Expressao2Context> expressao2() {
 			return getRuleContexts(Expressao2Context.class);
 		}
@@ -1710,78 +1628,24 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(305); ((ExpressaoContext)_localctx).operandoEsquerdo = expressao2();
-			setState(306); ((ExpressaoContext)_localctx).vPilha = pilha();
-			setState(323);
+			setState(299); expressao2();
+			setState(300); pilha();
+			setState(305);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 2) | (1L << 3) | (1L << 4) | (1L << 5) | (1L << 7) | (1L << 12) | (1L << 13) | (1L << 16) | (1L << 18) | (1L << 23) | (1L << 25))) != 0)) {
 				{
 				{
-				setState(318);
-				switch (_input.LA(1)) {
-				case 13:
-					{
-					setState(307); ((ExpressaoContext)_localctx).operador = match(13);
-					}
-					break;
-				case 3:
-					{
-					setState(308); ((ExpressaoContext)_localctx).operador = match(3);
-					}
-					break;
-				case 23:
-					{
-					setState(309); ((ExpressaoContext)_localctx).operador = match(23);
-					}
-					break;
-				case 25:
-					{
-					setState(310); ((ExpressaoContext)_localctx).operador = match(25);
-					}
-					break;
-				case 2:
-					{
-					setState(311); ((ExpressaoContext)_localctx).operador = match(2);
-					}
-					break;
-				case 5:
-					{
-					setState(312); ((ExpressaoContext)_localctx).operador = match(5);
-					}
-					break;
-				case 7:
-					{
-					setState(313); ((ExpressaoContext)_localctx).operador = match(7);
-					}
-					break;
-				case 16:
-					{
-					setState(314); ((ExpressaoContext)_localctx).operador = match(16);
-					}
-					break;
-				case 18:
-					{
-					setState(315); ((ExpressaoContext)_localctx).operador = match(18);
-					}
-					break;
-				case 4:
-					{
-					setState(316); ((ExpressaoContext)_localctx).operador = match(4);
-					}
-					break;
-				case 12:
-					{
-					setState(317); ((ExpressaoContext)_localctx).operador = match(12);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				setState(301);
+				_la = _input.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 2) | (1L << 3) | (1L << 4) | (1L << 5) | (1L << 7) | (1L << 12) | (1L << 13) | (1L << 16) | (1L << 18) | (1L << 23) | (1L << 25))) != 0)) ) {
+				_errHandler.recoverInline(this);
 				}
-				setState(320); ((ExpressaoContext)_localctx).operandoDireito = expressao2();
+				consume();
+				setState(302); expressao2();
 				}
 				}
-				setState(325);
+				setState(307);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1799,9 +1663,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao2Context extends ParserRuleContext {
-		public Expressao2_5Context operandoEsquerdo;
-		public Token operador;
-		public Expressao2_5Context operandoDireito;
 		public List<Expressao2_5Context> expressao2_5() {
 			return getRuleContexts(Expressao2_5Context.class);
 		}
@@ -1826,32 +1687,23 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(326); ((Expressao2Context)_localctx).operandoEsquerdo = expressao2_5();
-			setState(334);
+			setState(308); expressao2_5();
+			setState(313);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==19 || _la==39) {
 				{
 				{
-				setState(329);
-				switch (_input.LA(1)) {
-				case 39:
-					{
-					setState(327); ((Expressao2Context)_localctx).operador = match(39);
-					}
-					break;
-				case 19:
-					{
-					setState(328); ((Expressao2Context)_localctx).operador = match(19);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				setState(309);
+				_la = _input.LA(1);
+				if ( !(_la==19 || _la==39) ) {
+				_errHandler.recoverInline(this);
 				}
-				setState(331); ((Expressao2Context)_localctx).operandoDireito = expressao2_5();
+				consume();
+				setState(310); expressao2_5();
 				}
 				}
-				setState(336);
+				setState(315);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1869,9 +1721,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao2_5Context extends ParserRuleContext {
-		public Expressao3Context operandoEsquerdo;
-		public Token operador;
-		public Expressao3Context operandoDireito;
 		public List<Expressao3Context> expressao3() {
 			return getRuleContexts(Expressao3Context.class);
 		}
@@ -1896,32 +1745,23 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(337); ((Expressao2_5Context)_localctx).operandoEsquerdo = expressao3();
-			setState(345);
+			setState(316); expressao3();
+			setState(321);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==6 || _la==33) {
 				{
 				{
-				setState(340);
-				switch (_input.LA(1)) {
-				case 33:
-					{
-					setState(338); ((Expressao2_5Context)_localctx).operador = match(33);
-					}
-					break;
-				case 6:
-					{
-					setState(339); ((Expressao2_5Context)_localctx).operador = match(6);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				setState(317);
+				_la = _input.LA(1);
+				if ( !(_la==6 || _la==33) ) {
+				_errHandler.recoverInline(this);
 				}
-				setState(342); ((Expressao2_5Context)_localctx).operandoDireito = expressao3();
+				consume();
+				setState(318); expressao3();
 				}
 				}
-				setState(347);
+				setState(323);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1939,9 +1779,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao3Context extends ParserRuleContext {
-		public Expressao3_5Context operandoEsquerdo;
-		public Token operador;
-		public Expressao3_5Context operandoDireito;
 		public List<Expressao3_5Context> expressao3_5() {
 			return getRuleContexts(Expressao3_5Context.class);
 		}
@@ -1966,37 +1803,18 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(348); ((Expressao3Context)_localctx).operandoEsquerdo = expressao3_5();
-			setState(356);
+			setState(324); expressao3_5();
+			setState(327);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 17) | (1L << 27) | (1L << 32) | (1L << 36))) != 0)) {
 				{
-				setState(353);
-				switch (_input.LA(1)) {
-				case 27:
-					{
-					setState(349); ((Expressao3Context)_localctx).operador = match(27);
-					}
-					break;
-				case 17:
-					{
-					setState(350); ((Expressao3Context)_localctx).operador = match(17);
-					}
-					break;
-				case 32:
-					{
-					setState(351); ((Expressao3Context)_localctx).operador = match(32);
-					}
-					break;
-				case 36:
-					{
-					setState(352); ((Expressao3Context)_localctx).operador = match(36);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				setState(325);
+				_la = _input.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 17) | (1L << 27) | (1L << 32) | (1L << 36))) != 0)) ) {
+				_errHandler.recoverInline(this);
 				}
-				setState(355); ((Expressao3Context)_localctx).operandoDireito = expressao3_5();
+				consume();
+				setState(326); expressao3_5();
 				}
 			}
 
@@ -2014,9 +1832,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao3_5Context extends ParserRuleContext {
-		public Expressao4_5Context operandoEsquerdo;
-		public Token operador;
-		public Expressao4_5Context operandoDireito;
 		public Expressao4_5Context expressao4_5(int i) {
 			return getRuleContext(Expressao4_5Context.class,i);
 		}
@@ -2041,37 +1856,23 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(358); ((Expressao3_5Context)_localctx).operandoEsquerdo = expressao4_5();
-			setState(367);
+			setState(329); expressao4_5();
+			setState(334);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 15) | (1L << 20) | (1L << 31))) != 0)) {
 				{
 				{
-				setState(362);
-				switch (_input.LA(1)) {
-				case 20:
-					{
-					setState(359); ((Expressao3_5Context)_localctx).operador = match(20);
-					}
-					break;
-				case 31:
-					{
-					setState(360); ((Expressao3_5Context)_localctx).operador = match(31);
-					}
-					break;
-				case 15:
-					{
-					setState(361); ((Expressao3_5Context)_localctx).operador = match(15);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				setState(330);
+				_la = _input.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 15) | (1L << 20) | (1L << 31))) != 0)) ) {
+				_errHandler.recoverInline(this);
 				}
-				setState(364); ((Expressao3_5Context)_localctx).operandoDireito = expressao4_5();
+				consume();
+				setState(331); expressao4_5();
 				}
 				}
-				setState(369);
+				setState(336);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2089,9 +1890,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao4_5Context extends ParserRuleContext {
-		public Expressao5Context operandoEsquerdo;
-		public Token operador;
-		public Expressao5Context operandoDireito;
 		public Expressao5Context expressao5(int i) {
 			return getRuleContext(Expressao5Context.class,i);
 		}
@@ -2116,32 +1914,23 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(370); ((Expressao4_5Context)_localctx).operandoEsquerdo = expressao5();
-			setState(378);
+			setState(337); expressao5();
+			setState(342);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==10 || _la==11) {
 				{
 				{
-				setState(373);
-				switch (_input.LA(1)) {
-				case 11:
-					{
-					setState(371); ((Expressao4_5Context)_localctx).operador = match(11);
-					}
-					break;
-				case 10:
-					{
-					setState(372); ((Expressao4_5Context)_localctx).operador = match(10);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				setState(338);
+				_la = _input.LA(1);
+				if ( !(_la==10 || _la==11) ) {
+				_errHandler.recoverInline(this);
 				}
-				setState(375); ((Expressao4_5Context)_localctx).operandoDireito = expressao5();
+				consume();
+				setState(339); expressao5();
 				}
 				}
-				setState(380);
+				setState(344);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2159,9 +1948,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao5Context extends ParserRuleContext {
-		public Expressao6Context operandoEsquerdo;
-		public Token operador;
-		public Expressao6Context operandoDireito;
 		public Expressao6Context expressao6(int i) {
 			return getRuleContext(Expressao6Context.class,i);
 		}
@@ -2186,28 +1972,28 @@ public class PortugolParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(381); ((Expressao5Context)_localctx).operandoEsquerdo = expressao6();
-			setState(388);
+			setState(345); expressao6();
+			setState(352);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,37,_ctx);
 			while ( _alt!=2 && _alt!=-1 ) {
 				if ( _alt==1 ) {
 					{
-					setState(386);
+					setState(350);
 					switch (_input.LA(1)) {
 					case 41:
 						{
 						{
-						setState(382); ((Expressao5Context)_localctx).operador = match(41);
-						setState(383); ((Expressao5Context)_localctx).operandoDireito = expressao6();
+						setState(346); match(41);
+						setState(347); expressao6();
 						}
 						}
 						break;
 					case 42:
 						{
 						{
-						setState(384); ((Expressao5Context)_localctx).operador = match(42);
-						setState(385); ((Expressao5Context)_localctx).operandoDireito = expressao6();
+						setState(348); match(42);
+						setState(349); expressao6();
 						}
 						}
 						break;
@@ -2216,9 +2002,9 @@ public class PortugolParser extends Parser {
 					}
 					} 
 				}
-				setState(390);
+				setState(354);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,44,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,37,_ctx);
 			}
 			}
 		}
@@ -2234,9 +2020,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao6Context extends ParserRuleContext {
-		public Expressao7Context operandoEsquerdo;
-		public Token operador;
-		public Expressao7Context operandoDireito;
 		public Expressao7Context expressao7(int i) {
 			return getRuleContext(Expressao7Context.class,i);
 		}
@@ -2261,37 +2044,23 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(391); ((Expressao6Context)_localctx).operandoEsquerdo = expressao7();
-			setState(400);
+			setState(355); expressao7();
+			setState(360);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 1) | (1L << 22) | (1L << 38))) != 0)) {
 				{
 				{
-				setState(395);
-				switch (_input.LA(1)) {
-				case 22:
-					{
-					setState(392); ((Expressao6Context)_localctx).operador = match(22);
-					}
-					break;
-				case 1:
-					{
-					setState(393); ((Expressao6Context)_localctx).operador = match(1);
-					}
-					break;
-				case 38:
-					{
-					setState(394); ((Expressao6Context)_localctx).operador = match(38);
-					}
-					break;
-				default:
-					throw new NoViableAltException(this);
+				setState(356);
+				_la = _input.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << 1) | (1L << 22) | (1L << 38))) != 0)) ) {
+				_errHandler.recoverInline(this);
 				}
-				setState(397); ((Expressao6Context)_localctx).operandoDireito = expressao7();
+				consume();
+				setState(357); expressao7();
 				}
 				}
-				setState(402);
+				setState(362);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2315,7 +2084,6 @@ public class PortugolParser extends Parser {
 		public List<Token> listaTokenNao = new ArrayList<Token>();
 		public Token s35;
 		public List<Token> listaTokenNot = new ArrayList<Token>();
-		public Expressao8Context vExpressao;
 		public TerminalNode OPERADOR_NAO() { return getToken(PortugolParser.OPERADOR_NAO, 0); }
 		public Expressao8Context expressao8() {
 			return getRuleContext(Expressao8Context.class,0);
@@ -2338,15 +2106,15 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(413);
-			switch ( getInterpreter().adaptivePredict(_input,49,_ctx) ) {
+			setState(373);
+			switch ( getInterpreter().adaptivePredict(_input,41,_ctx) ) {
 			case 1:
 				{
-				setState(404);
+				setState(364);
 				_la = _input.LA(1);
 				if (_la==42) {
 					{
-					setState(403); ((Expressao7Context)_localctx).s42 = match(42);
+					setState(363); ((Expressao7Context)_localctx).s42 = match(42);
 					((Expressao7Context)_localctx).listaTokenMenos.add(((Expressao7Context)_localctx).s42);
 					}
 				}
@@ -2356,17 +2124,17 @@ public class PortugolParser extends Parser {
 
 			case 2:
 				{
-				setState(409);
+				setState(369);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==OPERADOR_NAO) {
 					{
 					{
-					setState(406); ((Expressao7Context)_localctx).OPERADOR_NAO = match(OPERADOR_NAO);
+					setState(366); ((Expressao7Context)_localctx).OPERADOR_NAO = match(OPERADOR_NAO);
 					((Expressao7Context)_localctx).listaTokenNao.add(((Expressao7Context)_localctx).OPERADOR_NAO);
 					}
 					}
-					setState(411);
+					setState(371);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
@@ -2375,12 +2143,12 @@ public class PortugolParser extends Parser {
 
 			case 3:
 				{
-				setState(412); ((Expressao7Context)_localctx).s35 = match(35);
+				setState(372); ((Expressao7Context)_localctx).s35 = match(35);
 				((Expressao7Context)_localctx).listaTokenNot.add(((Expressao7Context)_localctx).s35);
 				}
 				break;
 			}
-			setState(415); ((Expressao7Context)_localctx).vExpressao = expressao8();
+			setState(375); expressao8();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2395,10 +2163,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class Expressao8Context extends ParserRuleContext {
-		public Token ab;
-		public ExpressaoContext vExpressao;
-		public Token fp;
-		public Token operador;
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
@@ -2425,22 +2189,23 @@ public class PortugolParser extends Parser {
 	public final Expressao8Context expressao8() throws RecognitionException {
 		Expressao8Context _localctx = new Expressao8Context(_ctx, getState());
 		enterRule(_localctx, 70, RULE_expressao8);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(424);
+			setState(384);
 			switch (_input.LA(1)) {
 			case 21:
 				{
-				setState(417); ((Expressao8Context)_localctx).ab = match(21);
-				setState(418); ((Expressao8Context)_localctx).vExpressao = expressao();
-				setState(419); ((Expressao8Context)_localctx).fp = match(40);
+				setState(377); match(21);
+				setState(378); expressao();
+				setState(379); match(40);
 				}
 				break;
 			case ID:
 			case ID_BIBLIOTECA:
 				{
-				setState(421); ((Expressao8Context)_localctx).vExpressao = referencia();
+				setState(381); referencia();
 				}
 				break;
 			case LOGICO:
@@ -2449,95 +2214,30 @@ public class PortugolParser extends Parser {
 			case CADEIA:
 			case CARACTER:
 				{
-				setState(422); ((Expressao8Context)_localctx).vExpressao = tipoPrimitivo();
+				setState(382); tipoPrimitivo();
 				}
 				break;
 			case 9:
 				{
-				setState(423); ((Expressao8Context)_localctx).vExpressao = matrizVetor();
+				setState(383); matrizVetor();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(428);
-			switch (_input.LA(1)) {
-			case 30:
+			setState(387);
+			_la = _input.LA(1);
+			if (_la==29 || _la==30) {
 				{
-				setState(426); ((Expressao8Context)_localctx).operador = match(30);
+				setState(386);
+				_la = _input.LA(1);
+				if ( !(_la==29 || _la==30) ) {
+				_errHandler.recoverInline(this);
 				}
-				break;
-			case 29:
-				{
-				setState(427); ((Expressao8Context)_localctx).operador = match(29);
+				consume();
 				}
-				break;
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-			case 16:
-			case 17:
-			case 18:
-			case 19:
-			case 20:
-			case 21:
-			case 22:
-			case 23:
-			case 24:
-			case 25:
-			case 26:
-			case 27:
-			case 31:
-			case 32:
-			case 33:
-			case 34:
-			case 35:
-			case 36:
-			case 38:
-			case 39:
-			case 40:
-			case 41:
-			case 42:
-			case PR_REAL:
-			case PR_LOGICO:
-			case PR_CADEIA:
-			case PR_INTEIRO:
-			case PR_CARACTER:
-			case PR_ESCOLHA:
-			case PR_CASO:
-			case PR_CONST:
-			case PR_FUNCAO:
-			case PR_RETORNE:
-			case PR_PARA:
-			case PR_PARE:
-			case PR_FACA:
-			case PR_ENQUANTO:
-			case PR_SE:
-			case PR_SENAO:
-			case OPERADOR_NAO:
-			case LOGICO:
-			case ID:
-			case ID_BIBLIOTECA:
-			case INTEIRO:
-			case REAL:
-			case CADEIA:
-			case CARACTER:
-				break;
-			default:
-				throw new NoViableAltException(this);
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -2575,7 +2275,7 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(430);
+			setState(389);
 			_la = _input.LA(1);
 			if ( !(((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (LOGICO - 66)) | (1L << (INTEIRO - 66)) | (1L << (REAL - 66)) | (1L << (CADEIA - 66)) | (1L << (CARACTER - 66)))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -2595,8 +2295,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ReferenciaContext extends ParserRuleContext {
-		public Token id;
-		public ChamadaFuncaoContext vExpressao;
 		public TerminalNode ID() { return getToken(PortugolParser.ID, 0); }
 		public ReferenciaVetorMatrizContext referenciaVetorMatriz() {
 			return getRuleContext(ReferenciaVetorMatrizContext.class,0);
@@ -2622,41 +2320,33 @@ public class PortugolParser extends Parser {
 	public final ReferenciaContext referencia() throws RecognitionException {
 		ReferenciaContext _localctx = new ReferenciaContext(_ctx, getState());
 		enterRule(_localctx, 74, RULE_referencia);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(434);
-			switch (_input.LA(1)) {
-			case ID:
-				{
-				setState(432); ((ReferenciaContext)_localctx).id = match(ID);
-				}
-				break;
-			case ID_BIBLIOTECA:
-				{
-				setState(433); ((ReferenciaContext)_localctx).id = match(ID_BIBLIOTECA);
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			setState(391);
+			_la = _input.LA(1);
+			if ( !(_la==ID || _la==ID_BIBLIOTECA) ) {
+			_errHandler.recoverInline(this);
 			}
-			setState(439);
-			switch ( getInterpreter().adaptivePredict(_input,53,_ctx) ) {
+			consume();
+			setState(395);
+			switch ( getInterpreter().adaptivePredict(_input,44,_ctx) ) {
 			case 1:
 				{
-				setState(436); ((ReferenciaContext)_localctx).vExpressao = chamadaFuncao();
+				setState(392); chamadaFuncao();
 				}
 				break;
 
 			case 2:
 				{
-				setState(437); ((ReferenciaContext)_localctx).vExpressao = referenciaVetorMatriz();
+				setState(393); referenciaVetorMatriz();
 				}
 				break;
 
 			case 3:
 				{
-				setState(438); ((ReferenciaContext)_localctx).vExpressao = referenciaId();
+				setState(394); referenciaId();
 				}
 				break;
 			}
@@ -2705,8 +2395,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ReferenciaVetorMatrizContext extends ParserRuleContext {
-		public ExpressaoContext indice1;
-		public ExpressaoContext indice2;
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
 		}
@@ -2731,16 +2419,16 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(443); match(28);
-			setState(444); ((ReferenciaVetorMatrizContext)_localctx).indice1 = expressao();
-			setState(445); match(34);
-			setState(450);
+			setState(399); match(28);
+			setState(400); expressao();
+			setState(401); match(34);
+			setState(406);
 			_la = _input.LA(1);
 			if (_la==28) {
 				{
-				setState(446); match(28);
-				setState(447); ((ReferenciaVetorMatrizContext)_localctx).indice2 = expressao();
-				setState(448); match(34);
+				setState(402); match(28);
+				setState(403); expressao();
+				setState(404); match(34);
 				}
 			}
 
@@ -2758,7 +2446,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ChamadaFuncaoContext extends ParserRuleContext {
-		public ListaParametrosContext vListaParametros;
 		public ListaParametrosContext listaParametros() {
 			return getRuleContext(ListaParametrosContext.class,0);
 		}
@@ -2780,16 +2467,16 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(452); match(21);
-			setState(454);
+			setState(408); match(21);
+			setState(410);
 			_la = _input.LA(1);
 			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 				{
-				setState(453); ((ChamadaFuncaoContext)_localctx).vListaParametros = listaParametros();
+				setState(409); listaParametros();
 				}
 			}
 
-			setState(456); match(40);
+			setState(412); match(40);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2804,7 +2491,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ListaParametrosContext extends ParserRuleContext {
-		public ExpressaoContext vExpressao;
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
 		}
@@ -2830,19 +2516,19 @@ public class PortugolParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(458); ((ListaParametrosContext)_localctx).vExpressao = expressao();
+			setState(414); expressao();
 			}
-			setState(463);
+			setState(419);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==24) {
 				{
 				{
-				setState(459); match(24);
-				setState(460); ((ListaParametrosContext)_localctx).vExpressao = expressao();
+				setState(415); match(24);
+				setState(416); expressao();
 				}
 				}
-				setState(465);
+				setState(421);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -2860,7 +2546,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class MatrizVetorContext extends ParserRuleContext {
-		public MatrizContext vExpressao;
 		public VetorContext vetor() {
 			return getRuleContext(VetorContext.class,0);
 		}
@@ -2884,17 +2569,17 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(468);
-			switch ( getInterpreter().adaptivePredict(_input,57,_ctx) ) {
+			setState(424);
+			switch ( getInterpreter().adaptivePredict(_input,48,_ctx) ) {
 			case 1:
 				{
-				setState(466); ((MatrizVetorContext)_localctx).vExpressao = matriz();
+				setState(422); matriz();
 				}
 				break;
 
 			case 2:
 				{
-				setState(467); ((MatrizVetorContext)_localctx).vExpressao = vetor();
+				setState(423); vetor();
 				}
 				break;
 			}
@@ -2912,9 +2597,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class VetorContext extends ParserRuleContext {
-		public Token abre_ch;
-		public ListaExpressoesContext vListaExpressoes;
-		public Token fecha_ch;
 		public ListaExpressoesContext listaExpressoes() {
 			return getRuleContext(ListaExpressoesContext.class,0);
 		}
@@ -2935,9 +2617,9 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(470); ((VetorContext)_localctx).abre_ch = match(9);
-			setState(471); ((VetorContext)_localctx).vListaExpressoes = listaExpressoes();
-			setState(472); ((VetorContext)_localctx).fecha_ch = match(14);
+			setState(426); match(9);
+			setState(427); listaExpressoes();
+			setState(428); match(14);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2952,9 +2634,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class MatrizContext extends ParserRuleContext {
-		public Token abre_ch;
-		public ListaListaExpressoesContext vListaListaExpressoes;
-		public Token fecha_ch;
 		public ListaListaExpressoesContext listaListaExpressoes() {
 			return getRuleContext(ListaListaExpressoesContext.class,0);
 		}
@@ -2975,9 +2654,9 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(474); ((MatrizContext)_localctx).abre_ch = match(9);
-			setState(475); ((MatrizContext)_localctx).vListaListaExpressoes = listaListaExpressoes();
-			setState(476); ((MatrizContext)_localctx).fecha_ch = match(14);
+			setState(430); match(9);
+			setState(431); listaListaExpressoes();
+			setState(432); match(14);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2992,7 +2671,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ListaListaExpressoesContext extends ParserRuleContext {
-		public ListaExpressoesContext vListaExpressoes;
 		public ListaExpressoesContext listaExpressoes(int i) {
 			return getRuleContext(ListaExpressoesContext.class,i);
 		}
@@ -3017,29 +2695,29 @@ public class PortugolParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(482);
+			setState(438);
 			_la = _input.LA(1);
 			if (_la==9) {
 				{
-				setState(478); match(9);
-				setState(479); ((ListaListaExpressoesContext)_localctx).vListaExpressoes = listaExpressoes();
-				setState(480); match(14);
+				setState(434); match(9);
+				setState(435); listaExpressoes();
+				setState(436); match(14);
 				}
 			}
 
-			setState(491);
+			setState(447);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==24) {
 				{
 				{
-				setState(484); match(24);
-				setState(485); match(9);
-				setState(486); ((ListaListaExpressoesContext)_localctx).vListaExpressoes = listaExpressoes();
-				setState(487); match(14);
+				setState(440); match(24);
+				setState(441); match(9);
+				setState(442); listaExpressoes();
+				setState(443); match(14);
 				}
 				}
-				setState(493);
+				setState(449);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -3057,7 +2735,6 @@ public class PortugolParser extends Parser {
 	}
 
 	public static class ListaExpressoesContext extends ParserRuleContext {
-		public ExpressaoContext vExpressao;
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
 		}
@@ -3083,28 +2760,28 @@ public class PortugolParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(495);
+			setState(451);
 			_la = _input.LA(1);
 			if (((((_la - 9)) & ~0x3f) == 0 && ((1L << (_la - 9)) & ((1L << (9 - 9)) | (1L << (21 - 9)) | (1L << (35 - 9)) | (1L << (42 - 9)) | (1L << (OPERADOR_NAO - 9)) | (1L << (LOGICO - 9)) | (1L << (ID - 9)) | (1L << (ID_BIBLIOTECA - 9)) | (1L << (INTEIRO - 9)) | (1L << (REAL - 9)) | (1L << (CADEIA - 9)) | (1L << (CARACTER - 9)))) != 0)) {
 				{
-				setState(494); ((ListaExpressoesContext)_localctx).vExpressao = expressao();
+				setState(450); expressao();
 				}
 			}
 
 			}
-			setState(501);
+			setState(457);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==24) {
 				{
 				{
-				setState(497); match(24);
+				setState(453); match(24);
 				{
-				setState(498); ((ListaExpressoesContext)_localctx).vExpressao = expressao();
+				setState(454); expressao();
 				}
 				}
 				}
-				setState(503);
+				setState(459);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -3122,7 +2799,7 @@ public class PortugolParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3L\u01fb\4\2\t\2\4"+
+		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3L\u01cf\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -3132,185 +2809,163 @@ public class PortugolParser extends Parser {
 		"\2\3\2\7\2k\n\2\f\2\16\2n\13\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\5\3w\n\3\3"+
 		"\4\3\4\3\5\3\5\3\6\5\6~\n\6\3\6\3\6\3\6\3\6\7\6\u0084\n\6\f\6\16\6\u0087"+
 		"\13\6\3\7\3\7\3\7\5\7\u008c\n\7\3\7\3\7\3\7\5\7\u0091\n\7\3\7\5\7\u0094"+
-		"\n\7\5\7\u0096\n\7\3\7\3\7\5\7\u009a\n\7\3\b\3\b\3\b\3\b\3\b\5\b\u00a1"+
-		"\n\b\3\t\3\t\3\n\3\n\3\n\3\n\5\n\u00a9\n\n\5\n\u00ab\n\n\3\13\3\13\5\13"+
-		"\u00af\n\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3\r\7"+
-		"\r\u00bf\n\r\f\r\16\r\u00c2\13\r\5\r\u00c4\n\r\3\16\3\16\5\16\u00c8\n"+
-		"\16\3\16\3\16\3\16\3\17\3\17\7\17\u00cf\n\17\f\17\16\17\u00d2\13\17\3"+
-		"\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\5\20\u00dc\n\20\3\21\3\21\3\21"+
-		"\5\21\u00e1\n\21\3\21\3\21\5\21\u00e5\n\21\3\21\3\21\5\21\u00e9\n\21\3"+
-		"\21\3\21\3\21\3\22\3\22\5\22\u00f0\n\22\3\23\3\23\3\23\3\23\3\23\5\23"+
-		"\u00f7\n\23\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25"+
-		"\6\25\u0105\n\25\r\25\16\25\u0106\3\25\3\25\3\25\3\25\5\25\u010d\n\25"+
-		"\3\25\3\25\3\26\3\26\3\26\3\26\3\26\5\26\u0116\n\26\3\27\3\27\3\27\3\27"+
-		"\3\27\3\27\3\30\3\30\3\30\3\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31"+
-		"\3\31\3\31\5\31\u012c\n\31\3\32\3\32\5\32\u0130\n\32\3\33\3\33\3\34\3"+
-		"\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\34\5\34\u0141"+
-		"\n\34\3\34\7\34\u0144\n\34\f\34\16\34\u0147\13\34\3\35\3\35\3\35\5\35"+
-		"\u014c\n\35\3\35\7\35\u014f\n\35\f\35\16\35\u0152\13\35\3\36\3\36\3\36"+
-		"\5\36\u0157\n\36\3\36\7\36\u015a\n\36\f\36\16\36\u015d\13\36\3\37\3\37"+
-		"\3\37\3\37\3\37\5\37\u0164\n\37\3\37\5\37\u0167\n\37\3 \3 \3 \3 \5 \u016d"+
-		"\n \3 \7 \u0170\n \f \16 \u0173\13 \3!\3!\3!\5!\u0178\n!\3!\7!\u017b\n"+
-		"!\f!\16!\u017e\13!\3\"\3\"\3\"\3\"\3\"\7\"\u0185\n\"\f\"\16\"\u0188\13"+
-		"\"\3#\3#\3#\3#\5#\u018e\n#\3#\7#\u0191\n#\f#\16#\u0194\13#\3$\5$\u0197"+
-		"\n$\3$\7$\u019a\n$\f$\16$\u019d\13$\3$\5$\u01a0\n$\3$\3$\3%\3%\3%\3%\3"+
-		"%\3%\3%\5%\u01ab\n%\3%\3%\5%\u01af\n%\3&\3&\3\'\3\'\5\'\u01b5\n\'\3\'"+
-		"\3\'\3\'\5\'\u01ba\n\'\3(\3(\3)\3)\3)\3)\3)\3)\3)\5)\u01c5\n)\3*\3*\5"+
-		"*\u01c9\n*\3*\3*\3+\3+\3+\7+\u01d0\n+\f+\16+\u01d3\13+\3,\3,\5,\u01d7"+
-		"\n,\3-\3-\3-\3-\3.\3.\3.\3.\3/\3/\3/\3/\5/\u01e5\n/\3/\3/\3/\3/\3/\7/"+
-		"\u01ec\n/\f/\16/\u01ef\13/\3\60\5\60\u01f2\n\60\3\60\3\60\7\60\u01f6\n"+
-		"\60\f\60\16\60\u01f9\13\60\3\60\2\61\2\4\6\b\n\f\16\20\22\24\26\30\32"+
-		"\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\^\2\3\4\2DDGJ\u0225\2`"+
-		"\3\2\2\2\4q\3\2\2\2\6x\3\2\2\2\bz\3\2\2\2\n}\3\2\2\2\f\u0088\3\2\2\2\16"+
-		"\u00a0\3\2\2\2\20\u00a2\3\2\2\2\22\u00aa\3\2\2\2\24\u00ae\3\2\2\2\26\u00b0"+
-		"\3\2\2\2\30\u00c3\3\2\2\2\32\u00c5\3\2\2\2\34\u00d0\3\2\2\2\36\u00db\3"+
-		"\2\2\2 \u00dd\3\2\2\2\"\u00ef\3\2\2\2$\u00f6\3\2\2\2&\u00f8\3\2\2\2(\u00fa"+
-		"\3\2\2\2*\u0115\3\2\2\2,\u0117\3\2\2\2.\u011d\3\2\2\2\60\u0124\3\2\2\2"+
-		"\62\u012d\3\2\2\2\64\u0131\3\2\2\2\66\u0133\3\2\2\28\u0148\3\2\2\2:\u0153"+
-		"\3\2\2\2<\u015e\3\2\2\2>\u0168\3\2\2\2@\u0174\3\2\2\2B\u017f\3\2\2\2D"+
-		"\u0189\3\2\2\2F\u019f\3\2\2\2H\u01aa\3\2\2\2J\u01b0\3\2\2\2L\u01b4\3\2"+
-		"\2\2N\u01bb\3\2\2\2P\u01bd\3\2\2\2R\u01c6\3\2\2\2T\u01cc\3\2\2\2V\u01d6"+
-		"\3\2\2\2X\u01d8\3\2\2\2Z\u01dc\3\2\2\2\\\u01e4\3\2\2\2^\u01f1\3\2\2\2"+
-		"`a\7-\2\2ae\7\13\2\2bd\5\4\3\2cb\3\2\2\2dg\3\2\2\2ec\3\2\2\2ef\3\2\2\2"+
-		"fl\3\2\2\2ge\3\2\2\2hk\5\6\4\2ik\5\26\f\2jh\3\2\2\2ji\3\2\2\2kn\3\2\2"+
-		"\2lj\3\2\2\2lm\3\2\2\2mo\3\2\2\2nl\3\2\2\2op\7\20\2\2p\3\3\2\2\2qr\7@"+
-		"\2\2rs\7A\2\2sv\7E\2\2tu\7\'\2\2uw\7E\2\2vt\3\2\2\2vw\3\2\2\2w\5\3\2\2"+
-		"\2xy\5\n\6\2y\7\3\2\2\2z{\5\n\6\2{\t\3\2\2\2|~\7\67\2\2}|\3\2\2\2}~\3"+
-		"\2\2\2~\177\3\2\2\2\177\u0080\5\16\b\2\u0080\u0085\5\f\7\2\u0081\u0082"+
-		"\7\32\2\2\u0082\u0084\5\f\7\2\u0083\u0081\3\2\2\2\u0084\u0087\3\2\2\2"+
-		"\u0085\u0083\3\2\2\2\u0085\u0086\3\2\2\2\u0086\13\3\2\2\2\u0087\u0085"+
-		"\3\2\2\2\u0088\u0095\7E\2\2\u0089\u008b\7\36\2\2\u008a\u008c\5\66\34\2"+
-		"\u008b\u008a\3\2\2\2\u008b\u008c\3\2\2\2\u008c\u008d\3\2\2\2\u008d\u0093"+
-		"\7$\2\2\u008e\u0090\7\36\2\2\u008f\u0091\5\66\34\2\u0090\u008f\3\2\2\2"+
-		"\u0090\u0091\3\2\2\2\u0091\u0092\3\2\2\2\u0092\u0094\7$\2\2\u0093\u008e"+
-		"\3\2\2\2\u0093\u0094\3\2\2\2\u0094\u0096\3\2\2\2\u0095\u0089\3\2\2\2\u0095"+
-		"\u0096\3\2\2\2\u0096\u0099\3\2\2\2\u0097\u0098\7\17\2\2\u0098\u009a\5"+
-		"\66\34\2\u0099\u0097\3\2\2\2\u0099\u009a\3\2\2\2\u009a\r\3\2\2\2\u009b"+
-		"\u00a1\7\62\2\2\u009c\u00a1\7.\2\2\u009d\u00a1\7\63\2\2\u009e\u00a1\7"+
-		"\61\2\2\u009f\u00a1\7\60\2\2\u00a0\u009b\3\2\2\2\u00a0\u009c\3\2\2\2\u00a0"+
-		"\u009d\3\2\2\2\u00a0\u009e\3\2\2\2\u00a0\u009f\3\2\2\2\u00a1\17\3\2\2"+
-		"\2\u00a2\u00a3\7/\2\2\u00a3\21\3\2\2\2\u00a4\u00a5\7\36\2\2\u00a5\u00a8"+
-		"\7$\2\2\u00a6\u00a7\7\36\2\2\u00a7\u00a9\7$\2\2\u00a8\u00a6\3\2\2\2\u00a8"+
-		"\u00a9\3\2\2\2\u00a9\u00ab\3\2\2\2\u00aa\u00a4\3\2\2\2\u00aa\u00ab\3\2"+
-		"\2\2\u00ab\23\3\2\2\2\u00ac\u00af\5\16\b\2\u00ad\u00af\5\20\t\2\u00ae"+
-		"\u00ac\3\2\2\2\u00ae\u00ad\3\2\2\2\u00ae\u00af\3\2\2\2\u00af\25\3\2\2"+
-		"\2\u00b0\u00b1\78\2\2\u00b1\u00b2\5\24\13\2\u00b2\u00b3\5\22\n\2\u00b3"+
-		"\u00b4\7E\2\2\u00b4\u00b5\7\27\2\2\u00b5\u00b6\5\30\r\2\u00b6\u00b7\7"+
-		"*\2\2\u00b7\u00b8\7\13\2\2\u00b8\u00b9\5\34\17\2\u00b9\u00ba\7\20\2\2"+
-		"\u00ba\27\3\2\2\2\u00bb\u00c0\5\32\16\2\u00bc\u00bd\7\32\2\2\u00bd\u00bf"+
-		"\5\32\16\2\u00be\u00bc\3\2\2\2\u00bf\u00c2\3\2\2\2\u00c0\u00be\3\2\2\2"+
-		"\u00c0\u00c1\3\2\2\2\u00c1\u00c4\3\2\2\2\u00c2\u00c0\3\2\2\2\u00c3\u00bb"+
-		"\3\2\2\2\u00c3\u00c4\3\2\2\2\u00c4\31\3\2\2\2\u00c5\u00c7\5\16\b\2\u00c6"+
-		"\u00c8\7\26\2\2\u00c7\u00c6\3\2\2\2\u00c7\u00c8\3\2\2\2\u00c8\u00c9\3"+
-		"\2\2\2\u00c9\u00ca\7E\2\2\u00ca\u00cb\5\22\n\2\u00cb\33\3\2\2\2\u00cc"+
-		"\u00cf\5\36\20\2\u00cd\u00cf\5\b\5\2\u00ce\u00cc\3\2\2\2\u00ce\u00cd\3"+
-		"\2\2\2\u00cf\u00d2\3\2\2\2\u00d0\u00ce\3\2\2\2\u00d0\u00d1\3\2\2\2\u00d1"+
-		"\35\3\2\2\2\u00d2\u00d0\3\2\2\2\u00d3\u00dc\5\66\34\2\u00d4\u00dc\5 \21"+
-		"\2\u00d5\u00dc\5&\24\2\u00d6\u00dc\5\62\32\2\u00d7\u00dc\5\60\31\2\u00d8"+
-		"\u00dc\5,\27\2\u00d9\u00dc\5.\30\2\u00da\u00dc\5(\25\2\u00db\u00d3\3\2"+
-		"\2\2\u00db\u00d4\3\2\2\2\u00db\u00d5\3\2\2\2\u00db\u00d6\3\2\2\2\u00db"+
-		"\u00d7\3\2\2\2\u00db\u00d8\3\2\2\2\u00db\u00d9\3\2\2\2\u00db\u00da\3\2"+
-		"\2\2\u00dc\37\3\2\2\2\u00dd\u00de\7:\2\2\u00de\u00e0\7\27\2\2\u00df\u00e1"+
-		"\5\"\22\2\u00e0\u00df\3\2\2\2\u00e0\u00e1\3\2\2\2\u00e1\u00e2\3\2\2\2"+
-		"\u00e2\u00e4\7\n\2\2\u00e3\u00e5\5\66\34\2\u00e4\u00e3\3\2\2\2\u00e4\u00e5"+
-		"\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6\u00e8\7\n\2\2\u00e7\u00e9\5\66\34\2"+
-		"\u00e8\u00e7\3\2\2\2\u00e8\u00e9\3\2\2\2\u00e9\u00ea\3\2\2\2\u00ea\u00eb"+
-		"\7*\2\2\u00eb\u00ec\5$\23\2\u00ec!\3\2\2\2\u00ed\u00f0\5\66\34\2\u00ee"+
-		"\u00f0\5\n\6\2\u00ef\u00ed\3\2\2\2\u00ef\u00ee\3\2\2\2\u00f0#\3\2\2\2"+
-		"\u00f1\u00f2\7\13\2\2\u00f2\u00f3\5\34\17\2\u00f3\u00f4\7\20\2\2\u00f4"+
-		"\u00f7\3\2\2\2\u00f5\u00f7\5\36\20\2\u00f6\u00f1\3\2\2\2\u00f6\u00f5\3"+
-		"\2\2\2\u00f7%\3\2\2\2\u00f8\u00f9\7;\2\2\u00f9\'\3\2\2\2\u00fa\u00fb\7"+
-		"\64\2\2\u00fb\u00fc\7\27\2\2\u00fc\u00fd\5\66\34\2\u00fd\u00fe\7*\2\2"+
-		"\u00fe\u0104\7\13\2\2\u00ff\u0100\7\65\2\2\u0100\u0101\5\66\34\2\u0101"+
-		"\u0102\7\34\2\2\u0102\u0103\5*\26\2\u0103\u0105\3\2\2\2\u0104\u00ff\3"+
-		"\2\2\2\u0105\u0106\3\2\2\2\u0106\u0104\3\2\2\2\u0106\u0107\3\2\2\2\u0107"+
-		"\u010c\3\2\2\2\u0108\u0109\7\65\2\2\u0109\u010a\7\66\2\2\u010a\u010b\7"+
-		"\34\2\2\u010b\u010d\5*\26\2\u010c\u0108\3\2\2\2\u010c\u010d\3\2\2\2\u010d"+
-		"\u010e\3\2\2\2\u010e\u010f\7\20\2\2\u010f)\3\2\2\2\u0110\u0111\7\13\2"+
-		"\2\u0111\u0112\5\34\17\2\u0112\u0113\7\20\2\2\u0113\u0116\3\2\2\2\u0114"+
-		"\u0116\5\34\17\2\u0115\u0110\3\2\2\2\u0115\u0114\3\2\2\2\u0116+\3\2\2"+
-		"\2\u0117\u0118\7=\2\2\u0118\u0119\7\27\2\2\u0119\u011a\5\66\34\2\u011a"+
-		"\u011b\7*\2\2\u011b\u011c\5$\23\2\u011c-\3\2\2\2\u011d\u011e\7<\2\2\u011e"+
-		"\u011f\5$\23\2\u011f\u0120\7=\2\2\u0120\u0121\7\27\2\2\u0121\u0122\5\66"+
-		"\34\2\u0122\u0123\7*\2\2\u0123/\3\2\2\2\u0124\u0125\7>\2\2\u0125\u0126"+
-		"\7\27\2\2\u0126\u0127\5\66\34\2\u0127\u0128\7*\2\2\u0128\u012b\5$\23\2"+
-		"\u0129\u012a\7?\2\2\u012a\u012c\5$\23\2\u012b\u0129\3\2\2\2\u012b\u012c"+
-		"\3\2\2\2\u012c\61\3\2\2\2\u012d\u012f\79\2\2\u012e\u0130\5\66\34\2\u012f"+
-		"\u012e\3\2\2\2\u012f\u0130\3\2\2\2\u0130\63\3\2\2\2\u0131\u0132\3\2\2"+
-		"\2\u0132\65\3\2\2\2\u0133\u0134\58\35\2\u0134\u0145\5\64\33\2\u0135\u0141"+
-		"\7\17\2\2\u0136\u0141\7\5\2\2\u0137\u0141\7\31\2\2\u0138\u0141\7\33\2"+
-		"\2\u0139\u0141\7\4\2\2\u013a\u0141\7\7\2\2\u013b\u0141\7\t\2\2\u013c\u0141"+
-		"\7\22\2\2\u013d\u0141\7\24\2\2\u013e\u0141\7\6\2\2\u013f\u0141\7\16\2"+
-		"\2\u0140\u0135\3\2\2\2\u0140\u0136\3\2\2\2\u0140\u0137\3\2\2\2\u0140\u0138"+
-		"\3\2\2\2\u0140\u0139\3\2\2\2\u0140\u013a\3\2\2\2\u0140\u013b\3\2\2\2\u0140"+
-		"\u013c\3\2\2\2\u0140\u013d\3\2\2\2\u0140\u013e\3\2\2\2\u0140\u013f\3\2"+
-		"\2\2\u0141\u0142\3\2\2\2\u0142\u0144\58\35\2\u0143\u0140\3\2\2\2\u0144"+
-		"\u0147\3\2\2\2\u0145\u0143\3\2\2\2\u0145\u0146\3\2\2\2\u0146\67\3\2\2"+
-		"\2\u0147\u0145\3\2\2\2\u0148\u0150\5:\36\2\u0149\u014c\7)\2\2\u014a\u014c"+
-		"\7\25\2\2\u014b\u0149\3\2\2\2\u014b\u014a\3\2\2\2\u014c\u014d\3\2\2\2"+
-		"\u014d\u014f\5:\36\2\u014e\u014b\3\2\2\2\u014f\u0152\3\2\2\2\u0150\u014e"+
-		"\3\2\2\2\u0150\u0151\3\2\2\2\u01519\3\2\2\2\u0152\u0150\3\2\2\2\u0153"+
-		"\u015b\5<\37\2\u0154\u0157\7#\2\2\u0155\u0157\7\b\2\2\u0156\u0154\3\2"+
-		"\2\2\u0156\u0155\3\2\2\2\u0157\u0158\3\2\2\2\u0158\u015a\5<\37\2\u0159"+
-		"\u0156\3\2\2\2\u015a\u015d\3\2\2\2\u015b\u0159\3\2\2\2\u015b\u015c\3\2"+
-		"\2\2\u015c;\3\2\2\2\u015d\u015b\3\2\2\2\u015e\u0166\5> \2\u015f\u0164"+
-		"\7\35\2\2\u0160\u0164\7\23\2\2\u0161\u0164\7\"\2\2\u0162\u0164\7&\2\2"+
-		"\u0163\u015f\3\2\2\2\u0163\u0160\3\2\2\2\u0163\u0161\3\2\2\2\u0163\u0162"+
-		"\3\2\2\2\u0164\u0165\3\2\2\2\u0165\u0167\5> \2\u0166\u0163\3\2\2\2\u0166"+
-		"\u0167\3\2\2\2\u0167=\3\2\2\2\u0168\u0171\5@!\2\u0169\u016d\7\26\2\2\u016a"+
-		"\u016d\7!\2\2\u016b\u016d\7\21\2\2\u016c\u0169\3\2\2\2\u016c\u016a\3\2"+
-		"\2\2\u016c\u016b\3\2\2\2\u016d\u016e\3\2\2\2\u016e\u0170\5@!\2\u016f\u016c"+
-		"\3\2\2\2\u0170\u0173\3\2\2\2\u0171\u016f\3\2\2\2\u0171\u0172\3\2\2\2\u0172"+
-		"?\3\2\2\2\u0173\u0171\3\2\2\2\u0174\u017c\5B\"\2\u0175\u0178\7\r\2\2\u0176"+
-		"\u0178\7\f\2\2\u0177\u0175\3\2\2\2\u0177\u0176\3\2\2\2\u0178\u0179\3\2"+
-		"\2\2\u0179\u017b\5B\"\2\u017a\u0177\3\2\2\2\u017b\u017e\3\2\2\2\u017c"+
-		"\u017a\3\2\2\2\u017c\u017d\3\2\2\2\u017dA\3\2\2\2\u017e\u017c\3\2\2\2"+
-		"\u017f\u0186\5D#\2\u0180\u0181\7+\2\2\u0181\u0185\5D#\2\u0182\u0183\7"+
-		",\2\2\u0183\u0185\5D#\2\u0184\u0180\3\2\2\2\u0184\u0182\3\2\2\2\u0185"+
-		"\u0188\3\2\2\2\u0186\u0184\3\2\2\2\u0186\u0187\3\2\2\2\u0187C\3\2\2\2"+
-		"\u0188\u0186\3\2\2\2\u0189\u0192\5F$\2\u018a\u018e\7\30\2\2\u018b\u018e"+
-		"\7\3\2\2\u018c\u018e\7(\2\2\u018d\u018a\3\2\2\2\u018d\u018b\3\2\2\2\u018d"+
-		"\u018c\3\2\2\2\u018e\u018f\3\2\2\2\u018f\u0191\5F$\2\u0190\u018d\3\2\2"+
-		"\2\u0191\u0194\3\2\2\2\u0192\u0190\3\2\2\2\u0192\u0193\3\2\2\2\u0193E"+
-		"\3\2\2\2\u0194\u0192\3\2\2\2\u0195\u0197\7,\2\2\u0196\u0195\3\2\2\2\u0196"+
-		"\u0197\3\2\2\2\u0197\u01a0\3\2\2\2\u0198\u019a\7C\2\2\u0199\u0198\3\2"+
-		"\2\2\u019a\u019d\3\2\2\2\u019b\u0199\3\2\2\2\u019b\u019c\3\2\2\2\u019c"+
-		"\u01a0\3\2\2\2\u019d\u019b\3\2\2\2\u019e\u01a0\7%\2\2\u019f\u0196\3\2"+
-		"\2\2\u019f\u019b\3\2\2\2\u019f\u019e\3\2\2\2\u01a0\u01a1\3\2\2\2\u01a1"+
-		"\u01a2\5H%\2\u01a2G\3\2\2\2\u01a3\u01a4\7\27\2\2\u01a4\u01a5\5\66\34\2"+
-		"\u01a5\u01a6\7*\2\2\u01a6\u01ab\3\2\2\2\u01a7\u01ab\5L\'\2\u01a8\u01ab"+
-		"\5J&\2\u01a9\u01ab\5V,\2\u01aa\u01a3\3\2\2\2\u01aa\u01a7\3\2\2\2\u01aa"+
-		"\u01a8\3\2\2\2\u01aa\u01a9\3\2\2\2\u01ab\u01ae\3\2\2\2\u01ac\u01af\7 "+
-		"\2\2\u01ad\u01af\7\37\2\2\u01ae\u01ac\3\2\2\2\u01ae\u01ad\3\2\2\2\u01ae"+
-		"\u01af\3\2\2\2\u01afI\3\2\2\2\u01b0\u01b1\t\2\2\2\u01b1K\3\2\2\2\u01b2"+
-		"\u01b5\7E\2\2\u01b3\u01b5\7F\2\2\u01b4\u01b2\3\2\2\2\u01b4\u01b3\3\2\2"+
-		"\2\u01b5\u01b9\3\2\2\2\u01b6\u01ba\5R*\2\u01b7\u01ba\5P)\2\u01b8\u01ba"+
-		"\5N(\2\u01b9\u01b6\3\2\2\2\u01b9\u01b7\3\2\2\2\u01b9\u01b8\3\2\2\2\u01ba"+
-		"M\3\2\2\2\u01bb\u01bc\3\2\2\2\u01bcO\3\2\2\2\u01bd\u01be\7\36\2\2\u01be"+
-		"\u01bf\5\66\34\2\u01bf\u01c4\7$\2\2\u01c0\u01c1\7\36\2\2\u01c1\u01c2\5"+
-		"\66\34\2\u01c2\u01c3\7$\2\2\u01c3\u01c5\3\2\2\2\u01c4\u01c0\3\2\2\2\u01c4"+
-		"\u01c5\3\2\2\2\u01c5Q\3\2\2\2\u01c6\u01c8\7\27\2\2\u01c7\u01c9\5T+\2\u01c8"+
-		"\u01c7\3\2\2\2\u01c8\u01c9\3\2\2\2\u01c9\u01ca\3\2\2\2\u01ca\u01cb\7*"+
-		"\2\2\u01cbS\3\2\2\2\u01cc\u01d1\5\66\34\2\u01cd\u01ce\7\32\2\2\u01ce\u01d0"+
-		"\5\66\34\2\u01cf\u01cd\3\2\2\2\u01d0\u01d3\3\2\2\2\u01d1\u01cf\3\2\2\2"+
-		"\u01d1\u01d2\3\2\2\2\u01d2U\3\2\2\2\u01d3\u01d1\3\2\2\2\u01d4\u01d7\5"+
-		"Z.\2\u01d5\u01d7\5X-\2\u01d6\u01d4\3\2\2\2\u01d6\u01d5\3\2\2\2\u01d7W"+
-		"\3\2\2\2\u01d8\u01d9\7\13\2\2\u01d9\u01da\5^\60\2\u01da\u01db\7\20\2\2"+
-		"\u01dbY\3\2\2\2\u01dc\u01dd\7\13\2\2\u01dd\u01de\5\\/\2\u01de\u01df\7"+
-		"\20\2\2\u01df[\3\2\2\2\u01e0\u01e1\7\13\2\2\u01e1\u01e2\5^\60\2\u01e2"+
-		"\u01e3\7\20\2\2\u01e3\u01e5\3\2\2\2\u01e4\u01e0\3\2\2\2\u01e4\u01e5\3"+
-		"\2\2\2\u01e5\u01ed\3\2\2\2\u01e6\u01e7\7\32\2\2\u01e7\u01e8\7\13\2\2\u01e8"+
-		"\u01e9\5^\60\2\u01e9\u01ea\7\20\2\2\u01ea\u01ec\3\2\2\2\u01eb\u01e6\3"+
-		"\2\2\2\u01ec\u01ef\3\2\2\2\u01ed\u01eb\3\2\2\2\u01ed\u01ee\3\2\2\2\u01ee"+
-		"]\3\2\2\2\u01ef\u01ed\3\2\2\2\u01f0\u01f2\5\66\34\2\u01f1\u01f0\3\2\2"+
-		"\2\u01f1\u01f2\3\2\2\2\u01f2\u01f7\3\2\2\2\u01f3\u01f4\7\32\2\2\u01f4"+
-		"\u01f6\5\66\34\2\u01f5\u01f3\3\2\2\2\u01f6\u01f9\3\2\2\2\u01f7\u01f5\3"+
-		"\2\2\2\u01f7\u01f8\3\2\2\2\u01f8_\3\2\2\2\u01f9\u01f7\3\2\2\2@ejlv}\u0085"+
-		"\u008b\u0090\u0093\u0095\u0099\u00a0\u00a8\u00aa\u00ae\u00c0\u00c3\u00c7"+
-		"\u00ce\u00d0\u00db\u00e0\u00e4\u00e8\u00ef\u00f6\u0106\u010c\u0115\u012b"+
-		"\u012f\u0140\u0145\u014b\u0150\u0156\u015b\u0163\u0166\u016c\u0171\u0177"+
-		"\u017c\u0184\u0186\u018d\u0192\u0196\u019b\u019f\u01aa\u01ae\u01b4\u01b9"+
-		"\u01c4\u01c8\u01d1\u01d6\u01e4\u01ed\u01f1\u01f7";
+		"\n\7\5\7\u0096\n\7\3\7\5\7\u0099\n\7\3\b\3\b\3\t\3\t\3\n\3\n\3\n\3\n\5"+
+		"\n\u00a3\n\n\5\n\u00a5\n\n\3\13\3\13\5\13\u00a9\n\13\3\f\3\f\3\f\3\f\3"+
+		"\f\3\f\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3\r\7\r\u00b9\n\r\f\r\16\r\u00bc\13"+
+		"\r\5\r\u00be\n\r\3\16\3\16\5\16\u00c2\n\16\3\16\3\16\3\16\3\17\3\17\7"+
+		"\17\u00c9\n\17\f\17\16\17\u00cc\13\17\3\20\3\20\3\20\3\20\3\20\3\20\3"+
+		"\20\3\20\5\20\u00d6\n\20\3\21\3\21\3\21\5\21\u00db\n\21\3\21\3\21\5\21"+
+		"\u00df\n\21\3\21\3\21\5\21\u00e3\n\21\3\21\3\21\3\21\3\22\3\22\5\22\u00ea"+
+		"\n\22\3\23\3\23\3\23\3\23\3\23\5\23\u00f1\n\23\3\24\3\24\3\25\3\25\3\25"+
+		"\3\25\3\25\3\25\3\25\3\25\3\25\3\25\6\25\u00ff\n\25\r\25\16\25\u0100\3"+
+		"\25\3\25\3\25\3\25\5\25\u0107\n\25\3\25\3\25\3\26\3\26\3\26\3\26\3\26"+
+		"\5\26\u0110\n\26\3\27\3\27\3\27\3\27\3\27\3\27\3\30\3\30\3\30\3\30\3\30"+
+		"\3\30\3\30\3\31\3\31\3\31\3\31\3\31\3\31\3\31\5\31\u0126\n\31\3\32\3\32"+
+		"\5\32\u012a\n\32\3\33\3\33\3\34\3\34\3\34\3\34\7\34\u0132\n\34\f\34\16"+
+		"\34\u0135\13\34\3\35\3\35\3\35\7\35\u013a\n\35\f\35\16\35\u013d\13\35"+
+		"\3\36\3\36\3\36\7\36\u0142\n\36\f\36\16\36\u0145\13\36\3\37\3\37\3\37"+
+		"\5\37\u014a\n\37\3 \3 \3 \7 \u014f\n \f \16 \u0152\13 \3!\3!\3!\7!\u0157"+
+		"\n!\f!\16!\u015a\13!\3\"\3\"\3\"\3\"\3\"\7\"\u0161\n\"\f\"\16\"\u0164"+
+		"\13\"\3#\3#\3#\7#\u0169\n#\f#\16#\u016c\13#\3$\5$\u016f\n$\3$\7$\u0172"+
+		"\n$\f$\16$\u0175\13$\3$\5$\u0178\n$\3$\3$\3%\3%\3%\3%\3%\3%\3%\5%\u0183"+
+		"\n%\3%\5%\u0186\n%\3&\3&\3\'\3\'\3\'\3\'\5\'\u018e\n\'\3(\3(\3)\3)\3)"+
+		"\3)\3)\3)\3)\5)\u0199\n)\3*\3*\5*\u019d\n*\3*\3*\3+\3+\3+\7+\u01a4\n+"+
+		"\f+\16+\u01a7\13+\3,\3,\5,\u01ab\n,\3-\3-\3-\3-\3.\3.\3.\3.\3/\3/\3/\3"+
+		"/\5/\u01b9\n/\3/\3/\3/\3/\3/\7/\u01c0\n/\f/\16/\u01c3\13/\3\60\5\60\u01c6"+
+		"\n\60\3\60\3\60\7\60\u01ca\n\60\f\60\16\60\u01cd\13\60\3\60\2\61\2\4\6"+
+		"\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRT"+
+		"VXZ\\^\2\r\4\2..\60\63\t\2\4\7\t\t\16\17\22\22\24\24\31\31\33\33\4\2\25"+
+		"\25))\4\2\b\b##\6\2\23\23\35\35\"\"&&\5\2\21\21\26\26!!\3\2\f\r\5\2\3"+
+		"\3\30\30((\3\2\37 \4\2DDGJ\3\2EF\u01df\2`\3\2\2\2\4q\3\2\2\2\6x\3\2\2"+
+		"\2\bz\3\2\2\2\n}\3\2\2\2\f\u0088\3\2\2\2\16\u009a\3\2\2\2\20\u009c\3\2"+
+		"\2\2\22\u00a4\3\2\2\2\24\u00a8\3\2\2\2\26\u00aa\3\2\2\2\30\u00bd\3\2\2"+
+		"\2\32\u00bf\3\2\2\2\34\u00ca\3\2\2\2\36\u00d5\3\2\2\2 \u00d7\3\2\2\2\""+
+		"\u00e9\3\2\2\2$\u00f0\3\2\2\2&\u00f2\3\2\2\2(\u00f4\3\2\2\2*\u010f\3\2"+
+		"\2\2,\u0111\3\2\2\2.\u0117\3\2\2\2\60\u011e\3\2\2\2\62\u0127\3\2\2\2\64"+
+		"\u012b\3\2\2\2\66\u012d\3\2\2\28\u0136\3\2\2\2:\u013e\3\2\2\2<\u0146\3"+
+		"\2\2\2>\u014b\3\2\2\2@\u0153\3\2\2\2B\u015b\3\2\2\2D\u0165\3\2\2\2F\u0177"+
+		"\3\2\2\2H\u0182\3\2\2\2J\u0187\3\2\2\2L\u0189\3\2\2\2N\u018f\3\2\2\2P"+
+		"\u0191\3\2\2\2R\u019a\3\2\2\2T\u01a0\3\2\2\2V\u01aa\3\2\2\2X\u01ac\3\2"+
+		"\2\2Z\u01b0\3\2\2\2\\\u01b8\3\2\2\2^\u01c5\3\2\2\2`a\7-\2\2ae\7\13\2\2"+
+		"bd\5\4\3\2cb\3\2\2\2dg\3\2\2\2ec\3\2\2\2ef\3\2\2\2fl\3\2\2\2ge\3\2\2\2"+
+		"hk\5\6\4\2ik\5\26\f\2jh\3\2\2\2ji\3\2\2\2kn\3\2\2\2lj\3\2\2\2lm\3\2\2"+
+		"\2mo\3\2\2\2nl\3\2\2\2op\7\20\2\2p\3\3\2\2\2qr\7@\2\2rs\7A\2\2sv\7E\2"+
+		"\2tu\7\'\2\2uw\7E\2\2vt\3\2\2\2vw\3\2\2\2w\5\3\2\2\2xy\5\n\6\2y\7\3\2"+
+		"\2\2z{\5\n\6\2{\t\3\2\2\2|~\7\67\2\2}|\3\2\2\2}~\3\2\2\2~\177\3\2\2\2"+
+		"\177\u0080\5\16\b\2\u0080\u0085\5\f\7\2\u0081\u0082\7\32\2\2\u0082\u0084"+
+		"\5\f\7\2\u0083\u0081\3\2\2\2\u0084\u0087\3\2\2\2\u0085\u0083\3\2\2\2\u0085"+
+		"\u0086\3\2\2\2\u0086\13\3\2\2\2\u0087\u0085\3\2\2\2\u0088\u0095\7E\2\2"+
+		"\u0089\u008b\7\36\2\2\u008a\u008c\5\66\34\2\u008b\u008a\3\2\2\2\u008b"+
+		"\u008c\3\2\2\2\u008c\u008d\3\2\2\2\u008d\u0093\7$\2\2\u008e\u0090\7\36"+
+		"\2\2\u008f\u0091\5\66\34\2\u0090\u008f\3\2\2\2\u0090\u0091\3\2\2\2\u0091"+
+		"\u0092\3\2\2\2\u0092\u0094\7$\2\2\u0093\u008e\3\2\2\2\u0093\u0094\3\2"+
+		"\2\2\u0094\u0096\3\2\2\2\u0095\u0089\3\2\2\2\u0095\u0096\3\2\2\2\u0096"+
+		"\u0098\3\2\2\2\u0097\u0099\5\66\34\2\u0098\u0097\3\2\2\2\u0098\u0099\3"+
+		"\2\2\2\u0099\r\3\2\2\2\u009a\u009b\t\2\2\2\u009b\17\3\2\2\2\u009c\u009d"+
+		"\7/\2\2\u009d\21\3\2\2\2\u009e\u009f\7\36\2\2\u009f\u00a2\7$\2\2\u00a0"+
+		"\u00a1\7\36\2\2\u00a1\u00a3\7$\2\2\u00a2\u00a0\3\2\2\2\u00a2\u00a3\3\2"+
+		"\2\2\u00a3\u00a5\3\2\2\2\u00a4\u009e\3\2\2\2\u00a4\u00a5\3\2\2\2\u00a5"+
+		"\23\3\2\2\2\u00a6\u00a9\5\16\b\2\u00a7\u00a9\5\20\t\2\u00a8\u00a6\3\2"+
+		"\2\2\u00a8\u00a7\3\2\2\2\u00a8\u00a9\3\2\2\2\u00a9\25\3\2\2\2\u00aa\u00ab"+
+		"\78\2\2\u00ab\u00ac\5\24\13\2\u00ac\u00ad\5\22\n\2\u00ad\u00ae\7E\2\2"+
+		"\u00ae\u00af\7\27\2\2\u00af\u00b0\5\30\r\2\u00b0\u00b1\7*\2\2\u00b1\u00b2"+
+		"\7\13\2\2\u00b2\u00b3\5\34\17\2\u00b3\u00b4\7\20\2\2\u00b4\27\3\2\2\2"+
+		"\u00b5\u00ba\5\32\16\2\u00b6\u00b7\7\32\2\2\u00b7\u00b9\5\32\16\2\u00b8"+
+		"\u00b6\3\2\2\2\u00b9\u00bc\3\2\2\2\u00ba\u00b8\3\2\2\2\u00ba\u00bb\3\2"+
+		"\2\2\u00bb\u00be\3\2\2\2\u00bc\u00ba\3\2\2\2\u00bd\u00b5\3\2\2\2\u00bd"+
+		"\u00be\3\2\2\2\u00be\31\3\2\2\2\u00bf\u00c1\5\16\b\2\u00c0\u00c2\7\26"+
+		"\2\2\u00c1\u00c0\3\2\2\2\u00c1\u00c2\3\2\2\2\u00c2\u00c3\3\2\2\2\u00c3"+
+		"\u00c4\7E\2\2\u00c4\u00c5\5\22\n\2\u00c5\33\3\2\2\2\u00c6\u00c9\5\36\20"+
+		"\2\u00c7\u00c9\5\b\5\2\u00c8\u00c6\3\2\2\2\u00c8\u00c7\3\2\2\2\u00c9\u00cc"+
+		"\3\2\2\2\u00ca\u00c8\3\2\2\2\u00ca\u00cb\3\2\2\2\u00cb\35\3\2\2\2\u00cc"+
+		"\u00ca\3\2\2\2\u00cd\u00d6\5\66\34\2\u00ce\u00d6\5 \21\2\u00cf\u00d6\5"+
+		"&\24\2\u00d0\u00d6\5\62\32\2\u00d1\u00d6\5\60\31\2\u00d2\u00d6\5,\27\2"+
+		"\u00d3\u00d6\5.\30\2\u00d4\u00d6\5(\25\2\u00d5\u00cd\3\2\2\2\u00d5\u00ce"+
+		"\3\2\2\2\u00d5\u00cf\3\2\2\2\u00d5\u00d0\3\2\2\2\u00d5\u00d1\3\2\2\2\u00d5"+
+		"\u00d2\3\2\2\2\u00d5\u00d3\3\2\2\2\u00d5\u00d4\3\2\2\2\u00d6\37\3\2\2"+
+		"\2\u00d7\u00d8\7:\2\2\u00d8\u00da\7\27\2\2\u00d9\u00db\5\"\22\2\u00da"+
+		"\u00d9\3\2\2\2\u00da\u00db\3\2\2\2\u00db\u00dc\3\2\2\2\u00dc\u00de\7\n"+
+		"\2\2\u00dd\u00df\5\66\34\2\u00de\u00dd\3\2\2\2\u00de\u00df\3\2\2\2\u00df"+
+		"\u00e0\3\2\2\2\u00e0\u00e2\7\n\2\2\u00e1\u00e3\5\66\34\2\u00e2\u00e1\3"+
+		"\2\2\2\u00e2\u00e3\3\2\2\2\u00e3\u00e4\3\2\2\2\u00e4\u00e5\7*\2\2\u00e5"+
+		"\u00e6\5$\23\2\u00e6!\3\2\2\2\u00e7\u00ea\5\66\34\2\u00e8\u00ea\5\n\6"+
+		"\2\u00e9\u00e7\3\2\2\2\u00e9\u00e8\3\2\2\2\u00ea#\3\2\2\2\u00eb\u00ec"+
+		"\7\13\2\2\u00ec\u00ed\5\34\17\2\u00ed\u00ee\7\20\2\2\u00ee\u00f1\3\2\2"+
+		"\2\u00ef\u00f1\5\36\20\2\u00f0\u00eb\3\2\2\2\u00f0\u00ef\3\2\2\2\u00f1"+
+		"%\3\2\2\2\u00f2\u00f3\7;\2\2\u00f3\'\3\2\2\2\u00f4\u00f5\7\64\2\2\u00f5"+
+		"\u00f6\7\27\2\2\u00f6\u00f7\5\66\34\2\u00f7\u00f8\7*\2\2\u00f8\u00fe\7"+
+		"\13\2\2\u00f9\u00fa\7\65\2\2\u00fa\u00fb\5\66\34\2\u00fb\u00fc\7\34\2"+
+		"\2\u00fc\u00fd\5*\26\2\u00fd\u00ff\3\2\2\2\u00fe\u00f9\3\2\2\2\u00ff\u0100"+
+		"\3\2\2\2\u0100\u00fe\3\2\2\2\u0100\u0101\3\2\2\2\u0101\u0106\3\2\2\2\u0102"+
+		"\u0103\7\65\2\2\u0103\u0104\7\66\2\2\u0104\u0105\7\34\2\2\u0105\u0107"+
+		"\5*\26\2\u0106\u0102\3\2\2\2\u0106\u0107\3\2\2\2\u0107\u0108\3\2\2\2\u0108"+
+		"\u0109\7\20\2\2\u0109)\3\2\2\2\u010a\u010b\7\13\2\2\u010b\u010c\5\34\17"+
+		"\2\u010c\u010d\7\20\2\2\u010d\u0110\3\2\2\2\u010e\u0110\5\34\17\2\u010f"+
+		"\u010a\3\2\2\2\u010f\u010e\3\2\2\2\u0110+\3\2\2\2\u0111\u0112\7=\2\2\u0112"+
+		"\u0113\7\27\2\2\u0113\u0114\5\66\34\2\u0114\u0115\7*\2\2\u0115\u0116\5"+
+		"$\23\2\u0116-\3\2\2\2\u0117\u0118\7<\2\2\u0118\u0119\5$\23\2\u0119\u011a"+
+		"\7=\2\2\u011a\u011b\7\27\2\2\u011b\u011c\5\66\34\2\u011c\u011d\7*\2\2"+
+		"\u011d/\3\2\2\2\u011e\u011f\7>\2\2\u011f\u0120\7\27\2\2\u0120\u0121\5"+
+		"\66\34\2\u0121\u0122\7*\2\2\u0122\u0125\5$\23\2\u0123\u0124\7?\2\2\u0124"+
+		"\u0126\5$\23\2\u0125\u0123\3\2\2\2\u0125\u0126\3\2\2\2\u0126\61\3\2\2"+
+		"\2\u0127\u0129\79\2\2\u0128\u012a\5\66\34\2\u0129\u0128\3\2\2\2\u0129"+
+		"\u012a\3\2\2\2\u012a\63\3\2\2\2\u012b\u012c\3\2\2\2\u012c\65\3\2\2\2\u012d"+
+		"\u012e\58\35\2\u012e\u0133\5\64\33\2\u012f\u0130\t\3\2\2\u0130\u0132\5"+
+		"8\35\2\u0131\u012f\3\2\2\2\u0132\u0135\3\2\2\2\u0133\u0131\3\2\2\2\u0133"+
+		"\u0134\3\2\2\2\u0134\67\3\2\2\2\u0135\u0133\3\2\2\2\u0136\u013b\5:\36"+
+		"\2\u0137\u0138\t\4\2\2\u0138\u013a\5:\36\2\u0139\u0137\3\2\2\2\u013a\u013d"+
+		"\3\2\2\2\u013b\u0139\3\2\2\2\u013b\u013c\3\2\2\2\u013c9\3\2\2\2\u013d"+
+		"\u013b\3\2\2\2\u013e\u0143\5<\37\2\u013f\u0140\t\5\2\2\u0140\u0142\5<"+
+		"\37\2\u0141\u013f\3\2\2\2\u0142\u0145\3\2\2\2\u0143\u0141\3\2\2\2\u0143"+
+		"\u0144\3\2\2\2\u0144;\3\2\2\2\u0145\u0143\3\2\2\2\u0146\u0149\5> \2\u0147"+
+		"\u0148\t\6\2\2\u0148\u014a\5> \2\u0149\u0147\3\2\2\2\u0149\u014a\3\2\2"+
+		"\2\u014a=\3\2\2\2\u014b\u0150\5@!\2\u014c\u014d\t\7\2\2\u014d\u014f\5"+
+		"@!\2\u014e\u014c\3\2\2\2\u014f\u0152\3\2\2\2\u0150\u014e\3\2\2\2\u0150"+
+		"\u0151\3\2\2\2\u0151?\3\2\2\2\u0152\u0150\3\2\2\2\u0153\u0158\5B\"\2\u0154"+
+		"\u0155\t\b\2\2\u0155\u0157\5B\"\2\u0156\u0154\3\2\2\2\u0157\u015a\3\2"+
+		"\2\2\u0158\u0156\3\2\2\2\u0158\u0159\3\2\2\2\u0159A\3\2\2\2\u015a\u0158"+
+		"\3\2\2\2\u015b\u0162\5D#\2\u015c\u015d\7+\2\2\u015d\u0161\5D#\2\u015e"+
+		"\u015f\7,\2\2\u015f\u0161\5D#\2\u0160\u015c\3\2\2\2\u0160\u015e\3\2\2"+
+		"\2\u0161\u0164\3\2\2\2\u0162\u0160\3\2\2\2\u0162\u0163\3\2\2\2\u0163C"+
+		"\3\2\2\2\u0164\u0162\3\2\2\2\u0165\u016a\5F$\2\u0166\u0167\t\t\2\2\u0167"+
+		"\u0169\5F$\2\u0168\u0166\3\2\2\2\u0169\u016c\3\2\2\2\u016a\u0168\3\2\2"+
+		"\2\u016a\u016b\3\2\2\2\u016bE\3\2\2\2\u016c\u016a\3\2\2\2\u016d\u016f"+
+		"\7,\2\2\u016e\u016d\3\2\2\2\u016e\u016f\3\2\2\2\u016f\u0178\3\2\2\2\u0170"+
+		"\u0172\7C\2\2\u0171\u0170\3\2\2\2\u0172\u0175\3\2\2\2\u0173\u0171\3\2"+
+		"\2\2\u0173\u0174\3\2\2\2\u0174\u0178\3\2\2\2\u0175\u0173\3\2\2\2\u0176"+
+		"\u0178\7%\2\2\u0177\u016e\3\2\2\2\u0177\u0173\3\2\2\2\u0177\u0176\3\2"+
+		"\2\2\u0178\u0179\3\2\2\2\u0179\u017a\5H%\2\u017aG\3\2\2\2\u017b\u017c"+
+		"\7\27\2\2\u017c\u017d\5\66\34\2\u017d\u017e\7*\2\2\u017e\u0183\3\2\2\2"+
+		"\u017f\u0183\5L\'\2\u0180\u0183\5J&\2\u0181\u0183\5V,\2\u0182\u017b\3"+
+		"\2\2\2\u0182\u017f\3\2\2\2\u0182\u0180\3\2\2\2\u0182\u0181\3\2\2\2\u0183"+
+		"\u0185\3\2\2\2\u0184\u0186\t\n\2\2\u0185\u0184\3\2\2\2\u0185\u0186\3\2"+
+		"\2\2\u0186I\3\2\2\2\u0187\u0188\t\13\2\2\u0188K\3\2\2\2\u0189\u018d\t"+
+		"\f\2\2\u018a\u018e\5R*\2\u018b\u018e\5P)\2\u018c\u018e\5N(\2\u018d\u018a"+
+		"\3\2\2\2\u018d\u018b\3\2\2\2\u018d\u018c\3\2\2\2\u018eM\3\2\2\2\u018f"+
+		"\u0190\3\2\2\2\u0190O\3\2\2\2\u0191\u0192\7\36\2\2\u0192\u0193\5\66\34"+
+		"\2\u0193\u0198\7$\2\2\u0194\u0195\7\36\2\2\u0195\u0196\5\66\34\2\u0196"+
+		"\u0197\7$\2\2\u0197\u0199\3\2\2\2\u0198\u0194\3\2\2\2\u0198\u0199\3\2"+
+		"\2\2\u0199Q\3\2\2\2\u019a\u019c\7\27\2\2\u019b\u019d\5T+\2\u019c\u019b"+
+		"\3\2\2\2\u019c\u019d\3\2\2\2\u019d\u019e\3\2\2\2\u019e\u019f\7*\2\2\u019f"+
+		"S\3\2\2\2\u01a0\u01a5\5\66\34\2\u01a1\u01a2\7\32\2\2\u01a2\u01a4\5\66"+
+		"\34\2\u01a3\u01a1\3\2\2\2\u01a4\u01a7\3\2\2\2\u01a5\u01a3\3\2\2\2\u01a5"+
+		"\u01a6\3\2\2\2\u01a6U\3\2\2\2\u01a7\u01a5\3\2\2\2\u01a8\u01ab\5Z.\2\u01a9"+
+		"\u01ab\5X-\2\u01aa\u01a8\3\2\2\2\u01aa\u01a9\3\2\2\2\u01abW\3\2\2\2\u01ac"+
+		"\u01ad\7\13\2\2\u01ad\u01ae\5^\60\2\u01ae\u01af\7\20\2\2\u01afY\3\2\2"+
+		"\2\u01b0\u01b1\7\13\2\2\u01b1\u01b2\5\\/\2\u01b2\u01b3\7\20\2\2\u01b3"+
+		"[\3\2\2\2\u01b4\u01b5\7\13\2\2\u01b5\u01b6\5^\60\2\u01b6\u01b7\7\20\2"+
+		"\2\u01b7\u01b9\3\2\2\2\u01b8\u01b4\3\2\2\2\u01b8\u01b9\3\2\2\2\u01b9\u01c1"+
+		"\3\2\2\2\u01ba\u01bb\7\32\2\2\u01bb\u01bc\7\13\2\2\u01bc\u01bd\5^\60\2"+
+		"\u01bd\u01be\7\20\2\2\u01be\u01c0\3\2\2\2\u01bf\u01ba\3\2\2\2\u01c0\u01c3"+
+		"\3\2\2\2\u01c1\u01bf\3\2\2\2\u01c1\u01c2\3\2\2\2\u01c2]\3\2\2\2\u01c3"+
+		"\u01c1\3\2\2\2\u01c4\u01c6\5\66\34\2\u01c5\u01c4\3\2\2\2\u01c5\u01c6\3"+
+		"\2\2\2\u01c6\u01cb\3\2\2\2\u01c7\u01c8\7\32\2\2\u01c8\u01ca\5\66\34\2"+
+		"\u01c9\u01c7\3\2\2\2\u01ca\u01cd\3\2\2\2\u01cb\u01c9\3\2\2\2\u01cb\u01cc"+
+		"\3\2\2\2\u01cc_\3\2\2\2\u01cd\u01cb\3\2\2\2\67ejlv}\u0085\u008b\u0090"+
+		"\u0093\u0095\u0098\u00a2\u00a4\u00a8\u00ba\u00bd\u00c1\u00c8\u00ca\u00d5"+
+		"\u00da\u00de\u00e2\u00e9\u00f0\u0100\u0106\u010f\u0125\u0129\u0133\u013b"+
+		"\u0143\u0149\u0150\u0158\u0160\u0162\u016a\u016e\u0173\u0177\u0182\u0185"+
+		"\u018d\u0198\u019c\u01a5\u01aa\u01b8\u01c1\u01c5\u01cb";
 	public static final ATN _ATN =
 		ATNSimulator.deserialize(_serializedATN.toCharArray());
 	static {
