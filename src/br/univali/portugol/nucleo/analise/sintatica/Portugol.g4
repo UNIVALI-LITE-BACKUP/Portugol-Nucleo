@@ -53,6 +53,8 @@ fragment ESC_OCTAL	:	'\\' ('0'..'3') ('0'..'7') ('0'..'7')  |   '\\' ('0'..'7') 
 
 fragment ESC_UNICODE	:	'\\' 'u' DIGIT_HEX DIGIT_HEX DIGIT_HEX DIGIT_HEX;
 
+ATRIBUICOES             :       '=' | '+=' | '-=' | '/=' | '*=' | '%=' | '>>=' | '<<=' | '|=' | '&=' | '^=';
+
 COMENTARIO
     :   
 	('//' ~('\n'|'\r')* '\r'? '\n'
@@ -119,39 +121,17 @@ se: PR_SE '(' expressao ')' listaBlocos (PR_SENAO listaBlocos)?;
 
 retorne: PR_RETORNE expressao?;	
 
-expressao: expressao2 (
-	(
-           '='   | 
-           '+='  | 
-           '-='  | 
-           '/='  | 
-           '*='  | 
-           '%='  | 
-           '>>=' |
-           '<<=' | 
-           '|='  | 
-           '&='  | 
-           '^='
-        ) 	
-	expressao2)*;
-
-expressao2: expressao2_5 (( 'e' |  'ou')  expressao2_5)*;
-
-expressao2_5:  expressao3(( '==' |  '!=')  expressao3)*;
-
-expressao3:  expressao3_5 (( '>=' |  '<=' |  '<' |  '>')  expressao3_5)?;
-
-expressao3_5:  expressao4_5 (( '&' |  '|' |  '^')  expressao4_5)*;
-
-expressao4_5:  expressao5 (( '<<' |  '>>') expressao5)*;
-
-expressao5:  expressao6 (( '+'  expressao6) | ( '-'  expressao6))*;
-
-expressao6:  expressao7 (( '*' |  '/' |  '%')  expressao7)*;
-
-expressao7: ((listaTokenMenos += '-')? | (listaTokenNao += OPERADOR_NAO)* | listaTokenNot += '~' )   expressao8;
-
-expressao8:(  '('  expressao  ')' |  referencia|  tipoPrimitivo |  matrizVetor) ( '++' |  '--')?;
+expressao: ( '('  expressao  ')' |  referencia|  tipoPrimitivo |  matrizVetor ) ( '++' |  '--' )?
+         | ( '-' | (OPERADOR_NAO)+ | '~' ) expressao
+         | expressao ( '*' |  '/' |  '%' ) expressao
+         | expressao ( '+' |  '-' ) expressao
+         | expressao ( '<<' | '>>' ) expressao
+         | expressao ( '&' |  '|' |  '^' ) expressao
+         | expressao ( '>=' |  '<=' |  '<' |  '>') expressao
+         | expressao ( '==' |  '!=' ) expressao
+         | expressao ( 'e' |  'ou')  expressao
+         | expressao ATRIBUICOES expressao
+         ;
 
 tipoPrimitivo: REAL | LOGICO | CADEIA | INTEIRO | CARACTER; 
 
