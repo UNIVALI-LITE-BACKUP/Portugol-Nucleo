@@ -27,6 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
@@ -375,6 +377,140 @@ public final class Arquivos extends Biblioteca
             }
 
             return resultadoSelecao.isArquivoSelecionado();
+        }
+    }
+    
+
+    @DocumentacaoFuncao(descricao = "Altera um vetor para que ele represente as pastas existentes em um diretório",
+        parametros =
+        {
+            @DocumentacaoParametro(nome = "caminho_pai",
+                    descricao = "Define o diretório cujas pastas serão listadas"
+            ),
+            @DocumentacaoParametro(nome = "vetor_pastas",
+                    descricao = "Vetor destino que contará com as pastas encontradas"
+            )
+        },
+        autores =
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+            @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
+        }
+    )
+    public void listar_pastas(final String caminho_pai, final ReferenciaVetor<String> vetor_pastas) throws ErroExecucaoBiblioteca
+    {
+        File arquivo = programa.resolverCaminho(new File(caminho_pai));
+        
+        if(arquivo.exists()){
+            File[] arquivos = arquivo.listFiles();
+            List<Object> strings = new ArrayList<>();
+
+            for (File arquivo1 : arquivos)
+            {
+                if(arquivo1.isDirectory()){
+                    strings.add(arquivo1.getName());
+                }
+            }
+            vetor_pastas.getVetor().inicializarComValores(strings);
+        }
+        else{
+            throw new ErroExecucaoBiblioteca(caminho_pai+" não é um caminho possível");
+        }
+    }
+    @DocumentacaoFuncao(descricao = "Altera um vetor para que ele represente os arquivos existentes em um diretório",
+        parametros =
+        {
+            @DocumentacaoParametro(nome = "caminho_pai",
+                    descricao = "Define o diretório cujas pastas serão listadas"
+            ),
+            @DocumentacaoParametro(nome = "vetor_arquivos",
+                    descricao = "Vetor destino que contará com as pastas encontradas"
+            )
+        },
+        autores =
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+            @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
+        }
+    )
+    public void listar_arquivos(final String caminho_pai, final ReferenciaVetor<String> vetor_arquivos) throws ErroExecucaoBiblioteca
+    {
+        File arquivo = programa.resolverCaminho(new File(caminho_pai));
+        
+        if(arquivo.exists()){
+            File[] arquivos = arquivo.listFiles();
+            List<Object> strings = new ArrayList<>();
+
+            for (File arquivo1 : arquivos)
+            {
+                if(arquivo1.isFile()){
+                    strings.add(arquivo1.getName());
+                }
+            }
+            vetor_arquivos.getVetor().inicializarComValores(strings);
+        }
+        else{
+            throw new ErroExecucaoBiblioteca(caminho_pai+" não é um caminho possível");
+        }
+    }
+    @DocumentacaoFuncao(descricao = "Altera um vetor para que ele represente os arquivos existentes em um diretório",
+        parametros =
+        {
+            @DocumentacaoParametro(nome = "caminho_pai",
+                    descricao = "Define o diretório cujas pastas serão listadas"
+            ),
+            @DocumentacaoParametro(nome = "vetor_arquivos",
+                    descricao = "Vetor destino que contará com as pastas encontradas"
+            ),
+            @DocumentacaoParametro(nome = "vetor_tipos",
+                    descricao = "Vetor destino que contará com as pastas encontradas"
+            )
+        },
+        autores =
+        {
+            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+            @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
+        }
+    )
+    public void listar_arquivos_por_tipo(final String caminho_pai, final ReferenciaVetor<String> vetor_arquivos, final ReferenciaVetor<String> vetor_tipos) throws ErroExecucaoBiblioteca
+    {
+        File arquivo = programa.resolverCaminho(new File(caminho_pai));
+        
+        if(arquivo.exists()){
+            File[] arquivos = arquivo.listFiles(new java.io.FileFilter()
+            {
+                @Override
+                public boolean accept(File pathname)
+                {
+                    for(int i=0; i<vetor_tipos.numeroElementos();i++)
+                    {
+                        try
+                        {
+                            if(pathname.toString().toLowerCase().endsWith(vetor_tipos.obterValor(i).toLowerCase())){
+                                return true;
+                            }
+                        }
+                        catch (ErroExecucaoBiblioteca ex)
+                        {
+                            Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    return false;
+                    
+                }
+            });
+            List<Object> strings = new ArrayList<>();
+
+            for (File arquivo1 : arquivos)
+            {
+                if(arquivo1.isFile()){
+                    strings.add(arquivo1.getName());
+                }
+            }
+            vetor_arquivos.getVetor().inicializarComValores(strings);
+        }
+        else{
+            throw new ErroExecucaoBiblioteca(caminho_pai+" não é um caminho possível");
         }
     }
 

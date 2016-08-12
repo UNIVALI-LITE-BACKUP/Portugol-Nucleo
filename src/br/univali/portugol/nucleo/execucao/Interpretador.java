@@ -403,6 +403,7 @@ public abstract class Interpretador implements VisitanteASA
                 return new ReferenciaVetor()
                 {
 
+                    
                     @Override
                     public int numeroElementos()
                     {
@@ -419,6 +420,12 @@ public abstract class Interpretador implements VisitanteASA
                     public void definirValor(Object valor, int indice) throws ErroExecucaoBiblioteca
                     {
                         vetor.setValor(indice, valor);
+                    }
+
+                    @Override
+                    public Vetor getVetor()
+                    {
+                        return vetor;
                     }
                 };
             }
