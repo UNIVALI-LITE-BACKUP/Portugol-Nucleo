@@ -1074,6 +1074,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void sair_modo_tela_cheia() throws ErroExecucaoBiblioteca
     {
-        janela().entrarModoTelaCheia();
+        janela().sairModoTelaCheia();
     }
 }
