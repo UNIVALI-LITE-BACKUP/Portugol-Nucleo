@@ -4,6 +4,8 @@ import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
@@ -31,9 +33,14 @@ public final class JanelaGraficaImpl extends JFrame implements JanelaGrafica
 
     private int largura = LARGURA_PADRAO;
     private int altura = ALTURA_PADRAO;
+    
+    private int largura_anterior = LARGURA_PADRAO;
+    private int altura_anterior = ALTURA_PADRAO;
 
     private final Programa programa;
     private SuperficieDesenho superficieDesenho;
+    
+    private boolean tela_cheia = false;
 
     private JanelaGraficaImpl(Programa programa)
     {
@@ -201,13 +208,19 @@ public final class JanelaGraficaImpl extends JFrame implements JanelaGrafica
 
     private void redimensionar(int largura, int altura)
     {
-        this.largura = largura;
-        this.altura = altura;
+        if (!tela_cheia)
+        {
+            this.largura = largura;
+            this.altura = altura;            
+            
+            dispose();
+            setVisible(true);
+            
+            getContentPane().setPreferredSize(new Dimension(largura, altura));
+            pack();
 
-        getContentPane().setPreferredSize(new Dimension(largura, altura));
-        pack();
-
-        superficieDesenho.redimensionar(largura, altura);
+            superficieDesenho.redimensionar(largura, altura);
+        }
     }
 
     @Override
@@ -250,17 +263,20 @@ public final class JanelaGraficaImpl extends JFrame implements JanelaGrafica
 
     private void ocultarBorda(final boolean ocultar) throws ErroExecucaoBiblioteca
     {
-        Swing.executarTarefa(new Runnable()
+        if (!tela_cheia)
         {
-            @Override
-            public void run()
+            Swing.executarTarefa(new Runnable()
             {
-                dispose();
-                setUndecorated(ocultar);
-                setVisible(true);
-                redimensionar(largura, altura);
-            }
-        });
+                @Override
+                public void run()
+                {
+                    dispose();
+                    setUndecorated(ocultar);
+                    setVisible(true);
+                    redimensionar(largura, altura);
+                }
+            });
+        }
     }
 
     @Override
@@ -324,5 +340,57 @@ public final class JanelaGraficaImpl extends JFrame implements JanelaGrafica
     private static final class RetornoJanela
     {
         public JanelaGrafica janela;
+    }
+    
+    @Override
+    public int getLargura() throws ErroExecucaoBiblioteca
+    {
+        return this.largura;
+    }
+
+    @Override
+    public int getAltura() throws ErroExecucaoBiblioteca
+    {
+        return this.altura;
+    }
+
+    @Override
+    public void entrarModoTelaCheia() throws ErroExecucaoBiblioteca
+    {
+        if (!tela_cheia)
+        {
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        
+            this.largura_anterior = this.largura;
+            this.altura_anterior = this.altura;
+        
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+            ocultarBorda();
+            definirDimensoes(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight());
+            setLocationRelativeTo(null);
+            gd.setFullScreenWindow(this);
+            
+            tela_cheia = true;
+        }
+    }
+
+    @Override
+    public void sairModoTelaCheia() throws ErroExecucaoBiblioteca
+    {
+        if (tela_cheia)
+        {
+            System.out.println("Exiting fullscreen!!");
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        
+            tela_cheia = false;
+            
+            gd.setFullScreenWindow(null);
+            setExtendedState(JFrame.NORMAL);
+            
+            exibirBorda();
+            definirDimensoes(this.largura_anterior, this.altura_anterior);
+            setLocationRelativeTo(null);
+            
+        }
     }
 }

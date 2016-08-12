@@ -28,10 +28,18 @@ public interface JanelaGrafica extends Mouse.InstaladorMouse, Teclado.Instalador
     public void exibirBorda() throws ErroExecucaoBiblioteca;
 
     public void definirDimensoes(int largura, int altura) throws ErroExecucaoBiblioteca;
-
+    
     public SuperficieDesenho getSuperficieDesenho();
     
     public boolean estaVisivel();
     
     public void fechar();
+    
+    public int getLargura() throws ErroExecucaoBiblioteca;
+    
+    public int getAltura() throws ErroExecucaoBiblioteca;
+    
+    public void entrarModoTelaCheia() throws ErroExecucaoBiblioteca;
+    
+    public void sairModoTelaCheia() throws ErroExecucaoBiblioteca;
 }

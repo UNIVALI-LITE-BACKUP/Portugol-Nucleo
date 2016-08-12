@@ -207,7 +207,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         janela().definirDimensoes(largura, altura);
     }
-
+   
     @DocumentacaoFuncao(
             descricao = "define o texto da janela do ambiente gráfico",
             parametros =
@@ -996,5 +996,84 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             throw new ErroExecucaoBiblioteca("O modo gráfico não foi inicializado");
         }
+    }
+    
+    @DocumentacaoFuncao(
+            descricao = "obtém a largura atual da janela do ambiente gráfico",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public Integer largura_janela() throws ErroExecucaoBiblioteca
+    {
+        return janela().getLargura();
+    }
+    
+    @DocumentacaoFuncao(
+            descricao = "obtém a altura atual da janela do ambiente gráfico",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public Integer altura_janela() throws ErroExecucaoBiblioteca
+    {
+        return janela().getAltura();
+    }
+    
+    
+    @DocumentacaoFuncao(
+            descricao = "obtém a largura da tela do computador",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public Integer largura_tela() throws ErroExecucaoBiblioteca
+    {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        
+        return gd.getDisplayMode().getWidth();        
+    }
+        
+    
+    @DocumentacaoFuncao(
+            descricao = "obtém a altura da tela do computador",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public Integer altura_tela() throws ErroExecucaoBiblioteca
+    {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        
+        return gd.getDisplayMode().getHeight();
+    }
+
+    @DocumentacaoFuncao(
+            descricao = "Faz com que a janela gráfica seja redimensionada para ocupar o tamanho total da tela",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void entrar_modo_tela_cheia() throws ErroExecucaoBiblioteca
+    {
+        janela().entrarModoTelaCheia();
+    }
+    
+    
+     @DocumentacaoFuncao(
+            descricao = "Faz com que a janela gráfica seja redimensionada para o tamanho que possuía antes de entrar no modo de tela cheia",
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+            }
+    )
+    public void sair_modo_tela_cheia() throws ErroExecucaoBiblioteca
+    {
+        janela().entrarModoTelaCheia();
     }
 }
