@@ -3,6 +3,7 @@ package br.univali.portugol.nucleo.simbolos;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
+import java.util.Objects;
 
 /**
  * Representa um símbolo alocado em memória durante a execução do programa.
@@ -19,6 +20,25 @@ import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
  */
 public abstract class Simbolo
 {
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final Simbolo other = (Simbolo) obj;
+        return true;
+    }
     private String nome;
     protected TipoDado tipoDado;
     private TrechoCodigoFonte trechoCodigoFonteNome;
@@ -268,4 +288,17 @@ public abstract class Simbolo
      * @since 1.0
      */
     public abstract Simbolo copiar(String novoNome);
+    
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.nome);
+        hash = 83 * hash + Objects.hashCode(this.tipoDado);
+        hash = 83 * hash + Objects.hashCode(this.trechoCodigoFonteNome);
+        hash = 83 * hash + Objects.hashCode(this.trechoCodigoFonteTipoDado);
+        hash = 83 * hash + (this.constante ? 1 : 0);
+        hash = 83 * hash + Objects.hashCode(this.origemDoSimbolo);
+        return hash;
+    }
 }
