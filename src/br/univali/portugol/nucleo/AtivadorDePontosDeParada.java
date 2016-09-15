@@ -55,11 +55,7 @@ import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.NoTitulo;
 import br.univali.portugol.nucleo.asa.NoVaPara;
 import br.univali.portugol.nucleo.asa.NoVetor;
-import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
-import br.univali.portugol.nucleo.execucao.Depurador;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,6 +85,11 @@ public final class AtivadorDePontosDeParada implements VisitanteASA
         return linhasDasParadas.contains(linhaDoNo);
     }
 
+    public boolean temPontosDeParadaAtivos()
+    {
+        return !linhasDasParadas.isEmpty();
+    }
+    
     /**
      *
      * @param linhasDosPontosDeParada As linhas onde serão aplicados os pontos
