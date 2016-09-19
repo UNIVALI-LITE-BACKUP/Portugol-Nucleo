@@ -25,9 +25,12 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 
     private Programa programa;
     private Estado estado = Estado.PARADO;
-
-
+    private boolean otimizandoExecucao = false; // se não existirem pontos de parada o código que verifica as paradas não é executado
     
+    public void setExecucaoOtimizada(boolean otimiza)
+    {
+        this.otimizandoExecucao = otimiza;
+    }
     
     public Estado getEstado()
     {
@@ -619,6 +622,11 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 
     private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
     {
+        if (otimizandoExecucao) 
+        {
+            return; // a execução é otimizada quando não existem pontos de parada no código.
+        }
+        
         if (no.ehParavel(this.estado) || funcaoInicial(no))
         {
             if ( this.estado == Estado.STEP_INTO){

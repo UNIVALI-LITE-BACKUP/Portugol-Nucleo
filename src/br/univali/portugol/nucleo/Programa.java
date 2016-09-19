@@ -130,6 +130,7 @@ public final class Programa
         if (!isExecutando())
         {
             tarefaExecucao = new TarefaExecucao(parametros, estado);
+            atualizaOtimizacaoDaTarefaDeExecucao();
             controleTarefaExecucao = servicoExecucao.submit(tarefaExecucao);
         }
     }
@@ -149,8 +150,26 @@ public final class Programa
     public void ativaPontosDeParada(Set<Integer> linhasComPontosDeParadaAtivados)
     {
         ativadorDePontoDesParada.ativaPontosDeParada(linhasComPontosDeParadaAtivados, arvoreSintaticaAbstrataPrograma);
+        
+        atualizaOtimizacaoDaTarefaDeExecucao(); // sempre que novos pontos de parada são adicionados ou removidos é necessário atualizar a flag de otimização
+    }
+    
+    private void atualizaOtimizacaoDaTarefaDeExecucao()
+    {
+        if (tarefaExecucao != null) 
+        {
+            boolean otimizando = podeOtimizar();
+            tarefaExecucao.setOtimizacao(otimizando);
+            System.out.println("Otimizando execução: " + otimizando + " estado: " + tarefaExecucao.estado + " estado depurador: " + tarefaExecucao.depurador.getEstado() + " tem pontos de parada ativos: " + ativadorDePontoDesParada.temPontosDeParadaAtivos());
+        }
     }
 
+    private boolean podeOtimizar()
+    {
+        boolean estaNoModoBreakPoint = tarefaExecucao.estado == Depurador.Estado.BREAK_POINT || tarefaExecucao.depurador.getEstado() == Depurador.Estado.BREAK_POINT;
+        return  estaNoModoBreakPoint && !ativadorDePontoDesParada.temPontosDeParadaAtivos();
+    }
+    
     /**
      * Implementa uma tarefa para disparar a execução do programa com os
      * parâmetros e a estratégia selecionada. Futuramente podemos refatorar para
@@ -171,6 +190,10 @@ public final class Programa
             this.depurador = new Depurador();
         }
 
+        public void setOtimizacao(boolean otimiza) {
+            depurador.setExecucaoOtimizada(otimiza);
+        }
+        
         public ResultadoExecucao getResultadoExecucao()
         {
             return resultadoExecucao;
@@ -202,11 +225,21 @@ public final class Programa
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
 
             notificarEncerramentoExecucao(resultadoExecucao);
+            
         }
 
         public void continuar(Depurador.Estado estado)
         {
             depurador.continuar(estado);
+            
+            atualizaOtimizacaoDaTarefaDeExecucao(); 
+            /***
+             * Quando a execução é continuada é necessário atualizar a flag de otimização.
+             * É possível que o usuário inicie a execução no modo passo a passo (sem otimização), 
+             * e em seguida clique no botão 'play', alterando para o modo de execução com pontos de parada.
+             * Porém, se não houverem pontos de parada ativos no código é possível executar com otimização.
+             */ 
+            
         }
     }
 
