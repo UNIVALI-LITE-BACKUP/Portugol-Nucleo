@@ -9,7 +9,6 @@ import br.univali.portugol.nucleo.execucao.es.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.*;
 import br.univali.portugol.nucleo.execucao.operacoes.bitwise.*;
-import br.univali.portugol.nucleo.execucao.operacoes.logicas.*;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.*;
 
@@ -27,7 +26,6 @@ public abstract class Interpretador implements VisitanteASA
     protected Map<String, Biblioteca> bibliotecas = new TreeMap<>();
 
     private final OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
-    private final OperacaoLogicaMenorIgual operacaoLogicaMenorIgual = new OperacaoLogicaMenorIgual();
     private final OperacaoModulo operacaoModulo = new OperacaoModulo();
     private final OperacaoMultiplicacao operacaoMultiplicacao = new OperacaoMultiplicacao();
     private final OperacaoSoma operacaoSoma = new OperacaoSoma();
@@ -1003,17 +1001,7 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoLogicaMenorIgual noOperacao) throws ExcecaoVisitaASA
     {
-        try
-        {
-            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-
-            return operacaoLogicaMenorIgual.executar(noOperacao, opEsq, opDir);
-        }
-        catch (ErroExecucao ex)
-        {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
-        }
+        return noOperacao.evaluate(this);
     }
 
     @Override
