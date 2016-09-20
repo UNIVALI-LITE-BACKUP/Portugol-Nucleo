@@ -45,25 +45,25 @@ public class OperacaoMaiorIgualTest
     @Test
     public void testInteiroDouble() throws Exception
     {
-        test(new NoInteiro(10), new NoReal(10.0), Boolean.FALSE);
+        test(new NoInteiro(10), new NoReal(10.0), Boolean.TRUE);
         test(new NoInteiro(10), new NoReal(9), Boolean.TRUE);
-        test(new NoInteiro(10), new NoReal(10), Boolean.TRUE);
+        test(new NoInteiro(10), new NoReal(11), Boolean.FALSE);
     }
     
     @Test
     public void testDouble() throws Exception
     {
-        test(new NoReal(10.0), new NoReal(10.0), Boolean.FALSE);
-        test(new NoReal(10.0), new NoReal(9.0), Boolean.TRUE);
         test(new NoReal(10.0), new NoReal(10.0), Boolean.TRUE);
+        test(new NoReal(10.0), new NoReal(9.0), Boolean.TRUE);
+        test(new NoReal(10.0), new NoReal(11.0), Boolean.FALSE);
     }
     
     @Test
     public void testDoubleInteiro() throws Exception
     {
-        test(new NoReal(10.0), new NoInteiro(10), Boolean.FALSE);
-        test(new NoReal(10.0), new NoInteiro(9), Boolean.TRUE);
         test(new NoReal(10.0), new NoInteiro(10), Boolean.TRUE);
+        test(new NoReal(10.0), new NoInteiro(9), Boolean.TRUE);
+        test(new NoReal(10.0), new NoInteiro(11), Boolean.FALSE);
     }
 
     @Test(expected = ExcecaoVisitaASA.class)

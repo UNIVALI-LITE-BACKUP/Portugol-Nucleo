@@ -975,9 +975,7 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoLogicaOU noOperacao) throws ExcecaoVisitaASA
     {
-        Boolean opEsq = (Boolean) noOperacao.getOperandoEsquerdo().aceitar(this);
-        Boolean opDir = (Boolean) noOperacao.getOperandoDireito().aceitar(this);
-        return opEsq || opDir;
+        return noOperacao.evaluate(this);
     }
 
     @Override

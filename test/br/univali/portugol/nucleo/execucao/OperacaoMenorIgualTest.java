@@ -30,7 +30,7 @@ public class OperacaoMenorIgualTest
         // a expressão de soma deve resultar em um inteiro
         test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(5)), new NoInteiro(10), Boolean.TRUE);
         test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(4)), new NoInteiro(10), Boolean.TRUE);
-        test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(5)), new NoInteiro(11), Boolean.FALSE);
+        test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(5)), new NoInteiro(9), Boolean.FALSE);
     }
     
     @Test

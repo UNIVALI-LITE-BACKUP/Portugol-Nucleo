@@ -47,6 +47,14 @@ public class NoOperacaoLogicaOU extends NoOperacaoLogica
     {
         super(operandoEsquerdo, operandoDireito);
     }
+
+    @Override
+    public Boolean evaluate(VisitanteASA visitor) throws ExcecaoVisitaASA
+    {
+        Boolean opEsq = (Boolean) getOperandoEsquerdo().aceitar(visitor);
+        Boolean opDir = (Boolean) getOperandoDireito().aceitar(visitor);
+        return opEsq || opDir;
+    }
     
     @Override
     public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
