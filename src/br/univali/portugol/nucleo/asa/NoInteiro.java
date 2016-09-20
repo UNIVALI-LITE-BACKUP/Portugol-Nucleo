@@ -19,6 +19,16 @@ public final class NoInteiro extends NoValor<Integer>
         super(valor);
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof NoInteiro)
+        {
+            return ((NoInteiro) obj).getValor().equals(getValor());
+        }
+        
+        return false;
+    }
     
     /**
      * {@inheritDoc }

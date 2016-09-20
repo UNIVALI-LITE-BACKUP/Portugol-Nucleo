@@ -11,4 +11,7 @@ public abstract class NoOperacaoLogica extends NoOperacao
     {
         super(operandoEsquerdo, operandoDireito);
     }    
+
+    public abstract Boolean evaluate(VisitanteASA visitor) throws ExcecaoVisitaASA;
+    
 }

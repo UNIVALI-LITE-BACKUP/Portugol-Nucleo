@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.execucao.operacoes;
 
 import br.univali.portugol.nucleo.asa.NoOperacao;
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.execucao.erros.ErroDivisaoPorZero;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
@@ -11,9 +12,15 @@ public abstract class Operacao
 {
     public Object executar(NoOperacao noOperacao, Object a, Object b) throws ErroExecucao
     {
-        int linha = noOperacao.getTrechoCodigoFonte().getLinha();
-        int coluna = noOperacao.getTrechoCodigoFonte().getColuna();
-        
+        int linha = -1;
+        int coluna = -1;
+        TrechoCodigoFonte trechoCodigo = noOperacao.getTrechoCodigoFonte();
+        if (trechoCodigo != null)
+        {
+            linha = trechoCodigo.getLinha();
+            coluna = trechoCodigo.getColuna();
+        }
+
         try
         {
             Class ca = a.getClass();
@@ -23,7 +30,7 @@ public abstract class Operacao
             return metodo.invoke(this, a, b);
         }
         catch (InvocationTargetException ex)
-        {            
+        {
             if (ex.getCause() instanceof ArithmeticException)
             {
                 if (ex.getCause().getMessage().contains("/ by zero"))
@@ -31,19 +38,19 @@ public abstract class Operacao
                     throw traduzirErro(new ErroDivisaoPorZero(), linha, coluna);
                 }
             }
-            
+
             throw traduzirErro((Exception) ex.getCause(), linha, coluna);
         }
         catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException ex)
-        {   
+        {
             throw traduzirErro(ex, linha, coluna);
         }
     }
-    
+
     private ErroExecucao traduzirErro(Exception erro, int linha, int coluna)
     {
         ErroExecucao erroExecucao;
-        
+
         if (erro instanceof ErroExecucao)
         {
             erroExecucao = (ErroExecucao) erro;
@@ -52,10 +59,10 @@ public abstract class Operacao
         {
             erroExecucao = new ErroExecucaoNaoTratado(erro);
         }
-        
+
         erroExecucao.setLinha(linha);
         erroExecucao.setColuna(coluna);
-        
+
         return erroExecucao;
     }
 }

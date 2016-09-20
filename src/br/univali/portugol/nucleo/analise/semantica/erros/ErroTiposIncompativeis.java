@@ -11,6 +11,7 @@ import br.univali.portugol.nucleo.asa.NoMenosUnario;
 import br.univali.portugol.nucleo.asa.NoNao;
 import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
 import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogica;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaE;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaIgualdade;
@@ -221,7 +222,34 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             return construtorString.toString();
         }
 
-        
+        @Override
+        public Object visitar(NoOperacaoLogica no) throws ExcecaoVisitaASA
+        {
+            //TODO cada subclasse de NoOperacaoLogica pode sobrescrever um método que retorna o erro
+            if (no instanceof NoOperacaoLogicaDiferenca)
+                return visitar((NoOperacaoLogicaDiferenca)no);
+            
+            if (no instanceof NoOperacaoLogicaE)
+                return visitar((NoOperacaoLogicaE)no);
+            
+            if (no instanceof NoOperacaoLogicaIgualdade)
+                return visitar((NoOperacaoLogicaIgualdade)no);
+            
+            if (no instanceof NoOperacaoLogicaMaior)
+                return visitar((NoOperacaoLogicaMaior)no);
+            
+            if (no instanceof NoOperacaoLogicaMaiorIgual)
+                return visitar((NoOperacaoLogicaMaiorIgual)no);
+            
+            if (no instanceof NoOperacaoLogicaMenor)
+                return visitar((NoOperacaoLogicaMenor)no);
+            
+            if (no instanceof NoOperacaoLogicaMenorIgual)
+                return visitar((NoOperacaoLogicaMenorIgual)no);
+            
+            throw new ExcecaoVisitaASA("Erro obtendo mensagem de erro! :)!", null, no);
+        }
+
         /**
          * Constrói uma mensagem de erro personalizada para a operação de diferença (!=).
          * 
@@ -230,7 +258,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
          * 
          * @see NoOperacaoLogicaDiferenca
          */
-        @Override
         public Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
@@ -284,7 +311,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
          * 
          * @see NoOperacaoLogicaE
          */
-        @Override
         public Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
@@ -311,7 +337,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
          * 
          * @see NoOperacaoLogicaIgualdade
          */
-        @Override
         public Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
@@ -338,7 +363,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
         * 
         * @see NoOperacaoLogicaMaior
         */ 
-        @Override
         public Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
@@ -365,7 +389,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
          * 
          * @see NoOperacaoLogicaMaiorIgual
          */        
-        @Override
         public Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
@@ -392,7 +415,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
          * 
          * @see NoOperacaoLogicaMenor
          */
-        @Override
         public Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
@@ -420,7 +442,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
          * 
          * @see NoOperacaoLogicaMenorIgual
          */
-        @Override
         public Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();
@@ -504,7 +525,6 @@ public final class ErroTiposIncompativeis extends ErroSemantico
          * 
          * @see NoOperacaoLogicaOU
          */ 
-        @Override
         public Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA
         {
             StringBuilder construtorString = new StringBuilder();

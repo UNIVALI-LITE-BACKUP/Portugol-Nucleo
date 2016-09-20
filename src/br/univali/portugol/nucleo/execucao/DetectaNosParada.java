@@ -236,13 +236,7 @@ public class DetectaNosParada implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA
+    public Object visitar(NoOperacaoLogica noOperacaoLogica) throws ExcecaoVisitaASA
     {
         return null;
     }
@@ -258,42 +252,6 @@ public class DetectaNosParada implements VisitanteASA
                 nosParada.add(noOperacaoAtribuicao);
             }
         }
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA
-    {
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA
-    {
         return null;
     }
 

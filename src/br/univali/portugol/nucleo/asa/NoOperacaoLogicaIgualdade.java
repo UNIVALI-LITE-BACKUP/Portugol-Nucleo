@@ -24,6 +24,30 @@ public final class NoOperacaoLogicaIgualdade extends NoOperacaoLogica
     {
         super(operandoEsquerdo, operandoDireito);
     }
+
+    @Override
+    public Boolean evaluate(VisitanteASA visitor) throws ExcecaoVisitaASA
+    {
+        Object opEsq = getOperandoEsquerdo().aceitar(visitor);
+        Object opDir = getOperandoDireito().aceitar(visitor);
+        
+        if (opEsq.getClass().equals(opDir.getClass())) 
+        {
+            return opEsq.equals(opDir);
+        }
+        
+        // trata os casos de comparação de inteiro com real e de real com inteiro
+        if (opEsq instanceof Integer && opDir instanceof Double) 
+        {
+            return ((Integer)opEsq).intValue() == ((Double) opDir).intValue();
+        }
+        else if (opEsq instanceof Double && opDir instanceof Integer)
+        {
+            return ((Double)opEsq).intValue() == ((Integer) opDir).intValue();
+        }
+        
+        throw new ExcecaoVisitaASA("Erro avaliando expressão de igualdade!", null, this);
+    }
     
     /**
      * {@inheritDoc }
