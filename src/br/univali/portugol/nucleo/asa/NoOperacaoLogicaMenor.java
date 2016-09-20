@@ -23,6 +23,20 @@ public final class NoOperacaoLogicaMenor extends NoOperacaoLogica
     {
         super(operandoEsquerdo, operandoDireito);
     }
+
+    @Override
+    public Boolean evaluate(VisitanteASA visitor) throws ExcecaoVisitaASA
+    {
+        Object opEsq = getOperandoEsquerdo().aceitar(visitor);
+        Object opDir = getOperandoDireito().aceitar(visitor);
+
+        if (opEsq instanceof Number && opDir instanceof Number)
+        {
+            return ((Number)opEsq).doubleValue() < ((Number)opDir).doubleValue();
+        }
+ 
+        throw new ExcecaoVisitaASA("Tipo inválido na operação lógica 'menor'", null, this);
+    }
     
     /**
      * {@inheritDoc }
