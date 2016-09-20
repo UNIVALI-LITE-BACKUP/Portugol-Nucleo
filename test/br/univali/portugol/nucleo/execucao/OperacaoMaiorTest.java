@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.asa.NoCaracter;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoInteiro;
 import br.univali.portugol.nucleo.asa.NoLogico;
-import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
+import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMaior;
 import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
 import br.univali.portugol.nucleo.asa.NoReal;
 import org.junit.Test;
@@ -15,11 +15,11 @@ import static org.junit.Assert.*;
 /**
  * @author Elieser
  */
-public class OperacaoDiferencaTest
+public class OperacaoMaiorTest
 {
     private final Depurador depurador;
     
-    public OperacaoDiferencaTest()
+    public OperacaoMaiorTest()
     {
         depurador = new Depurador();
     }
@@ -29,13 +29,14 @@ public class OperacaoDiferencaTest
     {
         // a expressão de soma deve resultar em um inteiro
         test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(5)), new NoInteiro(10), Boolean.FALSE);
-        test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(4)), new NoInteiro(10), Boolean.TRUE);
+        test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(4)), new NoInteiro(10), Boolean.FALSE);
+        test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(6)), new NoInteiro(10), Boolean.TRUE);
     }
     
     @Test
     public void testInteiros() throws Exception
     {
-        test(new NoInteiro(10), new NoInteiro(10), Boolean.FALSE);
+        test(new NoInteiro(10), new NoInteiro(11), Boolean.FALSE);
         test(new NoInteiro(10), new NoInteiro(9), Boolean.TRUE);
     }
     
@@ -60,30 +61,28 @@ public class OperacaoDiferencaTest
         test(new NoReal(10.0), new NoInteiro(9), Boolean.TRUE);
     }
 
-    @Test
+    @Test(expected = ExcecaoVisitaASA.class)
     public void testCharacter() throws Exception
     {
+        // deve disparar uma exceção
         test(new NoCaracter('a'), new NoCaracter('a'), Boolean.FALSE);
-        test(new NoCaracter('a'), new NoCaracter('b'), Boolean.TRUE);
     }
 
-    @Test
+    @Test(expected = ExcecaoVisitaASA.class)
     public void testString() throws Exception
     {
         test(new NoCadeia("test"), new NoCadeia("test"), Boolean.FALSE);
-        test(new NoCadeia("test"), new NoCadeia("t"), Boolean.TRUE);
     }
 
-    @Test
+    @Test(expected = ExcecaoVisitaASA.class)
     public void testBoolean() throws Exception
     {
         test(new NoLogico(true), new NoLogico(true), Boolean.FALSE);
-        test(new NoLogico(true), new NoLogico(false), Boolean.TRUE);
     }
     
     private void test(NoExpressao a, NoExpressao b, Boolean expectedResult) throws ExcecaoVisitaASA
     {
-        NoOperacaoLogicaDiferenca igualdade = new NoOperacaoLogicaDiferenca(a, b);
+        NoOperacaoLogicaMaior igualdade = new NoOperacaoLogicaMaior(a, b);
         Object result = depurador.visitar(igualdade);
         assertEquals(expectedResult, result);
     }

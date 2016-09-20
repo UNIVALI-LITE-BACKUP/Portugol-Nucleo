@@ -27,7 +27,6 @@ public abstract class Interpretador implements VisitanteASA
     protected Map<String, Biblioteca> bibliotecas = new TreeMap<>();
 
     private final OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
-    private final OperacaoLogicaMaior operacaoLogicaMaior = new OperacaoLogicaMaior();
     private final OperacaoLogicaMaiorIgual operacaoLogicaMaiorIgual = new OperacaoLogicaMaiorIgual();
     private final OperacaoLogicaMenor operacaoLogicaMenor = new OperacaoLogicaMenor();
     private final OperacaoLogicaMenorIgual operacaoLogicaMenorIgual = new OperacaoLogicaMenorIgual();
@@ -934,7 +933,7 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoLogicaDiferenca noOperacao) throws ExcecaoVisitaASA
     {
-        return noOperacao.evaluate();
+        return noOperacao.evaluate(this);
     }
 
     @Override
@@ -974,9 +973,7 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoLogicaE noOperacao) throws ExcecaoVisitaASA
     {
-        Boolean opEsq = (Boolean) noOperacao.getOperandoEsquerdo().aceitar(this);
-        Boolean opDir = (Boolean) noOperacao.getOperandoDireito().aceitar(this);
-        return opEsq && opDir;
+        return noOperacao.evaluate(this);
     }
 
     @Override
@@ -990,17 +987,7 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA
     {
-        try
-        {
-            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-
-            return operacaoLogicaMaior.executar(noOperacao, opEsq, opDir);
-        }
-        catch (ErroExecucao ex)
-        {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
-        }
+        return noOperacao.evaluate(this);
     }
 
     @Override

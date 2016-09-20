@@ -20,32 +20,18 @@ package br.univali.portugol.nucleo.asa;
  */
 public final class NoOperacaoLogicaIgualdade extends NoOperacaoLogica
 {
-    private Boolean evaluatedValue = null; // cache
-    
     public NoOperacaoLogicaIgualdade(NoExpressao operandoEsquerdo, NoExpressao operandoDireito)
     {
         super(operandoEsquerdo, operandoDireito);
     }
 
-    public boolean evaluate(VisitanteASA visitor) throws ExcecaoVisitaASA
+    @Override
+    public Boolean evaluate(VisitanteASA visitor) throws ExcecaoVisitaASA
     {
-        if (evaluatedValue == null)
-        {
-            evaluatedValue = doEvaluation(visitor); //se a igualdade for testada mais de uma vez o valor que já foi avaliado será retornado
-        }
-        return evaluatedValue;
-    }
-    
-    private Boolean doEvaluation(VisitanteASA visitor) throws ExcecaoVisitaASA
-    {
-        
         Object opEsq = getOperandoEsquerdo().aceitar(visitor);
         Object opDir = getOperandoDireito().aceitar(visitor);
         
-        Class esqClass = opEsq.getClass();
-        Class dirClass = opDir.getClass();
-        
-        if (esqClass.equals(dirClass)) 
+        if (opEsq.getClass().equals(opDir.getClass())) 
         {
             return opEsq.equals(opDir);
         }
