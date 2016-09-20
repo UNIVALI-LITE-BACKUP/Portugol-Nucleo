@@ -519,14 +519,7 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaDiferenca no) throws ExcecaoVisitaASA
+    public Object visitar(NoOperacaoLogica no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
@@ -541,48 +534,6 @@ public class Depurador extends Interpretador implements ObservadorMemoria
         disparaSimbolosAlterados(getSimbolosAlterados(no));
 
         return result;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaE no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaOU no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenor no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenorIgual no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
     }
 
     @Override

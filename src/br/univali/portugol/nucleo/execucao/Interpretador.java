@@ -921,13 +921,7 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA
-    {
-        return noOperacao.evaluate(this);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaDiferenca noOperacao) throws ExcecaoVisitaASA
+    public Object visitar(NoOperacaoLogica noOperacao) throws ExcecaoVisitaASA
     {
         return noOperacao.evaluate(this);
     }
@@ -964,42 +958,6 @@ public abstract class Interpretador implements VisitanteASA
         {
             throw new ExcecaoVisitaASA(excecaoSimboloNaoDeclarado, asa, atribuicao);
         }
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaE noOperacao) throws ExcecaoVisitaASA
-    {
-        return noOperacao.evaluate(this);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaOU noOperacao) throws ExcecaoVisitaASA
-    {
-        return noOperacao.evaluate(this);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA
-    {
-        return noOperacao.evaluate(this);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacao) throws ExcecaoVisitaASA
-    {
-        return noOperacao.evaluate(this);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenor noOperacao) throws ExcecaoVisitaASA
-    {
-        return noOperacao.evaluate(this);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenorIgual noOperacao) throws ExcecaoVisitaASA
-    {
-        return noOperacao.evaluate(this);
     }
 
     @Override

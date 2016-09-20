@@ -46,24 +46,10 @@ public interface VisitanteASA
     public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA;
 
     public Object visitar(NoNao noNao) throws ExcecaoVisitaASA;
-
-    public Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA;
-
-    public Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA;
     
     public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA;
-    
-    public Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA;
-    
-    public Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA;
-    
-    public Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA;
-    
-    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA;
-    
-    public Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA;
-    
-    public Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA;
+
+    public Object visitar(NoOperacaoLogica noOperacao) throws ExcecaoVisitaASA;
     
     public Object visitar(NoOperacaoSoma noOperacaoSoma) throws ExcecaoVisitaASA;
     
