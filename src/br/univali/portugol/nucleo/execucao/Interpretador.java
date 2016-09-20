@@ -928,7 +928,7 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA
     {
-        return noOperacao.evaluate();
+        return noOperacao.evaluate(this);
     }
 
     @Override

@@ -27,28 +27,40 @@ public final class NoOperacaoLogicaIgualdade extends NoOperacaoLogica
         super(operandoEsquerdo, operandoDireito);
     }
 
-    public boolean evaluate()
+    public boolean evaluate(VisitanteASA visitor) throws ExcecaoVisitaASA
     {
         if (evaluatedValue == null)
         {
-            evaluatedValue = doEvaluation(); //se a igualdade for testada mais de uma vez o valor que já foi avaliado será retornado
+            evaluatedValue = doEvaluation(visitor); //se a igualdade for testada mais de uma vez o valor que já foi avaliado será retornado
         }
         return evaluatedValue;
     }
     
-    private Boolean doEvaluation()
+    private Boolean doEvaluation(VisitanteASA visitor) throws ExcecaoVisitaASA
     {
-        NoExpressao opEsq = getOperandoEsquerdo();
-        NoExpressao opDir = getOperandoDireito();
-        if (opEsq.getClass().equals(opDir.getClass()))
-        {   
+        
+        Object opEsq = getOperandoEsquerdo().aceitar(visitor);
+        Object opDir = getOperandoDireito().aceitar(visitor);
+        
+        Class esqClass = opEsq.getClass();
+        Class dirClass = opDir.getClass();
+        
+        if (esqClass.equals(dirClass)) 
+        {
             return opEsq.equals(opDir);
         }
         
-        // trata os casos de comparação de inteiro com real e real com inteiro
-        Number a = ((NoValor<Number>)opEsq).getValor();
-        Number b = ((NoValor<Number>)opDir).getValor();
-        return a.intValue() == b.intValue();
+        // trata os casos de comparação de inteiro com real e de real com inteiro
+        if (opEsq instanceof Integer && opDir instanceof Double) 
+        {
+            return ((Integer)opEsq).intValue() == ((Double) opDir).intValue();
+        }
+        else if (opEsq instanceof Double && opDir instanceof Integer)
+        {
+            return ((Double)opEsq).intValue() == ((Integer) opDir).intValue();
+        }
+        
+        throw new ExcecaoVisitaASA("Erro avaliando expressão de igualdade!", null, this);
     }
     
     /**

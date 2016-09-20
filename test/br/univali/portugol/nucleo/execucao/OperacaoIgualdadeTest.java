@@ -7,6 +7,7 @@ import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoInteiro;
 import br.univali.portugol.nucleo.asa.NoLogico;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaIgualdade;
+import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
 import br.univali.portugol.nucleo.asa.NoReal;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,6 +24,14 @@ public class OperacaoIgualdadeTest
         depurador = new Depurador();
     }
 
+    @Test
+    public void testExpressaoInteira() throws Exception
+    {
+        // a expressão de soma deve resultar em um inteiro
+        test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(5)), new NoInteiro(10), Boolean.TRUE);
+        test(new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(4)), new NoInteiro(10), Boolean.FALSE);
+    }
+    
     @Test
     public void testInteiros() throws Exception
     {
