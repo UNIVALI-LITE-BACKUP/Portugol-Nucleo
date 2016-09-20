@@ -622,7 +622,7 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 
     private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
     {
-        if (otimizandoExecucao) 
+        if (otimizandoExecucao || trechoCodigoFonte == null) 
         {
             return; // a execução é otimizada quando não existem pontos de parada no código.
         }

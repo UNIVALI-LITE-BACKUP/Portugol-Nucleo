@@ -11,4 +11,5 @@ public abstract class NoOperacaoLogica extends NoOperacao
     {
         super(operandoEsquerdo, operandoDireito);
     }    
+    
 }

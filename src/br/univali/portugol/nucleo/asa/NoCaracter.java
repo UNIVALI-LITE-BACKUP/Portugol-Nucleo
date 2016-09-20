@@ -20,6 +20,17 @@ public final class NoCaracter extends NoValor<Character>
         super(valor);
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof NoCaracter)
+        {
+            return ((NoCaracter) obj).getValor().equals(getValor());
+        }
+
+        return false;
+    }
+    
     /**
      * {@inheritDoc }
      */
