@@ -6,14 +6,14 @@ package br.univali.portugol.nucleo.asa;
  */
 public abstract class NoValor<T> extends NoExpressao
 {
-    private T valor;
+    private final T valor;
     private TrechoCodigoFonte trechoCodigoFonte;
 
     public NoValor(T valor)
     {
         this.valor = valor;
     }    
-   
+
     /**
      * 
      * @return   o valor representado por este nó da árvore

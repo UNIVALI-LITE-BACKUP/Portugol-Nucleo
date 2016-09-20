@@ -19,6 +19,17 @@ public final class NoReal extends NoValor<Double>
         super(valor);
     }
     
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof NoReal)
+        {
+            return ((NoReal) obj).getValor().equals(getValor());
+        }
+        
+        return false;
+    }
+    
     /**
      * {@inheritDoc }
      */

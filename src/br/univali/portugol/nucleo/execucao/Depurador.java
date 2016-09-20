@@ -619,6 +619,11 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 
     private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
     {
+        if (trechoCodigoFonte == null) 
+        {
+            return;
+        }
+        
         if (no.ehParavel(this.estado) || funcaoInicial(no))
         {
             if ( this.estado == Estado.STEP_INTO){
