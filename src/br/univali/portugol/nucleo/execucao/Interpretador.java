@@ -27,7 +27,6 @@ public abstract class Interpretador implements VisitanteASA
     protected Map<String, Biblioteca> bibliotecas = new TreeMap<>();
 
     private final OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
-    private final OperacaoLogicaMenor operacaoLogicaMenor = new OperacaoLogicaMenor();
     private final OperacaoModulo operacaoModulo = new OperacaoModulo();
     private final OperacaoMultiplicacao operacaoMultiplicacao = new OperacaoMultiplicacao();
     private final OperacaoSoma operacaoSoma = new OperacaoSoma();
@@ -999,17 +998,12 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoLogicaMenor noOperacao) throws ExcecaoVisitaASA
     {
-        try
-        {
-            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-            return operacaoLogicaMenor.executar(noOperacao, opEsq, opDir);
-        }
-        catch (ErroExecucao ex)
-        {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
-        }
+        // usando a negação da operação maior ou igual
+        OperacaoLogica operacao = OperacaoLogicaMaiorIgual.getOperacao(opEsq, opDir);
+        return !operacao.executar(opEsq, opDir);
     }
 
     @Override
