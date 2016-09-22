@@ -18,7 +18,7 @@ public abstract class OperacaoLogicaIgualdade<A, B> extends OperacaoLogica<A, B>
     
     static {
         
-        OperacaoLogicaIgualdade<Object, Object> operacaoParaTiposIguais = new OperacaoLogicaIgualdade<Object, Object>()
+        OperacaoLogicaIgualdade operacaoParaTiposIguais = new OperacaoLogicaIgualdade<Object, Object>()
         {
             @Override
             public boolean executar(Object a, Object b)
@@ -27,7 +27,7 @@ public abstract class OperacaoLogicaIgualdade<A, B> extends OperacaoLogica<A, B>
             }
         };
         
-        OperacaoLogicaIgualdade<Integer, Double> operacaoParaInteiroComReal = new OperacaoLogicaIgualdade<Integer, Double>()
+        OperacaoLogicaIgualdade operacaoParaInteiroComReal = new OperacaoLogicaIgualdade<Integer, Double>()
         {
             @Override
             public boolean executar(Integer a, Double b)
@@ -36,7 +36,7 @@ public abstract class OperacaoLogicaIgualdade<A, B> extends OperacaoLogica<A, B>
             }
         };
         
-        OperacaoLogicaIgualdade<Double, Integer> operacaoParaRealComInteiro = new OperacaoLogicaIgualdade<Double, Integer>()
+        OperacaoLogicaIgualdade operacaoParaRealComInteiro = new OperacaoLogicaIgualdade<Double, Integer>()
         {
             @Override
             public boolean executar(Double a, Integer b)
