@@ -912,8 +912,8 @@ public abstract class Interpretador implements VisitanteASA
         Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-        OperacaoLogicaIgualdade operadorIgualdade = OperacaoLogicaIgualdade.getOperador(opEsq, opDir);
-        return operadorIgualdade.executar(opEsq, opDir);
+        OperacaoLogica operacaoIgualdade = OperacaoLogicaIgualdade.getOperacao(opEsq, opDir);
+        return operacaoIgualdade.executar(opEsq, opDir);
     }
 
     @Override
@@ -923,8 +923,8 @@ public abstract class Interpretador implements VisitanteASA
         Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
         // usando a operação de igualdade invertida/negada
-        OperacaoLogicaIgualdade operadorIgualdade = OperacaoLogicaIgualdade.getOperador(opEsq, opDir);
-        return !operadorIgualdade.executar(opEsq, opDir);
+        OperacaoLogica operacaoIgualdade = OperacaoLogicaIgualdade.getOperacao(opEsq, opDir);
+        return !operacaoIgualdade.executar(opEsq, opDir);
     }
 
     @Override

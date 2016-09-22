@@ -7,13 +7,11 @@ import java.util.Map;
  * @author Elieser
  */
 
-public abstract class OperacaoLogicaIgualdade<A, B>
+public abstract class OperacaoLogicaIgualdade<A, B> implements OperacaoLogica<A, B>
 {
     private final static Map<Class, Map<Class, OperacaoLogicaIgualdade>> MAPA;
     
-    public abstract boolean executar(A a, B b);
-    
-    public static OperacaoLogicaIgualdade getOperador(Object operandoEsquerdo, Object operandoDireito)
+    public static OperacaoLogica getOperacao(Object operandoEsquerdo, Object operandoDireito)
     {
         Class classOpEsquerdo = operandoEsquerdo.getClass();
         Class classOpDireito = operandoDireito.getClass();
