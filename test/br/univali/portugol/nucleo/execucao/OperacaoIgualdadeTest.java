@@ -80,7 +80,7 @@ public class OperacaoIgualdadeTest
         test(new NoLogico(true), new NoLogico(true), Boolean.TRUE);
         test(new NoLogico(true), new NoLogico(false), Boolean.FALSE);
     }
-    
+
     private void test(NoExpressao a, NoExpressao b, Boolean expectedResult) throws ExcecaoVisitaASA
     {
         NoOperacaoLogicaIgualdade igualdade = new NoOperacaoLogicaIgualdade(a, b);
