@@ -7,23 +7,13 @@ import java.util.Map;
  * @author Elieser
  */
 
-public abstract class OperacaoLogicaIgualdade<A, B> implements OperacaoLogica<A, B>
+public abstract class OperacaoLogicaIgualdade<A, B> extends OperacaoLogica<A, B>
 {
-    private final static Map<Class, Map<Class, OperacaoLogicaIgualdade>> MAPA;
+    private final static Map<Class, Map<Class, OperacaoLogica>> MAPA;
     
     public static OperacaoLogica getOperacao(Object operandoEsquerdo, Object operandoDireito)
     {
-        Class classOpEsquerdo = operandoEsquerdo.getClass();
-        Class classOpDireito = operandoDireito.getClass();
-        if (MAPA.containsKey(classOpEsquerdo))
-        {
-            OperacaoLogicaIgualdade operacao = MAPA.get(classOpEsquerdo).get(classOpDireito);
-            if (operacao != null)
-            {
-                return operacao;
-            }
-        }
-        throw new IllegalArgumentException("Tipos não mapeados " + classOpEsquerdo.getName() + " e " + classOpDireito.getName());
+        return OperacaoLogica.getOperacao(operandoEsquerdo, operandoDireito, MAPA);
     }
     
     static {
@@ -58,11 +48,11 @@ public abstract class OperacaoLogicaIgualdade<A, B> implements OperacaoLogica<A,
         MAPA = new HashMap<>();
         
         // cria instâncias dos mapas usando o tipo do operando esquerdo como chave
-        MAPA.put(Integer.class,     new HashMap<Class, OperacaoLogicaIgualdade>());
-        MAPA.put(Double.class,      new HashMap<Class, OperacaoLogicaIgualdade>());
-        MAPA.put(Character.class,   new HashMap<Class, OperacaoLogicaIgualdade>());
-        MAPA.put(Boolean.class,     new HashMap<Class, OperacaoLogicaIgualdade>());
-        MAPA.put(String.class,      new HashMap<Class, OperacaoLogicaIgualdade>());
+        MAPA.put(Integer.class,     new HashMap<Class, OperacaoLogica>());
+        MAPA.put(Double.class,      new HashMap<Class, OperacaoLogica>());
+        MAPA.put(Character.class,   new HashMap<Class, OperacaoLogica>());
+        MAPA.put(Boolean.class,     new HashMap<Class, OperacaoLogica>());
+        MAPA.put(String.class,      new HashMap<Class, OperacaoLogica>());
         
         // faz o mapeamento das combinações de tipos do operando esquerdo e direito com a respectiva operação
         MAPA.get(Integer.class).put(Integer.class,      operacaoParaTiposIguais);

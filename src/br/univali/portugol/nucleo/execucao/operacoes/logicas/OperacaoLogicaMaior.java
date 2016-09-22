@@ -2,8 +2,10 @@ package br.univali.portugol.nucleo.execucao.operacoes.logicas;
 
 import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 
-public class OperacaoLogicaMaior extends Operacao
+public class OperacaoLogicaMaior extends Operacao  
 {
+    //private final static Map<Class, Map<Class, OperacaoLogicaIgualdade>> MAPA;
+    
     public boolean executar(Integer a, Integer b)
     {
         return a > b;
