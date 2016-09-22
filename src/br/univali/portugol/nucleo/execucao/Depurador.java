@@ -558,7 +558,7 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
+    public Boolean visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
