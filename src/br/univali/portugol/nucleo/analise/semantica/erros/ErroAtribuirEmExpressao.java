@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoOperacao;
 import br.univali.portugol.nucleo.asa.NoValor;
-import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+import br.univali.portugol.nucleo.execucao.operacoes.OperacaoAntiga;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
@@ -97,7 +97,7 @@ public final class ErroAtribuirEmExpressao extends ErroSemantico
      * @since 1.0
      * 
      * @see NoOperacao
-     * @see Operacao#ATRIBUICAO
+     * @see OperacaoAntiga#ATRIBUICAO
      */    
     private String construirMensagemAtribuicao()
     {

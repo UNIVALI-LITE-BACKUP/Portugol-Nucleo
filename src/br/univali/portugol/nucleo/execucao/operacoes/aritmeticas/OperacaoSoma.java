@@ -1,8 +1,8 @@
 package br.univali.portugol.nucleo.execucao.operacoes.aritmeticas;
 
-import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+import br.univali.portugol.nucleo.execucao.operacoes.OperacaoAntiga;
 
-public class OperacaoSoma extends Operacao
+public class OperacaoSoma extends OperacaoAntiga
 {
         
     public String executar(String operandoEsquerdo, Integer operandoDireito){

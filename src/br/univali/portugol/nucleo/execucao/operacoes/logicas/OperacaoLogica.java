@@ -1,26 +1,13 @@
 package br.univali.portugol.nucleo.execucao.operacoes.logicas;
 
-import java.util.Map;
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 
 /**
  * @author Elieser
  */
-public abstract class OperacaoLogica<A, B>
+public abstract class OperacaoLogica<A, B> extends Operacao<A, B, Boolean>
 {
-    public abstract boolean executar(A operandoEsquerdo, B operandoDireito);
+    @Override
+    public abstract Boolean executar(A operandoEsquerdo, B operandoDireito);
     
-    protected static OperacaoLogica getOperacao(Object operandoEsquerdo, Object operandoDireito, Map<Class, Map<Class, OperacaoLogica>> mapa)
-    {
-        Class classOpEsquerdo = operandoEsquerdo.getClass();
-        Class classOpDireito = operandoDireito.getClass();
-        if (mapa.containsKey(classOpEsquerdo))
-        {
-            OperacaoLogica operacao = mapa.get(classOpEsquerdo).get(classOpDireito);
-            if (operacao != null)
-            {
-                return operacao;
-            }
-        }
-        throw new IllegalArgumentException("Tipos não mapeados " + classOpEsquerdo.getName() + " e " + classOpDireito.getName());
-    }
 }

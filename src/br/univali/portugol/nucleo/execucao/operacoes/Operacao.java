@@ -1,61 +1,30 @@
 package br.univali.portugol.nucleo.execucao.operacoes;
 
-import br.univali.portugol.nucleo.asa.NoOperacao;
-import br.univali.portugol.nucleo.execucao.erros.ErroDivisaoPorZero;
-import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import br.univali.portugol.nucleo.execucao.operacoes.logicas.OperacaoLogica;
+import java.util.Map;
 
-public abstract class Operacao
+/**
+ * @author Elieser
+ * @param <A> Tipo do operando esquerdo
+ * @param <B> Tipo do operando direito
+ * @param <R> Tipo de retorno da operação
+ */
+public abstract class Operacao<A, B, R>
 {
-    public Object executar(NoOperacao noOperacao, Object a, Object b) throws ErroExecucao
-    {
-        int linha = noOperacao.getTrechoCodigoFonte().getLinha();
-        int coluna = noOperacao.getTrechoCodigoFonte().getColuna();
-        
-        try
-        {
-            Class ca = a.getClass();
-            Class cb = b.getClass();
-
-            Method metodo = this.getClass().getDeclaredMethod("executar", ca, cb);
-            return metodo.invoke(this, a, b);
-        }
-        catch (InvocationTargetException ex)
-        {            
-            if (ex.getCause() instanceof ArithmeticException)
-            {
-                if (ex.getCause().getMessage().contains("/ by zero"))
-                {
-                    throw traduzirErro(new ErroDivisaoPorZero(), linha, coluna);
-                }
-            }
-            
-            throw traduzirErro((Exception) ex.getCause(), linha, coluna);
-        }
-        catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException ex)
-        {   
-            throw traduzirErro(ex, linha, coluna);
-        }
-    }
+    public abstract R executar(A operandoEsquerdo, B operandoDireito);
     
-    private ErroExecucao traduzirErro(Exception erro, int linha, int coluna)
+    protected static Operacao getOperacao(Object operandoEsquerdo, Object operandoDireito, Map<Class, Map<Class, Operacao>> mapa)
     {
-        ErroExecucao erroExecucao;
-        
-        if (erro instanceof ErroExecucao)
+        Class classOpEsquerdo = operandoEsquerdo.getClass();
+        Class classOpDireito = operandoDireito.getClass();
+        if (mapa.containsKey(classOpEsquerdo))
         {
-            erroExecucao = (ErroExecucao) erro;
+            Operacao operacao = mapa.get(classOpEsquerdo).get(classOpDireito);
+            if (operacao != null)
+            {
+                return operacao;
+            }
         }
-        else
-        {
-            erroExecucao = new ErroExecucaoNaoTratado(erro);
-        }
-        
-        erroExecucao.setLinha(linha);
-        erroExecucao.setColuna(coluna);
-        
-        return erroExecucao;
+        throw new IllegalArgumentException("Tipos não mapeados " + classOpEsquerdo.getName() + " e " + classOpDireito.getName());
     }
 }

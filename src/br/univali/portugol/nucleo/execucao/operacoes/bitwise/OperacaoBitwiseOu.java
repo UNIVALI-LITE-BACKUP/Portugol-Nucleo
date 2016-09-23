@@ -1,8 +1,8 @@
 package br.univali.portugol.nucleo.execucao.operacoes.bitwise;
 
-import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+import br.univali.portugol.nucleo.execucao.operacoes.OperacaoAntiga;
 
-public class OperacaoBitwiseOu extends Operacao
+public class OperacaoBitwiseOu extends OperacaoAntiga
 {
 
     public Integer executar(Integer a, Integer b)

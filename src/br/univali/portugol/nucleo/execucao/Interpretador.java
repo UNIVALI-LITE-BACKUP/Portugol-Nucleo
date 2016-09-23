@@ -6,12 +6,15 @@ import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.*;
 import br.univali.portugol.nucleo.execucao.erros.*;
 import br.univali.portugol.nucleo.execucao.es.*;
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.*;
 import br.univali.portugol.nucleo.execucao.operacoes.bitwise.*;
 import br.univali.portugol.nucleo.execucao.operacoes.logicas.*;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Interpretador implements VisitanteASA
 {
@@ -26,7 +29,6 @@ public abstract class Interpretador implements VisitanteASA
     protected Memoria memoria = new Memoria();
     protected Map<String, Biblioteca> bibliotecas = new TreeMap<>();
 
-    private final OperacaoDivisao operacaoDivisao = new OperacaoDivisao();
     private final OperacaoModulo operacaoModulo = new OperacaoModulo();
     private final OperacaoMultiplicacao operacaoMultiplicacao = new OperacaoMultiplicacao();
     private final OperacaoSoma operacaoSoma = new OperacaoSoma();
@@ -1049,19 +1051,21 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA
+    public Number visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA
     {
+        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+
+        OperacaoDivisao op = new OperacaoDivisao();
         try
         {
-            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-
-            return operacaoDivisao.executar(noOperacao, opEsq, opDir);
+            return (Number) op.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
         {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+            Logger.getLogger(Interpretador.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     @Override
