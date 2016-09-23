@@ -4,7 +4,8 @@ import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class OperacaoSubtracao extends OperacaoAritmetica<Number, Number>
+public abstract class OperacaoSubtracao<A extends Number, B extends Number> 
+                            extends OperacaoAritmetica<A, B>
 {
     private final static Map<Class, Map<Class, Operacao>> MAPA;
     
@@ -15,7 +16,7 @@ public abstract class OperacaoSubtracao extends OperacaoAritmetica<Number, Numbe
 
     static {
         
-        OperacaoDivisao operacaoParaInteiros = new OperacaoDivisao<Integer, Integer>()
+        OperacaoSubtracao operacaoParaInteiros = new OperacaoSubtracao<Integer, Integer>()
         {
             @Override
             public Number executar(Integer a, Integer b)
@@ -24,7 +25,7 @@ public abstract class OperacaoSubtracao extends OperacaoAritmetica<Number, Numbe
             }
         };
         
-        OperacaoDivisao operacaoGenerica = new OperacaoDivisao<Number, Number>()
+        OperacaoSubtracao operacaoGenerica = new OperacaoSubtracao<Number, Number>()
         {
             @Override
             public Number executar(Number a, Number b)
