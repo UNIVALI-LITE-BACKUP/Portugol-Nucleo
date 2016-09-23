@@ -13,8 +13,6 @@ import br.univali.portugol.nucleo.execucao.operacoes.bitwise.*;
 import br.univali.portugol.nucleo.execucao.operacoes.logicas.*;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class Interpretador implements VisitanteASA
 {
@@ -32,7 +30,6 @@ public abstract class Interpretador implements VisitanteASA
     private final OperacaoModulo operacaoModulo = new OperacaoModulo();
     private final OperacaoMultiplicacao operacaoMultiplicacao = new OperacaoMultiplicacao();
     private final OperacaoSoma operacaoSoma = new OperacaoSoma();
-    private final OperacaoSubtracao operacaoSubtracao = new OperacaoSubtracao();
     private final OperacaoBitwiseLeftShift operacaoBitwiseLeftShift = new OperacaoBitwiseLeftShift();
     private final OperacaoBitwiseRightShift operacaoBitwiseRightShift = new OperacaoBitwiseRightShift();
     private final OperacaoBitwiseE operacaoBitwiseE = new OperacaoBitwiseE();
@@ -1037,17 +1034,11 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Number visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA
     {
-        try
-        {
-            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+        Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
+        Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
 
-            return (Number) operacaoSubtracao.executar(noOperacao, opEsq, opDir);
-        }
-        catch (ErroExecucao ex)
-        {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
-        }
+        OperacaoAritmetica operacao = OperacaoSubtracao.getOperacao(opEsq, opDir);
+        return operacao.executar(opEsq, opDir);
     }
 
     @Override
