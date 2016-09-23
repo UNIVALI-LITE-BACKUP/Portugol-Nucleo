@@ -6,6 +6,7 @@ import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.*;
 import br.univali.portugol.nucleo.execucao.erros.*;
 import br.univali.portugol.nucleo.execucao.es.*;
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.*;
 import br.univali.portugol.nucleo.execucao.operacoes.bitwise.*;
@@ -894,22 +895,38 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Boolean visitar(NoOperacaoLogicaIgualdade noOperacao) throws ExcecaoVisitaASA
     {
-        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+        try
+        {
+            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-        OperacaoLogica operacaoIgualdade = OperacaoLogicaIgualdade.getOperacao(opEsq, opDir);
-        return operacaoIgualdade.executar(opEsq, opDir);
+            OperacaoLogica operacaoIgualdade = OperacaoLogicaIgualdade.getOperacao(opEsq, opDir);
+        
+            return (Boolean) executaOperacao(noOperacao, operacaoIgualdade, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaDiferenca noOperacao) throws ExcecaoVisitaASA
     {
-        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+        try{
+            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-        // usando a operação de igualdade invertida/negada
-        OperacaoLogica operacaoIgualdade = OperacaoLogicaIgualdade.getOperacao(opEsq, opDir);
-        return !operacaoIgualdade.executar(opEsq, opDir);
+            // usando a operação de igualdade invertida/negada
+            OperacaoLogica operacaoIgualdade = OperacaoLogicaIgualdade.getOperacao(opEsq, opDir);
+        
+            Boolean resultado = (Boolean) executaOperacao(noOperacao, operacaoIgualdade, opEsq, opDir);
+            return !resultado;
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
@@ -965,149 +982,253 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Boolean visitar(NoOperacaoLogicaMaior noOperacao) throws ExcecaoVisitaASA
     {
-        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+        try
+        {
+            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-        OperacaoLogica operacao = OperacaoLogicaMaior.getOperacao(opEsq, opDir);
-        return operacao.executar(opEsq, opDir);
+            OperacaoLogica operacao = OperacaoLogicaMaior.getOperacao(opEsq, opDir);
+        
+            return (Boolean) executaOperacao(noOperacao, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
 
     }
 
     @Override
     public Boolean visitar(NoOperacaoLogicaMaiorIgual noOperacao) throws ExcecaoVisitaASA
     {
+        try
+        {
+            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-
-        OperacaoLogica operacao = OperacaoLogicaMaiorIgual.getOperacao(opEsq, opDir);
-        return operacao.executar(opEsq, opDir);
+            OperacaoLogica operacao = OperacaoLogicaMaiorIgual.getOperacao(opEsq, opDir);
+        
+            return (Boolean) executaOperacao(noOperacao, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMenor noOperacao) throws ExcecaoVisitaASA
     {
-        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+        try
+        {
+            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-        // usando a negação da operação maior ou igual
-        OperacaoLogica operacao = OperacaoLogicaMaiorIgual.getOperacao(opEsq, opDir);
-        return !operacao.executar(opEsq, opDir);
+            // usando a negação da operação maior ou igual
+            OperacaoLogica operacao = OperacaoLogicaMaiorIgual.getOperacao(opEsq, opDir);
+        
+            return !(Boolean)executaOperacao(noOperacao, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Object visitar(NoOperacaoLogicaMenorIgual noOperacao) throws ExcecaoVisitaASA
     {
-        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-
-        OperacaoLogica operacao = OperacaoLogicaMaior.getOperacao(opEsq, opDir);
-        return !operacao.executar(opEsq, opDir);
+        try
+        {
+            Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+            Object opDir = noOperacao.getOperandoDireito().aceitar(this);
+        
+            OperacaoLogica operacao = OperacaoLogicaMaior.getOperacao(opEsq, opDir);
+        
+            return !(Boolean) executaOperacao(noOperacao, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Object visitar(NoOperacaoSoma noOperacao) throws ExcecaoVisitaASA
     {
-        Object valorOpEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object valorOpDir = noOperacao.getOperandoDireito().aceitar(this);
-        OperacaoSoma soma = OperacaoSoma.getOperacao(valorOpEsq, valorOpDir);
-        return soma.executar(valorOpEsq, valorOpDir);
+        try
+        {
+            Object valorOpEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+            Object valorOpDir = noOperacao.getOperandoDireito().aceitar(this);
+            OperacaoSoma soma = OperacaoSoma.getOperacao(valorOpEsq, valorOpDir);
+        
+            return executaOperacao(noOperacao, soma, valorOpEsq, valorOpDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Number visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA
     {
-        Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
-        Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
+        try
+        {
+            Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
+            Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
 
-        OperacaoAritmetica operacao = OperacaoSubtracao.getOperacao(opEsq, opDir);
-        return operacao.executar(opEsq, opDir);
+            OperacaoAritmetica operacao = OperacaoSubtracao.getOperacao(opEsq, opDir);
+        
+            return (Number)executaOperacao(noOperacao, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Number visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA
     {
-        Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
-        Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
-        if  (opDir.equals(0))
+        try
         {
-            throw new ExcecaoVisitaASA(new ErroDivisaoPorZero(), null, noOperacao);
+            Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
+            Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
+
+            OperacaoAritmetica operacao = OperacaoDivisao.getOperacao(opEsq, opDir);
+        
+            return (Number) executaOperacao(noOperacao, operacao, opEsq, opDir);
         }
-        OperacaoAritmetica operacao = OperacaoDivisao.getOperacao(opEsq, opDir);
-        return operacao.executar(opEsq, opDir);
+        catch (Exception ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Number visitar(NoOperacaoMultiplicacao noOperacao) throws ExcecaoVisitaASA
     {
-        Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
-        Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
+        try
+        {
+            Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
+            Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
 
-        OperacaoMultiplicacao operacao = OperacaoMultiplicacao.getOperacao(opEsq, opDir);
-        return operacao.executar(opEsq, opDir);
+            OperacaoMultiplicacao operacao = OperacaoMultiplicacao.getOperacao(opEsq, opDir);
+        
+            return (Number) executaOperacao(noOperacao, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Integer visitar(NoOperacaoModulo noOperacao) throws ExcecaoVisitaASA
     {
-        Integer opEsq = (Integer)noOperacao.getOperandoEsquerdo().aceitar(this);
-        Integer opDir = (Integer)noOperacao.getOperandoDireito().aceitar(this);
-        if (opDir.equals(0))
+        try
         {
-            throw new ExcecaoVisitaASA(new ErroDivisaoPorZero(), null, noOperacao);
+            Integer opEsq = (Integer)noOperacao.getOperandoEsquerdo().aceitar(this);
+            Integer opDir = (Integer)noOperacao.getOperandoDireito().aceitar(this);
+            OperacaoModulo modulo = OperacaoModulo.getOperacao();
+        
+            return (Integer) executaOperacao(noOperacao, modulo, opEsq, opDir);
         }
-        OperacaoModulo modulo = OperacaoModulo.getOperacao();
-        return modulo.executar(opEsq, opDir);
+        catch (Exception ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
+        }
     }
 
     @Override
     public Integer visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
     {
-        Integer opEsq = (Integer) noOperacaoBitwiseLeftShift.getOperandoEsquerdo().aceitar(this);
-        Integer opDir = (Integer) noOperacaoBitwiseLeftShift.getOperandoDireito().aceitar(this);
+        try
+        {
+            Integer opEsq = (Integer) noOperacaoBitwiseLeftShift.getOperandoEsquerdo().aceitar(this);
+            Integer opDir = (Integer) noOperacaoBitwiseLeftShift.getOperandoDireito().aceitar(this);
 
-        OperacaoBitwiseLeftShift operacao = OperacaoBitwiseLeftShift.getOperacao();
-        return operacao.executar(opEsq, opDir);
+            OperacaoBitwiseLeftShift operacao = OperacaoBitwiseLeftShift.getOperacao();
+        
+            return (Integer) executaOperacao(noOperacaoBitwiseLeftShift, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseLeftShift);
+        }
     }
 
     @Override
     public Integer visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
     {
-        Integer opEsq = (Integer) noOperacaoBitwiseRightShift.getOperandoEsquerdo().aceitar(this);
-        Integer opDir = (Integer) noOperacaoBitwiseRightShift.getOperandoDireito().aceitar(this);
+        try
+        {
+            Integer opEsq = (Integer) noOperacaoBitwiseRightShift.getOperandoEsquerdo().aceitar(this);
+            Integer opDir = (Integer) noOperacaoBitwiseRightShift.getOperandoDireito().aceitar(this);
         
-        OperacaoBitwiseRightShift operacao = OperacaoBitwiseRightShift.getOperacao();
-        return operacao.executar(opEsq, opDir);
+            OperacaoBitwiseRightShift operacao = OperacaoBitwiseRightShift.getOperacao();
+        
+            return (Integer) executaOperacao(noOperacaoBitwiseRightShift, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseRightShift);
+        }
     }
 
     @Override
     public Integer visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
     {
-        Integer opEsq = (Integer)noOperacaoBitwiseE.getOperandoEsquerdo().aceitar(this);
-        Integer opDir = (Integer)noOperacaoBitwiseE.getOperandoDireito().aceitar(this);
+        try
+        {
+            Integer opEsq = (Integer)noOperacaoBitwiseE.getOperandoEsquerdo().aceitar(this);
+            Integer opDir = (Integer)noOperacaoBitwiseE.getOperandoDireito().aceitar(this);
 
-        OperacaoBitwiseE operacao = OperacaoBitwiseE.getOperacao();
-        return operacao.executar(opEsq, opDir);
+            OperacaoBitwiseE operacao = OperacaoBitwiseE.getOperacao();
+        
+            return (Integer)executaOperacao(noOperacaoBitwiseE, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseE);
+        }
     }
-
+    
     @Override
     public Integer visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA
     {
-        Integer opEsq = (Integer) noOperacaoBitwiseOu.getOperandoEsquerdo().aceitar(this);
-        Integer opDir = (Integer) noOperacaoBitwiseOu.getOperandoDireito().aceitar(this);
+        try
+        {
+            Integer opEsq = (Integer) noOperacaoBitwiseOu.getOperandoEsquerdo().aceitar(this);
+            Integer opDir = (Integer) noOperacaoBitwiseOu.getOperandoDireito().aceitar(this);
 
-        OperacaoBitwiseOu operacao = OperacaoBitwiseOu.getOperacao();
-        return operacao.executar(opEsq, opDir);
+            OperacaoBitwiseOu operacao = OperacaoBitwiseOu.getOperacao();
+        
+            return (Integer) executaOperacao(noOperacaoBitwiseOu, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseOu);
+        }
     }
 
     @Override
     public Integer visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
     {
-        Integer opEsq = (Integer) noOperacaoBitwiseXOR.getOperandoEsquerdo().aceitar(this);
-        Integer opDir = (Integer) noOperacaoBitwiseXOR.getOperandoDireito().aceitar(this);
+        try
+        {
+            Integer opEsq = (Integer) noOperacaoBitwiseXOR.getOperandoEsquerdo().aceitar(this);
+            Integer opDir = (Integer) noOperacaoBitwiseXOR.getOperandoDireito().aceitar(this);
 
-        OperacaoBitwiseXOR operacao = OperacaoBitwiseXOR.getOperacao();
-        return operacao.executar(opEsq, opDir);
+            OperacaoBitwiseXOR operacao = OperacaoBitwiseXOR.getOperacao();
+        
+            return (Integer) executaOperacao(noOperacaoBitwiseXOR, operacao, opEsq, opDir);
+        }
+        catch (ErroExecucao ex)
+        {
+            throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseXOR);
+        }
     }
 
     @Override
@@ -1434,6 +1555,47 @@ public abstract class Interpretador implements VisitanteASA
         }
         memoria.adicionarSimbolo(simbolo);
         return simbolo;
+    }
+    
+    private ErroExecucao traduzirErro(Exception erro, int linha, int coluna)
+    {
+        ErroExecucao erroExecucao;
+        
+        if (erro instanceof ErroExecucao)
+        {
+            erroExecucao = (ErroExecucao) erro;
+        }
+        else
+        {
+            erroExecucao = new ErroExecucaoNaoTratado(erro);
+        }
+        
+        erroExecucao.setLinha(linha);
+        erroExecucao.setColuna(coluna);
+        
+        return erroExecucao;
+    }
+
+    private Object executaOperacao(NoOperacao no, Operacao operacao, Object opEsq, Object opDir) throws ErroExecucao
+    {
+        int linha = no.getTrechoCodigoFonte().getLinha();
+        int coluna = no.getTrechoCodigoFonte().getColuna();
+        try
+        {
+            return operacao.executar(opEsq, opDir);
+        }
+        catch (ArithmeticException ex)
+        {            
+            if (ex.getMessage().contains("/ by zero"))
+            {
+                throw traduzirErro(new ErroDivisaoPorZero(), linha, coluna);
+            }
+            throw traduzirErro(ex, linha, coluna);
+        }
+        catch(Exception ex)
+        {
+            throw traduzirErro(ex, linha, coluna);
+        }
     }
 
     private void escreva(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA

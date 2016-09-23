@@ -5,6 +5,7 @@ import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoInteiro;
 import br.univali.portugol.nucleo.asa.NoOperacaoModulo;
 import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
+import br.univali.portugol.nucleo.asa.NoReal;
 import br.univali.portugol.nucleo.execucao.Depurador;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,10 +23,15 @@ public class OperacaoModuloTest
     }
 
     @Test(expected = ExcecaoVisitaASA.class)
-    public void testDivisaoPorZero() throws Exception
+    public void testDivisaoPorZeroInteiroInteiro() throws Exception
     {
         test(new NoInteiro(5), new NoInteiro(0), 0);
-        test(new NoInteiro(1), new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(-5)), 0);
+    }
+    
+    @Test(expected = ExcecaoVisitaASA.class)
+    public void testDivisaoPorZeroInteiroReal() throws Exception
+    {
+        test(new NoInteiro(1), new NoReal(0.0), 0);
     }
     
     @Test

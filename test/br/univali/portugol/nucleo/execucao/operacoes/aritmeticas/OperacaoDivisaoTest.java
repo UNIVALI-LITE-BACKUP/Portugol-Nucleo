@@ -21,11 +21,22 @@ public class OperacaoDivisaoTest
     {
         depurador = new Depurador();
     }
-
+ 
     @Test(expected = ExcecaoVisitaASA.class)
-    public void testDivisaoPorZero() throws Exception
+    public void testDivisaoPorZeroInteiroReal() throws Exception
+    {
+        test(new NoInteiro(5), new NoReal(0.0), 0);
+    }
+    
+    @Test(expected = ExcecaoVisitaASA.class)
+    public void testDivisaoPorZeroInteiroInteiro() throws Exception
     {
         test(new NoInteiro(5), new NoInteiro(0), 0);
+    }
+    
+    @Test(expected = ExcecaoVisitaASA.class)
+    public void testDivisaoPorZeroInteiroExpresaoInteira() throws Exception
+    {
         test(new NoInteiro(1), new NoOperacaoSoma(new NoInteiro(5), new NoInteiro(-5)), 0);
     }
     

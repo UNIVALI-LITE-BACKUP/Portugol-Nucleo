@@ -13,7 +13,7 @@ public abstract class OperacaoDivisao<A extends Number, B extends Number>
     {
         return (OperacaoAritmetica) Operacao.getOperacao(operandoEsquerdo, operandoDireito, MAPA);
     }
-
+    
     static {
         
         OperacaoDivisao operacaoParaInteiros = new OperacaoDivisao<Integer, Integer>()
@@ -30,6 +30,10 @@ public abstract class OperacaoDivisao<A extends Number, B extends Number>
             @Override
             public Number executar(Number a, Number b)
             {
+                if (b.doubleValue() == 0.0) // quando o operando 'b' é 0.0 o resultado é Infinity e nenhuma exceção é disparada pelo Java, por esse motivo a exceção está sendo disparada explicitamente.
+                {
+                    throw new ArithmeticException("/ by zero");
+                }
                 return a.doubleValue() / b.doubleValue();
             }
         };
