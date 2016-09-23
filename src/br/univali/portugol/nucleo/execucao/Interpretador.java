@@ -6,7 +6,6 @@ import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.*;
 import br.univali.portugol.nucleo.execucao.erros.*;
 import br.univali.portugol.nucleo.execucao.es.*;
-import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.execucao.operacoes.aritmeticas.*;
 import br.univali.portugol.nucleo.execucao.operacoes.bitwise.*;
@@ -27,7 +26,6 @@ public abstract class Interpretador implements VisitanteASA
     protected Memoria memoria = new Memoria();
     protected Map<String, Biblioteca> bibliotecas = new TreeMap<>();
     
-    private final OperacaoSoma operacaoSoma = new OperacaoSoma();
     private final OperacaoBitwiseLeftShift operacaoBitwiseLeftShift = new OperacaoBitwiseLeftShift();
     private final OperacaoBitwiseRightShift operacaoBitwiseRightShift = new OperacaoBitwiseRightShift();
     private final OperacaoBitwiseE operacaoBitwiseE = new OperacaoBitwiseE();
@@ -1016,17 +1014,10 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Object visitar(NoOperacaoSoma noOperacao) throws ExcecaoVisitaASA
     {
-        try
-        {
-            Object valorOpEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-            Object valorOpDir = noOperacao.getOperandoDireito().aceitar(this);
-
-            return operacaoSoma.executar(noOperacao, valorOpEsq, valorOpDir);
-        }
-        catch (ErroExecucao ex)
-        {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacao);
-        }
+        Object valorOpEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
+        Object valorOpDir = noOperacao.getOperandoDireito().aceitar(this);
+        OperacaoSoma soma = OperacaoSoma.getOperacao(valorOpEsq, valorOpDir);
+        return soma.executar(valorOpEsq, valorOpDir);
     }
 
     @Override
