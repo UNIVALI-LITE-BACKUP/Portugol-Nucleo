@@ -614,7 +614,7 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     }
 
     @Override
-    public Object visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
+    public Integer visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
