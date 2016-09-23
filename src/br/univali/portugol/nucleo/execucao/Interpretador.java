@@ -1035,14 +1035,14 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA
+    public Number visitar(NoOperacaoSubtracao noOperacao) throws ExcecaoVisitaASA
     {
         try
         {
             Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacao.getOperandoDireito().aceitar(this);
 
-            return operacaoSubtracao.executar(noOperacao, opEsq, opDir);
+            return (Number) operacaoSubtracao.executar(noOperacao, opEsq, opDir);
         }
         catch (ErroExecucao ex)
         {

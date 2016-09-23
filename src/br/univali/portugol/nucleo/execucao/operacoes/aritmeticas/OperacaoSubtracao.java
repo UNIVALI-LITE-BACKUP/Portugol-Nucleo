@@ -5,7 +5,7 @@ import br.univali.portugol.nucleo.execucao.operacoes.OperacaoAntiga;
 public class OperacaoSubtracao extends OperacaoAntiga
 {
     
-     public Integer executar(Integer operandoEsquerdo, Integer operandoDireito){
+    public Integer executar(Integer operandoEsquerdo, Integer operandoDireito){
         return operandoEsquerdo - operandoDireito;
     }
     
