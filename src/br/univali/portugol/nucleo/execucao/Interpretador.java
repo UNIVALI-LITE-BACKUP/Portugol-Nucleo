@@ -1053,19 +1053,14 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Number visitar(NoOperacaoDivisao noOperacao) throws ExcecaoVisitaASA
     {
-        Object opEsq = noOperacao.getOperandoEsquerdo().aceitar(this);
-        Object opDir = noOperacao.getOperandoDireito().aceitar(this);
-
-        OperacaoDivisao op = new OperacaoDivisao();
-        try
+        Number opEsq = (Number)noOperacao.getOperandoEsquerdo().aceitar(this);
+        Number opDir = (Number)noOperacao.getOperandoDireito().aceitar(this);
+        if  (opDir.equals(0))
         {
-            return (Number) op.executar(noOperacao, opEsq, opDir);
+            throw new ExcecaoVisitaASA(new ErroDivisaoPorZero(), null, noOperacao);
         }
-        catch (ErroExecucao ex)
-        {
-            Logger.getLogger(Interpretador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        OperacaoAritmetica operacao = OperacaoDivisao.getOperacao(opEsq, opDir);
+        return operacao.executar(opEsq, opDir);
     }
 
     @Override

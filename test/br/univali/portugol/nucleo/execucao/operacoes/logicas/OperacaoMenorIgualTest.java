@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao;
+package br.univali.portugol.nucleo.execucao.operacoes.logicas;
 
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoCadeia;
@@ -9,6 +9,7 @@ import br.univali.portugol.nucleo.asa.NoLogico;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaMenorIgual;
 import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
 import br.univali.portugol.nucleo.asa.NoReal;
+import br.univali.portugol.nucleo.execucao.Depurador;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
