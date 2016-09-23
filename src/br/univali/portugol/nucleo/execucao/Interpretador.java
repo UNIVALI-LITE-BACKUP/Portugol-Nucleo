@@ -1067,14 +1067,14 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
+    public Integer visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
     {
         try
         {
             Object opEsq = noOperacaoBitwiseLeftShift.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseLeftShift.getOperandoDireito().aceitar(this);
 
-            return operacaoBitwiseLeftShift.executar(noOperacaoBitwiseLeftShift, opEsq, opDir);
+            return (Integer) operacaoBitwiseLeftShift.executar(noOperacaoBitwiseLeftShift, opEsq, opDir);
         }
         catch (ErroExecucao ex)
         {
@@ -1083,14 +1083,14 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
+    public Integer visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
     {
         try
         {
             Object opEsq = noOperacaoBitwiseRightShift.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseRightShift.getOperandoDireito().aceitar(this);
 
-            return operacaoBitwiseRightShift.executar(noOperacaoBitwiseRightShift, opEsq, opDir);
+            return (Integer) operacaoBitwiseRightShift.executar(noOperacaoBitwiseRightShift, opEsq, opDir);
         }
         catch (ErroExecucao ex)
         {
@@ -1099,14 +1099,14 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
+    public Integer visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
     {
         try
         {
             Object opEsq = noOperacaoBitwiseE.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseE.getOperandoDireito().aceitar(this);
 
-            return operacaoBitwiseE.executar(noOperacaoBitwiseE, opEsq, opDir);
+            return (Integer) operacaoBitwiseE.executar(noOperacaoBitwiseE, opEsq, opDir);
         }
         catch (ErroExecucao ex)
         {
@@ -1115,14 +1115,14 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA
+    public Integer visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA
     {
         try
         {
             Object opEsq = noOperacaoBitwiseOu.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseOu.getOperandoDireito().aceitar(this);
 
-            return operacaoBitwiseOu.executar(noOperacaoBitwiseOu, opEsq, opDir);
+            return (Integer) operacaoBitwiseOu.executar(noOperacaoBitwiseOu, opEsq, opDir);
         }
         catch (ErroExecucao ex)
         {
@@ -1131,14 +1131,14 @@ public abstract class Interpretador implements VisitanteASA
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
+    public Integer visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
     {
         try
         {
             Object opEsq = noOperacaoBitwiseXOR.getOperandoEsquerdo().aceitar(this);
             Object opDir = noOperacaoBitwiseXOR.getOperandoDireito().aceitar(this);
 
-            return operacaoBitwiseXOR.executar(noOperacaoBitwiseXOR, opEsq, opDir);
+            return (Integer) operacaoBitwiseXOR.executar(noOperacaoBitwiseXOR, opEsq, opDir);
         }
         catch (ErroExecucao ex)
         {

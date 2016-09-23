@@ -3,7 +3,7 @@ package br.univali.portugol.nucleo.execucao.operacoes.bitwise;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoInteiro;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseE;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseOu;
 import br.univali.portugol.nucleo.execucao.Depurador;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -11,11 +11,11 @@ import static org.junit.Assert.*;
 /**
  * @author Elieser
  */
-public class OperacaoBitwiseETest
+public class OperacaoBitwiseOUTest
 {
     private final Depurador depurador;
     
-    public OperacaoBitwiseETest()
+    public OperacaoBitwiseOUTest()
     {
         depurador = new Depurador();
     }
@@ -24,14 +24,14 @@ public class OperacaoBitwiseETest
     public void test() throws Exception
     {
         test(new NoInteiro(0), new NoInteiro(0), 0);
-        test(new NoInteiro(1), new NoInteiro(0), 0);
-        test(new NoInteiro(0), new NoInteiro(1), 0);
+        test(new NoInteiro(1), new NoInteiro(0), 1);
+        test(new NoInteiro(0), new NoInteiro(1), 1);
         test(new NoInteiro(1), new NoInteiro(1), 1);
     }
     
     private void test(NoExpressao a, NoExpressao b, Integer expectedResult) throws ExcecaoVisitaASA
     {
-        NoOperacaoBitwiseE eBitwise = new NoOperacaoBitwiseE(a, b);
+        NoOperacaoBitwiseOu eBitwise = new NoOperacaoBitwiseOu(a, b);
         Integer result = depurador.visitar(eBitwise);
         assertEquals(expectedResult, result);
     }
