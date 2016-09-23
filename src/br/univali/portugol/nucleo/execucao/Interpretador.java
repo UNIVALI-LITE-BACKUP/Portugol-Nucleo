@@ -26,8 +26,6 @@ public abstract class Interpretador implements VisitanteASA
     protected Memoria memoria = new Memoria();
     protected Map<String, Biblioteca> bibliotecas = new TreeMap<>();
     
-    private final OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
-
     private Object valorPassadoParametro;
 
     private boolean lendo = false;
@@ -1105,17 +1103,11 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Integer visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA
     {
-        try
-        {
-            Object opEsq = noOperacaoBitwiseXOR.getOperandoEsquerdo().aceitar(this);
-            Object opDir = noOperacaoBitwiseXOR.getOperandoDireito().aceitar(this);
+        Integer opEsq = (Integer) noOperacaoBitwiseXOR.getOperandoEsquerdo().aceitar(this);
+        Integer opDir = (Integer) noOperacaoBitwiseXOR.getOperandoDireito().aceitar(this);
 
-            return (Integer) operacaoBitwiseXOR.executar(noOperacaoBitwiseXOR, opEsq, opDir);
-        }
-        catch (ErroExecucao ex)
-        {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseXOR);
-        }
+        OperacaoBitwiseXOR operacao = OperacaoBitwiseXOR.getOperacao();
+        return operacao.executar(opEsq, opDir);
     }
 
     @Override
