@@ -28,7 +28,6 @@ public abstract class Interpretador implements VisitanteASA
     
     private final OperacaoBitwiseLeftShift operacaoBitwiseLeftShift = new OperacaoBitwiseLeftShift();
     private final OperacaoBitwiseRightShift operacaoBitwiseRightShift = new OperacaoBitwiseRightShift();
-    private final OperacaoBitwiseE operacaoBitwiseE = new OperacaoBitwiseE();
     private final OperacaoBitwiseOu operacaoBitwiseOu = new OperacaoBitwiseOu();
     private final OperacaoBitwiseXOR operacaoBitwiseXOR = new OperacaoBitwiseXOR();
 
@@ -1101,17 +1100,11 @@ public abstract class Interpretador implements VisitanteASA
     @Override
     public Integer visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA
     {
-        try
-        {
-            Object opEsq = noOperacaoBitwiseE.getOperandoEsquerdo().aceitar(this);
-            Object opDir = noOperacaoBitwiseE.getOperandoDireito().aceitar(this);
+        Integer opEsq = (Integer)noOperacaoBitwiseE.getOperandoEsquerdo().aceitar(this);
+        Integer opDir = (Integer)noOperacaoBitwiseE.getOperandoDireito().aceitar(this);
 
-            return (Integer) operacaoBitwiseE.executar(noOperacaoBitwiseE, opEsq, opDir);
-        }
-        catch (ErroExecucao ex)
-        {
-            throw new ExcecaoVisitaASA(ex, asa, noOperacaoBitwiseE);
-        }
+        OperacaoBitwiseE operacao = OperacaoBitwiseE.getOperacao();
+        return operacao.executar(opEsq, opDir);
     }
 
     @Override
