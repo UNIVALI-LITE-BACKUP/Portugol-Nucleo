@@ -11,6 +11,7 @@ import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import br.univali.portugol.nucleo.simbolos.Variavel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -254,6 +255,7 @@ public final class Programa
         if (isExecutando())
         {
             controleTarefaExecucao.cancel(true);
+            Variavel.limpaCache();
         }
     }
 

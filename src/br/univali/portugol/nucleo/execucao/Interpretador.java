@@ -114,6 +114,11 @@ public abstract class Interpretador implements VisitanteASA
             excecao.printStackTrace(System.err);
             throw new ErroExecucaoNaoTratado(excecao);
         }
+        finally
+        {
+            Variavel.limpaCache();
+            System.out.println("limpando cache");
+        }
     }
 
     private boolean funcaoInicialValida(Funcao funcaoPrincipal)
@@ -511,13 +516,14 @@ public abstract class Interpretador implements VisitanteASA
         return null;
     }
 
+    
     @Override
     public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
     {
         String nome = noDeclaracaoVariavel.getNome();
         TipoDado tipoDado = noDeclaracaoVariavel.getTipoDado();
 
-        Variavel variavel = new Variavel(nome, tipoDado, noDeclaracaoVariavel);
+        Variavel variavel = Variavel.getVariavel(nome, tipoDado, noDeclaracaoVariavel);
 
         if (noDeclaracaoVariavel.getInicializacao() != null)
         {
@@ -1514,7 +1520,8 @@ public abstract class Interpretador implements VisitanteASA
                 {
                     case VALOR:
                     {
-                        simbolo = new Variavel(nome, tipoDado, noDeclaracaoParametro, valorPassadoParametro);
+                        simbolo = Variavel.getVariavel(nome, tipoDado, noDeclaracaoParametro);
+                        ((Variavel)simbolo).setValor(valorPassadoParametro);
                         break;
                     }
                     case VETOR:

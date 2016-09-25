@@ -2,6 +2,9 @@ package br.univali.portugol.nucleo.simbolos;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Representa uma variável alocada em memória durante a execução de um programa.
@@ -11,8 +14,24 @@ import br.univali.portugol.nucleo.asa.TipoDado;
  */
 public final class Variavel extends Simbolo
 {
+    private static final Map<Integer, Variavel> CACHE = new HashMap<>();
+    
     private Object valor;
 
+    public static Variavel getVariavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
+    {
+        int hash = geraHash(nome, tipoDado, declaracaoOrigem);
+        if (!CACHE.containsKey(hash)) {
+            CACHE.put(hash, new Variavel(nome, tipoDado, declaracaoOrigem));
+        }
+        return CACHE.get(hash);
+    }
+    
+    public static void limpaCache()
+    {
+        CACHE.clear();
+    }
+    
     /**
      * Aloca uma variável em memória sem definir seu valor.
      *
@@ -24,28 +43,9 @@ public final class Variavel extends Simbolo
      *
      * @since 1.0
      */
-    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
+    private Variavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
     {
         super(nome, tipoDado, declaracaoOrigem);
-    }
-
-    /**
-     * Aloca uma variável em memória inicializando-a com um valor.
-     *
-     * @param nome o nome desta variável.
-     *
-     * @param tipoDado o tipo de dado armazenado por esta variável.
-     *
-     * @param declaracaoOrigem o nó de declaração que originou a variável
-     *
-     * @param valor o valor que será armazenado na variável.
-     *
-     * @since 1.0
-     */
-    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem, Object valor)
-    {
-        super(nome, tipoDado, declaracaoOrigem);
-        setValor(valor);
     }
 
     /**
@@ -96,5 +96,14 @@ public final class Variavel extends Simbolo
         variavel.valor = valor;
 
         return variavel;
+    }
+    
+    private static int geraHash(String nome, TipoDado tipo, NoDeclaracao declaracao)
+    {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(nome);
+        hash = 23 * hash + Objects.hashCode(tipo);
+        hash = 23 * hash + Objects.hashCode(declaracao);
+        return hash;
     }
 }
