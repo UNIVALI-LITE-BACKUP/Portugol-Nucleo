@@ -627,33 +627,25 @@ public abstract class Interpretador implements VisitanteASA
         }
 
         memoria.empilharEscopo();
+
+        for (NoBloco noBloco : blocos)
+        {
+            Object retorno = noBloco.aceitar(this);
+
+            if (!(noBloco instanceof NoExpressao) && retorno != null)
+            {
+                return retorno;
+            }
+        }
         try
         {
-            for (NoBloco noBloco : blocos)
-            {
-                Object retorno = noBloco.aceitar(this);
-
-                if (!(noBloco instanceof NoExpressao) && retorno != null)
-                {
-                    return retorno;
-                }
-            }
+            memoria.desempilharEscopo();
         }
-        catch (RetorneException re)
+        catch (EmptyStackException e)
         {
-            return re.getValor();
-        }
-        finally
-        {
-            try
-            {
-                memoria.desempilharEscopo();
-            }
-            catch (EmptyStackException e)
-            {
 
-            }
         }
+
         return null;
     }
 
@@ -1464,22 +1456,7 @@ public abstract class Interpretador implements VisitanteASA
         {
             retorno = noRetorne.getExpressao().aceitar(this);
         }
-        throw new RetorneException(retorno);
-    }
-
-    private class RetorneException extends RuntimeException
-    {
-        private Object valor;
-
-        public RetorneException(Object valor)
-        {
-            this.valor = valor;
-        }
-
-        public Object getValor()
-        {
-            return valor;
-        }
+        return retorno;
     }
 
     @Override
