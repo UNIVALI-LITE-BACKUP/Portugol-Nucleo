@@ -1,41 +1,72 @@
 package br.univali.portugol.nucleo.execucao.operacoes.logicas;
 
 import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+import java.util.HashMap;
+import java.util.Map;
 
-public class OperacaoLogicaIgualdade extends Operacao
+/**
+ * @author Elieser
+ */
+
+public abstract class OperacaoLogicaIgualdade<A, B> extends OperacaoLogica<A, B>
 {
-    public boolean executar(Integer a, Integer b)
+    private final static Map<Class, Map<Class, Operacao>> MAPA;
+    
+    public static OperacaoLogica getOperacao(Object operandoEsquerdo, Object operandoDireito)
     {
-        return a.equals(b);
+        return (OperacaoLogica) Operacao.getOperacao(operandoEsquerdo, operandoDireito, MAPA);
     }
 
-    public boolean executar(Integer a, Double b)
-    {
-        return a.equals(b.intValue());
+    static {
+        
+        OperacaoLogicaIgualdade operacaoParaTiposIguais = new OperacaoLogicaIgualdade<Object, Object>()
+        {
+            @Override
+            public Boolean executar(Object a, Object b)
+            {
+                return a.equals(b);
+            }
+        };
+        
+        OperacaoLogicaIgualdade operacaoParaInteiroComReal = new OperacaoLogicaIgualdade<Integer, Double>()
+        {
+            @Override
+            public Boolean executar(Integer a, Double b)
+            {
+                return a.equals(b.intValue());
+            }
+        };
+        
+        OperacaoLogicaIgualdade operacaoParaRealComInteiro = new OperacaoLogicaIgualdade<Double, Integer>()
+        {
+            @Override
+            public Boolean executar(Double a, Integer b)
+            {
+                return a.equals(b.doubleValue());
+            }
+        };
+        
+        MAPA = new HashMap<>();
+        
+        // cria instâncias dos mapas usando o tipo do operando esquerdo como chave
+        MAPA.put(Integer.class,     new HashMap<Class, Operacao>());
+        MAPA.put(Double.class,      new HashMap<Class, Operacao>());
+        MAPA.put(Character.class,   new HashMap<Class, Operacao>());
+        MAPA.put(Boolean.class,     new HashMap<Class, Operacao>());
+        MAPA.put(String.class,      new HashMap<Class, Operacao>());
+        
+        // faz o mapeamento das combinações de tipos do operando esquerdo e direito com a respectiva operação
+        MAPA.get(Integer.class).put(Integer.class,      operacaoParaTiposIguais);
+        MAPA.get(Integer.class).put(Double.class,       operacaoParaInteiroComReal);
+        
+        MAPA.get(Double.class).put(Double.class,        operacaoParaTiposIguais);
+        MAPA.get(Double.class).put(Integer.class,       operacaoParaRealComInteiro);
+        
+        MAPA.get(Character.class).put(Character.class,  operacaoParaTiposIguais);
+        
+        MAPA.get(Boolean.class).put(Boolean.class,      operacaoParaTiposIguais);
+        
+        MAPA.get(String.class).put(String.class,        operacaoParaTiposIguais);
     }
 
-    public boolean executar(Double a, Double b)
-    {
-        return a.equals(b);
-    }
-
-    public boolean executar(Double a, Integer b)
-    {
-        return a.equals(b.doubleValue());
-    }
-
-    public boolean executar(Character a, Character b)
-    {
-        return a.equals(b);
-    }
-
-    public boolean executar(String a, String b)
-    {
-        return a.equals(b);
-    }
-
-    public boolean executar(Boolean a, Boolean b)
-    {
-        return a.equals(b);
-    }
 }

@@ -2,12 +2,21 @@ package br.univali.portugol.nucleo.execucao.operacoes.bitwise;
 
 import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 
-public class OperacaoBitwiseLeftShift extends Operacao
+public abstract class OperacaoBitwiseLeftShift extends Operacao<Integer, Integer, Integer>
 {
 
-    public Integer executar(Integer a, Integer b)
+    private final static OperacaoBitwiseLeftShift OPERACAO = new OperacaoBitwiseLeftShift()
     {
-        return a << b;
+        @Override
+        public Integer executar(Integer a, Integer b)
+        {
+            return a << b;
+        }
+    };
+    
+    public static OperacaoBitwiseLeftShift getOperacao()
+    {
+        return OPERACAO;
     }
         
 }

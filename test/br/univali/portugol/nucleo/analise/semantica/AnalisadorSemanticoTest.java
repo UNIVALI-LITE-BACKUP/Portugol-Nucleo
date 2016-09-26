@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
-
 import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.Portugol;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
@@ -8,76 +7,52 @@ import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarad
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoInicializado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
 import br.univali.portugol.nucleo.asa.TipoDado;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public final class AnalisadorSemanticoTest
-{    
-    public AnalisadorSemanticoTest()
-    {
-        
-    }
-    
-    @BeforeClass
-    public static void setUpClass()
-    {
-    }
-    
-    @AfterClass
-    public static void tearDownClass()
-    {
-    }
-    
-    @Before
-    public void setUp()
-    {
-    }
-    
+{
+
     @Test
     public void testReferenciaVetor()
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa"
-                +"{"
-                +" funcao inicio(){"
-                +"   inteiro a[] = {1, 2, 3}"
-                +"   escreva(a[\"1\"])       "
-                +" }"
-                +"}"
+            Portugol.compilar(
+                    "programa"
+                    + "{"
+                    + " funcao inicio(){"
+                    + "   inteiro a[] = {1, 2, 3}"
+                    + "   escreva(a[\"1\"])       "
+                    + " }"
+                    + "}"
             );
-            
-            fail("Era esperado um erro semantico");        
+
+            fail("Era esperado um erro semantico");
         }
         catch (ErroCompilacao erroCompilacao)
         {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-         
-            assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
-            assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
-            assertEquals("Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo \""+ TipoDado.INTEIRO+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".", resultado.getErros().get(0).getMensagem());
+
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Era esperado uma instancia de " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+            assertEquals("Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo \"" + TipoDado.INTEIRO + "\" mas foi passada uma expressão do tipo \"" + TipoDado.CADEIA + "\".", resultado.getErros().get(0).getMensagem());
         }
     }
-    
+
     @Test
     public void testMenosUnario()
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa"
-                +"{"
-                +" funcao inicio(){"
-                +"   cadeia a = \"teste\""
-                +"   escreva(-a)        "
-                +" }"
-                +"}"
+            Portugol.compilar(
+                    "programa"
+                    + "{"
+                    + " funcao inicio(){"
+                    + "   cadeia a = \"teste\""
+                    + "   escreva(-a)        "
+                    + " }"
+                    + "}"
             );
 
             fail("Era esperado um erro semantico");
@@ -86,71 +61,69 @@ public final class AnalisadorSemanticoTest
         {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
 
-            assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
-            assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
-            assertEquals("Tipos incompatíveis! A operação \"menos unário\" espera uma expressão do tipo \""+ TipoDado.INTEIRO+"\" ou \""+TipoDado.REAL+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".", resultado.getErros().get(0).getMensagem());
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Era esperado uma instancia de " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+            assertEquals("Tipos incompatíveis! A operação \"menos unário\" espera uma expressão do tipo \"" + TipoDado.INTEIRO + "\" ou \"" + TipoDado.REAL + "\" mas foi passada uma expressão do tipo \"" + TipoDado.CADEIA + "\".", resultado.getErros().get(0).getMensagem());
         }
     }
-    
+
     @Test
     public void testNoNao()
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa"
-                +"{"
-                +" funcao inicio(){"
-                +"   cadeia a = \"teste\""
-                +"   se (nao a){"
-                +"     escreva(\"nao a\")"
-                +"   }        "
-                +" }"
-                +"}"
+            Portugol.compilar(
+                    "programa"
+                    + "{"
+                    + " funcao inicio(){"
+                    + "   cadeia a = \"teste\""
+                    + "   se (nao a){"
+                    + "     escreva(\"nao a\")"
+                    + "   }        "
+                    + " }"
+                    + "}"
             );
-            
+
             fail("Era esperado um erro semantico");
         }
         catch (ErroCompilacao erroCompilacao)
-        {   
+        {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-        
-            assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
-            assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
-            assertEquals("Tipos incompatíveis! A operação de negação espera uma expressão do tipo \""+ TipoDado.LOGICO+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".", resultado.getErros().get(0).getMensagem());
+
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Era esperado uma instancia de " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+            assertEquals("Tipos incompatíveis! A operação de negação espera uma expressão do tipo \"" + TipoDado.LOGICO + "\" mas foi passada uma expressão do tipo \"" + TipoDado.CADEIA + "\".", resultado.getErros().get(0).getMensagem());
         }
     }
-    
+
     @Test
     public void testVariavelNaoInicializada()
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa"
-                +"{"
-                +" funcao inicio(){"
-                +"   inteiro a, b"
-                +"   escreva(a)"
-                +"   b = a + 2"
-                +"   a = a + b"
-                +"   escreva(b)"
-                +"   a = 1"
-                +"   escreva(a)"
-                +" }"
-                +"}"
+            Portugol.compilar(
+                    "programa"
+                    + "{"
+                    + " funcao inicio(){"
+                    + "   inteiro a, b"
+                    + "   escreva(a)"
+                    + "   b = a + 2"
+                    + "   a = a + b"
+                    + "   escreva(b)"
+                    + "   a = 1"
+                    + "   escreva(a)"
+                    + " }"
+                    + "}"
             );
-            
+
             fail("Era esperado tres erros semanticos");
         }
         catch (ErroCompilacao erroCompilacao)
-        {        
+        {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-            
-            assertEquals("Era esperado tres erros semanticos",3, resultado.getErros().size());
-            assertEquals("Era esperado uma instancia de "+ ErroSimboloNaoInicializado.class.getName(),ErroSimboloNaoInicializado.class, resultado.getErros().get(0).getClass());
+
+            assertEquals("Era esperado tres erros semanticos", 3, resultado.getErros().size());
+            assertEquals("Era esperado uma instancia de " + ErroSimboloNaoInicializado.class.getName(), ErroSimboloNaoInicializado.class, resultado.getErros().get(0).getClass());
         }
     }
 
@@ -159,119 +132,115 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa {"
-                + " funcao inicio() {"
-                + "  inteiro a = 1"
-                + "  logico b = verdadeiro"
-                + "  b = a + b"
-                + " }"
-                + "}"
+            Portugol.compilar(
+                    "programa {"
+                    + " funcao inicio() {"
+                    + "  inteiro a = 1"
+                    + "  logico b = verdadeiro"
+                    + "  b = a + b"
+                    + " }"
+                    + "}"
             );
-            
+
             fail("Era esperado um erro semantico");
         }
         catch (ErroCompilacao erroCompilacao)
         {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-            
-            assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
-            assertEquals("Era esperado uma instancia de "+ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Era esperado uma instancia de " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
         }
     }
-    
+
     @Test
     public void testVariavelNaoDeclaradaEmExpressaoSoma()
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa {"
-                + " funcao inicio() {"
-                + "  inteiro a = 0, b = 1"
-                + "  a = a + c"
-                + " }"
-                + "}"
+            Portugol.compilar(
+                    "programa {"
+                    + " funcao inicio() {"
+                    + "  inteiro a = 0, b = 1"
+                    + "  a = a + c"
+                    + " }"
+                    + "}"
             );
-            
+
             fail("Era esperado um erro semantico");
         }
         catch (ErroCompilacao erroCompilacao)
         {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-        
-            assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
-            assertEquals("Era esperado uma instancia de "+ ErroSimboloNaoDeclarado.class.getName(),ErroSimboloNaoDeclarado.class, resultado.getErros().get(0).getClass());
+
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Era esperado uma instancia de " + ErroSimboloNaoDeclarado.class.getName(), ErroSimboloNaoDeclarado.class, resultado.getErros().get(0).getClass());
         }
     }
-    
+
     @Test
     public void testTiposIncompativeisEscolhaCaso()
     {
         testExpressaoEscolhaInteiroOuCaracter();
         testExpressaoPrimeiroCasoIgualExpressaoEscolha();
         testAmbasExpressoesEscolhaDiferentesInteiroCaracter();
-        testEscolhaCodigoCorreto();        
+        testEscolhaCodigoCorreto();
     }
 
     private void testEscolhaCodigoCorreto()
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa {"
-                + " funcao inicio() {"
-                + "  inteiro a = 1"
-                + "  escolha (a) {"
-                + "     caso 2:"
-                + "         pare"
-                + "     caso 1:"
-                + "         pare"
-                + "     caso contrario:"
-                + "         pare"
-                + "  }"
-                + " }"
-                + "}"
+            Portugol.compilar(
+                    "programa {"
+                    + " funcao inicio() {"
+                    + "  inteiro a = 1"
+                    + "  escolha (a) {"
+                    + "     caso 2:"
+                    + "         pare"
+                    + "     caso 1:"
+                    + "         pare"
+                    + "     caso contrario:"
+                    + "         pare"
+                    + "  }"
+                    + " }"
+                    + "}"
             );
         }
         catch (ErroCompilacao erroCompilacao)
         {
-            assertEquals("Nao era esperado um erro semantico",0, erroCompilacao.getResultadoAnalise().getErros().size());
+            assertEquals("Nao era esperado um erro semantico", 0, erroCompilacao.getResultadoAnalise().getErros().size());
         }
     }
 
     private void testAmbasExpressoesEscolhaDiferentesInteiroCaracter()
-    {        
+    {
         try
         {
-            Portugol.compilar
-            (
-                "programa {"
-                + " funcao inicio() {"
-                + "  logico a = verdadeiro"
-                + "  escolha (a) {"
-                + "     caso 2.0:"
-                + "         pare"
-                + "     caso 'a':"
-                + "         pare"
-                + "  }"
-                + " }"
-                + "}"
+            Portugol.compilar(
+                    "programa {"
+                    + " funcao inicio() {"
+                    + "  logico a = verdadeiro"
+                    + "  escolha (a) {"
+                    + "     caso 2.0:"
+                    + "         pare"
+                    + "     caso 'a':"
+                    + "         pare"
+                    + "  }"
+                    + " }"
+                    + "}"
             );
-            
+
             fail("Eram esperados dois erros semanticos");
         }
         catch (ErroCompilacao erroCompilacao)
         {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-            
-            assertEquals("Era esperados dois erros semanticos",2, resultado.getErros().size());
-            assertEquals("Tipos incompativeis na expressao do caso "+ ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
-            assertEquals("Tipos incompatíveis! O comando \"escolha\" espera uma expressão do tipo \""+ TipoDado.INTEIRO+"\" ou \""+TipoDado.CARACTER+"\" mas foi passada uma expressão do tipo \""+TipoDado.LOGICO+"\".", resultado.getErros().get(0).getMensagem());
-            assertEquals("Tipos incompatíveis! A expressão esperada para esse caso deveria ser do tipo \""+ TipoDado.INTEIRO+"\" ou \""+TipoDado.CARACTER+"\" mas foi passada uma expressão do tipo \""+TipoDado.REAL+"\".", resultado.getErros().get(1).getMensagem());
+
+            assertEquals("Era esperados dois erros semanticos", 2, resultado.getErros().size());
+            assertEquals("Tipos incompativeis na expressao do caso " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+            assertEquals("Tipos incompatíveis! O comando \"escolha\" espera uma expressão do tipo \"" + TipoDado.INTEIRO + "\" ou \"" + TipoDado.CARACTER + "\" mas foi passada uma expressão do tipo \"" + TipoDado.LOGICO + "\".", resultado.getErros().get(0).getMensagem());
+            assertEquals("Tipos incompatíveis! A expressão esperada para esse caso deveria ser do tipo \"" + TipoDado.INTEIRO + "\" ou \"" + TipoDado.CARACTER + "\" mas foi passada uma expressão do tipo \"" + TipoDado.REAL + "\".", resultado.getErros().get(1).getMensagem());
         }
     }
 
@@ -279,30 +248,29 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa {"
-                + " funcao inicio() {"
-                + "  caracter a = 'a'"
-                + "  escolha (a) {"
-                + "     caso 1:"
-                + "         pare"
-                + "     caso 'a':"
-                + "         pare"
-                + "  }"
-                + " }"
-                + "}"
+            Portugol.compilar(
+                    "programa {"
+                    + " funcao inicio() {"
+                    + "  caracter a = 'a'"
+                    + "  escolha (a) {"
+                    + "     caso 1:"
+                    + "         pare"
+                    + "     caso 'a':"
+                    + "         pare"
+                    + "  }"
+                    + " }"
+                    + "}"
             );
-            
+
             fail("Era esperado um erro semantico");
         }
         catch (ErroCompilacao erroCompilacao)
         {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-            
-            assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
-            assertEquals("Tipos incompativeis na expressao do caso "+ ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
-            assertEquals("Tipos incompatíveis! A expressão esperada para esse caso deveria ser do tipo \""+ TipoDado.CARACTER+"\" mas foi passada uma expressão do tipo \""+TipoDado.INTEIRO+"\".", resultado.getErros().get(0).getMensagem());
+
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Tipos incompativeis na expressao do caso " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+            assertEquals("Tipos incompatíveis! A expressão esperada para esse caso deveria ser do tipo \"" + TipoDado.CARACTER + "\" mas foi passada uma expressão do tipo \"" + TipoDado.INTEIRO + "\".", resultado.getErros().get(0).getMensagem());
         }
     }
 
@@ -310,30 +278,29 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar
-            (
-                "programa {"
-                + " funcao inicio() {"
-                + "  cadeia a = \"a\""
-                + "  escolha (a) {"
-                + "     caso 1:"
-                + "         pare"
-                + "     caso 'a':"
-                + "         pare"
-                + "  }"
-                + " }"
-                + "}"
+            Portugol.compilar(
+                    "programa {"
+                    + " funcao inicio() {"
+                    + "  cadeia a = \"a\""
+                    + "  escolha (a) {"
+                    + "     caso 1:"
+                    + "         pare"
+                    + "     caso 'a':"
+                    + "         pare"
+                    + "  }"
+                    + " }"
+                    + "}"
             );
-            
+
             fail("Era esperado um erro semantico");
         }
         catch (ErroCompilacao erroCompilacao)
         {
             ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
-            
-            assertEquals("Era esperado um erro semantico",1, resultado.getErros().size());
-            assertEquals("Tipos incompativeis na expressao do escolha "+ ErroTiposIncompativeis.class.getName(),ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
-            assertEquals("Tipos incompatíveis! O comando \"escolha\" espera uma expressão do tipo \""+ TipoDado.INTEIRO+"\" ou \""+TipoDado.CARACTER+"\" mas foi passada uma expressão do tipo \""+TipoDado.CADEIA+"\".", resultado.getErros().get(0).getMensagem());
+
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Tipos incompativeis na expressao do escolha " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+            assertEquals("Tipos incompatíveis! O comando \"escolha\" espera uma expressão do tipo \"" + TipoDado.INTEIRO + "\" ou \"" + TipoDado.CARACTER + "\" mas foi passada uma expressão do tipo \"" + TipoDado.CADEIA + "\".", resultado.getErros().get(0).getMensagem());
         }
     }
 }

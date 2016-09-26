@@ -1,41 +1,55 @@
 package br.univali.portugol.nucleo.execucao.operacoes.aritmeticas;
 
-import br.univali.portugol.nucleo.execucao.erros.ErroDivisaoPorZero;
 import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+import java.util.HashMap;
+import java.util.Map;
 
-public class OperacaoDivisao extends Operacao
+public abstract class OperacaoDivisao<A extends Number, B extends Number> 
+                                            extends OperacaoAritmetica<A, B>
 {
-    public Integer executar(Integer operandoEsquerdo, Integer operandoDireito)
+    private final static Map<Class, Map<Class, Operacao>> MAPA;
+    
+    public static OperacaoAritmetica getOperacao(Object operandoEsquerdo, Object operandoDireito)
     {
-        return operandoEsquerdo / operandoDireito;
+        return (OperacaoAritmetica) Operacao.getOperacao(operandoEsquerdo, operandoDireito, MAPA);
     }
     
-    public Double executar(Integer operandoEsquerdo, Double operandoDireito) throws ErroDivisaoPorZero
-    {
-        verificarDivisaoZero(operandoDireito);
+    static {
         
-        return operandoEsquerdo / operandoDireito;
-    }
-    
-    public Double executar(Double operandoEsquerdo, Integer operandoDireito) throws ErroDivisaoPorZero
-    {
-        verificarDivisaoZero(operandoDireito);
-        
-        return operandoEsquerdo / operandoDireito;
-    }
-    
-    public Double executar(Double operandoEsquerdo, Double operandoDireito) throws ErroDivisaoPorZero
-    {
-        verificarDivisaoZero(operandoDireito);
-        
-        return operandoEsquerdo / operandoDireito;
-    }
-    
-    private void verificarDivisaoZero(Object operandoDireito) throws ErroDivisaoPorZero
-    {
-        if (operandoDireito.equals(0) || operandoDireito.equals(0.0))
+        OperacaoDivisao operacaoParaInteiros = new OperacaoDivisao<Integer, Integer>()
         {
-            throw new ErroDivisaoPorZero();
-        }
-    }    
+            @Override
+            public Number executar(Integer a, Integer b)
+            {
+                return (int)a / (int)b; // DIV
+            }
+        };
+        
+        OperacaoDivisao operacaoGenerica = new OperacaoDivisao<Number, Number>()
+        {
+            @Override
+            public Number executar(Number a, Number b)
+            {
+                if (b.doubleValue() == 0.0) // quando o operando 'b' é 0.0 o resultado é Infinity e nenhuma exceção é disparada pelo Java, por esse motivo a exceção está sendo disparada explicitamente.
+                {
+                    throw new ArithmeticException("/ by zero");
+                }
+                return a.doubleValue() / b.doubleValue();
+            }
+        };
+        
+        MAPA = new HashMap<>();
+        
+        // cria instâncias dos mapas usando o tipo do operando esquerdo como chave
+        MAPA.put(Integer.class,     new HashMap<Class, Operacao>());
+        MAPA.put(Double.class,      new HashMap<Class, Operacao>());
+        
+        // faz o mapeamento das combinações de tipos do operando esquerdo e direito com a respectiva operação
+        MAPA.get(Integer.class).put(Integer.class,      operacaoParaInteiros);
+        MAPA.get(Integer.class).put(Double.class,       operacaoGenerica);
+        
+        MAPA.get(Double.class).put(Double.class,        operacaoGenerica);
+        MAPA.get(Double.class).put(Integer.class,       operacaoGenerica);
+    }
+
 }

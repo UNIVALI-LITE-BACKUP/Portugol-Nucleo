@@ -519,7 +519,7 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
+    public Boolean visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
@@ -558,14 +558,14 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
+    public Boolean visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
+    public Boolean visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
@@ -593,28 +593,28 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     }
 
     @Override
-    public Object visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
+    public Number visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
-    public Object visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
+    public Number visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
-    public Object visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
+    public Number visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);
     }
 
     @Override
-    public Object visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
+    public Integer visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
     {
         realizarParada(no, no.getTrechoCodigoFonte());
         return super.visitar(no);

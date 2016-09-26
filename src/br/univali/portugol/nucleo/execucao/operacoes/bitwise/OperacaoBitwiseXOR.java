@@ -2,12 +2,21 @@ package br.univali.portugol.nucleo.execucao.operacoes.bitwise;
 
 import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 
-public class OperacaoBitwiseXOR extends Operacao
+public abstract class OperacaoBitwiseXOR extends Operacao<Integer, Integer, Integer>
 {
 
-    public Integer executar(Integer a, Integer b)
+    private final static OperacaoBitwiseXOR OPERACAO = new OperacaoBitwiseXOR()
     {
-        return a ^ b;
+        @Override
+        public Integer executar(Integer a, Integer b)
+        {
+            return a ^ b;
+        }
+    };
+    
+    public static OperacaoBitwiseXOR getOperacao()
+    {
+        return OPERACAO;
     }
         
 }
