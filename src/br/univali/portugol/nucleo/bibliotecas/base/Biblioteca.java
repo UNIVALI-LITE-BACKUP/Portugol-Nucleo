@@ -112,15 +112,17 @@ public abstract class Biblioteca
 {
     private TipoBiblioteca tipo = getClass().getAnnotation(PropriedadesBiblioteca.class).tipo();
     private final Map<String, Method> cacheFuncoes;
+    private final String nome;
 
     public Biblioteca()
     {
         cacheFuncoes = new TreeMap<>();
+        nome = getClass().getSimpleName();
     }
 
     public final String getNome()
     {
-        return getClass().getSimpleName();
+        return nome;
     }
 
     public final TipoBiblioteca getTipo()
@@ -152,24 +154,24 @@ public abstract class Biblioteca
 
     public final Object chamarFuncao(NoChamadaFuncao noChamadaFuncao, Object... parametros) throws ErroExecucao, InterruptedException
     {
-        String nome = noChamadaFuncao.getNome();
+        String nomeFuncao = noChamadaFuncao.getNome();
         int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
         int coluna = noChamadaFuncao.getTrechoCodigoFonteNome().getColuna();
 
         try
         {
-            if (!cacheFuncoes.containsKey(nome))
+            if (!cacheFuncoes.containsKey(nomeFuncao))
             {
                 for (Method funcao : this.getClass().getDeclaredMethods())
                 {
-                    if (Modifier.isPublic(funcao.getModifiers()) && funcao.getName().equals(nome))
+                    if (Modifier.isPublic(funcao.getModifiers()) && funcao.getName().equals(nomeFuncao))
                     {
-                        cacheFuncoes.put(nome, funcao);
+                        cacheFuncoes.put(nomeFuncao, funcao);
                     }
                 }
             }
 
-            return cacheFuncoes.get(nome).invoke(this, parametros);
+            return cacheFuncoes.get(nomeFuncao).invoke(this, parametros);
         }
         catch (InvocationTargetException ex)
         {
