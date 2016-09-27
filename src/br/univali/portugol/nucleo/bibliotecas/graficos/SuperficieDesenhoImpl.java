@@ -238,7 +238,11 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharPorcaoImagem(int x, int y, int xi, int yi, int largura, int altura, BufferedImage imagem)
     {
-        operacoes.add(new DesenhoPorcaoImagem(x, y, xi, yi, largura, altura, imagem, opacidade, rotacao));
+        // evita adicionar operações de pintura que estão fora das dimensões do canvas
+        if (y + altura > 0 && y < getHeight() && x < getWidth() && x + largura > 0)
+        {
+            operacoes.add(new DesenhoPorcaoImagem(x, y, xi, yi, largura, altura, imagem, opacidade, rotacao));
+        }
     }
 
     @Override
