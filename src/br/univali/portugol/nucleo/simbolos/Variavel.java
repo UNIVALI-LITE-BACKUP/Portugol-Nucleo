@@ -20,7 +20,7 @@ public final class Variavel extends Simbolo
 
     public static Variavel getVariavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
     {
-        int hash = geraHash(nome, tipoDado, declaracaoOrigem);
+        Integer hash = geraHash(nome, tipoDado, declaracaoOrigem);
         if (!CACHE.containsKey(hash)) {
             CACHE.put(hash, new Variavel(nome, tipoDado, declaracaoOrigem));
         }
@@ -98,7 +98,7 @@ public final class Variavel extends Simbolo
         return variavel;
     }
     
-    private static int geraHash(String nome, TipoDado tipo, NoDeclaracao declaracao)
+    private static Integer geraHash(String nome, TipoDado tipo, NoDeclaracao declaracao)
     {
         int hash = 5;
         hash = 23 * hash + Objects.hashCode(nome);
