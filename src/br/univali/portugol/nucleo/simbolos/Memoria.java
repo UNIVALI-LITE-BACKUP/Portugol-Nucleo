@@ -137,17 +137,19 @@ public class Memoria
     
     private void notificarSimboloAdicionado(Simbolo simbolo)
     {
-        for (ObservadorMemoria observador : observadores)
+        int size = observadores.size();
+        for (int i = 0; i < size; ++i)
         {
-            observador.simboloAdicionado(simbolo);
+            observadores.get(i).simboloAdicionado(simbolo);
         }
     }
     
     private void notificarSimboloRemovido(Simbolo simbolo)
     {
-        for (ObservadorMemoria observador : observadores)
+        int size = observadores.size();
+        for (int i = 0; i < size; ++i)
         {
-            observador.simboloRemovido(simbolo);
+            observadores.get(i).simboloRemovido(simbolo);
         }
     }
 }

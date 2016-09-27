@@ -114,15 +114,17 @@ public class Depurador extends Interpretador implements ObservadorMemoria
             @Override
             public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
             {
-                List<ModoAcesso> obterModosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
+                List<ModoAcesso> modosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
 
                 if (chamadaFuncao.getParametros() != null)
                 {
-                    for (int i = 0; i < chamadaFuncao.getParametros().size(); i++)
+                    List<NoExpressao> parametros = chamadaFuncao.getParametros();
+                    int totalParametros = parametros.size();
+                    for (int i = 0; i < totalParametros; ++i)
                     {
-                        if (obterModosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA)
+                        if (modosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA)
                         {
-                            NoReferencia ref = (NoReferencia) chamadaFuncao.getParametros().get(i);
+                            NoReferencia ref = (NoReferencia) parametros.get(i);
                             try
                             {
                                 Simbolo simbolo = memoria.getSimbolo(ref.getNome());
@@ -148,7 +150,9 @@ public class Depurador extends Interpretador implements ObservadorMemoria
                 {
                     if (chamadaFuncao.getNome().equals("leia"))
                     {
-                        for (NoExpressao parametro : chamadaFuncao.getParametros())
+                        List<NoExpressao> parametros = chamadaFuncao.getParametros();
+                        int totalParametros = parametros.size();
+                        for (int i = 0; i < totalParametros ; i++)
                         {
                             modosAcesso.add(ModoAcesso.POR_REFERENCIA);
                         }
@@ -157,7 +161,9 @@ public class Depurador extends Interpretador implements ObservadorMemoria
                     {
                         if (chamadaFuncao.getNome().equals("escreva"))
                         {
-                            for (NoExpressao parametro : chamadaFuncao.getParametros())
+                            List<NoExpressao> parametros = chamadaFuncao.getParametros();
+                            int totalParametros = parametros.size();
+                            for (int i = 0; i < totalParametros ; i++)
                             {
                                 modosAcesso.add(ModoAcesso.POR_VALOR);
                             }
@@ -168,7 +174,9 @@ public class Depurador extends Interpretador implements ObservadorMemoria
                             {
                                 Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
 
-                                for (NoDeclaracaoParametro parametro : funcao.getParametros())
+                                List<NoExpressao> parametros = chamadaFuncao.getParametros();
+                                int totalParametros = parametros.size();
+                                for (int i = 0; i < totalParametros ; i++)
                                 {
                                     //nao olhar mesmo que seja por referencia.
                                     //pois esta sendo feito na atribuicao, quando o simbolo e ponteiro.
@@ -220,9 +228,10 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 
     public void disparaSimbolosAlterados(List<Simbolo> simbolos)
     {
-        for (ObservadorExecucao l : observadores)
+        int size = observadores.size();
+        for (int i = 0; i < size; ++i)
         {
-            l.simbolosAlterados(simbolos);
+            observadores.get(i).simbolosAlterados(simbolos);
         }
     }
 
@@ -654,18 +663,20 @@ public class Depurador extends Interpretador implements ObservadorMemoria
     @Override
     public void simboloAdicionado(Simbolo simbolo)
     {
-        for (ObservadorExecucao l : observadores)
+        int size = observadores.size();
+        for (int i = 0; i < size; ++i)
         {
-            l.simboloDeclarado(simbolo);
+            observadores.get(i).simboloDeclarado(simbolo);
         }
     }
 
     @Override
     public void simboloRemovido(Simbolo simbolo)
     {
-        for (ObservadorExecucao l : observadores)
+        int size = observadores.size();
+        for (int i = 0; i < size; ++i)
         {
-            l.simboloRemovido(simbolo);
+            observadores.get(i).simboloRemovido(simbolo);
         }
     }
 }

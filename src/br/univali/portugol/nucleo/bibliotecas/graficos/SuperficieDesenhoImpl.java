@@ -85,9 +85,11 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
                 graficos.setColor(cor);
                 graficos.setFont(fonteTexto);
 
-                for (OperacaoGrafica operacao : operacoes)
+                int totalOperacoes = operacoes.size();
+                Rectangle bounds = getBounds();
+                for (int i = 0; i < totalOperacoes; ++i)
                 {
-                    operacao.executar(graficos, getBounds());
+                    operacoes.get(i).executar(graficos, bounds);
                 }
 
                 graficos.dispose();

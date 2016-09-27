@@ -634,8 +634,10 @@ public abstract class Interpretador implements VisitanteASA
 
         memoria.empilharEscopo();
 
-        for (NoBloco noBloco : blocos)
+        int totalDeBlocos = blocos.size();
+        for (int i = 0; i < totalDeBlocos; ++i)
         {
+            NoBloco noBloco = blocos.get(i);
             Object retorno = noBloco.aceitar(this);
 
             if (!(noBloco instanceof NoExpressao) && retorno != null)
