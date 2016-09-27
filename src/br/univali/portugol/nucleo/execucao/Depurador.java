@@ -170,9 +170,9 @@ public class Depurador extends Interpretador implements ObservadorMemoria
                         }
                         else
                         {
-                            try
-                            {
-                                Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+                            //try
+                            //{
+                                //Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
 
                                 List<NoExpressao> parametros = chamadaFuncao.getParametros();
                                 int totalParametros = parametros.size();
@@ -183,11 +183,11 @@ public class Depurador extends Interpretador implements ObservadorMemoria
                                     //PS: meu teclado nao tem acento.
                                     modosAcesso.add(ModoAcesso.POR_VALOR);
                                 }
-                            }
-                            catch (ExcecaoSimboloNaoDeclarado ex)
-                            {
+                            //}
+                            //catch (ExcecaoSimboloNaoDeclarado ex)
+                            //{
                                 // Não faz nada aqui
-                            }
+                            //}
                         }
                     }
                 }
@@ -228,10 +228,14 @@ public class Depurador extends Interpretador implements ObservadorMemoria
 
     public void disparaSimbolosAlterados(List<Simbolo> simbolos)
     {
-        int size = observadores.size();
-        for (int i = 0; i < size; ++i)
+        
+        if (!simbolos.isEmpty())
         {
-            observadores.get(i).simbolosAlterados(simbolos);
+            int size = observadores.size();
+            for (int i = 0; i < size; ++i)
+            {
+                observadores.get(i).simbolosAlterados(simbolos);
+            }
         }
     }
 
