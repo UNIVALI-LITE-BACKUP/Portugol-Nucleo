@@ -2,6 +2,13 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
+import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
+import br.univali.portugol.nucleo.asa.NoExpressao;
+import br.univali.portugol.nucleo.asa.NoReferencia;
+import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
+import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
+import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.execucao.Depurador;
 import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.es.Entrada;
@@ -9,9 +16,17 @@ import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
+import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
+import br.univali.portugol.nucleo.execucao.erros.ErroValorEntradaInvalido;
+import br.univali.portugol.nucleo.execucao.es.Armazenador;
+import br.univali.portugol.nucleo.execucao.es.InputMediator;
 import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import br.univali.portugol.nucleo.simbolos.ExcecaoSimboloNaoDeclarado;
+import br.univali.portugol.nucleo.simbolos.Matriz;
+import br.univali.portugol.nucleo.simbolos.Simbolo;
 import br.univali.portugol.nucleo.simbolos.Variavel;
+import br.univali.portugol.nucleo.simbolos.Vetor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,10 +85,13 @@ public final class Programa
     private ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma;
     private List<String> funcoes;
     private ResultadoAnalise resultadoAnalise;
-    
+
     private final ArrayList<ObservadorExecucao> observadores;
 
     private final AtivadorDePontosDeParada ativadorDePontoDesParada = new AtivadorDePontosDeParada();
+
+    private volatile boolean lendo = false;
+    private volatile boolean leituraIgnorada = false;
 
     public Programa()
     {
@@ -135,7 +153,7 @@ public final class Programa
             controleTarefaExecucao = servicoExecucao.submit(tarefaExecucao);
         }
     }
-    
+
     public void continuar(Depurador.Estado estado)
     {
         if (isExecutando())
@@ -151,13 +169,13 @@ public final class Programa
     public void ativaPontosDeParada(Set<Integer> linhasComPontosDeParadaAtivados)
     {
         ativadorDePontoDesParada.ativaPontosDeParada(linhasComPontosDeParadaAtivados, arvoreSintaticaAbstrataPrograma);
-        
+
         atualizaOtimizacaoDaTarefaDeExecucao(); // sempre que novos pontos de parada são adicionados ou removidos é necessário atualizar a flag de otimização
     }
-    
+
     private void atualizaOtimizacaoDaTarefaDeExecucao()
     {
-        if (tarefaExecucao != null) 
+        if (tarefaExecucao != null)
         {
             boolean otimizando = podeOtimizar();
             tarefaExecucao.setOtimizacao(otimizando);
@@ -168,9 +186,9 @@ public final class Programa
     private boolean podeOtimizar()
     {
         boolean estaNoModoBreakPoint = tarefaExecucao.estado == Depurador.Estado.BREAK_POINT || tarefaExecucao.depurador.getEstado() == Depurador.Estado.BREAK_POINT;
-        return  estaNoModoBreakPoint && !ativadorDePontoDesParada.temPontosDeParadaAtivos();
+        return estaNoModoBreakPoint && !ativadorDePontoDesParada.temPontosDeParadaAtivos();
     }
-    
+
     /**
      * Implementa uma tarefa para disparar a execução do programa com os
      * parâmetros e a estratégia selecionada. Futuramente podemos refatorar para
@@ -191,10 +209,11 @@ public final class Programa
             this.depurador = new Depurador();
         }
 
-        public void setOtimizacao(boolean otimiza) {
+        public void setOtimizacao(boolean otimiza)
+        {
             depurador.setExecucaoOtimizada(otimiza);
         }
-        
+
         public ResultadoExecucao getResultadoExecucao()
         {
             return resultadoExecucao;
@@ -226,21 +245,24 @@ public final class Programa
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
 
             notificarEncerramentoExecucao(resultadoExecucao);
-            
+
         }
 
         public void continuar(Depurador.Estado estado)
         {
             depurador.continuar(estado);
-            
-            atualizaOtimizacaoDaTarefaDeExecucao(); 
-            /***
-             * Quando a execução é continuada é necessário atualizar a flag de otimização.
-             * É possível que o usuário inicie a execução no modo passo a passo (sem otimização), 
-             * e em seguida clique no botão 'play', alterando para o modo de execução com pontos de parada.
-             * Porém, se não houverem pontos de parada ativos no código é possível executar com otimização.
-             */ 
-            
+
+            atualizaOtimizacaoDaTarefaDeExecucao();
+            /**
+             * *
+             * Quando a execução é continuada é necessário atualizar a flag de
+             * otimização. É possível que o usuário inicie a execução no modo
+             * passo a passo (sem otimização), e em seguida clique no botão
+             * 'play', alterando para o modo de execução com pontos de parada.
+             * Porém, se não houverem pontos de parada ativos no código é
+             * possível executar com otimização.
+             */
+
         }
     }
 
@@ -287,8 +309,7 @@ public final class Programa
     public void setArquivoOrigem(File arquivoOrigem)
     {
         this.arquivoOrigem = arquivoOrigem;
-    }    
-    
+    }
 
     /**
      * Obtém a ASA que representa este programa.
@@ -462,7 +483,7 @@ public final class Programa
 
         return caminho;
     }
-    
+
     private String obterCaminhoCompleto(File arquivo)
     {
         try
@@ -473,10 +494,9 @@ public final class Programa
         {
             Logger.getLogger(Programa.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return arquivo.getAbsolutePath();
     }
-        
 
     @Override
     public boolean equals(Object obj)
@@ -493,5 +513,191 @@ public final class Programa
     public int hashCode()
     {
         return System.identityHashCode(this);
+    }
+
+    private void escreva(Object... listaParametrosPassados) throws ErroExecucao
+    {
+        if (saida == null)
+        {
+            throw new IllegalStateException("A saída do Programa está nula!");
+        }
+
+        for (Object valor : listaParametrosPassados)
+        {
+
+            if (valor instanceof String)
+            {
+                if (valor.equals("${show developers}"))
+                {
+                    valor = "\n\nDesenvolvedores:\n\nFillipi Domingos Pelz\nLuiz Fernando Noschang\n\n";
+                }
+
+                try
+                {
+                    saida.escrever((String) valor);
+                }
+                catch (Exception ex)
+                {
+                    throw new ErroExecucaoNaoTratado(ex);
+                }
+            }
+            else if (valor instanceof Boolean)
+            {
+                try
+                {
+                    saida.escrever((Boolean) valor);
+                }
+                catch (Exception ex)
+                {
+                    throw new ErroExecucaoNaoTratado(ex);
+                }
+            }
+            else if (valor instanceof Character)
+            {
+                try
+                {
+
+                    saida.escrever((Character) valor);
+                }
+                catch (Exception ex)
+                {
+                    throw new ErroExecucaoNaoTratado(ex);
+                }
+            }
+            else if (valor instanceof Double)
+            {
+                try
+                {
+                    saida.escrever((Double) valor);
+                }
+                catch (Exception ex)
+                {
+                    throw new ErroExecucaoNaoTratado(ex);
+                }
+            }
+            else if (valor instanceof Integer)
+            {
+                try
+                {
+                    saida.escrever((Integer) valor);
+                }
+                catch (Exception ex)
+                {
+                    throw new ErroExecucaoNaoTratado(ex);
+                }
+            }
+        }
+    }
+
+    private synchronized void setLendo(boolean lendo)
+    {
+        this.lendo = lendo;
+    }
+
+    private synchronized boolean isLendo()
+    {
+        return lendo;
+    }
+
+    private synchronized void setLeituraIgnorada(boolean leituraIgnorada)
+    {
+        this.leituraIgnorada = leituraIgnorada;
+    }
+
+    private synchronized boolean isLeituraIgnorada()
+    {
+        return leituraIgnorada;
+    }
+
+    private Object leia(TipoDado tipoDado) throws ErroExecucao
+    {
+        assert (entrada != null);
+
+        setLendo(true);
+
+        try
+        {
+            InputHandler mediador = new InputHandler();
+            entrada.solicitaEntrada(tipoDado, mediador);
+
+            // Se for verdadeiro, significa que a entrada é assíncrona,
+            // então devemos esperar a leitura da entrada. Caso contrário,
+            // a entrada é síncrona, podemos seguir em frente e pegar o valor 
+            if (mediador.getValor() == null && !mediador.isCancelado())
+            {
+                synchronized (this)
+                {
+                    wait();
+                }
+            }
+
+            if (!mediador.isCancelado())
+            {
+                if (!isLeituraIgnorada())
+                {
+                    return mediador.getValor();
+                }
+                else
+                {
+                    throw new ErroValorEntradaInvalido(tipoDado, 0, 0);
+                }
+            }
+            else
+            {
+                throw new ErroValorEntradaInvalido(tipoDado, 0, 0);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new ErroExecucaoNaoTratado(ex);
+        }
+        finally
+        {
+            setLendo(false);
+        }
+
+    }
+
+    private class InputHandler implements InputMediator, Armazenador
+    {
+        private Object valor;
+        private boolean cancelado = false;
+
+        @Override
+        public Object getValor()
+        {
+            synchronized (this)
+            {
+                return valor;
+            }
+        }
+
+        @Override
+        public void setValor(Object valor)
+        {
+            synchronized (this)
+            {
+                this.valor = valor;
+                this.notifyAll();
+            }
+        }
+
+        @Override
+        public void cancelarLeitura()
+        {
+            synchronized (this)
+            {
+                this.cancelado = true;
+                this.notifyAll();
+            }
+        }
+
+        public boolean isCancelado()
+        {
+            synchronized (this)
+            {
+                return cancelado;
+            }
+        }
     }
 }

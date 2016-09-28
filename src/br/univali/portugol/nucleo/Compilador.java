@@ -43,7 +43,7 @@ final class Compilador
         {
             ArvoreSintaticaAbstrataPrograma asa = (ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata();
         
-            Programa programa = new Programa();
+            Programa programa = geraPrograma();
             programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
             programa.setFuncaoInicial(localizadorFuncoes.getFuncaoInicial());
             programa.setArvoreSintaticaAbstrata(asa);
@@ -57,6 +57,16 @@ final class Compilador
         }
     }
     
+    private Programa geraPrograma()
+    {
+        // 1 - gera o código
+        // 2 - manda o código gerado para o javac
+        // 3 - instancia a classe que vai extender 'Programa'
+        // 4 - retorna o programa gerado
+        
+        return null; //TODO invoca o javac para compilar o programa
+    }
+            
     private final class LocalizadorFuncoes extends VisitanteASABasico
     {
         private final List<String> funcoes = new ArrayList<>();
