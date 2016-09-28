@@ -1,7 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.execucao.Depurador;
 import java.util.List;
 
 /**
