@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.execucao.Depurador;
 import java.util.List;
 
@@ -100,9 +101,9 @@ public final class NoChamadaFuncao extends NoReferencia
     }
 
     @Override
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
-        return (estado == Depurador.Estado.BREAK_POINT && pontoDeParadaEstaAtivo()) || estado == Depurador.Estado.STEP_OVER;
+        return (estado == Programa.Estado.BREAK_POINT && pontoDeParadaEstaAtivo()) || estado == Programa.Estado.STEP_OVER;
     }
 
 }

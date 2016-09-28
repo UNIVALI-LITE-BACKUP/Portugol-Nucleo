@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.Programa;
 
 
 /**
@@ -40,10 +40,10 @@ public final class NoOperacaoAtribuicao extends NoOperacao
     }
 
     @Override
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
         boolean operandos = getOperandoDireito().ehParavel(estado) || getOperandoEsquerdo().ehParavel(estado);
-        return operandos || ( pontoDeParadaEstaAtivo() &&  estado == Depurador.Estado.BREAK_POINT) || estado == Depurador.Estado.STEP_OVER ;
+        return operandos || ( pontoDeParadaEstaAtivo() &&  estado == Programa.Estado.BREAK_POINT) || estado == Programa.Estado.STEP_OVER ;
     }
     
     

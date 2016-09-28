@@ -3,669 +3,332 @@ package br.univali.portugol.nucleo.execucao;
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.bibliotecas.base.*;
-import br.univali.portugol.nucleo.execucao.erros.ErroObservadorDepuracao;
-import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Depurador implements ObservadorMemoria
+public class Depurador
 {
     
+//    private final List<ObservadorExecucao> observadores = new ArrayList<>();
+//
+//    private Programa programa;
+//    
+//
+//    public void disparaDestacar(int linha)
+//    {
+//        if (linha >= 0)
+//        {
+//            for (ObservadorExecucao observador : observadores)
+//            {
+//                observador.highlightLinha(linha);
+//            }
+//        }
+//    }
+//
+//    public void disparaDestacar(TrechoCodigoFonte trechoCodigoFonte)
+//    {
+//        if (trechoCodigoFonte != null)
+//        {
+//            int linha = trechoCodigoFonte.getLinha();
+//            int coluna = trechoCodigoFonte.getColuna();
+//            int tamanho = trechoCodigoFonte.getTamanhoTexto();
+//            
+//            for (ObservadorExecucao observador : observadores)
+//            {
+//                observador.highlightDetalhadoAtual(linha, coluna, tamanho);
+//            }
+//        }
+//    }
+//
+//    private List<Simbolo> getSimbolosAlterados(NoExpressao expressao)
+//    {
+//        final List<Simbolo> simbolosAlterados = new ArrayList<>();
+//        VisitanteASA visitante = new VisitanteASABasico()
+//        {
+//
+//            @Override
+//            public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA
+//            {
+//                NoReferencia ref = (NoReferencia) noOperacaoAtribuicao.getOperandoEsquerdo();
+//                try
+//                {
+//
+//                    Simbolo simbolo = memoria.getSimbolo(ref.getNome());
+//                    simbolosAlterados.add(simbolo);
+//                    if (simbolo instanceof Ponteiro)
+//                    {
+//                        while (simbolo instanceof Ponteiro)
+//                        {
+//                            simbolo = ((Ponteiro) simbolo).getSimboloApontado();
+//                        }
+//                        simbolosAlterados.add(simbolo);
+//                    }
+//
+//                }
+//                catch (ExcecaoSimboloNaoDeclarado ex)
+//                {
+//                    Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
+//            {
+//                List<ModoAcesso> modosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
+//
+//                if (chamadaFuncao.getParametros() != null)
+//                {
+//                    List<NoExpressao> parametros = chamadaFuncao.getParametros();
+//                    int totalParametros = parametros.size();
+//                    for (int i = 0; i < totalParametros; ++i)
+//                    {
+//                        if (modosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA)
+//                        {
+//                            NoReferencia ref = (NoReferencia) parametros.get(i);
+//                            try
+//                            {
+//                                Simbolo simbolo = memoria.getSimbolo(ref.getNome());
+//                                simbolosAlterados.add(simbolo);
+//                            }
+//                            catch (ExcecaoSimboloNaoDeclarado ex)
+//                            {
+//                                Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
+//                        }
+//
+//                    }
+//                }
+//
+//                return null;
+//            }
+//
+//            private List<ModoAcesso> obterModosAcessoEsperados(NoChamadaFuncao chamadaFuncao)
+//            {
+//                List<ModoAcesso> modosAcesso = new ArrayList<>();
+//
+//                if (chamadaFuncao.getEscopo() == null)
+//                {
+//                    if (chamadaFuncao.getNome().equals("leia"))
+//                    {
+//                        List<NoExpressao> parametros = chamadaFuncao.getParametros();
+//                        int totalParametros = parametros.size();
+//                        for (int i = 0; i < totalParametros ; i++)
+//                        {
+//                            modosAcesso.add(ModoAcesso.POR_REFERENCIA);
+//                        }
+//                    }
+//                    else
+//                    {
+//                        if (chamadaFuncao.getNome().equals("escreva"))
+//                        {
+//                            List<NoExpressao> parametros = chamadaFuncao.getParametros();
+//                            int totalParametros = parametros.size();
+//                            for (int i = 0; i < totalParametros ; i++)
+//                            {
+//                                modosAcesso.add(ModoAcesso.POR_VALOR);
+//                            }
+//                        }
+//                        else
+//                        {
+//                            //try
+//                            //{
+//                                //Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
+//
+//                                List<NoExpressao> parametros = chamadaFuncao.getParametros();
+//                                int totalParametros = parametros.size();
+//                                for (int i = 0; i < totalParametros ; i++)
+//                                {
+//                                    //nao olhar mesmo que seja por referencia.
+//                                    //pois esta sendo feito na atribuicao, quando o simbolo e ponteiro.
+//                                    //PS: meu teclado nao tem acento.
+//                                    modosAcesso.add(ModoAcesso.POR_VALOR);
+//                                }
+//                            //}
+//                            //catch (ExcecaoSimboloNaoDeclarado ex)
+//                            //{
+//                                // Não faz nada aqui
+//                            //}
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    try
+//                    {
+//                        Biblioteca biblioteca = bibliotecas.get(chamadaFuncao.getEscopo());
+//                        MetaDadosBiblioteca metaDadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(biblioteca.getNome());
+//                        MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+//                        MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
+//
+//                        for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
+//                        {
+//                            modosAcesso.add(metaDadosParametro.getModoAcesso());
+//                        }
+//                    }
+//                    catch (ErroCarregamentoBiblioteca ex)
+//                    {
+//                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//
+//                return modosAcesso;
+//            }
+//
+//        };
+//        try
+//        {
+//            expressao.aceitar(visitante);
+//        }
+//        catch (ExcecaoVisitaASA ex)
+//        {
+//            Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return simbolosAlterados;
+//    }
+//
+//    public void disparaSimbolosAlterados(List<Simbolo> simbolos)
+//    {
+//        
+//        if (!simbolos.isEmpty())
+//        {
+//            int size = observadores.size();
+//            for (int i = 0; i < size; ++i)
+//            {
+//                observadores.get(i).simbolosAlterados(simbolos);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Permite adicionar um observador à execução do programa. Os observadores
+//     * serão notificados sobre o início e o término da execução, bem como erros
+//     * em tempo de execução que vierem a ocorrer.
+//     *
+//     * @param observadores os observadores de execução a serem registrados.
+//     * @since 1.0
+//     */
+//    public void adicionarObservadoresExecucao(List<ObservadorExecucao> observadores)
+//    {
+//        this.observadores.addAll(observadores);
+//    }
+//
+//    /**
+//     * Remove um observador de execução previamente registrado utilizando o
+//     * método 
+//     * {@link Programa#adicionarObservadorExecucao(br.univali.portugol.nucleo.execucao.ObservadorExecucao) }.
+//     * Uma vez removido, o observador não será mais notificado sobre o estado da
+//     * execução do programa nem dos erros em tempo de execução que vierem a
+//     * ocorrer.
+//     *
+//     * @param observadores os observadores de execução previamente registrados.
+//     * @since 1.0
+//     */
+//    public void removerObservadoresExecucao(List<ObservadorExecucao> observadores)
+//    {
+//        this.observadores.removeAll(observadores);
+//    }    
     
-    private final List<ObservadorExecucao> observadores = new ArrayList<>();
-
-    private Programa programa;
-    
-    private boolean otimizandoExecucao = false; // se não existirem pontos de parada o código que verifica as paradas não é executado
-    
-    public void setExecucaoOtimizada(boolean otimiza)
-    {
-        this.otimizandoExecucao = otimiza;
-    }
-    
-    public Estado getEstado()
-    {
-        return estado;
-    }
-
-    public void setEstado(Estado estado)
-    {
-        this.estado = estado;
-    }
-
-    
-
-    public void disparaDestacar(int linha)
-    {
-        if (linha >= 0)
-        {
-            for (ObservadorExecucao observador : observadores)
-            {
-                observador.highlightLinha(linha);
-            }
-        }
-    }
-
-    public void disparaDestacar(TrechoCodigoFonte trechoCodigoFonte)
-    {
-        if (trechoCodigoFonte != null)
-        {
-            int linha = trechoCodigoFonte.getLinha();
-            int coluna = trechoCodigoFonte.getColuna();
-            int tamanho = trechoCodigoFonte.getTamanhoTexto();
-            
-            for (ObservadorExecucao observador : observadores)
-            {
-                observador.highlightDetalhadoAtual(linha, coluna, tamanho);
-            }
-        }
-    }
-
-    private List<Simbolo> getSimbolosAlterados(NoExpressao expressao)
-    {
-        final List<Simbolo> simbolosAlterados = new ArrayList<>();
-        VisitanteASA visitante = new VisitanteASABasico()
-        {
-
-            @Override
-            public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA
-            {
-                NoReferencia ref = (NoReferencia) noOperacaoAtribuicao.getOperandoEsquerdo();
-                try
-                {
-
-                    Simbolo simbolo = memoria.getSimbolo(ref.getNome());
-                    simbolosAlterados.add(simbolo);
-                    if (simbolo instanceof Ponteiro)
-                    {
-                        while (simbolo instanceof Ponteiro)
-                        {
-                            simbolo = ((Ponteiro) simbolo).getSimboloApontado();
-                        }
-                        simbolosAlterados.add(simbolo);
-                    }
-
-                }
-                catch (ExcecaoSimboloNaoDeclarado ex)
-                {
-                    Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                return null;
-            }
-
-            @Override
-            public Object visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
-            {
-                List<ModoAcesso> modosAcessoEsperados = obterModosAcessoEsperados(chamadaFuncao);
-
-                if (chamadaFuncao.getParametros() != null)
-                {
-                    List<NoExpressao> parametros = chamadaFuncao.getParametros();
-                    int totalParametros = parametros.size();
-                    for (int i = 0; i < totalParametros; ++i)
-                    {
-                        if (modosAcessoEsperados.get(i) == ModoAcesso.POR_REFERENCIA)
-                        {
-                            NoReferencia ref = (NoReferencia) parametros.get(i);
-                            try
-                            {
-                                Simbolo simbolo = memoria.getSimbolo(ref.getNome());
-                                simbolosAlterados.add(simbolo);
-                            }
-                            catch (ExcecaoSimboloNaoDeclarado ex)
-                            {
-                                Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-
-                    }
-                }
-
-                return null;
-            }
-
-            private List<ModoAcesso> obterModosAcessoEsperados(NoChamadaFuncao chamadaFuncao)
-            {
-                List<ModoAcesso> modosAcesso = new ArrayList<>();
-
-                if (chamadaFuncao.getEscopo() == null)
-                {
-                    if (chamadaFuncao.getNome().equals("leia"))
-                    {
-                        List<NoExpressao> parametros = chamadaFuncao.getParametros();
-                        int totalParametros = parametros.size();
-                        for (int i = 0; i < totalParametros ; i++)
-                        {
-                            modosAcesso.add(ModoAcesso.POR_REFERENCIA);
-                        }
-                    }
-                    else
-                    {
-                        if (chamadaFuncao.getNome().equals("escreva"))
-                        {
-                            List<NoExpressao> parametros = chamadaFuncao.getParametros();
-                            int totalParametros = parametros.size();
-                            for (int i = 0; i < totalParametros ; i++)
-                            {
-                                modosAcesso.add(ModoAcesso.POR_VALOR);
-                            }
-                        }
-                        else
-                        {
-                            //try
-                            //{
-                                //Funcao funcao = (Funcao) memoria.getSimbolo(chamadaFuncao.getNome());
-
-                                List<NoExpressao> parametros = chamadaFuncao.getParametros();
-                                int totalParametros = parametros.size();
-                                for (int i = 0; i < totalParametros ; i++)
-                                {
-                                    //nao olhar mesmo que seja por referencia.
-                                    //pois esta sendo feito na atribuicao, quando o simbolo e ponteiro.
-                                    //PS: meu teclado nao tem acento.
-                                    modosAcesso.add(ModoAcesso.POR_VALOR);
-                                }
-                            //}
-                            //catch (ExcecaoSimboloNaoDeclarado ex)
-                            //{
-                                // Não faz nada aqui
-                            //}
-                        }
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        Biblioteca biblioteca = bibliotecas.get(chamadaFuncao.getEscopo());
-                        MetaDadosBiblioteca metaDadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(biblioteca.getNome());
-                        MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
-                        MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
-
-                        for (MetaDadosParametro metaDadosParametro : metaDadosParametros)
-                        {
-                            modosAcesso.add(metaDadosParametro.getModoAcesso());
-                        }
-                    }
-                    catch (ErroCarregamentoBiblioteca ex)
-                    {
-                        Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-
-                return modosAcesso;
-            }
-
-        };
-        try
-        {
-            expressao.aceitar(visitante);
-        }
-        catch (ExcecaoVisitaASA ex)
-        {
-            Logger.getLogger(Depurador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return simbolosAlterados;
-    }
-
-    public void disparaSimbolosAlterados(List<Simbolo> simbolos)
-    {
-        
-        if (!simbolos.isEmpty())
-        {
-            int size = observadores.size();
-            for (int i = 0; i < size; ++i)
-            {
-                observadores.get(i).simbolosAlterados(simbolos);
-            }
-        }
-    }
-
-    /**
-     * Permite adicionar um observador à execução do programa. Os observadores
-     * serão notificados sobre o início e o término da execução, bem como erros
-     * em tempo de execução que vierem a ocorrer.
-     *
-     * @param observadores os observadores de execução a serem registrados.
-     * @since 1.0
-     */
-    public void adicionarObservadoresExecucao(List<ObservadorExecucao> observadores)
-    {
-        this.observadores.addAll(observadores);
-    }
-
-    /**
-     * Remove um observador de execução previamente registrado utilizando o
-     * método 
-     * {@link Programa#adicionarObservadorExecucao(br.univali.portugol.nucleo.execucao.ObservadorExecucao) }.
-     * Uma vez removido, o observador não será mais notificado sobre o estado da
-     * execução do programa nem dos erros em tempo de execução que vierem a
-     * ocorrer.
-     *
-     * @param observadores os observadores de execução previamente registrados.
-     * @since 1.0
-     */
-    public void removerObservadoresExecucao(List<ObservadorExecucao> observadores)
-    {
-        this.observadores.removeAll(observadores);
-    }    
-    
-    @Override
-    public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
-    {
-        if (!observadores.isEmpty())
-        {
-            this.programa = programa;
-
-            if (estado != Estado.BREAK_POINT)
-            {
-                destacarFuncaoInicial();
-            }
-            super.executar(programa, parametros);
-
-            if (estado != Estado.BREAK_POINT)
-            {
-                destacarFuncaoInicial();
-            }
-
-        }
-        else
-        {
-            throw new ErroObservadorDepuracao();
-        }
-    }
-
-    private boolean funcaoInicial(No no)
-    {
-        if (no instanceof NoDeclaracaoFuncao)
-        {
-            return ((NoDeclaracaoFuncao) no).getNome().equals(this.programa.getFuncaoInicial());
-        }
-
-        return false;
-    }
-
-    private void destacarFuncaoInicial() throws InterruptedException
-    {
-        NoDeclaracao funcaoInicial = obterFuncaoInicial(programa);
-
-        if (funcaoInicial != null)
-        {
-            try
-            {
-                realizarParada(funcaoInicial, funcaoInicial.getTrechoCodigoFonteNome());
-            }
-            catch (ExcecaoVisitaASA excecao)
-            {
-                if (excecao.getCause() instanceof InterruptedException)
-                {
-                    throw (InterruptedException) excecao.getCause();
-                }
-            }
-        }
-    }
-
-    private NoDeclaracao obterFuncaoInicial(Programa programa)
-    {
-        for (NoDeclaracao declaracao : programa.getArvoreSintaticaAbstrata().getListaDeclaracoesGlobais())
-        {
-            if (declaracao instanceof NoDeclaracaoFuncao && declaracao.getNome().equals(programa.getFuncaoInicial()))
-            {
-                return declaracao;
-            }
-        }
-
-        return null;
-    }
-
-    public Depurador()
-    {
-        this.memoria.adicionarObservador(Depurador.this);
-    }
-
-    @Override
-    public Object visitar(NoCadeia no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoCaracter no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoCaso no) throws ExcecaoVisitaASA
-    {
-        if(no.getExpressao() != null){
-            realizarParada(no, no.getExpressao().getTrechoCodigoFonte());
-        }
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-
-        final Object value = super.visitar(no);
-
-        if (no.getEscopo() != null || (no.getEscopo() == null && no.getNome().equals("leia")))
-        {
-            disparaSimbolosAlterados(getSimbolosAlterados(no));
-        }
-
-        if (no.getEscopo() == null && !no.getNome().equals("leia") && !no.getNome().equals("escreva") && !no.getNome().equals("limpa"))
-        {
-            realizarParada(no, no.getTrechoCodigoFonte());
-        }
-
-        return value;
-    }
-
-    @Override
-    public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonteNome());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonteNome());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonteNome());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoEnquanto no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoEscolha no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getExpressao().getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoInteiro no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoLogico no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoMatriz no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoMenosUnario no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoNao no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoPara no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoPare no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoReal no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoRetorne no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoSe no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getCondicao().getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoVetor no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoDeclaracaoParametro no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonteNome());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Boolean visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaDiferenca no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        final Object result = super.visitar(no);
-
-        disparaSimbolosAlterados(getSimbolosAlterados(no));
-
-        return result;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaE no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaOU no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Boolean visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Boolean visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenor no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoLogicaMenorIgual no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Object visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Number visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Number visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Number visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    @Override
-    public Integer visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
-    {
-        realizarParada(no, no.getTrechoCodigoFonte());
-        return super.visitar(no);
-    }
-
-    private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
-    {
-        if (otimizandoExecucao) 
-        {
-            return; // a execução é otimizada quando não existem pontos de parada no código.
-        }
-        
-        if (no.ehParavel(this.estado) || funcaoInicial(no))
-        {
-            if ( this.estado == Estado.STEP_INTO){
-            
-                disparaDestacar(trechoCodigoFonte);
-            }
-            else
-            {
-                disparaDestacar((trechoCodigoFonte != null) ? trechoCodigoFonte.getLinha() : -1);
-            }
-            synchronized (this)
-            {
-                try
-                {
-                    wait();
-                }
-                catch (InterruptedException ex)
-                {
-                    throw new ExcecaoVisitaASA(ex, this.programa.getArvoreSintaticaAbstrata(), no);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void simboloAdicionado(Simbolo simbolo)
-    {
-        int size = observadores.size();
-        for (int i = 0; i < size; ++i)
-        {
-            observadores.get(i).simboloDeclarado(simbolo);
-        }
-    }
-
-    @Override
-    public void simboloRemovido(Simbolo simbolo)
-    {
-        int size = observadores.size();
-        for (int i = 0; i < size; ++i)
-        {
-            observadores.get(i).simboloRemovido(simbolo);
-        }
-    }
+//    @Override
+//    public void executar(Programa programa, String[] parametros) throws ErroExecucao, InterruptedException
+//    {
+//        if (!observadores.isEmpty())
+//        {
+//            this.programa = programa;
+//
+//            if (estado != Estado.BREAK_POINT)
+//            {
+//                destacarFuncaoInicial();
+//            }
+//            super.executar(programa, parametros);
+//
+//            if (estado != Estado.BREAK_POINT)
+//            {
+//                destacarFuncaoInicial();
+//            }
+//
+//        }
+//        else
+//        {
+//            throw new ErroObservadorDepuracao();
+//        }
+//    }
+
+//    private boolean funcaoInicial(No no)
+//    {
+//        if (no instanceof NoDeclaracaoFuncao)
+//        {
+//            return ((NoDeclaracaoFuncao) no).getNome().equals(this.programa.getFuncaoInicial());
+//        }
+//
+//        return false;
+//    }
+//
+//    private void destacarFuncaoInicial() throws InterruptedException
+//    {
+//        NoDeclaracao funcaoInicial = obterFuncaoInicial(programa);
+//
+//        if (funcaoInicial != null)
+//        {
+//            try
+//            {
+//                realizarParada(funcaoInicial, funcaoInicial.getTrechoCodigoFonteNome());
+//            }
+//            catch (ExcecaoVisitaASA excecao)
+//            {
+//                if (excecao.getCause() instanceof InterruptedException)
+//                {
+//                    throw (InterruptedException) excecao.getCause();
+//                }
+//            }
+//        }
+//    }
+//
+//    private NoDeclaracao obterFuncaoInicial(Programa programa)
+//    {
+//        for (NoDeclaracao declaracao : programa.getArvoreSintaticaAbstrata().getListaDeclaracoesGlobais())
+//        {
+//            if (declaracao instanceof NoDeclaracaoFuncao && declaracao.getNome().equals(programa.getFuncaoInicial()))
+//            {
+//                return declaracao;
+//            }
+//        }
+//
+//        return null;
+//    }
+
+
+//    private void realizarParada(NoBloco no, TrechoCodigoFonte trechoCodigoFonte) throws ExcecaoVisitaASA
+//    {
+//        if (otimizandoExecucao) 
+//        {
+//            return; // a execução é otimizada quando não existem pontos de parada no código.
+//        }
+//        
+//        if (no.ehParavel(this.estado) || funcaoInicial(no))
+//        {
+//            if ( this.estado == Estado.STEP_INTO){
+//            
+//                disparaDestacar(trechoCodigoFonte);
+//            }
+//            else
+//            {
+//                disparaDestacar((trechoCodigoFonte != null) ? trechoCodigoFonte.getLinha() : -1);
+//            }
+//            synchronized (this)
+//            {
+//                try
+//                {
+//                    wait();
+//                }
+//                catch (InterruptedException ex)
+//                {
+//                    throw new ExcecaoVisitaASA(ex, this.programa.getArvoreSintaticaAbstrata(), no);
+//                }
+//            }
+//        }
+//    }
 }

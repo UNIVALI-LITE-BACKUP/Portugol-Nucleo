@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.execucao.PontoParada;
 
 /**
@@ -64,9 +64,9 @@ public abstract class No
      * depurador. Por exemplo, alguns nós só para quando o depurador está no
      * estado BREAK_POINT.
      */
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
-        return pontoParada.estaAtivo() && estado == Depurador.Estado.BREAK_POINT;
+        return pontoParada.estaAtivo() && estado == Programa.Estado.BREAK_POINT;
     }
 
     protected boolean temPai()

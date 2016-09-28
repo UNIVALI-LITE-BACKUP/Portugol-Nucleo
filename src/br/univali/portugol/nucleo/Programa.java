@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * @see Interpretador
  * @see Thread
  */
-public final class Programa
+public abstract class Programa
 {
     /*
      * Optei por criar manualmente o pool de threads ao invés de usar um método da classe Executors.
@@ -148,7 +148,6 @@ public final class Programa
         if (!isExecutando())
         {
             tarefaExecucao = new TarefaExecucao(parametros, estado);
-            atualizaOtimizacaoDaTarefaDeExecucao();
             controleTarefaExecucao = servicoExecucao.submit(tarefaExecucao);
         }
     }
@@ -174,26 +173,9 @@ public final class Programa
     public void ativaPontosDeParada(Set<Integer> linhasComPontosDeParadaAtivados)
     {
         ativadorDePontoDesParada.ativaPontosDeParada(linhasComPontosDeParadaAtivados, arvoreSintaticaAbstrataPrograma);
-
-        atualizaOtimizacaoDaTarefaDeExecucao(); // sempre que novos pontos de parada são adicionados ou removidos é necessário atualizar a flag de otimização
     }
 
-    private void atualizaOtimizacaoDaTarefaDeExecucao()
-    {
-        if (tarefaExecucao != null)
-        {
-            boolean otimizando = podeOtimizar();
-            tarefaExecucao.setOtimizacao(otimizando);
-        }
-    }
-
-    private boolean podeOtimizar()
-    {
-        boolean estaNoModoBreakPoint = tarefaExecucao.estado == Programa.Estado.BREAK_POINT || estado == Programa.Estado.BREAK_POINT;
-        return estaNoModoBreakPoint && !ativadorDePontoDesParada.temPontosDeParadaAtivos();
-    }
-    
-    protected abstract void executar(String[] parametros);
+    protected abstract void executar(String[] parametros) throws ErroExecucao;
 
     /**
      * Implementa uma tarefa para disparar a execução do programa com os
@@ -218,8 +200,6 @@ public final class Programa
             return resultadoExecucao;
         }
 
-        
-        
         @Override
         public void run()
         {
@@ -236,10 +216,10 @@ public final class Programa
                 resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                 resultadoExecucao.setErro(erroExecucao);
             }
-            catch (InterruptedException excecao)
-            {
-                resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
-            }
+//            catch (InterruptedException excecao)
+//            {
+//                resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
+//            }
 
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
 
@@ -247,21 +227,15 @@ public final class Programa
 
         }
 
-        public void continuar(Depurador.Estado estado)
+        public synchronized void continuar(Programa.Estado estado)
         {
-            depurador.continuar(estado);
-
-            atualizaOtimizacaoDaTarefaDeExecucao();
-            /**
-             * *
-             * Quando a execução é continuada é necessário atualizar a flag de
-             * otimização. É possível que o usuário inicie a execução no modo
-             * passo a passo (sem otimização), e em seguida clique no botão
-             * 'play', alterando para o modo de execução com pontos de parada.
-             * Porém, se não houverem pontos de parada ativos no código é
-             * possível executar com otimização.
-             */
-
+            if (isLendo())
+            {
+                setLeituraIgnorada(true);
+            }
+        
+            Programa.this.estado = estado;
+            notifyAll();
         }
     }
 
