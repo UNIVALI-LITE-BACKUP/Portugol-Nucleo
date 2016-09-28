@@ -11,20 +11,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Depurador extends Interpretador implements ObservadorMemoria
+public class Depurador implements ObservadorMemoria
 {
-    public static enum Estado
-    {
-        BREAK_POINT, //usuário clicou no botão que executa o programa até atingir um ponto de parada, caso exista algum
-        STEP_INTO, //não utilizado no momento
-        STEP_OVER, //executa passo a passo, para em todos os nós que são paráveis (nem todos são)
-        PARADO//esperando o usuário iniciar a execução
-    }
+    
     
     private final List<ObservadorExecucao> observadores = new ArrayList<>();
 
     private Programa programa;
-    private Estado estado = Estado.PARADO;
+    
     private boolean otimizandoExecucao = false; // se não existirem pontos de parada o código que verifica as paradas não é executado
     
     public void setExecucaoOtimizada(boolean otimiza)
@@ -42,16 +36,7 @@ public class Depurador extends Interpretador implements ObservadorMemoria
         this.estado = estado;
     }
 
-    public synchronized void continuar(Depurador.Estado estado)
-    {
-        if (this.isLendo())
-        {
-            setLeituraIgnorada(true);
-        }
-        
-        this.estado = estado;
-        notifyAll();
-    }
+    
 
     public void disparaDestacar(int linha)
     {

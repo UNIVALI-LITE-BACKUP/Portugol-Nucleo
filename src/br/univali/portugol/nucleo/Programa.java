@@ -2,15 +2,8 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
-import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoReferencia;
-import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
-import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.execucao.Depurador;
-import br.univali.portugol.nucleo.execucao.Interpretador;
 import br.univali.portugol.nucleo.execucao.es.Entrada;
 import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
@@ -22,11 +15,7 @@ import br.univali.portugol.nucleo.execucao.es.Armazenador;
 import br.univali.portugol.nucleo.execucao.es.InputMediator;
 import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import br.univali.portugol.nucleo.simbolos.ExcecaoSimboloNaoDeclarado;
-import br.univali.portugol.nucleo.simbolos.Matriz;
-import br.univali.portugol.nucleo.simbolos.Simbolo;
 import br.univali.portugol.nucleo.simbolos.Variavel;
-import br.univali.portugol.nucleo.simbolos.Vetor;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -93,6 +82,16 @@ public final class Programa
     private volatile boolean lendo = false;
     private volatile boolean leituraIgnorada = false;
 
+    public static enum Estado
+    {
+        BREAK_POINT, //usuário clicou no botão que executa o programa até atingir um ponto de parada, caso exista algum
+        STEP_INTO, //não utilizado no momento
+        STEP_OVER, //executa passo a passo, para em todos os nós que são paráveis (nem todos são)
+        PARADO//esperando o usuário iniciar a execução
+    }
+
+    private Estado estado = Estado.PARADO;
+
     public Programa()
     {
         EntradaSaidaPadrao es = new EntradaSaidaPadrao();
@@ -144,7 +143,7 @@ public final class Programa
      *
      * @since 2.0
      */
-    public void executar(String[] parametros, Depurador.Estado estado)
+    public void executar(String[] parametros, Programa.Estado estado)
     {
         if (!isExecutando())
         {
@@ -154,11 +153,17 @@ public final class Programa
         }
     }
 
-    public void continuar(Depurador.Estado estado)
+    public synchronized void continuar(Programa.Estado estado)
     {
         if (isExecutando())
         {
             tarefaExecucao.continuar(estado);
+            if (this.isLendo())
+            {
+                setLeituraIgnorada(true);
+            }
+            this.estado = estado;
+            notifyAll();
         }
         else
         {
@@ -179,15 +184,16 @@ public final class Programa
         {
             boolean otimizando = podeOtimizar();
             tarefaExecucao.setOtimizacao(otimizando);
-            System.out.println("Otimizando execução: " + otimizando + " estado: " + tarefaExecucao.estado + " estado depurador: " + tarefaExecucao.depurador.getEstado() + " tem pontos de parada ativos: " + ativadorDePontoDesParada.temPontosDeParadaAtivos());
         }
     }
 
     private boolean podeOtimizar()
     {
-        boolean estaNoModoBreakPoint = tarefaExecucao.estado == Depurador.Estado.BREAK_POINT || tarefaExecucao.depurador.getEstado() == Depurador.Estado.BREAK_POINT;
+        boolean estaNoModoBreakPoint = tarefaExecucao.estado == Programa.Estado.BREAK_POINT || estado == Programa.Estado.BREAK_POINT;
         return estaNoModoBreakPoint && !ativadorDePontoDesParada.temPontosDeParadaAtivos();
     }
+    
+    protected abstract void executar(String[] parametros);
 
     /**
      * Implementa uma tarefa para disparar a execução do programa com os
@@ -198,20 +204,13 @@ public final class Programa
     {
         private final String[] parametros;
         private final ResultadoExecucao resultadoExecucao;
-        private final Depurador.Estado estado;
-        private final Depurador depurador;
+        private final Programa.Estado estado;
 
-        public TarefaExecucao(String[] parametros, Depurador.Estado estado)
+        public TarefaExecucao(String[] parametros, Programa.Estado estado)
         {
             this.parametros = parametros;
             this.resultadoExecucao = new ResultadoExecucao();
             this.estado = estado;
-            this.depurador = new Depurador();
-        }
-
-        public void setOtimizacao(boolean otimiza)
-        {
-            depurador.setExecucaoOtimizada(otimiza);
         }
 
         public ResultadoExecucao getResultadoExecucao()
@@ -219,6 +218,8 @@ public final class Programa
             return resultadoExecucao;
         }
 
+        
+        
         @Override
         public void run()
         {
@@ -226,11 +227,9 @@ public final class Programa
 
             try
             {
-                depurador.setEstado(estado);
-
-                depurador.adicionarObservadoresExecucao(observadores);
                 notificarInicioExecucao();
-                depurador.executar(Programa.this, parametros);
+                executar(parametros);
+                //depurador.executar(Programa.this, parametros);
             }
             catch (ErroExecucao erroExecucao)
             {
@@ -700,4 +699,5 @@ public final class Programa
             }
         }
     }
+
 }
