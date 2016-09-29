@@ -25,6 +25,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
@@ -54,6 +55,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
@@ -83,6 +85,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
@@ -111,7 +114,8 @@ public class GeradorCodigoTest
                 + "	}                                                       \n"
                 + "}";
 
-        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
+        String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   private final int i =  10;                                \n"
@@ -138,7 +142,8 @@ public class GeradorCodigoTest
                 + "	}                                                       \n"
                 + "}";
 
-        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
+        String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   private String c = \"teste\" + \" concatenacao\";         \n"
@@ -166,7 +171,8 @@ public class GeradorCodigoTest
                 + "	}                                                       \n"
                 + "}";
 
-        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
+        String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   private int i =  10;                                      \n"
@@ -197,7 +203,8 @@ public class GeradorCodigoTest
                 + "	}\n                         \n"
                 + "}";
 
-        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
+        String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   private int a;                                            \n"
@@ -224,7 +231,9 @@ public class GeradorCodigoTest
                 + "	}\n"
                 + "}";
 
-        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa;"
+        String codigoJavaEsperado = "package programas;"  
+                + "import br.univali.portugol.nucleo.Programa;"
+
                 + "public class ProgramaTeste extends Programa"
                 + "{"
                 + "   @override"

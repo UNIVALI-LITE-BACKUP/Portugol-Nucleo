@@ -1,25 +1,7 @@
 package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.asa.ASAPrograma;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.NoCadeia;
-import br.univali.portugol.nucleo.asa.NoCaracter;
-import br.univali.portugol.nucleo.asa.NoDeclaracao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoInicializavel;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
-import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
-import br.univali.portugol.nucleo.asa.NoInteiro;
-import br.univali.portugol.nucleo.asa.NoLogico;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
-import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseRightShift;
-import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
-import br.univali.portugol.nucleo.asa.NoOperacaoMultiplicacao;
-import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
-import br.univali.portugol.nucleo.asa.NoOperacaoSubtracao;
-import br.univali.portugol.nucleo.asa.NoReal;
-import br.univali.portugol.nucleo.asa.TipoDado;
-import br.univali.portugol.nucleo.asa.VisitanteASABasico;
+import br.univali.portugol.nucleo.asa.*;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -39,10 +21,11 @@ public class GeradorCodigoJava
         
         visitor = new Visitor();
         
+        out.append("package programas;\n");
+        
         geraCodigoImportacoes(getListaImportacoes(asa), out);
         
-        out.append("package programas;")
-           .format("public class %s extends Programa \n", nomeClasseJava)
+        out.format("public class %s extends Programa \n", nomeClasseJava)
            .append("{ \n")
            .append(" \n");
         
@@ -154,28 +137,41 @@ public class GeradorCodigoJava
             return String.valueOf(noInteiro.getValor());
         }
 
+        private String geraCodigoComParenteses(String valor, NoExpressao no)
+        {
+            if (no.estaEntreParenteses())
+            {
+                return "(" + valor + ")";
+            }
+            return valor;
+        }
+        
         @Override
         public String visitar(NoLogico noLogico) throws ExcecaoVisitaASA
         {
-            return noLogico.getValor() ? "true" : "false";
+            String valor = noLogico.getValor() ? "true" : "false";
+            return geraCodigoComParenteses(valor, noLogico);
         }
         
         @Override
         public String visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
         {
-            return "'" + noCaracter.getValor() + "'";
+            String valor = "'" + noCaracter.getValor() + "'";
+            return geraCodigoComParenteses(valor, noCaracter);
         }
         
         @Override
         public String visitar(NoReal noReal) throws ExcecaoVisitaASA
         {
-            return String.valueOf(noReal.getValor());
+            String valor = String.valueOf(noReal.getValor());
+            return geraCodigoComParenteses(valor, noReal);
         }
         
         @Override
         public String visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
         {
-            return "\"" + noCadeia.getValor() + "\"";
+            String valor = "\"" + noCadeia.getValor() + "\"";
+            return geraCodigoComParenteses(valor, noCadeia);
         }
 
         @Override
@@ -183,7 +179,8 @@ public class GeradorCodigoJava
         {
             Object a = leftShift.getOperandoEsquerdo().aceitar(this);
             Object b = leftShift.getOperandoDireito().aceitar(this);
-            return a + " << " + b;
+            String valor = a + " << " + b;
+            return geraCodigoComParenteses(valor, leftShift);
         }
         
         @Override
@@ -191,7 +188,8 @@ public class GeradorCodigoJava
         {
             Object a = rightShift.getOperandoEsquerdo().aceitar(this);
             Object b = rightShift.getOperandoDireito().aceitar(this);
-            return a + " >> " + b;
+            String valor = a + " >> " + b;
+            return geraCodigoComParenteses(valor, rightShift);
         }
         
         @Override
@@ -199,15 +197,17 @@ public class GeradorCodigoJava
         {
             Object a = soma.getOperandoEsquerdo().aceitar(this);
             Object b = soma.getOperandoDireito().aceitar(this);
-            return a + " + " + b;
+            String valor = a + " + " + b;
+            return geraCodigoComParenteses(valor, soma);
         }
         
         @Override
-        public String visitar(NoOperacaoDivisao soma) throws ExcecaoVisitaASA
+        public String visitar(NoOperacaoDivisao divisao) throws ExcecaoVisitaASA
         {
-            Object a = soma.getOperandoEsquerdo().aceitar(this);
-            Object b = soma.getOperandoDireito().aceitar(this);
-            return a  + " / " + b;
+            Object a = divisao.getOperandoEsquerdo().aceitar(this);
+            Object b = divisao.getOperandoDireito().aceitar(this);
+            String valor = a  + " / " + b;
+            return geraCodigoComParenteses(valor, divisao);
         }
         
         @Override
@@ -215,7 +215,8 @@ public class GeradorCodigoJava
         {
             Object a = subtracao.getOperandoEsquerdo().aceitar(this);
             Object b = subtracao.getOperandoDireito().aceitar(this);
-            return a  + " - " + b;
+            String valor = a  + " - " + b;
+            return geraCodigoComParenteses(valor, subtracao);
         }
         
         @Override
@@ -223,7 +224,8 @@ public class GeradorCodigoJava
         {
             Object a = multiplicacao.getOperandoEsquerdo().aceitar(this);
             Object b = multiplicacao.getOperandoDireito().aceitar(this);
-            return a  + " * " + b;
+            String valor = a  + " * " + b;
+            return geraCodigoComParenteses(valor, multiplicacao);
         }
         
     }

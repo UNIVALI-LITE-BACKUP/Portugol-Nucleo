@@ -5053,6 +5053,7 @@ public class PortugolParser extends Parser
                         }
                         pushFollow(FOLLOW_expressao_in_expressao83318);
                         vExpressao = expressao();
+                        vExpressao.setEstaEntreParenteses(true);
                         state._fsp--;
                         if (state.failed)
                         {

@@ -37,10 +37,17 @@ import br.univali.portugol.nucleo.Programa;
  */
 public abstract class NoExpressao extends NoBloco
 {
-    public NoExpressao()
+    private boolean entreParentes = false;
+    
+    public void setEstaEntreParenteses(boolean estaEntreParentes)
     {
+        this.entreParentes = estaEntreParentes;
     }
-
+    
+    public boolean estaEntreParenteses(){
+        return this.entreParentes;
+    }
+    
     /**
      * Obtém o trecho do código fonte no qual esta expressão se encontra.
      *

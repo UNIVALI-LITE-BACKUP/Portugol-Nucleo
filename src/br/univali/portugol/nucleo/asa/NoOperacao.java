@@ -36,7 +36,7 @@ public abstract class NoOperacao extends NoExpressao
         this.operandoEsquerdo = operandoEsquerdo;
         this.operandoDireito = operandoDireito;
     }
-
+    
     /**
      * Obtém a expressão à esquerda do operador. 
      * 
