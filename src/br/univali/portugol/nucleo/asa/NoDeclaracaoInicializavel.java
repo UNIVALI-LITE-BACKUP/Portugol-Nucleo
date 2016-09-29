@@ -24,6 +24,11 @@ public abstract class NoDeclaracaoInicializavel extends NoDeclaracao
     {
         return inicializacao;
     }
+    
+    public boolean possuiInicializacao()
+    {
+        return inicializacao != null;
+    }
 
     /**
      * Define a expressão de inicialização do símbolo.

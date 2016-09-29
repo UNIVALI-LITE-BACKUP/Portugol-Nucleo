@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.execucao;
 
-import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +15,7 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
     @Test
-    public void testInclusaoBibliotecasComESemAliases() throws ErroCompilacao
+    public void testInclusaoBibliotecasComESemAliases() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
                 + "	inclua biblioteca Graficos --> g                        \n"
@@ -45,7 +44,7 @@ public class GeradorCodigoTest
     }
     
     @Test
-    public void testInclusaoBibliotecasComAliases() throws ErroCompilacao
+    public void testInclusaoBibliotecasComAliases() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
                 + "	inclua biblioteca Graficos --> g                        \n"
@@ -74,7 +73,7 @@ public class GeradorCodigoTest
     }
     
     @Test
-    public void testInclusaoBibliotecasSemAliases() throws ErroCompilacao
+    public void testInclusaoBibliotecasSemAliases() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
                 + "	inclua biblioteca Graficos                              \n"
@@ -103,7 +102,63 @@ public class GeradorCodigoTest
     }
     
     @Test
-    public void testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma() throws ErroCompilacao
+    public void testDeclaracaoConstantes() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	const inteiro i = 10                                    \n"
+                + "	const cadeia c = \"teste\"                              \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private final int i =  10;                                \n"
+                + "   private final String c = \"teste\";                       \n"                
+                + "                                                             \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testDeclaracaoVariaveisGlobaisInicializadas() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	inteiro i = 10                                          \n"
+                + "	cadeia c = \"teste\"                                    \n"
+                + "     logico l = verdadeiro                                   \n"
+                + "     caracter c = 'a'                                        \n"
+                + "     real r = 53.23                                          \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private int i =  10;                                      \n"
+                + "   private  String c = \"teste\";                            \n"                
+                + "   private  boolean l = true;                                \n"                
+                + "   private  char c = 'a';                                    \n"
+                + "   private  double r = 53.23;                                \n"                
+                + "                                                             \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma() throws Exception
     {
         String codigoPortugol = "programa {         \n"
                 + "	inteiro a, b                \n"
@@ -135,7 +190,7 @@ public class GeradorCodigoTest
     }
     
     @Test
-    public void testProgramaVazio() throws ErroCompilacao
+    public void testProgramaVazio() throws Exception
     {
         String codigoPortugol = "programa {"
                 + "	funcao inicio() {"
@@ -154,7 +209,7 @@ public class GeradorCodigoTest
         comparaCodigos(codigoPortugol, codigoJavaEsperado);
     }
 
-    private void comparaCodigos(String codigoPortugol, String codigoJavaEsperado) throws ErroCompilacao
+    private void comparaCodigos(String codigoPortugol, String codigoJavaEsperado) throws Exception
     {
         analisador.analisar(codigoPortugol);
         ASAPrograma asa = (ASAPrograma) analisador.getASA();

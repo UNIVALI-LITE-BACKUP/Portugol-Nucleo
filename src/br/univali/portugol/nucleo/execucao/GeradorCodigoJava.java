@@ -2,11 +2,18 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
+import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
+import br.univali.portugol.nucleo.asa.NoCadeia;
+import br.univali.portugol.nucleo.asa.NoCaracter;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
+import br.univali.portugol.nucleo.asa.NoDeclaracaoInicializavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
+import br.univali.portugol.nucleo.asa.NoInteiro;
+import br.univali.portugol.nucleo.asa.NoLogico;
+import br.univali.portugol.nucleo.asa.NoReal;
 import br.univali.portugol.nucleo.asa.TipoDado;
-import br.univali.portugol.nucleo.bibliotecas.Graficos;
+import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -18,10 +25,13 @@ import java.util.List;
 public class GeradorCodigoJava
 {
     private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
-    
-    public void gera(ASAPrograma asa, OutputStream saida, String nomeClasseJava)
+    private Visitor visitor;
+            
+    public void gera(ASAPrograma asa, OutputStream saida, String nomeClasseJava) throws ExcecaoVisitaASA
     {
         PrintStream out = new PrintStream(saida);
+        
+        visitor = new Visitor();
         
         geraCodigoImportacoes(getListaImportacoes(asa), out);
         
@@ -40,21 +50,50 @@ public class GeradorCodigoJava
            .print("}\n");
     }
 
-    private void geraCodigoDosAtributos(ASAPrograma asa, PrintStream out)
+    private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa, PrintStream out) throws ExcecaoVisitaASA
     {
-        // declara variáveis globais do portugol como atributos na classe Programa que será gerada
         List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
-        for (NoDeclaracao declaracao : variaveisGlobais)
+        for (NoDeclaracao noDeclaracao : variaveisGlobais)
         {
-            if (declaracao instanceof NoDeclaracaoVariavel)
+            if (noDeclaracao instanceof NoDeclaracaoVariavel)
             {
-                String tipo = getNomeTipoJava(declaracao.getTipoDado());
-                String nomeVariavel = declaracao.getNome();
-                out.format("private %s %s; \n", tipo, nomeVariavel);
+                String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
+                String nomeVariavel = noDeclaracao.getNome();
+                
+                NoDeclaracaoInicializavel noDeclaracaoVariavel = (NoDeclaracaoInicializavel) noDeclaracao;
+                
+                String inicializacao = "";
+                if (noDeclaracaoVariavel.possuiInicializacao())
+                {
+                    inicializacao = String.format(" = %s", getValorInicializacao(noDeclaracaoVariavel));
+                }
+                String constante = (noDeclaracaoVariavel.constante()) ? "final " : "";
+                out.format("private %s%s %s%s; \n", constante, tipo, nomeVariavel, inicializacao);
             }
         }
-        
-        //cria as instâncias das bibliotecas incluídas no código portugol
+    }
+    
+    private String getValorInicializacao(NoDeclaracaoInicializavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
+    {
+        if (!noDeclaracaoVariavel.possuiInicializacao())
+        {
+            return "";
+        }
+
+        Object valor = noDeclaracaoVariavel.getInicializacao().aceitar(visitor);
+        switch (noDeclaracaoVariavel.getTipoDado())
+        {
+            case CADEIA: return String.format("\"%s\"", valor); //coloca a string dentro de aspas duplas
+            case CARACTER: return String.format("'%s'", valor); //coloca o caracter dentro de aspas simples
+            case LOGICO: return ((Boolean)valor) ? "true" : "false";
+            case VAZIO: return "void";
+        }
+            
+        return valor.toString();
+    }
+    
+    private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa, PrintStream out)
+    {
         List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
         for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
         {
@@ -66,6 +105,13 @@ public class GeradorCodigoJava
             }
             out.format("private %s %s = new %s(); \n", tipo, nome, tipo);
         }
+    }
+    
+    private void geraCodigoDosAtributos(ASAPrograma asa, PrintStream out) throws ExcecaoVisitaASA
+    {
+        geraAtributosParaAsVariaveisGlobais(asa, out); 
+        
+        geraAtributosParaAsBibliotecasIncluidas(asa, out);
     }
     
     private String getNomeTipoJava(TipoDado tipoPortugol)
@@ -109,5 +155,38 @@ public class GeradorCodigoJava
             out.format("import %s; \n", importacao);
         }
         out.println(); // pula uma linha depois das importações
+    }
+    
+    private class Visitor extends VisitanteASABasico
+    {
+        @Override
+        public Integer visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
+        {
+            return noInteiro.getValor();
+        }
+
+        @Override
+        public Boolean visitar(NoLogico noLogico) throws ExcecaoVisitaASA
+        {
+            return noLogico.getValor();
+        }
+        
+        @Override
+        public Character visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
+        {
+            return noCaracter.getValor();
+        }
+        
+        @Override
+        public Double visitar(NoReal noReal) throws ExcecaoVisitaASA
+        {
+            return noReal.getValor();
+        }
+        
+        @Override
+        public String visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
+        {
+            return noCadeia.getValor();
+        }
     }
 }
