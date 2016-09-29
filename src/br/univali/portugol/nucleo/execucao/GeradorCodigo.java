@@ -31,7 +31,7 @@ public class GeradorCodigo
             .append("   @override \n")
             .append("   protected void executar() throws ErroExecucao \n")
             .append("   { \n")
-            .append("       System.out.println(\"testando\"); \n")
+            .append("     \n")
             .append("   }\n")
             .print("}\n");
 

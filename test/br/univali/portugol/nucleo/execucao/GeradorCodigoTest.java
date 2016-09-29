@@ -27,7 +27,6 @@ public class GeradorCodigoTest
                 + "   @override"
                 + "   protected void executar() throws ErroExecucao"
                 + "   {"
-                + "       System.out.println(\"testando\");"
                 + "   }"
                 + "}";
 
