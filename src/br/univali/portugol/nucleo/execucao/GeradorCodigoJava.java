@@ -58,8 +58,13 @@ public class GeradorCodigoJava
         List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
         for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
         {
-            String nome = biblioteca.getNome();
-            out.format("private %s lib%s = new %s(); \n", nome, nome, nome);
+            String tipo = biblioteca.getNome();
+            String nome = tipo; // quando a biblioteca não tem alias o nome e o tipo são idênticos
+            if (biblioteca.getAlias() != null)
+            {
+                nome = biblioteca.getAlias();
+            }
+            out.format("private %s %s = new %s(); \n", tipo, nome, tipo);
         }
     }
     

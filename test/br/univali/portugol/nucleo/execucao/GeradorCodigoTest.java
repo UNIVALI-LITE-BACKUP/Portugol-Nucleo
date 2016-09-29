@@ -2,7 +2,6 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
-import br.univali.portugol.nucleo.asa.ASA;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import java.io.ByteArrayOutputStream;
 import org.junit.Test;
@@ -17,13 +16,13 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
     @Test
-    public void testInclusaoBibliotecasSemAliases() throws ErroCompilacao
+    public void testInclusaoBibliotecasComAliases() throws ErroCompilacao
     {
-        String codigoPortugol = "programa {         \n"
-                + "	inclua biblioteca Graficos  \n"
-                + "	inclua biblioteca Mouse     \n"
-                + "	funcao inicio() {           \n"
-                + "	}\n                         \n"
+        String codigoPortugol = "programa {                                     \n"
+                + "	inclua biblioteca Graficos --> g                        \n"
+                + "	inclua biblioteca Mouse --> m                           \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
                 + "}";
 
         String codigoJavaEsperado = ""
@@ -33,8 +32,37 @@ public class GeradorCodigoTest
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
-                + "   private Graficos libGraficos = new Graficos();            \n"
-                + "   private Mouse libMouse = new Mouse();                     \n"
+                + "   private Graficos g = new Graficos();                      \n"
+                + "   private Mouse m = new Mouse();                            \n"
+                + "                                                             \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testInclusaoBibliotecasSemAliases() throws ErroCompilacao
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	inclua biblioteca Graficos                              \n"
+                + "	inclua biblioteca Mouse                                 \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
+                + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private Graficos Graficos = new Graficos();               \n"
+                + "   private Mouse Mouse = new Mouse();                        \n"
                 + "                                                             \n"
                 + "   @override                                                 \n"
                 + "   protected void executar() throws ErroExecucao             \n"
@@ -59,13 +87,13 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
-                + "public class ProgramaTeste extends Programa                      \n"
+                + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   private int a;                                            \n"
                 + "   private int b;                                            \n"
                 + "   private  String c;                                        \n"                
                 + "   private  boolean d;                                       \n"                
-                + "   private  char e1;                                          \n"
+                + "   private  char e1;                                         \n"
                 + "   private  double f;                                        \n"                
                 + "                                                             \n"
                 + "   @override                                                 \n"
