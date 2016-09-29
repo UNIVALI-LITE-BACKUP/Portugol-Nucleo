@@ -12,7 +12,9 @@ import static org.junit.Assert.*;
  */
 public class GeradorCodigoTest
 {
-
+    private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
+    private final GeradorCodigo gerador = new GeradorCodigo();
+    
     @Test
     public void testProgramaVazio() throws ErroCompilacao
     {
@@ -21,7 +23,7 @@ public class GeradorCodigoTest
                 + "	}\n"
                 + "}";
 
-        String codigoEsperado = "import br.univali.portugol.nucleo.Programa;"
+        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa;"
                 + "public class Programa1 extends Programa"
                 + "{"
                 + "   @override"
@@ -30,19 +32,22 @@ public class GeradorCodigoTest
                 + "   }"
                 + "}";
 
-        AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+        
+    }
+
+    private void comparaCodigos(String codigoPortugol, String codigoJavaEsperado)
+    {
         analisador.analisar(codigoPortugol);
         ArvoreSintaticaAbstrata asa = analisador.getArvoreSintaticaAbstrata();
 
         // gera o código e escreve em um ByteArrayOutputStream
-        GeradorCodigo gerador = new GeradorCodigo();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         gerador.gera(asa, bos);
 
         String codigoGerado = bos.toString().replaceAll("\\s+", ""); //remove todos os espaços e caracteres não visíveis
-        codigoEsperado = codigoEsperado.replaceAll("\\s+", "");
+        codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+", "");
         
-        assertEquals(codigoEsperado, codigoGerado);
+        assertEquals(codigoJavaEsperado, codigoGerado);
     }
-
 }
