@@ -10,6 +10,8 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
+import br.univali.portugol.nucleo.execucao.GeradorCodigo;
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ final class Compilador
         {
             ArvoreSintaticaAbstrataPrograma asa = (ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata();
         
-            Programa programa = geraPrograma();
+            Programa programa = geraPrograma(asa);
             programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
             programa.setFuncaoInicial(localizadorFuncoes.getFuncaoInicial());
             programa.setArvoreSintaticaAbstrata(asa);
@@ -57,14 +59,19 @@ final class Compilador
         }
     }
     
-    private Programa geraPrograma()
+    private Programa geraPrograma(ArvoreSintaticaAbstrataPrograma asa)
     {
-        // 1 - gera o código
-        // 2 - manda o código gerado para o javac
-        // 3 - instancia a classe que vai extender 'Programa'
-        // 4 - retorna o programa gerado
+        GeradorCodigo gerador = new GeradorCodigo();
+        //gerador.gera(asa, System.out);
         
-        return null; //TODO invoca o javac para compilar o programa
+        // retornando um programa 'fake' apenas para testar
+        return new Programa()
+        {
+            @Override
+            protected void executar(String[] parametros) throws ErroExecucao {
+                //
+            }
+        };
     }
             
     private final class LocalizadorFuncoes extends VisitanteASABasico
