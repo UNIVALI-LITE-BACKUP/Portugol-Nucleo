@@ -16,6 +16,35 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
     @Test
+    public void testInclusaoBibliotecasComESemAliases() throws ErroCompilacao
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	inclua biblioteca Graficos --> g                        \n"
+                + "	inclua biblioteca Mouse                                 \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
+                + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private Graficos g = new Graficos();                      \n"
+                + "   private Mouse Mouse = new Mouse();                        \n"
+                + "                                                             \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testInclusaoBibliotecasComAliases() throws ErroCompilacao
     {
         String codigoPortugol = "programa {                                     \n"
