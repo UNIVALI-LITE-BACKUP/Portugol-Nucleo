@@ -1,7 +1,7 @@
 package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.execucao.es.Entrada;
 import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
@@ -70,7 +70,7 @@ public abstract class Programa
     private TarefaExecucao tarefaExecucao = null;
     private Future controleTarefaExecucao = null;
 
-    private ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma;
+    private ASAPrograma arvoreSintaticaAbstrataPrograma;
     private List<String> funcoes;
     private ResultadoAnalise resultadoAnalise;
 
@@ -289,7 +289,7 @@ public abstract class Programa
      * @return a ASA que representa este programa
      * @since 1.0
      */
-    public ArvoreSintaticaAbstrataPrograma getArvoreSintaticaAbstrata()
+    public ASAPrograma getArvoreSintaticaAbstrata()
     {
         return arvoreSintaticaAbstrataPrograma;
     }
@@ -301,7 +301,7 @@ public abstract class Programa
      * programa.
      * @since 1.0
      */
-    public void setArvoreSintaticaAbstrata(ArvoreSintaticaAbstrataPrograma arvoreSintaticaAbstrataPrograma)
+    public void setArvoreSintaticaAbstrata(ASAPrograma arvoreSintaticaAbstrataPrograma)
     {
         this.arvoreSintaticaAbstrataPrograma = arvoreSintaticaAbstrataPrograma;
     }

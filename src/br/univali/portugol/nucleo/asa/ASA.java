@@ -14,11 +14,11 @@ import java.util.List;
  * @version 1.0
  * @see ArvoreSintaticaAbstrataPrograma
  */
-public abstract class ArvoreSintaticaAbstrata
+public abstract class ASA
 {
     private List<NoDeclaracao> listaDeclaracoesGlobais;
 
-    public ArvoreSintaticaAbstrata()
+    public ASA()
     {
     }
 

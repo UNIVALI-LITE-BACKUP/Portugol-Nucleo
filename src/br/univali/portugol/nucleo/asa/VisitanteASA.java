@@ -11,7 +11,7 @@ package br.univali.portugol.nucleo.asa;
  */
 public interface VisitanteASA
 {
-    public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA;
+    public Object visitar(ASAPrograma asap) throws ExcecaoVisitaASA;
 
     public Object visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA;
 

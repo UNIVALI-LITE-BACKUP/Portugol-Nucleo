@@ -12,7 +12,7 @@ import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorMismatche
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorMissingTokenException;
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorNoViableAltException;
 import br.univali.portugol.nucleo.analise.sintatica.tradutores.TradutorUnwantedTokenException;
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
+import br.univali.portugol.nucleo.asa.ASA;
 import br.univali.portugol.nucleo.mensagens.ErroSintatico;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,7 +131,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
      * @return     a ASA resultante do parsing do código fonte.
      * @since 1.0
      */
-    public synchronized ArvoreSintaticaAbstrata analisar(String codigoFonte)
+    public synchronized ASA analisar(String codigoFonte)
     {
         try
         {
@@ -143,7 +143,7 @@ public final class AnalisadorSintatico implements ObservadorParsing
             PortugolParser portugolParser = new PortugolParser(commonTokenStream);
 
             portugolParser.adicionarObservadorParsing(this);
-            ArvoreSintaticaAbstrata asa = portugolParser.parse();
+            ASA asa = portugolParser.parse();
             
             verificarCaracteresAposEscopoPrograma(codigoFonte);
             

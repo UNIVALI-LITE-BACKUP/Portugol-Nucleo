@@ -7,13 +7,13 @@ import java.util.List;
  * 
  * @author Luiz Fernando Noschang
  * @version 1.0
- * @see ArvoreSintaticaAbstrata
+ * @see ASA
  */
-public final class ArvoreSintaticaAbstrataPrograma extends ArvoreSintaticaAbstrata
+public final class ASAPrograma extends ASA
 {
     private List<NoInclusaoBiblioteca> listaInclusoesBibliotecas;
     
-    public ArvoreSintaticaAbstrataPrograma()
+    public ASAPrograma()
     {
         
     }

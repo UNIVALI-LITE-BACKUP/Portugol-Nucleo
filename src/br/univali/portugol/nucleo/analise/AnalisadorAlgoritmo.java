@@ -2,7 +2,7 @@ package br.univali.portugol.nucleo.analise;
 
 import br.univali.portugol.nucleo.analise.semantica.AnalisadorSemantico;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
+import br.univali.portugol.nucleo.asa.ASA;
 
 /**
  * Esta classe provê uma fachada (Facade) que abstrai o processo de análise do código fonte.
@@ -20,7 +20,7 @@ import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrata;
  */
 public final class AnalisadorAlgoritmo
 {
-    private ArvoreSintaticaAbstrata arvoreSintaticaAbstrata;
+    private ASA arvoreSintaticaAbstrata;
     
     public AnalisadorAlgoritmo()
     {
@@ -33,7 +33,7 @@ public final class AnalisadorAlgoritmo
      * @return     a ASA gerada durante a análise.
      * @since 1.0
      */
-    public ArvoreSintaticaAbstrata getArvoreSintaticaAbstrata() 
+    public ASA getASA() 
     {
         return arvoreSintaticaAbstrata;
     }
@@ -54,7 +54,7 @@ public final class AnalisadorAlgoritmo
         analisadorSintatico.adicionarObservador(observadorAnaliseAlgoritmo);
         analisadorSemantico.adicionarObservador(observadorAnaliseAlgoritmo);
         
-        ArvoreSintaticaAbstrata asa = analisadorSintatico.analisar(codigo);
+        ASA asa = analisadorSintatico.analisar(codigo);
         arvoreSintaticaAbstrata = asa;
         analisadorSemantico.analisar(asa);
         

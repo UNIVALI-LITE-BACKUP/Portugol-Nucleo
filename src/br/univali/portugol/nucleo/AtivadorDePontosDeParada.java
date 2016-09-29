@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo;
 
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoBitwiseNao;
 import br.univali.portugol.nucleo.asa.NoBloco;
@@ -96,7 +96,7 @@ public final class AtivadorDePontosDeParada implements VisitanteASA
      * de parada
      * @param asa
      */
-    public void ativaPontosDeParada(Set<Integer> linhasDosPontosDeParada, ArvoreSintaticaAbstrataPrograma asa)
+    public void ativaPontosDeParada(Set<Integer> linhasDosPontosDeParada, ASAPrograma asa)
     {
 
         this.linhasDasParadas = linhasDosPontosDeParada;
@@ -112,7 +112,7 @@ public final class AtivadorDePontosDeParada implements VisitanteASA
     }
 
     @Override
-    public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
+    public Object visitar(ASAPrograma asap) throws ExcecaoVisitaASA
     {
         for (NoDeclaracao declaracao : asap.getListaDeclaracoesGlobais())
         {

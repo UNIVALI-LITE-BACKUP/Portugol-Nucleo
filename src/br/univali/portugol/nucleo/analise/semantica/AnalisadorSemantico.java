@@ -84,7 +84,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     private final TabelaCompatibilidadeTipos tabelaCompatibilidadeTipos = TabelaCompatibilidadeTiposPortugol.INSTANCE;
 
     private boolean declarandoSimbolosGlobais;
-    private ArvoreSintaticaAbstrata asa;
+    private ASA asa;
     private Funcao funcaoAtual;
     private TipoDado tipoDadoEscolha;
 
@@ -163,7 +163,7 @@ public final class AnalisadorSemantico implements VisitanteASA
      * @param asa a ASA que será percorrida em busca de erros semânticos.
      * @since 1.0
      */
-    public void analisar(ArvoreSintaticaAbstrata asa)
+    public void analisar(ASA asa)
     {
         this.asa = asa;
         if (asa != null)
@@ -180,7 +180,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     }
 
     @Override
-    public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
+    public Object visitar(ASAPrograma asap) throws ExcecaoVisitaASA
     {
         for (NoInclusaoBiblioteca inclusao : asap.getListaInclusoesBibliotecas())
         {

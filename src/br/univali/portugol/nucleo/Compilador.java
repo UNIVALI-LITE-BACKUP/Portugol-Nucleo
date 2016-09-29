@@ -2,7 +2,7 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
@@ -10,7 +10,7 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
-import br.univali.portugol.nucleo.execucao.GeradorCodigo;
+import br.univali.portugol.nucleo.execucao.GeradorCodigoJava;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ final class Compilador
 
         if (!resultadoAnalise.contemErros())
         {
-            ArvoreSintaticaAbstrataPrograma asa = (ArvoreSintaticaAbstrataPrograma) analisadorAlgoritmo.getArvoreSintaticaAbstrata();
+            ASAPrograma asa = (ASAPrograma) analisadorAlgoritmo.getASA();
         
             Programa programa = geraPrograma(asa);
             programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
@@ -59,9 +59,9 @@ final class Compilador
         }
     }
     
-    private Programa geraPrograma(ArvoreSintaticaAbstrataPrograma asa)
+    private Programa geraPrograma(ASAPrograma asa)
     {
-        GeradorCodigo gerador = new GeradorCodigo();
+        GeradorCodigoJava gerador = new GeradorCodigoJava();
         //gerador.gera(asa, System.out);
         
         // retornando um programa 'fake' apenas para testar
@@ -78,7 +78,7 @@ final class Compilador
     {
         private final List<String> funcoes = new ArrayList<>();
         
-        public List<String> getFuncoes(ArvoreSintaticaAbstrataPrograma asa)
+        public List<String> getFuncoes(ASAPrograma asa)
         {
             try
             {
@@ -124,7 +124,7 @@ final class Compilador
         }
         
         @Override
-        public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
+        public Object visitar(ASAPrograma asap) throws ExcecaoVisitaASA
         {
             List<NoDeclaracao> declaracoes = asap.getListaDeclaracoesGlobais();
 
