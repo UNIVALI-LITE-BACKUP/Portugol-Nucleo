@@ -11,7 +11,6 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.NoInteiro;
 import br.univali.portugol.nucleo.asa.NoLogico;
-import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
 import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
 import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseRightShift;
 import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
@@ -42,7 +41,8 @@ public class GeradorCodigoJava
         
         geraCodigoImportacoes(getListaImportacoes(asa), out);
         
-        out.format("public class %s extends Programa \n", nomeClasseJava)
+        out.append("package programas;")
+           .format("public class %s extends Programa \n", nomeClasseJava)
            .append("{ \n")
            .append(" \n");
         
@@ -199,7 +199,6 @@ public class GeradorCodigoJava
         {
             Object a = soma.getOperandoEsquerdo().aceitar(this);
             Object b = soma.getOperandoDireito().aceitar(this);
-            
             return a + " + " + b;
         }
         
