@@ -11,6 +11,13 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.NoInteiro;
 import br.univali.portugol.nucleo.asa.NoLogico;
+import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseRightShift;
+import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
+import br.univali.portugol.nucleo.asa.NoOperacaoMultiplicacao;
+import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
+import br.univali.portugol.nucleo.asa.NoOperacaoSubtracao;
 import br.univali.portugol.nucleo.asa.NoReal;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
@@ -65,31 +72,13 @@ public class GeradorCodigoJava
                 String inicializacao = "";
                 if (noDeclaracaoVariavel.possuiInicializacao())
                 {
-                    inicializacao = String.format(" = %s", getValorInicializacao(noDeclaracaoVariavel));
+                    Object valor = noDeclaracaoVariavel.getInicializacao().aceitar(visitor);
+                    inicializacao = String.format(" = %s", valor);
                 }
                 String constante = (noDeclaracaoVariavel.constante()) ? "final " : "";
                 out.format("private %s%s %s%s; \n", constante, tipo, nomeVariavel, inicializacao);
             }
         }
-    }
-    
-    private String getValorInicializacao(NoDeclaracaoInicializavel noDeclaracaoVariavel) throws ExcecaoVisitaASA
-    {
-        if (!noDeclaracaoVariavel.possuiInicializacao())
-        {
-            return "";
-        }
-
-        Object valor = noDeclaracaoVariavel.getInicializacao().aceitar(visitor);
-        switch (noDeclaracaoVariavel.getTipoDado())
-        {
-            case CADEIA: return String.format("\"%s\"", valor); //coloca a string dentro de aspas duplas
-            case CARACTER: return String.format("'%s'", valor); //coloca o caracter dentro de aspas simples
-            case LOGICO: return ((Boolean)valor) ? "true" : "false";
-            case VAZIO: return "void";
-        }
-            
-        return valor.toString();
     }
     
     private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa, PrintStream out)
@@ -160,33 +149,83 @@ public class GeradorCodigoJava
     private class Visitor extends VisitanteASABasico
     {
         @Override
-        public Integer visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
+        public String visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
         {
-            return noInteiro.getValor();
+            return String.valueOf(noInteiro.getValor());
         }
 
         @Override
-        public Boolean visitar(NoLogico noLogico) throws ExcecaoVisitaASA
+        public String visitar(NoLogico noLogico) throws ExcecaoVisitaASA
         {
-            return noLogico.getValor();
+            return noLogico.getValor() ? "true" : "false";
         }
         
         @Override
-        public Character visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
+        public String visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
         {
-            return noCaracter.getValor();
+            return "'" + noCaracter.getValor() + "'";
         }
         
         @Override
-        public Double visitar(NoReal noReal) throws ExcecaoVisitaASA
+        public String visitar(NoReal noReal) throws ExcecaoVisitaASA
         {
-            return noReal.getValor();
+            return String.valueOf(noReal.getValor());
         }
         
         @Override
         public String visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
         {
-            return noCadeia.getValor();
+            return "\"" + noCadeia.getValor() + "\"";
         }
+
+        @Override
+        public String visitar(NoOperacaoBitwiseLeftShift leftShift) throws ExcecaoVisitaASA
+        {
+            Object a = leftShift.getOperandoEsquerdo().aceitar(this);
+            Object b = leftShift.getOperandoDireito().aceitar(this);
+            return a + " << " + b;
+        }
+        
+        @Override
+        public String visitar(NoOperacaoBitwiseRightShift rightShift) throws ExcecaoVisitaASA
+        {
+            Object a = rightShift.getOperandoEsquerdo().aceitar(this);
+            Object b = rightShift.getOperandoDireito().aceitar(this);
+            return a + " >> " + b;
+        }
+        
+        @Override
+        public String visitar(NoOperacaoSoma soma) throws ExcecaoVisitaASA
+        {
+            Object a = soma.getOperandoEsquerdo().aceitar(this);
+            Object b = soma.getOperandoDireito().aceitar(this);
+            
+            return a + " + " + b;
+        }
+        
+        @Override
+        public String visitar(NoOperacaoDivisao soma) throws ExcecaoVisitaASA
+        {
+            Object a = soma.getOperandoEsquerdo().aceitar(this);
+            Object b = soma.getOperandoDireito().aceitar(this);
+            return a  + " / " + b;
+        }
+        
+        @Override
+        public String visitar(NoOperacaoSubtracao subtracao) throws ExcecaoVisitaASA
+        {
+            Object a = subtracao.getOperandoEsquerdo().aceitar(this);
+            Object b = subtracao.getOperandoDireito().aceitar(this);
+            return a  + " - " + b;
+        }
+        
+        @Override
+        public String visitar(NoOperacaoMultiplicacao multiplicacao) throws ExcecaoVisitaASA
+        {
+            Object a = multiplicacao.getOperandoEsquerdo().aceitar(this);
+            Object b = multiplicacao.getOperandoDireito().aceitar(this);
+            return a  + " * " + b;
+        }
+        
     }
 }

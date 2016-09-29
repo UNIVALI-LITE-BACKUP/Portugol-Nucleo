@@ -127,7 +127,34 @@ public class GeradorCodigoTest
     }
     
     @Test
-    public void testDeclaracaoVariaveisGlobaisInicializadas() throws Exception
+    public void testVariaveisGlobaisInicializadasComExpressoes() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	cadeia c = \"teste\" + \" concatenacao\"                \n"
+                + "	inteiro i = ((10 + 2 * 4/1) << 1) >> 1                    \n"
+                + "//     logico l = verdadeiro && verdadeiro || falso            \n"
+                + "//     real r = 53.23 + 0.01                                   \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = "import br.univali.portugol.nucleo.Programa; \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private String c = \"teste\" + \" concatenacao\";         \n"
+                + "   private int i = ((10 + 2 * 4/1) << 1) >> 1;                                    \n"
+                + "                                                             \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testVariaveisGlobaisInicializadasComValoresSimples() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
                 + "	inteiro i = 10                                          \n"
