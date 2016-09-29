@@ -16,7 +16,34 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
-    //teste inclusão de bibliotecas
+    @Test
+    public void testInclusaoBibliotecasSemAliases() throws ErroCompilacao
+    {
+        String codigoPortugol = "programa {         \n"
+                + "	inclua biblioteca Graficos  \n"
+                + "	inclua biblioteca Mouse     \n"
+                + "	funcao inicio() {           \n"
+                + "	}\n                         \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
+                + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private Graficos libGraficos = new Graficos();            \n"
+                + "   private Mouse libMouse = new Mouse();                     \n"
+                + "                                                             \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
     
     @Test
     public void testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma() throws ErroCompilacao
@@ -82,9 +109,9 @@ public class GeradorCodigoTest
         String codigoGerado = bos.toString().replaceAll("\\s+", ""); //remove todos os espaços e caracteres não visíveis
         codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+", "");
         
-        //System.out.println(codigoJavaEsperado);
-        //System.out.println(codigoGerado);
-        //System.out.println();
+        System.out.println(codigoJavaEsperado);
+        System.out.println(codigoGerado);
+        System.out.println();
         
         assertEquals("Os códigos não são iguais!", codigoJavaEsperado, codigoGerado);
     }

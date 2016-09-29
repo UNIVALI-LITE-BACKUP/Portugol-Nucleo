@@ -6,6 +6,7 @@ import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
 import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.bibliotecas.Graficos;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.List;
  */
 public class GeradorCodigoJava
 {
+    private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
+    
     public void gera(ASAPrograma asa, OutputStream saida, String nomeClasseJava)
     {
         PrintStream out = new PrintStream(saida);
@@ -26,7 +29,7 @@ public class GeradorCodigoJava
            .append("{ \n")
            .append(" \n");
         
-        geraCodigoDasVariaveisGlobais(asa, out);
+        geraCodigoDosAtributos(asa, out);
         
         out.append(" \n")
            .append("   @override \n")
@@ -37,8 +40,9 @@ public class GeradorCodigoJava
            .print("}\n");
     }
 
-    private void geraCodigoDasVariaveisGlobais(ASAPrograma asa, PrintStream out)
+    private void geraCodigoDosAtributos(ASAPrograma asa, PrintStream out)
     {
+        // declara variáveis globais do portugol como atributos na classe Programa que será gerada
         List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
         for (NoDeclaracao declaracao : variaveisGlobais)
         {
@@ -46,8 +50,16 @@ public class GeradorCodigoJava
             {
                 String tipo = getNomeTipoJava(declaracao.getTipoDado());
                 String nomeVariavel = declaracao.getNome();
-                out.format("private %s %s;", tipo, nomeVariavel);
+                out.format("private %s %s; \n", tipo, nomeVariavel);
             }
+        }
+        
+        //cria as instâncias das bibliotecas incluídas no código portugol
+        List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
+        for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
+        {
+            String nome = biblioteca.getNome();
+            out.format("private %s lib%s = new %s(); \n", nome, nome, nome);
         }
     }
     
@@ -76,10 +88,10 @@ public class GeradorCodigoJava
         
         // importação para as bibliotecas do PS
         List<NoInclusaoBiblioteca> bibliotecasIncluidas = asa.getListaInclusoesBibliotecas();
-        String pacoteDasLibs = "br.univali.portugol.nucleo.bibliotecas.";
+        
         for (NoInclusaoBiblioteca biblioteca : bibliotecasIncluidas)
         {
-            importacoes.add(pacoteDasLibs + biblioteca.getNome());
+            importacoes.add(PACOTE_DAS_LIBS + biblioteca.getNome());
         }
         
         return importacoes;
