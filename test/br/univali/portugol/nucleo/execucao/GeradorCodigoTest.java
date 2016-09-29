@@ -135,9 +135,9 @@ public class GeradorCodigoTest
     {
         String codigoPortugol = "programa {                                     \n"
                 + "	cadeia c = \"teste\" + \" concatenacao\"                \n"
-                + "	inteiro i = ((10 + 2 * 4/1) << 1) >> 1                    \n"
-                + "//     logico l = verdadeiro && verdadeiro || falso            \n"
-                + "//     real r = 53.23 + 0.01                                   \n"
+                + "	inteiro i = ((10 + 2 * 4/1) << 1)                       \n"
+                + "     logico l = verdadeiro e verdadeiro ou falso            \n"
+                + "     real r = 53.23 + 0.01                                   \n"
                 + "	funcao inicio() {                                       \n"
                 + "	}                                                       \n"
                 + "}";
@@ -147,8 +147,9 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   private String c = \"teste\" + \" concatenacao\";         \n"
-                + "   private int i = ((10 + 2 * 4/1) << 1) >> 1;                                    \n"
-                + "                                                             \n"
+                + "   private int i = ((10 + 2 * 4/1) << 1);                    \n"
+                + "   private boolean l = true && true || false;                \n"
+                + "   private double r = 53.23 + 0.01;                           \n"
                 + "   @override                                                 \n"
                 + "   protected void executar() throws ErroExecucao             \n"
                 + "   {                                                         \n"
@@ -253,6 +254,8 @@ public class GeradorCodigoTest
         // gera o código e escreve em um ByteArrayOutputStream
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         gerador.gera(asa, bos, "ProgramaTeste");
+        
+        //System.out.println(codigoJavaEsperado);
 
         String codigoGerado = bos.toString().replaceAll("\\s+", ""); //remove todos os espaços e caracteres não visíveis
         codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+", "");

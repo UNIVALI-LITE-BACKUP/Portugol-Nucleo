@@ -193,6 +193,33 @@ public class GeradorCodigoJava
         }
         
         @Override
+        public String visitar(NoOperacaoBitwiseE no) throws ExcecaoVisitaASA
+        {
+            Object a = no.getOperandoEsquerdo().aceitar(this);
+            Object b = no.getOperandoDireito().aceitar(this);
+            String valor = a + " & " + b;
+            return geraCodigoComParenteses(valor, no);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoBitwiseXOR no) throws ExcecaoVisitaASA
+        {
+            Object a = no.getOperandoEsquerdo().aceitar(this);
+            Object b = no.getOperandoDireito().aceitar(this);
+            String valor = a + " ^ " + b;
+            return geraCodigoComParenteses(valor, no);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoBitwiseOu no) throws ExcecaoVisitaASA
+        {
+            Object a = no.getOperandoEsquerdo().aceitar(this);
+            Object b = no.getOperandoDireito().aceitar(this);
+            String valor = a + " | " + b;
+            return geraCodigoComParenteses(valor, no);
+        }
+        
+        @Override
         public String visitar(NoOperacaoSoma soma) throws ExcecaoVisitaASA
         {
             Object a = soma.getOperandoEsquerdo().aceitar(this);
@@ -226,6 +253,91 @@ public class GeradorCodigoJava
             Object b = multiplicacao.getOperandoDireito().aceitar(this);
             String valor = a  + " * " + b;
             return geraCodigoComParenteses(valor, multiplicacao);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaOU noOuLogico) throws ExcecaoVisitaASA
+        {
+            Object a = noOuLogico.getOperandoEsquerdo().aceitar(this);
+            Object b = noOuLogico.getOperandoDireito().aceitar(this);
+            String valor = a  + " || " + b;
+            return geraCodigoComParenteses(valor, noOuLogico);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaE noELogico) throws ExcecaoVisitaASA
+        {
+            Object a = noELogico.getOperandoEsquerdo().aceitar(this);
+            Object b = noELogico.getOperandoDireito().aceitar(this);
+            String valor = a  + " && " + b;
+            return geraCodigoComParenteses(valor, noELogico);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaDiferenca noDiferenca) throws ExcecaoVisitaASA
+        {
+            Object a = noDiferenca.getOperandoEsquerdo().aceitar(this);
+            Object b = noDiferenca.getOperandoDireito().aceitar(this);
+            String valor = a  + " != " + b;
+            return geraCodigoComParenteses(valor, noDiferenca);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaIgualdade noIgualdade) throws ExcecaoVisitaASA
+        {
+            Object a = noIgualdade.getOperandoEsquerdo().aceitar(this);
+            Object b = noIgualdade.getOperandoDireito().aceitar(this);
+            
+            String valor;
+            if (a instanceof String && b instanceof String)
+            {
+                valor = a  + ".equals(" + b + ")";
+            }
+            else
+            {
+                valor = a  + " == " + b;
+            }
+            return geraCodigoComParenteses(valor, noIgualdade);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaMaior noMaior) throws ExcecaoVisitaASA
+        {
+            Object a = noMaior.getOperandoEsquerdo().aceitar(this);
+            Object b = noMaior.getOperandoDireito().aceitar(this);
+            
+            String valor = a  + " > " + b;
+            return geraCodigoComParenteses(valor, noMaior);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaMaiorIgual noMaiorIgual) throws ExcecaoVisitaASA
+        {
+            Object a = noMaiorIgual.getOperandoEsquerdo().aceitar(this);
+            Object b = noMaiorIgual.getOperandoDireito().aceitar(this);
+            
+            String valor = a  + " >= " + b;
+            return geraCodigoComParenteses(valor, noMaiorIgual);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaMenor noMenor) throws ExcecaoVisitaASA
+        {
+            Object a = noMenor.getOperandoEsquerdo().aceitar(this);
+            Object b = noMenor.getOperandoDireito().aceitar(this);
+            
+            String valor = a  + " < " + b;
+            return geraCodigoComParenteses(valor, noMenor);
+        }
+        
+        @Override
+        public String visitar(NoOperacaoLogicaMenorIgual noMenorIgual) throws ExcecaoVisitaASA
+        {
+            Object a = noMenorIgual.getOperandoEsquerdo().aceitar(this);
+            Object b = noMenorIgual.getOperandoDireito().aceitar(this);
+            
+            String valor = a  + " <= " + b;
+            return geraCodigoComParenteses(valor, noMenorIgual);
         }
         
     }
