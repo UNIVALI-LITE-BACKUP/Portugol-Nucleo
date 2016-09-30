@@ -14,9 +14,11 @@ public class GeradorCodigoJava
 {
     private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
     private Visitor visitor;
+    private int nivelEscopo = 1;
 
     public void gera(ASAPrograma asa, OutputStream saida, String nomeClasseJava) throws ExcecaoVisitaASA
     {
+        nivelEscopo = 1;
         PrintStream out = new PrintStream(saida);
 
         visitor = new Visitor();
@@ -215,11 +217,6 @@ public class GeradorCodigoJava
             out.format("import %s; \n", importacao);
         }
         out.println(); // pula uma linha depois das importações
-    }
-
-    private void geraCoporMetodo(NoDeclaracaoFuncao noFuncao, PrintStream saida)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private class Visitor extends VisitanteASABasico
@@ -512,7 +509,7 @@ public class GeradorCodigoJava
             }
             String nome = noDeclaracao.getNome() + "[" + codigoLinhas + "][" + codigoColunas + "]";
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            String codigoGerado = String.format("%3s%s %s", " ", tipo, nome);
+            String codigoGerado = geraIdentacao() + String.format("%s %s", tipo, nome);
 
             if (noDeclaracao.possuiInicializacao())
             {
@@ -577,5 +574,59 @@ public class GeradorCodigoJava
             return no.getNome();
         }
 
+        @Override
+        public String visitar(NoEnquanto no) throws ExcecaoVisitaASA
+        {
+            String condicao = no.getCondicao().aceitar(this).toString();
+            String codigoGerado = "while(" + condicao + ")\n";
+            codigoGerado += "   {\n";
+            codigoGerado += "      " + visitarBlocos(no.getBlocos()) + "\n";
+            codigoGerado += "   }\n";
+            return codigoGerado;
+        }
+
+        @Override
+        public String visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
+        {
+            return no.toString();
+        }
+
+        @Override
+        public String visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
+        {
+            String codigo = no.getNome() + "(";
+            List<NoExpressao> parametros = no.getParametros();
+            int totalParametros = parametros.size();
+            for (int i = 0; i < totalParametros; i++)
+            {
+                Object parametro = parametros.get(i).aceitar(this).toString();
+                codigo += parametro;
+                if (i < totalParametros - 1)
+                {
+                    codigo += ",";
+                }
+            }
+            codigo += ")";
+            
+            return codigo;
+        }
+
+        private String visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
+        {
+            nivelEscopo++;
+            String codigoGerado = geraIdentacao();
+            for (NoBloco bloco : blocos)
+            {
+                codigoGerado += bloco.aceitar(visitor).toString() + ";\n";
+            }
+            nivelEscopo--;
+            return codigoGerado;
+        }
+
+        private String geraIdentacao()
+        {
+            return String.format("%" + (nivelEscopo * 3) + "s", " ");
+        }
+        
     }
 }

@@ -15,6 +15,39 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
     @Test
+    public void testGeracaoCorpoDeMetodo() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "         inteiro x = 1                                       \n"
+                + "         enquanto(x < 10) {                                  \n"
+                + "             x++                                             \n"                
+                + "             escreva(x)                                      \n"                                
+                + "         }                                                   \n"                
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "         int x = 1;                                          \n"
+                + "         while(x < 10) {                                     \n"
+                + "             x = x + 1;                                            \n"                
+                + "             escreva(x);                                     \n"                                
+                + "         }                                                   \n"                                
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testGeracaoAtribuicaoDentroDeFuncao() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
