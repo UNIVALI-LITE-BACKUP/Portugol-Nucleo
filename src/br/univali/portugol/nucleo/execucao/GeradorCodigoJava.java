@@ -109,10 +109,7 @@ public class GeradorCodigoJava
 
         saida.append("   {\n"); // inicia o escopo do método
 
-        for (NoBloco bloco : noFuncao.getBlocos()) // gera o código dentro do método
-        {
-            saida.append(bloco.aceitar(visitor).toString());
-        }
+        saida.append(visitarBlocos(noFuncao.getBlocos())); // gera o código dentro do método
 
         saida.append("   }\n"); // finaliza o escopo do método
 
@@ -217,6 +214,38 @@ public class GeradorCodigoJava
             out.format("import %s; \n", importacao);
         }
         out.println(); // pula uma linha depois das importações
+    }
+
+    private boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
+    {
+        boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
+        boolean ehDesvio = bloco instanceof NoSe;
+        if (!ehLoop && !ehDesvio)
+            return true;
+        
+        return false; 
+    }
+    
+    private String visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
+    {
+        nivelEscopo++;
+        String codigoGerado = geraIdentacao();
+        for (NoBloco bloco : blocos)
+        {
+            codigoGerado += bloco.aceitar(visitor).toString();
+            if (blocoFinalizaComPontoEVirgula(bloco))
+            {
+                codigoGerado += ";";
+            }
+            codigoGerado += "\n";
+        }
+        nivelEscopo--;
+        return codigoGerado;
+    }
+
+    private String geraIdentacao()
+    {
+        return String.format("%" + (nivelEscopo * 3) + "s", " ");
     }
 
     private class Visitor extends VisitanteASABasico
@@ -326,6 +355,15 @@ public class GeradorCodigoJava
             String valor = a + " / " + b;
             return geraCodigoComParenteses(valor, divisao);
         }
+        
+        @Override
+        public String visitar(NoOperacaoModulo divisao) throws ExcecaoVisitaASA
+        {
+            Object a = divisao.getOperandoEsquerdo().aceitar(this);
+            Object b = divisao.getOperandoDireito().aceitar(this);
+            String valor = a + " % " + b;
+            return geraCodigoComParenteses(valor, divisao);
+        }
 
         @Override
         public String visitar(NoOperacaoSubtracao subtracao) throws ExcecaoVisitaASA
@@ -373,21 +411,16 @@ public class GeradorCodigoJava
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaIgualdade noIgualdade) throws ExcecaoVisitaASA
+        public String visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
         {
-            Object a = noIgualdade.getOperandoEsquerdo().aceitar(this);
-            Object b = noIgualdade.getOperandoDireito().aceitar(this);
+            NoExpressao opEsq = no.getOperandoEsquerdo();
+            NoExpressao opDir = no.getOperandoDireito();
+            Object a = opEsq.aceitar(this);
+            Object b = opDir.aceitar(this);
 
-            String valor;
-            if (a instanceof String && b instanceof String)
-            {
-                valor = a + ".equals(" + b + ")";
-            }
-            else
-            {
-                valor = a + " == " + b;
-            }
-            return geraCodigoComParenteses(valor, noIgualdade);
+            String valor = a + " == " + b;
+
+            return geraCodigoComParenteses(valor, no);
         }
 
         @Override
@@ -443,7 +476,7 @@ public class GeradorCodigoJava
                 codigoGerado += String.format(" = %s", inicializacao.toString());
             }
 
-            codigoGerado += ";\n";
+            //codigoGerado += "\n";
 
             return codigoGerado;
         }
@@ -467,7 +500,7 @@ public class GeradorCodigoJava
                 codigoGerado += String.format(" = %s", inicializacao.toString());
             }
 
-            codigoGerado += ";\n";
+            //codigoGerado += ";\n";
 
             return codigoGerado;
         }
@@ -517,7 +550,7 @@ public class GeradorCodigoJava
                 codigoGerado += String.format(" = %s", inicializacao.toString());
             }
 
-            codigoGerado += ";\n";
+            //codigoGerado += ";\n";
 
             return codigoGerado;
         }
@@ -554,6 +587,17 @@ public class GeradorCodigoJava
         }
 
         @Override
+        public String visitar(NoRetorne no) throws ExcecaoVisitaASA
+        {
+            NoExpressao expressao = no.getExpressao();
+            if (expressao != null)
+            {
+                return "return " + expressao.aceitar(this);
+            }
+            return "return";
+        }
+
+        @Override
         public String visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
         {
             Object indice = no.getIndice().aceitar(this);
@@ -584,6 +628,45 @@ public class GeradorCodigoJava
             codigoGerado += "   }\n";
             return codigoGerado;
         }
+        
+        @Override
+        public String visitar(NoSe no) throws ExcecaoVisitaASA
+        {
+            String condicao = no.getCondicao().aceitar(this).toString();
+            List<NoBloco> blocosVerdadeiros = no.getBlocosVerdadeiros();
+            List<NoBloco> blocosFalsos = no.getBlocosFalsos();
+            String codigoGerado = "if(" + condicao + ")\n";
+            codigoGerado += "   {\n";
+            if (blocosVerdadeiros != null)
+            {
+                codigoGerado += "      " + visitarBlocos(blocosVerdadeiros) + "\n";
+            }
+            codigoGerado += "   }\n";
+            if (blocosFalsos != null)
+            {
+                codigoGerado += "else\n";
+                codigoGerado += "{\n";
+                codigoGerado += "      " + visitarBlocos(blocosFalsos) + "\n";
+                codigoGerado += "}\n";
+            }
+            return codigoGerado;
+        }
+
+        @Override
+        public String visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
+        {
+            List<NoBloco> blocos = no.getBlocos();
+            String condicao = no.getCondicao().aceitar(this).toString();
+            String codigoGerado = "do";
+            codigoGerado += "   {\n";
+            if (blocos != null)
+            {
+                codigoGerado += "      " + visitarBlocos(blocos) + "\n";
+            }
+            codigoGerado += "   }\n";
+            codigoGerado += "while(" + condicao + ");\n";
+            return codigoGerado;
+        }
 
         @Override
         public String visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
@@ -607,26 +690,8 @@ public class GeradorCodigoJava
                 }
             }
             codigo += ")";
-            
+
             return codigo;
         }
-
-        private String visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
-        {
-            nivelEscopo++;
-            String codigoGerado = geraIdentacao();
-            for (NoBloco bloco : blocos)
-            {
-                codigoGerado += bloco.aceitar(visitor).toString() + ";\n";
-            }
-            nivelEscopo--;
-            return codigoGerado;
-        }
-
-        private String geraIdentacao()
-        {
-            return String.format("%" + (nivelEscopo * 3) + "s", " ");
-        }
-        
     }
 }

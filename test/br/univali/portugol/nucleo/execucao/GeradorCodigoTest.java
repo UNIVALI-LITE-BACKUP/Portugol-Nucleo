@@ -1,8 +1,13 @@
 package br.univali.portugol.nucleo.execucao;
 
+import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
+import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -13,6 +18,127 @@ public class GeradorCodigoTest
 {
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
+    
+//    @Test
+//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA
+//    {
+//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+//        File[] dirs = dirExemplos.listFiles();
+//        for (File dir : dirs)
+//        {
+//            geraCodigoParaExemplo(dir);
+//        }
+//    }
+//    
+//    private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA
+//    {
+//        if (exemplo.isDirectory()) {
+//            File files[] = exemplo.listFiles();
+//            for (File file : files)
+//            {
+//                geraCodigoParaExemplo(file);
+//            }
+//        }
+//        else
+//        {
+//            if (exemplo.getName().endsWith(".por"))
+//            {
+//                System.out.println("TESTANDO " + exemplo.getName());
+//                String codigoPortugol = new Scanner(exemplo).useDelimiter("\\Z").next();
+//                AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
+//                aa.analisar(codigoPortugol);
+//                GeradorCodigoJava gerador = new GeradorCodigoJava();
+//                gerador.gera((ASAPrograma) aa.getASA(), System.out, "ClasseTeste");
+//            }
+//        }
+//    }
+
+    @Test
+    public void testGeracaoSeSenao() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "         inteiro x = 1                                       \n"
+                + "         se (x > 0) {                                        \n"                
+                + "             se (verdadeiro) {                               \n"
+                + "             }                                               \n"
+                + "             senao {                                         \n"                
+                + "                 se (x <= 0) {                               \n"
+                + "                 }                                           \n"                
+                + "             }                                               \n"                
+                + "         }                                                   \n"
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "         int x = 1;                                          \n"
+                + "         if (x > 0) {                                        \n"                
+                + "             if (true) {                                     \n"
+                + "             }                                               \n"
+                + "             else {                                          \n"                
+                + "                 if (x <= 0) {                               \n"
+                + "                 }                                           \n"                
+                + "             }                                               \n"                
+                + "         }                                                   \n"
+                + "   }                                                         \n"                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testGeracaoChamaFuncoes() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "         inteiro x = 1                                       \n"
+                + "         faca{                                               \n"
+                + "             teste(x)                                        \n"                                
+                + "         }                                                   \n"
+                + "         enquanto(x < 10)                                    \n"                
+                + "	}                                                       \n"
+                + "	funcao teste(inteiro a) {                               \n"
+                + "           escreva(testeRetorno(a))                          \n"
+                + "     }                                                       \n"
+                + "	funcao logico testeRetorno(inteiro a) {                 \n"
+                + "          retorne a % 2 == 0                                 \n"
+                + "     }                                                       \n"                
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "         int x = 1;                                          \n"
+                + "         do{                                                 \n"
+                + "             teste(x);                                        \n"                                
+                + "         }                                                   \n"
+                + "         while(x < 10);                                      \n"                                
+                + "   }                                                         \n"
+                + "   private void teste(int a)                                 \n"
+                + "   {                                                         \n"
+                + "         escreva(testeRetorno(a));                           \n"
+                + "   }                                                         \n"
+                + "   private boolean testeRetorno(int a) {                     \n"
+                + "         return a % 2 == 0;                                  \n"
+                + "   }                                                         \n"                                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
     
     @Test
     public void testGeracaoCorpoDeMetodo() throws Exception

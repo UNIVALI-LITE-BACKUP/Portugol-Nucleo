@@ -1,6 +1,8 @@
 package br.univali.portugol.nucleo.asa;
 
 import br.univali.portugol.nucleo.Programa;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,7 +52,10 @@ public final class NoChamadaFuncao extends NoReferencia
      */
     public List<NoExpressao> getParametros()
     {
-        return parametros;
+        if (parametros != null)
+            return parametros;
+        
+        return Collections.EMPTY_LIST;
     }
 
     /**
