@@ -630,6 +630,27 @@ public class GeradorCodigoJava
         }
         
         @Override
+        public String visitar(NoPara no) throws ExcecaoVisitaASA
+        {
+            String condicao = no.getCondicao().aceitar(this).toString();
+            String inicializacao = "";
+            if (no.getInicializacao() != null)
+            {
+                inicializacao = no.getInicializacao().aceitar(this).toString();
+            }
+            String incremento = "";
+            if (no.getIncremento() != null)
+            {
+                incremento = no.getIncremento().aceitar(this).toString();
+            }
+            String codigoGerado = String.format("for(%s; %s; %s)\n", inicializacao, condicao, incremento);
+            codigoGerado += "   {\n";
+            codigoGerado += "      " + visitarBlocos(no.getBlocos()) + "\n";
+            codigoGerado += "   }\n";
+            return codigoGerado;
+        }
+        
+        @Override
         public String visitar(NoSe no) throws ExcecaoVisitaASA
         {
             String condicao = no.getCondicao().aceitar(this).toString();
@@ -673,7 +694,13 @@ public class GeradorCodigoJava
         {
             return no.toString();
         }
-
+        
+        @Override
+        public String visitar(NoNao no) throws ExcecaoVisitaASA
+        {
+            return "!" + no.getExpressao().aceitar(this);
+        }
+        
         @Override
         public String visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {

@@ -148,8 +148,10 @@ public class GeradorCodigoTest
                 + "         inteiro x = 1                                       \n"
                 + "         enquanto(x < 10) {                                  \n"
                 + "             x++                                             \n"                
-                + "             escreva(x)                                      \n"                                
-                + "         }                                                   \n"                
+                + "             para(inteiro i=0; i < 10; i++) {                \n"
+                + "                 escreva(i)                                  \n"                                
+                + "             }                                               \n"                
+                + "         }                                                   \n"
                 + "	}                                                       \n"
                 + "}";
 
@@ -164,8 +166,10 @@ public class GeradorCodigoTest
                 + "   {                                                         \n"
                 + "         int x = 1;                                          \n"
                 + "         while(x < 10) {                                     \n"
-                + "             x = x + 1;                                            \n"                
-                + "             escreva(x);                                     \n"                                
+                + "             x = x + 1;                                      \n"                
+                + "             for(int i=0; i < 10; i=i+1) {                     \n"
+                + "                 escreva(i);                                 \n"                                
+                + "             }                                               \n"                
                 + "         }                                                   \n"                                
                 + "   }                                                         \n"
                 + "}";
