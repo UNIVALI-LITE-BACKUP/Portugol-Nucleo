@@ -15,6 +15,39 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
     @Test
+    public void testGeracaoFuncoesSimples() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "	funcao testando() {                                     \n"
+                + "	}                                                       \n"                
+                + "	funcao maisUma() {                                      \n"
+                + "	}                                                       \n"                                
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "   private void testando()                                   \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"                
+                + "   private void maisUma()                                     \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testInclusaoBibliotecasComESemAliases() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
@@ -254,10 +287,11 @@ public class GeradorCodigoTest
         // gera o código e escreve em um ByteArrayOutputStream
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         gerador.gera(asa, bos, "ProgramaTeste");
-        
-        //System.out.println(codigoJavaEsperado);
 
-        String codigoGerado = bos.toString().replaceAll("\\s+", ""); //remove todos os espaços e caracteres não visíveis
+        String codigoGerado = bos.toString();
+        //System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
+
+        codigoGerado = codigoGerado.replaceAll("\\s+", ""); //remove todos os espaços e caracteres não visíveis
         codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+", "");
         
         System.out.println(codigoJavaEsperado);
