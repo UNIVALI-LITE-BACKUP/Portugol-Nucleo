@@ -48,6 +48,39 @@ public class GeradorCodigoJava
         }
     }
 
+    private String geraQuantificador(Quantificador quantificador)
+    {
+        switch(quantificador)
+        {
+            case VETOR: return "[]";
+            case MATRIZ: return "[][]";
+        }
+        return "";
+    }
+
+    private String geraStringDosParametros(NoDeclaracaoFuncao noFuncao)
+    {
+        StringBuilder builder = new StringBuilder();
+        List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
+
+        builder.append("("); // parenteses de início da lista de parâmetros
+        int size = parametros.size();
+        for (int i = 0; i < size; i++)
+        {
+            NoDeclaracaoParametro noParametro = parametros.get(i);
+            String tipo = getNomeTipoJava(noParametro.getTipoDado());
+            String nome = noParametro.getNome() + geraQuantificador(noParametro.getQuantificador());
+
+            builder.append(String.format("%s %s", tipo, nome));
+            if (i < size - 1)
+            {
+                builder.append(",");
+            }
+        }
+        builder.append(")"); // parenteses de fim da lista de parâmetros
+        return builder.toString();
+    }
+
     private void geraMetodo(NoDeclaracaoFuncao noFuncao, PrintStream saida)
     {
         String nome = noFuncao.getNome();
@@ -57,26 +90,27 @@ public class GeradorCodigoJava
             nome = "executar";
             saida.append("   @override \n");
         }
-        
+
         String visibilidade = metodoPrincipal ? "protected" : "private";
-        String tipoRetorno = getNomeTipoJava(noFuncao.getTipoDado());
-        
-        saida.format("   %s %s %s()", visibilidade, tipoRetorno, nome); // private void nomeMetodo()
-        
+        String tipoRetorno = getNomeTipoJava(noFuncao.getTipoDado()) + geraQuantificador(noFuncao.getQuantificador());
+        String parametros = geraStringDosParametros(noFuncao);
+
+        saida.format("   %s %s %s%s", visibilidade, tipoRetorno, nome, parametros); // private void nomeMetodo()
+
         if (metodoPrincipal)
         {
             saida.append(" throws ErroExecucao");
         }
         saida.println(); // pula uma linha depois da declaração da assinatura do método
-        
+
         saida.append("   {\n"); // inicia o escopo do método
-        
+
         saida.append("   }\n"); // finaliza o escopo do método
-        
+
         saida.println();
 
     }
-    
+
     private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa, PrintStream out) throws ExcecaoVisitaASA
     {
         List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();

@@ -15,6 +15,100 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
     @Test
+    public void testGeracaoFuncaoRetornandoArrays() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "	funcao inteiro retornaInteiro() {                       \n"
+                + "	}                                                       \n"                
+                + "	funcao inteiro[] retornaArray() {                       \n"
+                + "	}                                                       \n"                
+                + "	funcao inteiro[][] retornaMatriz() {                    \n"
+                + "	}                                                       \n"                                
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "   private int retornaInteiro()                               \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"                
+                + "   private int[] retornaArray()                              \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"                
+                + "   private int[][] retornaMatriz()                           \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testGeracaoFuncaoComParametrosQueSaoArrays() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "	funcao teste(inteiro x[], real c[][]) {                 \n"
+                + "	}                                                       \n"                
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "   private void teste(int x[], double c[][])                 \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testGeracaoFuncaoComParametros() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "	}                                                       \n"
+                + "	funcao testando(inteiro x, real y) {                    \n"
+                + "	}                                                       \n"                
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"
+                + "   private void testando(int x, double y)                    \n"
+                + "   {                                                         \n"
+                + "   }                                                         \n"                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testGeracaoFuncoesSimples() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
