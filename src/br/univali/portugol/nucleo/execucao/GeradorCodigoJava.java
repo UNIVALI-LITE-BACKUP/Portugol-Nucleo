@@ -36,7 +36,7 @@ public class GeradorCodigoJava
         out.append("}\n"); // fecha a classe
     }
 
-    private void geraMetodos(ASAPrograma asa, PrintStream saida)
+    private void geraMetodos(ASAPrograma asa, PrintStream saida) throws ExcecaoVisitaASA
     {
         List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
         for (NoDeclaracao declaracao : declaracoes)
@@ -50,10 +50,12 @@ public class GeradorCodigoJava
 
     private String geraQuantificador(Quantificador quantificador)
     {
-        switch(quantificador)
+        switch (quantificador)
         {
-            case VETOR: return "[]";
-            case MATRIZ: return "[][]";
+            case VETOR:
+                return "[]";
+            case MATRIZ:
+                return "[][]";
         }
         return "";
     }
@@ -81,7 +83,7 @@ public class GeradorCodigoJava
         return builder.toString();
     }
 
-    private void geraMetodo(NoDeclaracaoFuncao noFuncao, PrintStream saida)
+    private void geraMetodo(NoDeclaracaoFuncao noFuncao, PrintStream saida) throws ExcecaoVisitaASA
     {
         String nome = noFuncao.getNome();
         boolean metodoPrincipal = "inicio".equals(nome);
@@ -104,6 +106,11 @@ public class GeradorCodigoJava
         saida.println(); // pula uma linha depois da declaração da assinatura do método
 
         saida.append("   {\n"); // inicia o escopo do método
+
+        for (NoBloco bloco : noFuncao.getBlocos()) // gera o código dentro do método
+        {
+            saida.append(bloco.aceitar(visitor).toString());
+        }
 
         saida.append("   }\n"); // finaliza o escopo do método
 
@@ -208,6 +215,11 @@ public class GeradorCodigoJava
             out.format("import %s; \n", importacao);
         }
         out.println(); // pula uma linha depois das importações
+    }
+
+    private void geraCoporMetodo(NoDeclaracaoFuncao noFuncao, PrintStream saida)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private class Visitor extends VisitanteASABasico
@@ -419,6 +431,150 @@ public class GeradorCodigoJava
 
             String valor = a + " <= " + b;
             return geraCodigoComParenteses(valor, noMenorIgual);
+        }
+
+        @Override
+        public String visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
+        {
+            String nome = noDeclaracao.getNome();
+            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
+            String codigoGerado = String.format("%3s%s %s", " ", tipo, nome);
+
+            if (noDeclaracao.possuiInicializacao())
+            {
+                Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
+                codigoGerado += String.format(" = %s", inicializacao.toString());
+            }
+
+            codigoGerado += ";\n";
+
+            return codigoGerado;
+        }
+
+        @Override
+        public String visitar(NoDeclaracaoVetor noDeclaracao) throws ExcecaoVisitaASA
+        {
+            NoExpressao noTamanho = noDeclaracao.getTamanho();
+            String codigoTamanho = "";
+            if (noTamanho != null)
+            {
+                codigoTamanho = noTamanho.aceitar(this).toString();
+            }
+            String nome = noDeclaracao.getNome() + "[" + codigoTamanho + "]";
+            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
+            String codigoGerado = String.format("%3s%s %s", " ", tipo, nome);
+
+            if (noDeclaracao.possuiInicializacao())
+            {
+                Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
+                codigoGerado += String.format(" = %s", inicializacao.toString());
+            }
+
+            codigoGerado += ";\n";
+
+            return codigoGerado;
+        }
+
+        @Override
+        public String visitar(NoVetor noVetor) throws ExcecaoVisitaASA
+        {
+            String codigo = "{";
+
+            List<Object> valores = noVetor.getValores();
+            int totalValores = valores.size();
+            for (int i = 0; i < totalValores; i++)
+            {
+                codigo += valores.get(i).toString();
+                if (i < totalValores - 1)
+                {
+                    codigo += ", ";
+                }
+            }
+
+            codigo += "}";
+            return codigo;
+        }
+
+        @Override
+        public String visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
+        {
+            NoExpressao noLinhas = noDeclaracao.getNumeroLinhas();
+            NoExpressao noColunas = noDeclaracao.getNumeroColunas();
+            String codigoColunas = "";
+            String codigoLinhas = "";
+            if (noLinhas != null)
+            {
+                codigoLinhas = noLinhas.aceitar(this).toString();
+            }
+            if (noColunas != null)
+            {
+                codigoColunas = noColunas.aceitar(this).toString();
+            }
+            String nome = noDeclaracao.getNome() + "[" + codigoLinhas + "][" + codigoColunas + "]";
+            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
+            String codigoGerado = String.format("%3s%s %s", " ", tipo, nome);
+
+            if (noDeclaracao.possuiInicializacao())
+            {
+                Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
+                codigoGerado += String.format(" = %s", inicializacao.toString());
+            }
+
+            codigoGerado += ";\n";
+
+            return codigoGerado;
+        }
+
+        @Override
+        public String visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
+        {
+            String codigo = "{";
+
+            List<List<Object>> valores = noMatriz.getValores();
+            int totalLinhas = valores.size();
+            int totalColunas = 0;
+            for (int i = 0; i < totalLinhas; i++)
+            {
+                totalColunas = valores.get(i).size();
+                codigo += "{";
+                for (int j = 0; j < totalColunas; j++)
+                {
+                    codigo += valores.get(i).get(j).toString();
+                    if (j < totalColunas - 1)
+                    {
+                        codigo += ", ";
+                    }
+                }
+                codigo += "}";
+                if (i < totalLinhas - 1)
+                {
+                    codigo += ",";
+                }
+            }
+
+            codigo += "}";
+            return codigo;
+        }
+
+        @Override
+        public String visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
+        {
+            Object indice = no.getIndice().aceitar(this);
+            return no.getNome() + "[" + indice + "]";
+        }
+
+        @Override
+        public String visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
+        {
+            Object linha = no.getLinha().aceitar(this);
+            Object coluna = no.getColuna().aceitar(this);
+            return no.getNome() + "[" + linha + "][" + coluna + "]";
+        }
+
+        @Override
+        public String visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
+        {
+            return no.getNome();
         }
 
     }

@@ -15,6 +15,45 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
     @Test
+    public void testGeracaoAtribuicaoDentroDeFuncao() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "         inteiro x = (10 / 2)                                \n"
+                + "         inteiro a[] = {1, 2, 3}                             \n"
+                + "         inteiro u[3]                                        \n"                
+                + "         inteiro x[2][2]                                        \n"                                
+                + "         inteiro b[][] = {{1, 2, 3}, {4,5,6}}                \n"                
+                + "         inteiro c = a[0]                                    \n"
+                + "         inteiro d = b[0][1]                                 \n"                
+                + "         inteiro f = x                                       \n"                                
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "      int x = (10/2);                                        \n"
+                + "      int a[] = {1, 2, 3};                                   \n"                
+                + "      int u[3];                                              \n"                
+                + "      int x[2][2];                                           \n"                
+                + "      int b[][] = {{1, 2, 3}, {4,5,6}};                      \n"
+                + "      int c = a[0];                                          \n"                
+                + "      int d = b[0][1];                                       \n"                
+                + "      int f = x;                                             \n"                                
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testGeracaoFuncaoRetornandoArrays() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
@@ -383,7 +422,7 @@ public class GeradorCodigoTest
         gerador.gera(asa, bos, "ProgramaTeste");
 
         String codigoGerado = bos.toString();
-        //System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
+        System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
 
         codigoGerado = codigoGerado.replaceAll("\\s+", ""); //remove todos os espaços e caracteres não visíveis
         codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+", "");
