@@ -754,7 +754,7 @@ public class GeradorCodigoJava
         {
             String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
             String nomeFuncao = no.getNome();
-            String codigo = String.format("%s%s (", escopoFuncao, nomeFuncao);
+            String codigo = String.format("%s%s(", escopoFuncao, nomeFuncao);
             List<NoExpressao> parametros = no.getParametros();
             int totalParametros = parametros.size();
             for (int i = 0; i < totalParametros; i++)
