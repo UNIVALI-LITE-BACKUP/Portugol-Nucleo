@@ -761,7 +761,7 @@ public class GeradorCodigoJava
                 codigo += parametro;
                 if (i < totalParametros - 1)
                 {
-                    codigo += ",";
+                    codigo += ", ";
                 }
             }
             codigo += ")";

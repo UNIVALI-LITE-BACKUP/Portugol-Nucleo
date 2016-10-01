@@ -506,7 +506,7 @@ public abstract class Programa
         }
     }
     
-    private void escreva(Object... listaParametrosPassados) throws ErroExecucao
+    protected void escreva(Object... listaParametrosPassados) throws ErroExecucao
     {
         if (saida == null)
         {
