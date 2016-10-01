@@ -49,6 +49,16 @@ public class GeradorCodigoJava
         }
     }
 
+    private String geraQuantificador(NoDeclaracaoInicializavel no)
+    {
+        if (no instanceof NoDeclaracaoVetor)
+            return geraQuantificador(Quantificador.VETOR);
+        else if (no instanceof NoDeclaracaoMatriz)
+            return geraQuantificador(Quantificador.MATRIZ);
+        
+        return geraQuantificador(Quantificador.VALOR);
+    }
+    
     private String geraQuantificador(Quantificador quantificador)
     {
         switch (quantificador)
@@ -127,23 +137,25 @@ public class GeradorCodigoJava
     {
         List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
         boolean existemVariaveisGlobais = false;
-        for (NoDeclaracao noDeclaracao : variaveisGlobais)
+        for (NoDeclaracao no : variaveisGlobais)
         {
-            if (noDeclaracao instanceof NoDeclaracaoVariavel)
+            boolean podeDeclararComoAtributo = no instanceof NoDeclaracaoVariavel 
+                                                || no instanceof NoDeclaracaoVetor 
+                                                || no instanceof NoDeclaracaoMatriz;
+            if (podeDeclararComoAtributo)
             {
                 existemVariaveisGlobais = true;
-                String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-                String nomeVariavel = noDeclaracao.getNome();
-
-                NoDeclaracaoInicializavel noDeclaracaoVariavel = (NoDeclaracaoInicializavel) noDeclaracao;
+                NoDeclaracaoInicializavel noDeclaracao = (NoDeclaracaoInicializavel) no;
+                String tipo = getNomeTipoJava(no.getTipoDado());
+                String nomeVariavel = no.getNome() + geraQuantificador(noDeclaracao);
 
                 String inicializacao = "";
-                if (noDeclaracaoVariavel.possuiInicializacao())
+                if (noDeclaracao.possuiInicializacao())
                 {
-                    Object valor = noDeclaracaoVariavel.getInicializacao().aceitar(visitor);
+                    Object valor = noDeclaracao.getInicializacao().aceitar(visitor);
                     inicializacao = String.format(" = %s", valor);
                 }
-                String constante = (noDeclaracaoVariavel.constante()) ? "final " : "";
+                String constante = (noDeclaracao.constante()) ? "final " : "";
                 out.format("   private %s%s %s%s; \n", constante, tipo, nomeVariavel, inicializacao);
             }
         }

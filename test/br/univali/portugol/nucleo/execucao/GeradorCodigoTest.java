@@ -358,6 +358,11 @@ public class GeradorCodigoTest
     public void testGeracaoAtribuicoes() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
+                + "         logico notas[][]   = {                              \n" 
+                + " /* bumbo   */{verdadeiro, falso},                           \n"
+                + " /* caixa   */{falso, falso},                                \n"
+                + " /* chimbal */{verdadeiro, falso}                            \n"
+                + "         }                                                   \n"
                 + "	funcao inicio() {                                       \n"
                 + "         inteiro x = (10 / 2)                                \n"
                 + "         inteiro a[] = {1, 2, 3}                             \n"
@@ -379,6 +384,11 @@ public class GeradorCodigoTest
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
+                + "   private boolean notas[][] = {                             \n" 
+                + "             {true, false},                                  \n"
+                + "             {false, false},                                 \n"
+                + "             {true, false}                                   \n"
+                + "         };                                                  \n"                
                 + "   @Override                                                 \n"
                 + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
