@@ -23,16 +23,16 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
-//    @Test
-//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
-//    {
-//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
-//        File[] dirs = dirExemplos.listFiles();
-//        for (File dir : dirs)
-//        {
-//            geraCodigoParaExemplo(dir);
-//        }
-//    }
+    @Test
+    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+    {
+        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+        File[] dirs = dirExemplos.listFiles();
+        for (File dir : dirs)
+        {
+            geraCodigoParaExemplo(dir);
+        }
+    }
     
     private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
@@ -199,6 +199,36 @@ public class GeradorCodigoTest
                 + "   private boolean testeRetorno(int a) {                     \n"
                 + "         return a % 2 == 0;                                  \n"
                 + "   }                                                         \n"                                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
+    public void testGeracaoLoopPara() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "             para(inteiro i=10; i >= 0; i--) {               \n"
+                + "                 escreva(i)                                  \n"                                
+                + "             }                                               \n"                
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @Override                                                 \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "             for(int i=10; i >= 0; i=i-1) {                    \n"
+                + "                 escreva(i);                                 \n"                                
+                + "             }                                               \n"                                
+                + "   }                                                         \n"
                 + "}";
 
         comparaCodigos(codigoPortugol, codigoJavaEsperado);

@@ -30,6 +30,6 @@ public final class NoOperacaoSubtracao extends NoOperacao
     @Override
     public String toString()
     {
-        return getOperandoEsquerdo().toString() + " - " + getOperandoEsquerdo().toString();
+        return getOperandoEsquerdo().toString() + " - " + getOperandoDireito().toString();
     }
 }
