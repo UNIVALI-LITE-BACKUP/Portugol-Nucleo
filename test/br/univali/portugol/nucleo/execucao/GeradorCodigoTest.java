@@ -4,9 +4,13 @@ import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -20,7 +24,7 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
 //    @Test
-//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA
+//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
 //    {
 //        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
 //        File[] dirs = dirExemplos.listFiles();
@@ -30,7 +34,7 @@ public class GeradorCodigoTest
 //        }
 //    }
 //    
-//    private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA
+//    private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
 //    {
 //        if (exemplo.isDirectory()) {
 //            File files[] = exemplo.listFiles();
@@ -48,7 +52,11 @@ public class GeradorCodigoTest
 //                AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
 //                aa.analisar(codigoPortugol);
 //                GeradorCodigoJava gerador = new GeradorCodigoJava();
-//                gerador.gera((ASAPrograma) aa.getASA(), System.out, "ClasseTeste");
+//                String nomeClasse = exemplo.getName().replace(".por", "");
+//                String arquivoJava = "../" + nomeClasse + ".java";
+//                OutputStream os = new BufferedOutputStream(new FileOutputStream(arquivoJava));
+//                gerador.gera((ASAPrograma) aa.getASA(), os, nomeClasse);
+//                os.close();
 //            }
 //        }
 //    }
@@ -78,6 +86,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -125,6 +134,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -168,6 +178,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -210,6 +221,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -248,6 +260,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -285,6 +298,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -319,6 +333,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -347,6 +362,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -377,6 +393,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
@@ -408,6 +425,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
@@ -438,6 +456,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
@@ -468,6 +487,7 @@ public class GeradorCodigoTest
 
         String codigoJavaEsperado = ""
                 + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Graficos;      \n"
                 + "import br.univali.portugol.nucleo.bibliotecas.Mouse;         \n"                
@@ -497,6 +517,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
@@ -525,6 +546,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
@@ -555,6 +577,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
@@ -587,6 +610,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = "package programas;                         \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;                  \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
@@ -615,6 +639,7 @@ public class GeradorCodigoTest
                 + "}";
 
         String codigoJavaEsperado = "package programas;"  
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
                 + "import br.univali.portugol.nucleo.Programa;"
 
                 + "public class ProgramaTeste extends Programa"

@@ -209,6 +209,10 @@ public class GeradorCodigoJava
 
     private void geraCodigoImportacoes(List<String> importacoes, PrintStream out)
     {
+        //importa classe de erro do método executar()
+        
+        out.append("import br.univali.portugol.nucleo.mensagens.ErroExecucao;\n");
+        
         for (String importacao : importacoes)
         {
             out.format("import %s; \n", importacao);
@@ -759,6 +763,17 @@ public class GeradorCodigoJava
         {
             return "break";
         }
-        
+
+        @Override
+        public Object visitar(NoBitwiseNao no) throws ExcecaoVisitaASA
+        {
+            return "~" + no.getExpressao().aceitar(this);
+        }
+
+        @Override
+        public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
+        {
+            return "continue";
+        }
     }
 }
