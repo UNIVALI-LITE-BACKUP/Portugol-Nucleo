@@ -26,16 +26,16 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
-//    @Test // Este teste itera em todos os exemplos do PS e gera o código Java equivalente
-//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
-//    {
-//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
-//        File[] dirs = dirExemplos.listFiles();
-//        for (File dir : dirs)
-//        {
-//            geraCodigoParaExemplo(dir);
-//        }
-//    }
+    @Test // Este teste itera em todos os exemplos do PS e gera o código Java equivalente
+    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+    {
+        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+        File[] dirs = dirExemplos.listFiles();
+        for (File dir : dirs)
+        {
+            geraCodigoParaExemplo(dir);
+        }
+    }
     
     private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
@@ -108,10 +108,10 @@ public class GeradorCodigoTest
                 + "                 escreva (\"caso 2\");                        \n" 
                 + "		 	break;                                  \n" 
                 + "		 case 3:                                        \n" 
-                + "		 	escreva (\"Tchau!\");                    \n" 
+                + "		 	escreva (\"Tchau!\n\");                    \n" 
                 + "		 	break;                                  \n" 
                 + "		 default:                                       \n" 
-                + "		 	escreva (\"Opção Inválida !\");          \n" 
+                + "		 	escreva (\"Opção Inválida!\n\");          \n" 
                 + "         }                                                   \n"                
                 + "   }                                                         \n"                
                 + "}";
@@ -700,8 +700,8 @@ public class GeradorCodigoTest
         String codigoGerado = bos.toString();
         System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
 
-        codigoGerado = codigoGerado.replaceAll("\\s+", ""); //remove todos os espaços e caracteres não visíveis
-        codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+", "");
+        codigoGerado = codigoGerado.replaceAll("\\s+|\\\\n", ""); //remove todos os espaços e caracteres não visíveis
+        codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+|\\\\n", "");
         
         System.out.println(codigoJavaEsperado);
         System.out.println(codigoGerado);

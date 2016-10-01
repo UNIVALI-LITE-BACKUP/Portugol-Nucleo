@@ -254,7 +254,7 @@ public class GeradorCodigoJava
         for (NoBloco bloco : blocos)
         {
             codigoGerado += geraIdentacao();
-            codigoGerado += bloco.aceitar(visitor).toString();
+            codigoGerado += bloco.aceitar(visitor).toString(); //preserva os \n do código Portugol.
             if (blocoFinalizaComPontoEVirgula(bloco))
             {
                 codigoGerado += ";";
@@ -761,7 +761,11 @@ public class GeradorCodigoJava
             int totalParametros = parametros.size();
             for (int i = 0; i < totalParametros; i++)
             {
-                Object parametro = parametros.get(i).aceitar(this).toString();
+                String parametro = parametros.get(i).aceitar(this).toString();
+                if ("escreva".equals(nomeFuncao)) // preserva \n no código Portugol que chamada a função 'escreva'
+                {
+                    parametro = parametro.replaceAll("\n", "\\\\n");
+                }
                 codigo += parametro;
                 if (i < totalParametros - 1)
                 {
