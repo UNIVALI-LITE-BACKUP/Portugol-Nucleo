@@ -752,7 +752,9 @@ public class GeradorCodigoJava
         @Override
         public String visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
-            String codigo = no.getNome() + "(";
+            String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
+            String nomeFuncao = no.getNome();
+            String codigo = String.format("%s%s (", escopoFuncao, nomeFuncao);
             List<NoExpressao> parametros = no.getParametros();
             int totalParametros = parametros.size();
             for (int i = 0; i < totalParametros; i++)
