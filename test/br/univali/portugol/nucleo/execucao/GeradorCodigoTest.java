@@ -23,43 +23,43 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
-//    @Test
-//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
-//    {
-//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
-//        File[] dirs = dirExemplos.listFiles();
-//        for (File dir : dirs)
-//        {
-//            geraCodigoParaExemplo(dir);
-//        }
-//    }
-//    
-//    private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
-//    {
-//        if (exemplo.isDirectory()) {
-//            File files[] = exemplo.listFiles();
-//            for (File file : files)
-//            {
-//                geraCodigoParaExemplo(file);
-//            }
-//        }
-//        else
-//        {
-//            if (exemplo.getName().endsWith(".por"))
-//            {
-//                System.out.println("TESTANDO " + exemplo.getName());
-//                String codigoPortugol = new Scanner(exemplo).useDelimiter("\\Z").next();
-//                AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
-//                aa.analisar(codigoPortugol);
-//                GeradorCodigoJava gerador = new GeradorCodigoJava();
-//                String nomeClasse = exemplo.getName().replace(".por", "");
-//                String arquivoJava = "../" + nomeClasse + ".java";
-//                OutputStream os = new BufferedOutputStream(new FileOutputStream(arquivoJava));
-//                gerador.gera((ASAPrograma) aa.getASA(), os, nomeClasse);
-//                os.close();
-//            }
-//        }
-//    }
+    @Test
+    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+    {
+        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+        File[] dirs = dirExemplos.listFiles();
+        for (File dir : dirs)
+        {
+            geraCodigoParaExemplo(dir);
+        }
+    }
+    
+    private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+    {
+        if (exemplo.isDirectory()) {
+            File files[] = exemplo.listFiles();
+            for (File file : files)
+            {
+                geraCodigoParaExemplo(file);
+            }
+        }
+        else
+        {
+            if (exemplo.getName().endsWith(".por"))
+            {
+                System.out.println("TESTANDO " + exemplo.getName());
+                String codigoPortugol = new Scanner(exemplo).useDelimiter("\\Z").next();
+                AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
+                aa.analisar(codigoPortugol);
+                GeradorCodigoJava gerador = new GeradorCodigoJava();
+                String nomeClasse = exemplo.getName().replace(".por", "");
+                String arquivoJava = "../" + nomeClasse + ".java";
+                OutputStream os = new BufferedOutputStream(new FileOutputStream(arquivoJava));
+                gerador.gera((ASAPrograma) aa.getASA(), os, nomeClasse);
+                os.close();
+            }
+        }
+    }
 
     @Test
     public void testNoEscolha() throws Exception
@@ -92,7 +92,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "         int opcao = 1;                                      \n"                
                 + "         switch (opcao)                                      \n"
@@ -140,7 +140,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "         int x = 1;                                          \n"
                 + "         if (x > 0) {                                        \n"                
@@ -184,7 +184,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "         int x = 1;                                          \n"
                 + "         do{                                                 \n"
@@ -227,7 +227,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "         int x = 1;                                          \n"
                 + "         while(x < 10) {                                     \n"
@@ -266,7 +266,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "      int x = (10/2);                                        \n"
                 + "      int a[] = {1, 2, 3};                                   \n"                
@@ -304,7 +304,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "   private int retornaInteiro()                               \n"
@@ -339,7 +339,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "   private void teste(int x[], double c[][])                 \n"
@@ -368,7 +368,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "   private void testando(int x, double y)                    \n"
@@ -399,7 +399,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "   private void testando()                                   \n"
@@ -436,7 +436,7 @@ public class GeradorCodigoTest
                 + "   private Mouse Mouse = new Mouse();                        \n"
                 + "                                                             \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
@@ -467,7 +467,7 @@ public class GeradorCodigoTest
                 + "   private Mouse m = new Mouse();                            \n"
                 + "                                                             \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
@@ -498,7 +498,7 @@ public class GeradorCodigoTest
                 + "   private Mouse Mouse = new Mouse();                        \n"
                 + "                                                             \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
@@ -525,7 +525,7 @@ public class GeradorCodigoTest
                 + "   private final String c = \"teste\";                       \n"                
                 + "                                                             \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
@@ -555,7 +555,7 @@ public class GeradorCodigoTest
                 + "   private boolean l = true && true || false;                \n"
                 + "   private double r = 53.23 + 0.01;                           \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
@@ -588,7 +588,7 @@ public class GeradorCodigoTest
                 + "   private  double r = 53.23;                                \n"                
                 + "                                                             \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
@@ -622,7 +622,7 @@ public class GeradorCodigoTest
                 + "   private  double f;                                        \n"                
                 + "                                                             \n"
                 + "   @override                                                 \n"
-                + "   protected void executar() throws ErroExecucao             \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
                 + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
@@ -645,7 +645,7 @@ public class GeradorCodigoTest
                 + "public class ProgramaTeste extends Programa"
                 + "{"
                 + "   @override"
-                + "   protected void executar() throws ErroExecucao"
+                + "   protected void executar(String[] parametros) throws ErroExecucao"
                 + "   {"
                 + "   }"
                 + "}";

@@ -97,7 +97,7 @@ public class GeradorCodigoJava
 
         String visibilidade = metodoPrincipal ? "protected" : "private";
         String tipoRetorno = getNomeTipoJava(noFuncao.getTipoDado()) + geraQuantificador(noFuncao.getQuantificador());
-        String parametros = geraStringDosParametros(noFuncao);
+        String parametros = !metodoPrincipal ? geraStringDosParametros(noFuncao) : "(String[] parametros)";
 
         saida.format("   %s %s %s%s", visibilidade, tipoRetorno, nome, parametros); // private void nomeMetodo()
 
@@ -210,7 +210,6 @@ public class GeradorCodigoJava
     private void geraCodigoImportacoes(List<String> importacoes, PrintStream out)
     {
         //importa classe de erro do método executar()
-        
         out.append("import br.univali.portugol.nucleo.mensagens.ErroExecucao;\n");
         
         for (String importacao : importacoes)
