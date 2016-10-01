@@ -152,7 +152,7 @@ public class GeradorCodigoJava
             {
                 nome = biblioteca.getAlias();
             }
-            out.format("   private %s %s = new %s(); \n", tipo, nome, tipo);
+            out.format("   private final %s %s = new %s(); \n", tipo, nome, tipo);
         }
     }
 
