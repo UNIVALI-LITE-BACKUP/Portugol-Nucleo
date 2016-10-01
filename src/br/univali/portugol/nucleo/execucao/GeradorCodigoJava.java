@@ -145,18 +145,9 @@ public class GeradorCodigoJava
             if (podeDeclararComoAtributo)
             {
                 existemVariaveisGlobais = true;
-                NoDeclaracaoInicializavel noDeclaracao = (NoDeclaracaoInicializavel) no;
-                String tipo = getNomeTipoJava(no.getTipoDado());
-                String nomeVariavel = no.getNome() + geraQuantificador(noDeclaracao);
-
-                String inicializacao = "";
-                if (noDeclaracao.possuiInicializacao())
-                {
-                    Object valor = noDeclaracao.getInicializacao().aceitar(visitor);
-                    inicializacao = String.format(" = %s", valor);
-                }
-                String constante = (noDeclaracao.constante()) ? "final " : "";
-                out.format("   private %s%s %s%s; \n", constante, tipo, nomeVariavel, inicializacao);
+                String constante = (no.constante()) ? "final " : "";
+                out.append(geraIdentacao());
+                out.format("private %s%s; %n", constante, no.aceitar(visitor));
             }
         }
         
@@ -512,22 +503,26 @@ public class GeradorCodigoJava
         }
 
         @Override
-        public String visitar(NoDeclaracaoVetor noDeclaracao) throws ExcecaoVisitaASA
+        public String visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
         {
-            NoExpressao noTamanho = noDeclaracao.getTamanho();
-            String codigoTamanho = "";
-            if (noTamanho != null)
-            {
-                codigoTamanho = noTamanho.aceitar(this).toString();
-            }
-            String nome = noDeclaracao.getNome() + "[" + codigoTamanho + "]";
-            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            String codigoGerado = String.format("%s %s", tipo, nome);
+            String nome = no.getNome();
+            String tipo = getNomeTipoJava(no.getTipoDado());
+            String codigoGerado = String.format("%s %s[]", tipo, nome);
 
-            if (noDeclaracao.possuiInicializacao())
+            if (no.possuiInicializacao())
             {
-                Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
+                Object inicializacao = no.getInicializacao().aceitar(this);
                 codigoGerado += String.format(" = %s", inicializacao.toString());
+            }
+            else
+            {
+                NoExpressao noTamanho = no.getTamanho();
+                String codigoTamanho = "";
+                if (noTamanho != null)
+                {
+                    codigoTamanho = noTamanho.aceitar(this).toString();
+                }
+                codigoGerado += String.format(" = new %s[%s]", tipo, codigoTamanho);
             }
 
             return codigoGerado;
@@ -556,26 +551,29 @@ public class GeradorCodigoJava
         @Override
         public String visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
         {
-            NoExpressao noLinhas = noDeclaracao.getNumeroLinhas();
-            NoExpressao noColunas = noDeclaracao.getNumeroColunas();
-            String codigoColunas = "";
-            String codigoLinhas = "";
-            if (noLinhas != null)
-            {
-                codigoLinhas = noLinhas.aceitar(this).toString();
-            }
-            if (noColunas != null)
-            {
-                codigoColunas = noColunas.aceitar(this).toString();
-            }
-            String nome = noDeclaracao.getNome() + "[" + codigoLinhas + "][" + codigoColunas + "]";
+            String nome = noDeclaracao.getNome();// + "[" + codigoLinhas + "][" + codigoColunas + "]";
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            String codigoGerado = String.format("%s %s", tipo, nome);
+            String codigoGerado = String.format("%s %s[][]", tipo, nome);
 
             if (noDeclaracao.possuiInicializacao())
             {
                 Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
                 codigoGerado += String.format(" = %s", inicializacao.toString());
+            }
+            else{
+                NoExpressao noLinhas = noDeclaracao.getNumeroLinhas();
+                NoExpressao noColunas = noDeclaracao.getNumeroColunas();
+                String colunas = "";
+                String linhas = "";
+                if (noLinhas != null)
+                {
+                    linhas = noLinhas.aceitar(this).toString();
+                }
+                if (noColunas != null)
+                {
+                    colunas = noColunas.aceitar(this).toString();
+                }
+                codigoGerado += String.format(" = new %s[%s][%s]", tipo, linhas, colunas);
             }
 
             return codigoGerado;

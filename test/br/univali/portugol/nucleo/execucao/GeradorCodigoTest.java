@@ -1,20 +1,9 @@
 package br.univali.portugol.nucleo.execucao;
 
-import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,43 +15,43 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
-    @Test // Este teste itera em todos os exemplos do PS e gera o código Java equivalente
-    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
-    {
-        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
-        File[] dirs = dirExemplos.listFiles();
-        for (File dir : dirs)
-        {
-            geraCodigoParaExemplo(dir);
-        }
-    }
     
-    private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+    @Test
+    public void testeDeclaracaoVetorMatriz() throws Exception
     {
-        if (exemplo.isDirectory()) {
-            File files[] = exemplo.listFiles();
-            for (File file : files)
-            {
-                geraCodigoParaExemplo(file);
-            }
-        }
-        else
-        {
-            if (exemplo.getName().endsWith(".por"))
-            {
-                System.out.println("TESTANDO " + exemplo.getName());
-                String codigoPortugol = new Scanner(exemplo).useDelimiter("\\Z").next();
-                AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
-                aa.analisar(codigoPortugol);
-                GeradorCodigoJava gerador = new GeradorCodigoJava();
-                String nomeExemplo = exemplo.getName().replace(".por", "");
-                String nomeClasse = "Exemplo" + (nomeExemplo.substring(0, 1).toUpperCase() + nomeExemplo.substring(1));
-                String arquivoJava = "../" + nomeClasse + ".java";
-                PrintWriter writer = new PrintWriter(arquivoJava);
-                gerador.gera((ASAPrograma) aa.getASA(), writer, nomeClasse);
-                writer.close();
-            }
-        }
+        String portugol = "programa                                             \n" +
+                        "{                                                      \n" +
+                        "       const inteiro TAM = 5                           \n" +                                                                        
+                        "	cadeia frases[TAM]                              \n" +                        
+                        "                                                       \n" +
+                        "	funcao inicio()                                 \n" +
+                        "	{                                               \n" +
+                        "		inteiro vetor[3]                        \n" +
+                        "		logico matriz[2][2]                     \n" +
+                        "		caracter letras[TAM][TAM]               \n" +                        
+                        "	}                                               \n" +
+                        "}";
+        
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "     private final int TAM = 5;                              \n"                                                                        
+                + "     private String frases[] = new String[TAM];              \n"                        
+                + "                                                             \n"                
+                + "   @Override                                                 \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "		int vetor[] = new int[3];                       \n" 
+                + "		boolean matriz[][] = new boolean[2][2];         \n" 
+                + "		char letras[][] = new char[TAM][TAM];           \n"                         
+                + "   }                                                         \n"                
+                + "}";
+        
+        comparaCodigos(portugol, codigoJavaEsperado);
     }
     
     @Test
@@ -150,10 +139,10 @@ public class GeradorCodigoTest
                 + "         b = leiaInteiro();                                  \n"                                
                 + "         c = leiaInteiro();                                  \n"                                                
                 
-                + "         int vetor[3];                                       \n"
+                + "         int vetor[] = new int[3];                           \n"
                 + "         vetor[0] = leiaInteiro();                           \n"                                
 
-                + "         int matriz[3][2];                                   \n"
+                + "         int matriz[][] = new int[3][2];                     \n"
                 + "         matriz[0][1] = leiaInteiro();                       \n"                                                
                 + "         matriz[(0+1)%3][1/5+6*2] = leiaInteiro();           \n"                                                                
                 + "   }                                                         \n"                
@@ -413,8 +402,8 @@ public class GeradorCodigoTest
                 + "   {                                                         \n"
                 + "      int x = (10/2);                                        \n"
                 + "      int a[] = {1, 2, 3};                                   \n"                
-                + "      int u[3];                                              \n"                
-                + "      int x[2][2];                                           \n"                
+                + "      int u[] = new int[3];                                  \n"                
+                + "      int x[][] = new int[2][2];                             \n"                
                 + "      int b[][] = {{1, 2, 3}, {4,5,6}};                      \n"
                 + "      int c = a[0];                                          \n"                
                 + "      int d = b[0][1];                                       \n"                
