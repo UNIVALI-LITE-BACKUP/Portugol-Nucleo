@@ -487,6 +487,25 @@ public abstract class Programa
         return System.identityHashCode(this);
     }
 
+    protected void limpa() throws ErroExecucao
+    {
+        try
+        {
+            saida.limpar();
+        }
+        catch (Exception e)
+        {
+            throw new ErroExecucao()
+            {
+                @Override
+                protected String construirMensagem()
+                {
+                    return "Erro de execução limpando a saída!";
+                }
+            };
+        }
+    }
+    
     private void escreva(Object... listaParametrosPassados) throws ErroExecucao
     {
         if (saida == null)
