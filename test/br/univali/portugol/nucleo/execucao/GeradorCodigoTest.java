@@ -321,18 +321,20 @@ public class GeradorCodigoTest
     }
     
     @Test
-    public void testGeracaoAtribuicaoDentroDeFuncao() throws Exception
+    public void testGeracaoAtribuicoes() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"
                 + "	funcao inicio() {                                       \n"
                 + "         inteiro x = (10 / 2)                                \n"
                 + "         inteiro a[] = {1, 2, 3}                             \n"
                 + "         inteiro u[3]                                        \n"                
-                + "         inteiro x[2][2]                                        \n"                                
+                + "         inteiro x[2][2]                                     \n"                                
                 + "         inteiro b[][] = {{1, 2, 3}, {4,5,6}}                \n"                
                 + "         inteiro c = a[0]                                    \n"
                 + "         inteiro d = b[0][1]                                 \n"                
                 + "         inteiro f = x                                       \n"                                
+                + "         b[0][0] = 1                                         \n"                                                
+                + "         u[1] = 1                                            \n"                                                                
                 + "	}                                                       \n"
                 + "}";
 
@@ -354,6 +356,8 @@ public class GeradorCodigoTest
                 + "      int c = a[0];                                          \n"                
                 + "      int d = b[0][1];                                       \n"                
                 + "      int f = x;                                             \n"                                
+                + "      b[0][0] = 1;                                           \n"                                                
+                + "      u[1] = 1;                                              \n"                                                                                
                 + "   }                                                         \n"
                 + "}";
 

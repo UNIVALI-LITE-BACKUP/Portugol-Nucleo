@@ -733,7 +733,7 @@ public class GeradorCodigoJava
         @Override
         public String visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
         {
-            return no.toString();
+            return no.getOperandoEsquerdo().aceitar(this) + " = " + no.getOperandoDireito().aceitar(this);
         }
         
         @Override
