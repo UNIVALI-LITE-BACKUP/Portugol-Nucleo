@@ -52,7 +52,8 @@ public class GeradorCodigoTest
                 AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
                 aa.analisar(codigoPortugol);
                 GeradorCodigoJava gerador = new GeradorCodigoJava();
-                String nomeClasse = exemplo.getName().replace(".por", "");
+                String nomeExemplo = exemplo.getName().replace(".por", "");
+                String nomeClasse = "Exemplo" + (nomeExemplo.substring(0, 1).toUpperCase() + nomeExemplo.substring(1));
                 String arquivoJava = "../" + nomeClasse + ".java";
                 OutputStream os = new BufferedOutputStream(new FileOutputStream(arquivoJava));
                 gerador.gera((ASAPrograma) aa.getASA(), os, nomeClasse);
