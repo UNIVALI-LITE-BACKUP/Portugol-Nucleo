@@ -78,7 +78,7 @@ public class GeradorCodigoJava
             builder.append(String.format("%s %s", tipo, nome));
             if (i < size - 1)
             {
-                builder.append(",");
+                builder.append(", ");
             }
         }
         builder.append(")"); // parenteses de fim da lista de parâmetros
@@ -87,19 +87,23 @@ public class GeradorCodigoJava
 
     private void geraMetodo(NoDeclaracaoFuncao noFuncao, PrintStream saida) throws ExcecaoVisitaASA
     {
+        saida.println();
+        saida.append(geraIdentacao());
+        
         String nome = noFuncao.getNome();
         boolean metodoPrincipal = "inicio".equals(nome);
         if (metodoPrincipal)
         {
             nome = "executar";
-            saida.append("   @Override \n");
+            saida.append("@Override \n");
         }
 
         String visibilidade = metodoPrincipal ? "protected" : "private";
         String tipoRetorno = getNomeTipoJava(noFuncao.getTipoDado()) + geraQuantificador(noFuncao.getQuantificador());
         String parametros = !metodoPrincipal ? geraStringDosParametros(noFuncao) : "(String[] parametros)";
 
-        saida.format("   %s %s %s%s", visibilidade, tipoRetorno, nome, parametros); // private void nomeMetodo()
+        saida.append(geraIdentacao());
+        saida.format("%s %s %s%s", visibilidade, tipoRetorno, nome, parametros); // private void nomeMetodo()
 
         if (metodoPrincipal)
         {
@@ -107,11 +111,15 @@ public class GeradorCodigoJava
         }
         saida.println(); // pula uma linha depois da declaração da assinatura do método
 
-        saida.append("   {\n"); // inicia o escopo do método
-
+        saida.append(geraIdentacao());
+        saida.append("{\n"); // inicia o escopo do método
+        
+        saida.append(geraIdentacao());
         saida.append(visitarBlocos(noFuncao.getBlocos())); // gera o código dentro do método
-
-        saida.append("   }\n"); // finaliza o escopo do método
+        saida.println();
+        
+        saida.append(geraIdentacao());
+        saida.append("}\n"); // finaliza o escopo do método
 
         saida.println();
 
@@ -120,10 +128,12 @@ public class GeradorCodigoJava
     private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa, PrintStream out) throws ExcecaoVisitaASA
     {
         List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
+        boolean existemVariaveisGlobais = false;
         for (NoDeclaracao noDeclaracao : variaveisGlobais)
         {
             if (noDeclaracao instanceof NoDeclaracaoVariavel)
             {
+                existemVariaveisGlobais = true;
                 String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
                 String nomeVariavel = noDeclaracao.getNome();
 
@@ -139,6 +149,11 @@ public class GeradorCodigoJava
                 out.format("   private %s%s %s%s; \n", constante, tipo, nomeVariavel, inicializacao);
             }
         }
+        
+        if (existemVariaveisGlobais)
+        {
+            out.println(); // deixa uma linha em branco depois dos atributos globais
+        }
     }
 
     private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa, PrintStream out)
@@ -152,7 +167,13 @@ public class GeradorCodigoJava
             {
                 nome = biblioteca.getAlias();
             }
-            out.format("   private final %s %s = new %s(); \n", tipo, nome, tipo);
+            out.append(geraIdentacao());
+            out.format("private final %s %s = new %s(); \n", tipo, nome, tipo);
+        }
+        
+        if (!libsIncluidas.isEmpty())
+        {
+            out.println(); // deixa uma linha em branco depois dos atributos das bibliotecas
         }
     }
 
@@ -160,11 +181,7 @@ public class GeradorCodigoJava
     {
         geraAtributosParaAsVariaveisGlobais(asa, out);
 
-        out.println();
-
         geraAtributosParaAsBibliotecasIncluidas(asa, out);
-
-        out.println();
     }
 
     private String getNomeTipoJava(TipoDado tipoPortugol)
@@ -232,9 +249,10 @@ public class GeradorCodigoJava
     private String visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {
         nivelEscopo++;
-        String codigoGerado = geraIdentacao();
+        String codigoGerado = "";
         for (NoBloco bloco : blocos)
         {
+            codigoGerado += geraIdentacao();
             codigoGerado += bloco.aceitar(visitor).toString();
             if (blocoFinalizaComPontoEVirgula(bloco))
             {
@@ -471,15 +489,14 @@ public class GeradorCodigoJava
         {
             String nome = noDeclaracao.getNome();
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            String codigoGerado = String.format("%3s%s %s", " ", tipo, nome);
+            
+            String codigoGerado = String.format("%s %s", tipo, nome);
 
             if (noDeclaracao.possuiInicializacao())
             {
                 Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
                 codigoGerado += String.format(" = %s", inicializacao.toString());
             }
-
-            //codigoGerado += "\n";
 
             return codigoGerado;
         }
@@ -626,9 +643,9 @@ public class GeradorCodigoJava
         {
             String condicao = no.getCondicao().aceitar(this).toString();
             String codigoGerado = "while(" + condicao + ")\n";
-            codigoGerado += "   {\n";
-            codigoGerado += "      " + visitarBlocos(no.getBlocos()) + "\n";
-            codigoGerado += "   }\n";
+            codigoGerado += geraIdentacao() + "{\n";
+            codigoGerado += visitarBlocos(no.getBlocos()) + "\n";
+            codigoGerado += geraIdentacao() + "}\n";
             return codigoGerado;
         }
         
@@ -647,9 +664,9 @@ public class GeradorCodigoJava
                 incremento = no.getIncremento().aceitar(this).toString();
             }
             String codigoGerado = String.format("for(%s; %s; %s)\n", inicializacao, condicao, incremento);
-            codigoGerado += "   {\n";
-            codigoGerado += "      " + visitarBlocos(no.getBlocos()) + "\n";
-            codigoGerado += "   }\n";
+            codigoGerado += geraIdentacao() + "{\n";
+            codigoGerado += visitarBlocos(no.getBlocos()) + "\n";
+            codigoGerado += geraIdentacao() + "}\n";
             return codigoGerado;
         }
         
@@ -660,18 +677,18 @@ public class GeradorCodigoJava
             List<NoBloco> blocosVerdadeiros = no.getBlocosVerdadeiros();
             List<NoBloco> blocosFalsos = no.getBlocosFalsos();
             String codigoGerado = "if(" + condicao + ")\n";
-            codigoGerado += "   {\n";
+            codigoGerado += geraIdentacao() + "{\n";
             if (blocosVerdadeiros != null)
             {
-                codigoGerado += "      " + visitarBlocos(blocosVerdadeiros) + "\n";
+                codigoGerado += visitarBlocos(blocosVerdadeiros) + "\n";
             }
-            codigoGerado += "   }\n";
+            codigoGerado += geraIdentacao() + "}\n";
             if (blocosFalsos != null)
             {
-                codigoGerado += "else\n";
-                codigoGerado += "{\n";
-                codigoGerado += "      " + visitarBlocos(blocosFalsos) + "\n";
-                codigoGerado += "}\n";
+                codigoGerado += geraIdentacao() + "else\n";
+                codigoGerado += geraIdentacao() + "{\n";
+                codigoGerado += visitarBlocos(blocosFalsos) + "\n";
+                codigoGerado += geraIdentacao() + "}\n";
             }
             return codigoGerado;
         }
@@ -681,7 +698,7 @@ public class GeradorCodigoJava
         {
             String expressao = no.getExpressao().aceitar(this).toString();
             String codigoGerado = "switch(" + expressao + ")\n";
-            codigoGerado += "   {\n";
+            codigoGerado += geraIdentacao() + "{\n";
             List<NoCaso> casos = no.getCasos();
             if (casos != null)
             {
@@ -690,15 +707,15 @@ public class GeradorCodigoJava
                     NoExpressao expressaoCaso = caso.getExpressao();
                     if (expressaoCaso != null)
                     {
-                        codigoGerado += "case " + caso.getExpressao().aceitar(this) + ":";
+                        codigoGerado += geraIdentacao() + "case " + caso.getExpressao().aceitar(this) + ":\n";
                     }
                     else{
-                        codigoGerado += "default:";
+                        codigoGerado += geraIdentacao() + "default:";
                     }
-                    codigoGerado += "      " + visitarBlocos(caso.getBlocos()) + "\n";
+                    codigoGerado += visitarBlocos(caso.getBlocos()) + "\n";
                 }
             }
-            codigoGerado += "   }\n";
+            codigoGerado += geraIdentacao() + "}\n";
             return codigoGerado;
         }
         
@@ -709,12 +726,12 @@ public class GeradorCodigoJava
             List<NoBloco> blocos = no.getBlocos();
             String condicao = no.getCondicao().aceitar(this).toString();
             String codigoGerado = "do";
-            codigoGerado += "   {\n";
+            codigoGerado += geraIdentacao() + "{\n";
             if (blocos != null)
             {
-                codigoGerado += "      " + visitarBlocos(blocos) + "\n";
+                codigoGerado += visitarBlocos(blocos) + "\n";
             }
-            codigoGerado += "   }\n";
+            codigoGerado += geraIdentacao() + "}\n";
             codigoGerado += "while(" + condicao + ");\n";
             return codigoGerado;
         }

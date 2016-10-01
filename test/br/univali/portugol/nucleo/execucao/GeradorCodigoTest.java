@@ -23,16 +23,16 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
-    @Test
-    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
-    {
-        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
-        File[] dirs = dirExemplos.listFiles();
-        for (File dir : dirs)
-        {
-            geraCodigoParaExemplo(dir);
-        }
-    }
+//    @Test
+//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+//    {
+//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+//        File[] dirs = dirExemplos.listFiles();
+//        for (File dir : dirs)
+//        {
+//            geraCodigoParaExemplo(dir);
+//        }
+//    }
     
     private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
