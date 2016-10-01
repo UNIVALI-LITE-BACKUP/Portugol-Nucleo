@@ -92,7 +92,7 @@ public class GeradorCodigoJava
         if (metodoPrincipal)
         {
             nome = "executar";
-            saida.append("   @override \n");
+            saida.append("   @Override \n");
         }
 
         String visibilidade = metodoPrincipal ? "protected" : "private";
