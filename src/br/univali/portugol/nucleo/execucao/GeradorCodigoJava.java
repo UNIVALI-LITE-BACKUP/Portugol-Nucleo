@@ -114,7 +114,6 @@ public class GeradorCodigoJava
         saida.append(geraIdentacao());
         saida.append("{\n"); // inicia o escopo do método
         
-        saida.append(geraIdentacao());
         saida.append(visitarBlocos(noFuncao.getBlocos())); // gera o código dentro do método
         saida.println();
         
@@ -512,15 +511,13 @@ public class GeradorCodigoJava
             }
             String nome = noDeclaracao.getNome() + "[" + codigoTamanho + "]";
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            String codigoGerado = String.format("%3s%s %s", " ", tipo, nome);
+            String codigoGerado = String.format("%s %s", tipo, nome);
 
             if (noDeclaracao.possuiInicializacao())
             {
                 Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
                 codigoGerado += String.format(" = %s", inicializacao.toString());
             }
-
-            //codigoGerado += ";\n";
 
             return codigoGerado;
         }
@@ -562,15 +559,13 @@ public class GeradorCodigoJava
             }
             String nome = noDeclaracao.getNome() + "[" + codigoLinhas + "][" + codigoColunas + "]";
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            String codigoGerado = geraIdentacao() + String.format("%s %s", tipo, nome);
+            String codigoGerado = String.format("%s %s", tipo, nome);
 
             if (noDeclaracao.possuiInicializacao())
             {
                 Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
                 codigoGerado += String.format(" = %s", inicializacao.toString());
             }
-
-            //codigoGerado += ";\n";
 
             return codigoGerado;
         }
@@ -725,14 +720,14 @@ public class GeradorCodigoJava
         {
             List<NoBloco> blocos = no.getBlocos();
             String condicao = no.getCondicao().aceitar(this).toString();
-            String codigoGerado = "do";
-            codigoGerado += geraIdentacao() + "{\n";
+            String codigoGerado = "do                   \n";
+            codigoGerado += geraIdentacao() + "{        \n";
             if (blocos != null)
             {
                 codigoGerado += visitarBlocos(blocos) + "\n";
             }
-            codigoGerado += geraIdentacao() + "}\n";
-            codigoGerado += "while(" + condicao + ");\n";
+            codigoGerado += geraIdentacao() + "}        \n";
+            codigoGerado += geraIdentacao() + "while(" + condicao + ");   \n";
             return codigoGerado;
         }
 
