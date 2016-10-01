@@ -106,12 +106,24 @@ public class GeradorCodigoTest
                 + "	funcao inicio() {                                       \n"
                 + "         inteiro opcao                                       \n"
                 + "         leia(opcao)                                         \n"                
+
                 + "         logico teste                                        \n"
                 + "         leia(teste)                                         \n"                                
+
                 + "         cadeia testeCadeia = \"inicializada\"               \n"
                 + "         leia(testeCadeia)                                   \n"                                
+
                 + "         inteiro a, b, c                                     \n"
                 + "         leia(a, b, c)                                       \n"                
+
+                + "         inteiro vetor[3]                                    \n"
+                + "         leia(vetor[0])                                      \n"                                
+
+                + "         inteiro matriz[3][2]                                \n"
+                + "         leia(matriz[0][1])                                  \n"                                
+                
+                + "         leia(matriz[(0+1)%3][1/5+6*2])                                  \n"                                                
+
                 + "	}                                                       \n"
                 + "}";
 
@@ -137,6 +149,13 @@ public class GeradorCodigoTest
                 + "         a = leiaInteiro();                                  \n"
                 + "         b = leiaInteiro();                                  \n"                                
                 + "         c = leiaInteiro();                                  \n"                                                
+                
+                + "         int vetor[3];                                       \n"
+                + "         vetor[0] = leiaInteiro();                           \n"                                
+
+                + "         int matriz[3][2];                                   \n"
+                + "         matriz[0][1] = leiaInteiro();                       \n"                                                
+                + "         matriz[(0+1)%3][1/5+6*2] = leiaInteiro();           \n"                                                                
                 + "   }                                                         \n"                
                 + "}";
 

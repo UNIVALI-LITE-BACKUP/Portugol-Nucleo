@@ -793,6 +793,29 @@ public class GeradorCodigoJava
             return codigo;
         }
         
+        private String getNomeDaReferencia(NoReferencia no) throws ExcecaoVisitaASA
+        {
+            String nome = no.getNome();
+            if (no instanceof NoReferenciaVariavel)
+            {
+                return no.getNome();
+            }
+            else if (no instanceof NoReferenciaVetor) 
+            {
+                NoReferenciaVetor noVetor = (NoReferenciaVetor)no;
+                String indice = noVetor.getIndice().aceitar(this).toString();
+                nome += String.format("[%s]", indice);
+            } 
+            else //NoReferenciaMatriz
+            {
+                NoReferenciaMatriz noMatriz = (NoReferenciaMatriz) no;
+                String linha = noMatriz.getLinha().aceitar(this).toString();
+                String coluna = noMatriz.getColuna().aceitar(this).toString();
+                nome += String.format("[%s][%s]", linha, coluna);
+            }
+            return nome;
+        }
+        
         private String geraCodigoParaFuncaoLeia(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
             String codigo = "";
@@ -802,7 +825,7 @@ public class GeradorCodigoJava
                 NoReferencia noRef = (NoReferencia)parametros.get(i);
                 NoDeclaracao origem = noRef.getOrigemDaReferencia();
                 TipoDado tipo = TipoDado.CADEIA;
-                String nomeVariavel = noRef.getNome();
+                String nomeVariavel = getNomeDaReferencia(noRef); // nome da variável + colchetes de vetores ou matrizes incluíndo as expressões dos índices
                 String nomeFuncao = "";
                 if (origem != null) // parece que tem um bug no leia passando 'cadeia' como parametro, a origem do 'leia' é nula
                 {
@@ -815,7 +838,6 @@ public class GeradorCodigoJava
                 {
                     codigo += ";\n";
                 }
-                //codigo += "\n";
             }
             return codigo;
         }
