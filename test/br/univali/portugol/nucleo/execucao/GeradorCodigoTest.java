@@ -54,6 +54,59 @@ public class GeradorCodigoTest
 //    }
 
     @Test
+    public void testNoEscolha() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "         inteiro opcao = 1                                   \n"
+                + "         escolha (opcao)                                     \n"
+                + "         {                                                   \n" 
+                + "		caso 1:                                         \n" 
+                + "                 escreva (\"caso 1\")                        \n" 
+                + "		 	pare                                    \n" 
+                + "		 caso 2:                                        \n" 
+                + "                 escreva (\"caso 2\")                        \n" 
+                + "		 	pare                                    \n" 
+                + "		 caso 3:                                        \n" 
+                + "		 	escreva (\"Tchau!\")                    \n" 
+                + "		 	pare                                    \n" 
+                + "		 caso contrario:                                \n" 
+                + "		 	escreva (\"Opção Inválida !\")          \n" 
+                + "         }                                                   \n"                
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @override                                                 \n"
+                + "   protected void executar() throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "         int opcao = 1;                                      \n"                
+                + "         switch (opcao)                                      \n"
+                + "         {                                                   \n" 
+                + "		case 1:                                         \n" 
+                + "                 escreva (\"caso 1\");                        \n" 
+                + "		 	break;                                  \n" 
+                + "		 case 2:                                        \n" 
+                + "                 escreva (\"caso 2\");                        \n" 
+                + "		 	break;                                  \n" 
+                + "		 case 3:                                        \n" 
+                + "		 	escreva (\"Tchau!\");                    \n" 
+                + "		 	break;                                  \n" 
+                + "		 default:                                       \n" 
+                + "		 	escreva (\"Opção Inválida !\");          \n" 
+                + "         }                                                   \n"                
+                + "   }                                                         \n"                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testGeracaoSeSenao() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"

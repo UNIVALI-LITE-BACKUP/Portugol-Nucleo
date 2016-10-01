@@ -219,7 +219,7 @@ public class GeradorCodigoJava
     private boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
     {
         boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
-        boolean ehDesvio = bloco instanceof NoSe;
+        boolean ehDesvio = bloco instanceof NoSe || bloco instanceof NoEscolha;
         if (!ehLoop && !ehDesvio)
             return true;
         
@@ -672,6 +672,33 @@ public class GeradorCodigoJava
             }
             return codigoGerado;
         }
+        
+        @Override
+        public String visitar(NoEscolha no) throws ExcecaoVisitaASA
+        {
+            String expressao = no.getExpressao().aceitar(this).toString();
+            String codigoGerado = "switch(" + expressao + ")\n";
+            codigoGerado += "   {\n";
+            List<NoCaso> casos = no.getCasos();
+            if (casos != null)
+            {
+                for (NoCaso caso : casos)
+                {
+                    NoExpressao expressaoCaso = caso.getExpressao();
+                    if (expressaoCaso != null)
+                    {
+                        codigoGerado += "case " + caso.getExpressao().aceitar(this) + ":";
+                    }
+                    else{
+                        codigoGerado += "default:";
+                    }
+                    codigoGerado += "      " + visitarBlocos(caso.getBlocos()) + "\n";
+                }
+            }
+            codigoGerado += "   }\n";
+            return codigoGerado;
+        }
+        
 
         @Override
         public String visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
@@ -693,6 +720,12 @@ public class GeradorCodigoJava
         public String visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
         {
             return no.toString();
+        }
+        
+        @Override
+        public String visitar(NoMenosUnario no) throws ExcecaoVisitaASA
+        {
+            return "-" + no.getExpressao().aceitar(this);
         }
         
         @Override
@@ -720,5 +753,12 @@ public class GeradorCodigoJava
 
             return codigo;
         }
+
+        @Override
+        public String visitar(NoPare noPare) throws ExcecaoVisitaASA
+        {
+            return "break";
+        }
+        
     }
 }
