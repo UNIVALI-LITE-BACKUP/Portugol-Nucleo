@@ -11,6 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,16 +26,16 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
-    @Test
-    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
-    {
-        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
-        File[] dirs = dirExemplos.listFiles();
-        for (File dir : dirs)
-        {
-            geraCodigoParaExemplo(dir);
-        }
-    }
+//    @Test // Este teste itera em todos os exemplos do PS e gera o código Java equivalente
+//    public void testaExemplos() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+//    {
+//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+//        File[] dirs = dirExemplos.listFiles();
+//        for (File dir : dirs)
+//        {
+//            geraCodigoParaExemplo(dir);
+//        }
+//    }
     
     private void geraCodigoParaExemplo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
@@ -55,9 +58,9 @@ public class GeradorCodigoTest
                 String nomeExemplo = exemplo.getName().replace(".por", "");
                 String nomeClasse = "Exemplo" + (nomeExemplo.substring(0, 1).toUpperCase() + nomeExemplo.substring(1));
                 String arquivoJava = "../" + nomeClasse + ".java";
-                OutputStream os = new BufferedOutputStream(new FileOutputStream(arquivoJava));
-                gerador.gera((ASAPrograma) aa.getASA(), os, nomeClasse);
-                os.close();
+                PrintWriter writer = new PrintWriter(arquivoJava);
+                gerador.gera((ASAPrograma) aa.getASA(), writer, nomeClasse);
+                writer.close();
             }
         }
     }
@@ -77,10 +80,10 @@ public class GeradorCodigoTest
                 + "                 escreva (\"caso 2\")                        \n" 
                 + "		 	pare                                    \n" 
                 + "		 caso 3:                                        \n" 
-                + "		 	escreva (\"Tchau!\")                    \n" 
+                + "		 	escreva (\"Tchau!\n\")                    \n" 
                 + "		 	pare                                    \n" 
                 + "		 caso contrario:                                \n" 
-                + "		 	escreva (\"Opção Inválida !\")          \n" 
+                + "		 	escreva (\"Opção Inválida!\n\")          \n" 
                 + "         }                                                   \n"                
                 + "	}                                                       \n"
                 + "}";
@@ -691,8 +694,9 @@ public class GeradorCodigoTest
 
         // gera o código e escreve em um ByteArrayOutputStream
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        gerador.gera(asa, bos, "ProgramaTeste");
-
+        PrintWriter writer = new PrintWriter(bos);
+        gerador.gera(asa, writer, "ProgramaTeste");
+        writer.flush();
         String codigoGerado = bos.toString();
         System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
 

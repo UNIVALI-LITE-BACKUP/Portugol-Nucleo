@@ -2,8 +2,11 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,29 +19,28 @@ public class GeradorCodigoJava
     private Visitor visitor;
     private int nivelEscopo = 1;
 
-    public void gera(ASAPrograma asa, OutputStream saida, String nomeClasseJava) throws ExcecaoVisitaASA
+    public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
         nivelEscopo = 1;
-        PrintStream out = new PrintStream(saida);
 
         visitor = new Visitor();
 
-        out.append("package programas;\n");
+        saida.append("package programas;\n");
 
-        geraCodigoImportacoes(getListaImportacoes(asa), out);
+        geraCodigoImportacoes(getListaImportacoes(asa), saida);
 
-        out.format("public class %s extends Programa \n", nomeClasseJava)
+        saida.format("public class %s extends Programa \n", nomeClasseJava)
                 .append("{ \n")
                 .append(" \n");
 
-        geraCodigoDosAtributos(asa, out);
+        geraCodigoDosAtributos(asa, saida);
 
-        geraMetodos(asa, out);
+        geraMetodos(asa, saida);
 
-        out.append("}\n"); // fecha a classe
+        saida.append("}\n"); // fecha a classe
     }
 
-    private void geraMetodos(ASAPrograma asa, PrintStream saida) throws ExcecaoVisitaASA
+    private void geraMetodos(ASAPrograma asa, PrintWriter saida) throws ExcecaoVisitaASA
     {
         List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
         for (NoDeclaracao declaracao : declaracoes)
@@ -85,7 +87,7 @@ public class GeradorCodigoJava
         return builder.toString();
     }
 
-    private void geraMetodo(NoDeclaracaoFuncao noFuncao, PrintStream saida) throws ExcecaoVisitaASA
+    private void geraMetodo(NoDeclaracaoFuncao noFuncao, PrintWriter saida) throws ExcecaoVisitaASA
     {
         saida.println();
         saida.append(geraIdentacao());
@@ -124,7 +126,7 @@ public class GeradorCodigoJava
 
     }
 
-    private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa, PrintStream out) throws ExcecaoVisitaASA
+    private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa, PrintWriter out) throws ExcecaoVisitaASA
     {
         List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
         boolean existemVariaveisGlobais = false;
@@ -155,7 +157,7 @@ public class GeradorCodigoJava
         }
     }
 
-    private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa, PrintStream out)
+    private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa, PrintWriter out)
     {
         List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
         for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
@@ -176,7 +178,7 @@ public class GeradorCodigoJava
         }
     }
 
-    private void geraCodigoDosAtributos(ASAPrograma asa, PrintStream out) throws ExcecaoVisitaASA
+    private void geraCodigoDosAtributos(ASAPrograma asa, PrintWriter out) throws ExcecaoVisitaASA
     {
         geraAtributosParaAsVariaveisGlobais(asa, out);
 
@@ -223,7 +225,7 @@ public class GeradorCodigoJava
         return importacoes;
     }
 
-    private void geraCodigoImportacoes(List<String> importacoes, PrintStream out)
+    private void geraCodigoImportacoes(List<String> importacoes, PrintWriter out)
     {
         //importa classe de erro do método executar()
         out.append("import br.univali.portugol.nucleo.mensagens.ErroExecucao;\n");
