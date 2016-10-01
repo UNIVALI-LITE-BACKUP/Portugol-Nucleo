@@ -66,6 +66,40 @@ public class GeradorCodigoTest
     }
     
     @Test
+    public void testeConstanteDeBiblioteca() throws Exception
+    {
+        String portugol = "programa                                                       \n" +
+                        "{                                                              \n" +
+                        "	inclua biblioteca Matematica --> mat                    \n" +
+                        "                                                               \n" +
+                        "	funcao inicio()                                         \n" +
+                        "	{                                                       \n" +
+                        "		real raio = 2.0                                 \n" +
+                        "		real area = mat.PI * mat.potencia(raio, 2.0)    \n" +
+                        "	}                                                       \n" +
+                        "}";
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "import br.univali.portugol.nucleo.bibliotecas.Matematica;    \n"                
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private final Matematica mat = new Matematica();          \n"
+                + "                                                             \n"                
+                + "   @Override                                                 \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "      double raio = 2.0;                                     \n"
+                + "      double area = mat.PI * mat.potencia(raio, 2.0);         \n"
+                + "   }                                                         \n"                
+                + "}";
+        
+        comparaCodigos(portugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testLeia() throws Exception
     {
         String codigoPortugol = "programa {                                     \n"

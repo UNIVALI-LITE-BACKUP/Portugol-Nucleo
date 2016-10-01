@@ -629,7 +629,10 @@ public class GeradorCodigoJava
         @Override
         public String visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
         {
-            return no.getNome();
+            if (no.getEscopo() == null)
+                return no.getNome();
+            
+            return no.getEscopo() + "." + no.getNome();
         }
 
         @Override
