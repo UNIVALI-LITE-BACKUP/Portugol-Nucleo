@@ -3,10 +3,7 @@ package br.univali.portugol.nucleo.execucao;
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -756,6 +753,10 @@ public class GeradorCodigoJava
         {
             String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
             String nomeFuncao = no.getNome();
+            if (escopoFuncao.isEmpty() && "leia".equals(nomeFuncao)) //a função 'leia' tem um tratamento especial
+            {
+                return geraCodigoParaFuncaoLeia(no);
+            }
             String codigo = String.format("%s%s(", escopoFuncao, nomeFuncao);
             List<NoExpressao> parametros = no.getParametros();
             int totalParametros = parametros.size();
@@ -774,6 +775,33 @@ public class GeradorCodigoJava
             }
             codigo += ")";
 
+            return codigo;
+        }
+        
+        private String geraCodigoParaFuncaoLeia(NoChamadaFuncao no) throws ExcecaoVisitaASA
+        {
+            String codigo = "";
+            List<NoExpressao> parametros = no.getParametros();
+            for (int i = 0; i < parametros.size(); i++)
+            {
+                NoReferencia noRef = (NoReferencia)parametros.get(i);
+                NoDeclaracao origem = noRef.getOrigemDaReferencia();
+                TipoDado tipo = TipoDado.CADEIA;
+                String nomeVariavel = noRef.getNome();
+                String nomeFuncao = "";
+                if (origem != null) // parece que tem um bug no leia passando 'cadeia' como parametro, a origem do 'leia' é nula
+                {
+                    tipo = origem.getTipoDado();
+                    String nomeTipoCamelCase = tipo.getNome().substring(0, 1).toUpperCase() + tipo.getNome().substring(1);
+                    nomeFuncao = "leia" + nomeTipoCamelCase;
+                }
+                codigo += String.format("%s = %s()", nomeVariavel, nomeFuncao);
+                if (i < parametros.size() - 1) // adiciona um ponto e vírgula depois de cada atribuição gerada, exceto para a última
+                {
+                    codigo += ";\n";
+                }
+                //codigo += "\n";
+            }
             return codigo;
         }
 

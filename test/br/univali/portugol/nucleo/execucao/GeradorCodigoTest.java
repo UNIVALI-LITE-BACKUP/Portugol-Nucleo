@@ -64,6 +64,50 @@ public class GeradorCodigoTest
             }
         }
     }
+    
+    @Test
+    public void testLeia() throws Exception
+    {
+        String codigoPortugol = "programa {                                     \n"
+                + "	funcao inicio() {                                       \n"
+                + "         inteiro opcao                                       \n"
+                + "         leia(opcao)                                         \n"                
+                + "         logico teste                                        \n"
+                + "         leia(teste)                                         \n"                                
+                + "         cadeia testeCadeia = \"inicializada\"               \n"
+                + "         leia(testeCadeia)                                   \n"                                
+                + "         inteiro a, b, c                                     \n"
+                + "         leia(a, b, c)                                       \n"                
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   @Override                                                 \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
+                + "   {                                                         \n"
+                + "         int opcao;                                          \n"
+                + "         opcao = leiaInteiro();                              \n"                
+                + "         boolean teste;                                      \n"
+                + "         teste = leiaLogico();                               \n"                                
+                + "         String testeCadeia = \"inicializada\";              \n"
+                + "         testeCadeia = leiaCadeia();                         \n"                                
+                + "         int a;                                              \n"
+                + "         int b;                                              \n"
+                + "         int c;                                              \n"                
+                + "         a = leiaInteiro();                                  \n"
+                + "         b = leiaInteiro();                                  \n"                                
+                + "         c = leiaInteiro();                                  \n"                                                
+                + "   }                                                         \n"                
+                + "}";
+
+        comparaCodigos(codigoPortugol, codigoJavaEsperado);
+    }
 
     @Test
     public void testNoEscolha() throws Exception

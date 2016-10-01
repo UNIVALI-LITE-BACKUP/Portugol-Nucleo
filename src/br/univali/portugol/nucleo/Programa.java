@@ -599,7 +599,32 @@ public abstract class Programa
     {
         return leituraIgnorada;
     }
-
+    
+    protected double leiaReal() throws ErroExecucao
+    {
+        return (Double) leia(TipoDado.REAL);
+    }
+    
+    protected int leiaInteiro() throws ErroExecucao
+    {
+        return (Integer) leia(TipoDado.INTEIRO);
+    }
+    
+    protected boolean leiaLogico() throws ErroExecucao
+    {
+        return (Boolean) leia(TipoDado.LOGICO);
+    }
+    
+    protected char leiaCaracter() throws ErroExecucao
+    {
+        return (Character) leia(TipoDado.CARACTER);
+    }
+    
+    protected String leiaCadeia() throws ErroExecucao
+    {
+        return (String) leia(TipoDado.CADEIA);
+    }
+    
     private Object leia(TipoDado tipoDado) throws ErroExecucao
     {
         assert (entrada != null);
