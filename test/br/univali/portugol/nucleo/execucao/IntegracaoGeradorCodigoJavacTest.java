@@ -48,6 +48,7 @@ public class IntegracaoGeradorCodigoJavacTest
     }
     
     public List<String> check(String file) {
+        
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
@@ -66,8 +67,9 @@ public class IntegracaoGeradorCodigoJavacTest
         return messages;
     }
     
-    private String geraCodigo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
+    private void geraCodigo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
+        System.out.println(exemplo);
         if (exemplo.isDirectory()) {
             File files[] = exemplo.listFiles();
             for (File file : files)
@@ -90,18 +92,17 @@ public class IntegracaoGeradorCodigoJavacTest
                 gerador.gera((ASAPrograma) aa.getASA(), writer, nomeClasse);
                 writer.close();
                 
-//                List<String> erros = check(arquivoJava);
-//                if (!erros.isEmpty())
-//                {
-//                    System.out.println("Erros encontrados em " + arquivoJava);
-//                    for (String erro : erros)
-//                    {
-//                        System.out.println("\t" + erro);
-//                    }
-//                }
-//                Assert.assertEquals(0, erros.size());
+                List<String> erros = check(arquivoJava);
+                if (!erros.isEmpty())
+                {
+                    System.out.println("Erros encontrados em " + arquivoJava);
+                    for (String erro : erros)
+                    {
+                        System.out.println("\t" + erro);
+                    }
+                }
+                //Assert.assertEquals(0, erros.size());
             }
         }
-        return "";
     }
 }

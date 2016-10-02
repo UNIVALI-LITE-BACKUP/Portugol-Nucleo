@@ -305,7 +305,8 @@ public class GeradorCodigoJava
         @Override
         public String visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
         {
-            String valor = "\"" + noCadeia.getValor() + "\"";
+            String valor = GeradorCodigoUtils.preservaCaracteresEspeciais(noCadeia.getValor());
+            valor = '\"' + valor + '\"';
             return geraCodigoComParenteses(valor, noCadeia);
         }
 
@@ -774,10 +775,6 @@ public class GeradorCodigoJava
             for (int i = 0; i < totalParametros; i++)
             {
                 String parametro = parametros.get(i).aceitar(this).toString();
-                if ("escreva".equals(nomeFuncao)) // preserva \n no código Portugol que chamada a função 'escreva'
-                {
-                    parametro = parametro.replaceAll("\n", "\\\\n");
-                }
                 codigo += parametro;
                 if (i < totalParametros - 1)
                 {
