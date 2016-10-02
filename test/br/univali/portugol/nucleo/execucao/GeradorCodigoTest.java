@@ -3,10 +3,7 @@ package br.univali.portugol.nucleo.execucao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
