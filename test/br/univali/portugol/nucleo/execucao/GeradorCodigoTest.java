@@ -15,6 +15,76 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
     
+    @Test
+    public void testePalavrasReservadasDoJava() throws Exception
+    {
+        // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
+        String portugol = ""
+            + "programa                                                         \n" 
+            + "{                                                                \n" 
+            + "     inteiro continue                                            \n"                                                                   
+            + "     cadeia break                                                \n"
+            + "     inteiro if                                                  \n"                                                                   
+            + "     cadeia else                                                 \n"            
+            + "     inteiro while                                               \n"                                                                   
+            + "     cadeia do[3]                                                \n"
+            + "     inteiro return[2][2]                                        \n"                                                                   
+            + "     cadeia for                                                  \n"            
+            + "     inteiro import                                              \n"                                                                   
+            + "     cadeia package                                              \n"
+            + "     inteiro assert                                              \n"                                                                   
+            + "     inteiro int                                                 \n"                                                                   
+            + "     cadeia boolean                                              \n"
+            + "     cadeia double                                               \n"            
+            + "     cadeia float                                                \n"            
+            + "     cadeia short                                                \n"            
+            + "     cadeia char                                                 \n"            
+            + "                                                                 \n"
+            + "     funcao inicio()                                             \n"
+            + "     {                                                           \n"
+            + "     }                                                           \n"
+            + "     funcao float(inteiro int, logico boolean[])                                             \n"
+            + "     {                                                           \n"
+            + "     }                                                           \n"            
+                + "}";
+        
+        String codigoJavaEsperado = ""
+            + "package programas;                                               \n"
+            + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;        \n"
+            + "import br.univali.portugol.nucleo.Programa;                      \n"
+            + "                                                                 \n"
+            + "public class ProgramaTeste extends Programa                      \n"
+            + "{                                                                \n"
+            + "     private int _continue;                                       \n"                                                                   
+            + "     private String _break;                                       \n"
+            + "     private int _if;                                             \n"                                                                   
+            + "     private String _else;                                        \n"            
+            + "     private int _while;                                          \n"                                                                   
+            + "     private String _do[] = new String[3];                          \n"
+            + "     private int _return[][] = new int[2][2];                         \n"                                                                   
+            + "     private String _for;                                         \n"            
+            + "     private int _import;                                         \n"                                                                   
+            + "     private String _package;                                     \n"
+            + "     private int _assert;                                         \n"                                                                   
+            + "     private int _int;                                            \n"                                                                   
+            + "     private String _boolean;                                     \n"
+            + "     private String _double;                                      \n"            
+            + "     private String _float;                                       \n"            
+            + "     private String _short;                                       \n"            
+            + "     private String _char;                                        \n"            
+            + "                                                                 \n"                
+            + "   @Override                                                     \n"
+            + "   protected void executar(String[] parametros) throws ErroExecucao             \n"
+            + "   {                                                             \n"
+            + "   }                                                             \n"                
+            + "   private void _float(int _int, boolean _boolean[])             \n"
+            + "   {                                                             \n"
+            + "   }                                                             \n"                
+            + "}";
+        
+        comparaCodigos(portugol, codigoJavaEsperado);
+        
+    }
     
     @Test
     public void testeDeclaracaoVetorMatriz() throws Exception
