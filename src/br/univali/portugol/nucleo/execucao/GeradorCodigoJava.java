@@ -180,9 +180,11 @@ public class GeradorCodigoJava
 
     private void geraCodigoDosAtributos(ASAPrograma asa, PrintWriter out) throws ExcecaoVisitaASA
     {
-        geraAtributosParaAsVariaveisGlobais(asa, out);
-
+        //as bibliotecas são criadas antes dos outros atributos porque alguns exemplos
+        //usam as próprias bibliotecas para inicializar atributos, isso gera um erro sintático no Java (referenciar um atributo final antes de inicializá-lo)
         geraAtributosParaAsBibliotecasIncluidas(asa, out);
+        
+        geraAtributosParaAsVariaveisGlobais(asa, out);        
     }
 
     private String getNomeTipoJava(TipoDado tipoPortugol)
