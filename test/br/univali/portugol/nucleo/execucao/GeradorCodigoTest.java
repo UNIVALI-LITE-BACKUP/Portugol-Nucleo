@@ -854,7 +854,7 @@ public class GeradorCodigoTest
 
         // gera o código e escreve em um ByteArrayOutputStream
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(bos);
+        PrintWriter writer = new PrintWriter(bos);//(System.out, true);
         gerador.gera(asa, writer, "ProgramaTeste");
         writer.flush();
         String codigoGerado = bos.toString();

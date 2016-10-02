@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Elieser
@@ -16,39 +18,36 @@ public class GeradorCodigoJava
     private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
     private Visitor visitor;
     private int nivelEscopo = 1;
+    private PrintWriter saida;
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
-        nivelEscopo = 1;
+        this.nivelEscopo = 1;
+        this.saida = saida;
+        this.visitor = new Visitor();
 
-        visitor = new Visitor();
+        saida.append("package programas;").println();
 
-        saida.append("package programas;")
-                .append(System.lineSeparator());
+        geraCodigoImportacoes(getListaImportacoes(asa));
 
-        geraCodigoImportacoes(getListaImportacoes(asa), saida);
+        saida.format("public class %s extends Programa", nomeClasseJava).println();
+        saida.append("{").println(); // chave de abertura da classe
 
-        saida.format("public class %s extends Programa", nomeClasseJava)
-                .println();
-        saida.append("{") // chave de abertura da classe
-                .println();
+        geraCodigoDosAtributos(asa);
 
-        geraCodigoDosAtributos(asa, saida);
+        geraMetodos(asa);
 
-        geraMetodos(asa, saida);
-
-        saida.append("}") // fecha a classe
-                .println();
+        saida.append("}").println(); // fecha a classe
     }
 
-    private void geraMetodos(ASAPrograma asa, PrintWriter saida) throws ExcecaoVisitaASA
+    private void geraMetodos(ASAPrograma asa) throws ExcecaoVisitaASA
     {
         List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
         for (NoDeclaracao declaracao : declaracoes)
         {
             if (declaracao instanceof NoDeclaracaoFuncao)
             {
-                geraMetodo((NoDeclaracaoFuncao) declaracao, saida);
+                geraMetodo((NoDeclaracaoFuncao) declaracao);
             }
         }
     }
@@ -65,30 +64,30 @@ public class GeradorCodigoJava
         return "";
     }
 
-    private String geraStringDosParametros(NoDeclaracaoFuncao noFuncao)
+    private void geraStringDosParametros(NoDeclaracaoFuncao noFuncao)
     {
-        StringBuilder builder = new StringBuilder();
         List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
 
-        builder.append("("); // parenteses de início da lista de parâmetros
+        saida.append("("); // parenteses de início da lista de parâmetros
         int size = parametros.size();
         for (int i = 0; i < size; i++)
         {
             NoDeclaracaoParametro noParametro = parametros.get(i);
-            String tipo = getNomeTipoJava(noParametro.getTipoDado());
-            String nome = geraNomeValido(noParametro.getNome()) + geraQuantificador(noParametro.getQuantificador());
 
-            builder.append(String.format("%s %s", tipo, nome));
+            saida.append(getNomeTipoJava(noParametro.getTipoDado()))
+                    .append(" ") // espaço entre o tipo e o nome
+                    .append(geraNomeValido(noParametro.getNome()))
+                    .append(geraQuantificador(noParametro.getQuantificador()));
+            
             if (i < size - 1)
             {
-                builder.append(", ");
+                saida.append(", ");
             }
         }
-        builder.append(")"); // parenteses de fim da lista de parâmetros
-        return builder.toString();
+        saida.append(")"); // parenteses de fim da lista de parâmetros
     }
 
-    private void geraMetodo(NoDeclaracaoFuncao noFuncao, PrintWriter saida) throws ExcecaoVisitaASA
+    private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
     {
         saida.println();
         saida.append(geraIdentacao());
@@ -98,34 +97,33 @@ public class GeradorCodigoJava
         if (metodoPrincipal)
         {
             nome = "executar";
-            saida.append("@Override")
-                    .println();
+            saida.append("@Override").println();
         }
 
-        String visibilidade = metodoPrincipal ? "protected" : "private";
-        String tipoRetorno = getNomeTipoJava(noFuncao.getTipoDado()) + geraQuantificador(noFuncao.getQuantificador());
-        String parametros = !metodoPrincipal ? geraStringDosParametros(noFuncao) : "(String[] parametros)";
+        saida.append(geraIdentacao())
+                .append(metodoPrincipal ? "protected" : "private")
+                .append(" ")
+                .append(getNomeTipoJava(noFuncao.getTipoDado()))
+                .append(geraQuantificador(noFuncao.getQuantificador()))
+                .append(" ")
+                .append(geraNomeValido(nome));
 
-        saida.append(geraIdentacao());
-        saida.format("%s %s %s%s", visibilidade, tipoRetorno, geraNomeValido(nome), parametros);
-
-        if (metodoPrincipal)
+        if (!metodoPrincipal)
         {
-            saida.append(" throws ErroExecucao");
+            geraStringDosParametros(noFuncao);
         }
+        else
+        {
+            saida.append("(String[] parametros) throws ErroExecucao");
+        }
+
         saida.println(); // pula uma linha depois da declaração da assinatura do método
+        saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
 
-        saida.append(geraIdentacao())
-                .append("{") // inicia o escopo do método
-                .println();
-
-        saida.append(visitarBlocos(noFuncao.getBlocos())) // gera o código dentro do método
-                .println();
-
-        saida.append(geraIdentacao())
-                .append("}") // finaliza o escopo do método
-                .println();
-
+        visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
+                
+        saida.println();
+        saida.append(geraIdentacao()).append("}").println(); // finaliza o escopo do método
         saida.println(); // linha em branco depois de cada método
     }
 
@@ -136,7 +134,7 @@ public class GeradorCodigoJava
                 || no instanceof NoDeclaracaoMatriz;
     }
 
-    private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa, PrintWriter saida) throws ExcecaoVisitaASA
+    private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa) throws ExcecaoVisitaASA
     {
         List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
         boolean existemVariaveisGlobais = false;
@@ -145,11 +143,13 @@ public class GeradorCodigoJava
             if (podeDeclararNoComoAtributo(no))
             {
                 existemVariaveisGlobais = true;
-                String constante = (no.constante()) ? "final " : "";
                 saida.append(geraIdentacao())
-                        .format("private %s%s;", constante, no.aceitar(visitor))
-                        .println();
-
+                        .append("private ")
+                        .append(no.constante() ? "final " : "");
+                
+                no.aceitar(visitor);
+                
+                saida.append(";").println();
             }
         }
 
@@ -159,7 +159,7 @@ public class GeradorCodigoJava
         }
     }
 
-    private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa, PrintWriter saida)
+    private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa)
     {
         List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
         for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
@@ -181,13 +181,13 @@ public class GeradorCodigoJava
         }
     }
 
-    private void geraCodigoDosAtributos(ASAPrograma asa, PrintWriter saida) throws ExcecaoVisitaASA
+    private void geraCodigoDosAtributos(ASAPrograma asa) throws ExcecaoVisitaASA
     {
         //as bibliotecas são criadas antes dos outros atributos porque alguns exemplos
         //usam as próprias bibliotecas para inicializar atributos, isso gera um erro sintático no Java (referenciar um atributo final antes de inicializá-lo)
-        geraAtributosParaAsBibliotecasIncluidas(asa, saida);
+        geraAtributosParaAsBibliotecasIncluidas(asa);
 
-        geraAtributosParaAsVariaveisGlobais(asa, saida);
+        geraAtributosParaAsVariaveisGlobais(asa);
     }
 
     private String getNomeTipoJava(TipoDado tipoPortugol)
@@ -230,16 +230,14 @@ public class GeradorCodigoJava
         return importacoes;
     }
 
-    private void geraCodigoImportacoes(List<String> importacoes, PrintWriter saida)
+    private void geraCodigoImportacoes(List<String> importacoes)
     {
         //importa classe de erro do método executar()
-        saida.append("import br.univali.portugol.nucleo.mensagens.ErroExecucao;")
-                .println();
+        saida.append("import br.univali.portugol.nucleo.mensagens.ErroExecucao;").println();
 
         for (String importacao : importacoes)
         {
-            saida.format("import %s;", importacao)
-                    .println();
+            saida.format("import %s;", importacao).println();
         }
 
         saida.println(); // pula uma linha depois das importações
@@ -257,23 +255,22 @@ public class GeradorCodigoJava
         return false;
     }
 
-    private String visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
+    private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
     {
         nivelEscopo++;
-        StringBuilder builder = new StringBuilder();
         for (NoBloco bloco : blocos)
         {
-            builder.append(geraIdentacao())
-                    .append(bloco.aceitar(visitor));
+            saida.append(geraIdentacao());
+            
+            bloco.aceitar(visitor);
 
             if (blocoFinalizaComPontoEVirgula(bloco))
             {
-                builder.append(";");
+                saida.append(";");
             }
-            builder.append(System.lineSeparator());
+            saida.println();
         }
         nivelEscopo--;
-        return builder.toString();
     }
 
     private String geraIdentacao()
@@ -284,319 +281,298 @@ public class GeradorCodigoJava
     private class Visitor extends VisitanteASABasico
     {
         @Override
-        public String visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
+        public Void visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
         {
-            return String.valueOf(noInteiro.getValor());
-        }
-
-        private String geraCodigoComParenteses(String valor, NoExpressao no)
-        {
-            if (no.estaEntreParenteses())
-            {
-                return "(" + valor + ")";
-            }
-            return valor;
+            saida.append(String.valueOf(noInteiro.getValor()));
+            return null;
         }
 
         @Override
-        public String visitar(NoLogico noLogico) throws ExcecaoVisitaASA
+        public Void visitar(NoLogico noLogico) throws ExcecaoVisitaASA
         {
             String valor = noLogico.getValor() ? "true" : "false";
-            return geraCodigoComParenteses(valor, noLogico);
+            saida.append(valor);
+            return null;
         }
 
         @Override
-        public String visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
+        public Void visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
         {
             String valor = "'" + noCaracter.getValor() + "'";
-            return geraCodigoComParenteses(valor, noCaracter);
+            saida.append(valor);
+            return null;
         }
 
         @Override
-        public String visitar(NoReal noReal) throws ExcecaoVisitaASA
+        public Void visitar(NoReal noReal) throws ExcecaoVisitaASA
         {
             String valor = String.valueOf(noReal.getValor());
-            return geraCodigoComParenteses(valor, noReal);
+            saida.append(valor);
+            return null;
         }
 
         @Override
-        public String visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
+        public Void visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
         {
             String valor = GeradorCodigoUtils.preservaCaracteresEspeciais(noCadeia.getValor());
             valor = '\"' + valor + '\"';
-            return geraCodigoComParenteses(valor, noCadeia);
+            saida.append(valor);
+            return null;
         }
 
-        @Override
-        public String visitar(NoOperacaoBitwiseLeftShift leftShift) throws ExcecaoVisitaASA
+        private void geraCodigoComParenteses(NoOperacao no) throws ExcecaoVisitaASA
         {
-            Object a = leftShift.getOperandoEsquerdo().aceitar(this);
-            Object b = leftShift.getOperandoDireito().aceitar(this);
-            String valor = a + " << " + b;
-            return geraCodigoComParenteses(valor, leftShift);
+            if (no.estaEntreParenteses())
+            {
+                saida.append("(");
+            }
+            
+            no.getOperandoEsquerdo().aceitar(this);
+            
+            String operador = OPERADORES.get(no.getClass());
+            
+            assert(operador != null);
+            
+            saida.format(" %s ", operador);
+            
+            no.getOperandoDireito().aceitar(this);
+            
+            if (no.estaEntreParenteses())
+            {
+                saida.append(")");
+            }
         }
-
+        
         @Override
-        public String visitar(NoOperacaoBitwiseRightShift rightShift) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoBitwiseLeftShift no) throws ExcecaoVisitaASA
         {
-            Object a = rightShift.getOperandoEsquerdo().aceitar(this);
-            Object b = rightShift.getOperandoDireito().aceitar(this);
-            String valor = a + " >> " + b;
-            return geraCodigoComParenteses(valor, rightShift);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoBitwiseE no) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoBitwiseRightShift no) throws ExcecaoVisitaASA
         {
-            Object a = no.getOperandoEsquerdo().aceitar(this);
-            Object b = no.getOperandoDireito().aceitar(this);
-            String valor = a + " & " + b;
-            return geraCodigoComParenteses(valor, no);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoBitwiseXOR no) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoBitwiseE no) throws ExcecaoVisitaASA
         {
-            Object a = no.getOperandoEsquerdo().aceitar(this);
-            Object b = no.getOperandoDireito().aceitar(this);
-            String valor = a + " ^ " + b;
-            return geraCodigoComParenteses(valor, no);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoBitwiseOu no) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoBitwiseXOR no) throws ExcecaoVisitaASA
         {
-            Object a = no.getOperandoEsquerdo().aceitar(this);
-            Object b = no.getOperandoDireito().aceitar(this);
-            String valor = a + " | " + b;
-            return geraCodigoComParenteses(valor, no);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoSoma soma) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoBitwiseOu no) throws ExcecaoVisitaASA
         {
-            Object a = soma.getOperandoEsquerdo().aceitar(this);
-            Object b = soma.getOperandoDireito().aceitar(this);
-            String valor = a + " + " + b;
-            return geraCodigoComParenteses(valor, soma);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoDivisao divisao) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA
         {
-            Object a = divisao.getOperandoEsquerdo().aceitar(this);
-            Object b = divisao.getOperandoDireito().aceitar(this);
-            String valor = a + " / " + b;
-            return geraCodigoComParenteses(valor, divisao);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoModulo divisao) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
         {
-            Object a = divisao.getOperandoEsquerdo().aceitar(this);
-            Object b = divisao.getOperandoDireito().aceitar(this);
-            String valor = a + " % " + b;
-            return geraCodigoComParenteses(valor, divisao);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoSubtracao subtracao) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
         {
-            Object a = subtracao.getOperandoEsquerdo().aceitar(this);
-            Object b = subtracao.getOperandoDireito().aceitar(this);
-            String valor = a + " - " + b;
-            return geraCodigoComParenteses(valor, subtracao);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoMultiplicacao multiplicacao) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
         {
-            Object a = multiplicacao.getOperandoEsquerdo().aceitar(this);
-            Object b = multiplicacao.getOperandoDireito().aceitar(this);
-            String valor = a + " * " + b;
-            return geraCodigoComParenteses(valor, multiplicacao);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaOU noOuLogico) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
         {
-            Object a = noOuLogico.getOperandoEsquerdo().aceitar(this);
-            Object b = noOuLogico.getOperandoDireito().aceitar(this);
-            String valor = a + " || " + b;
-            return geraCodigoComParenteses(valor, noOuLogico);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaE noELogico) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaOU no) throws ExcecaoVisitaASA
         {
-            Object a = noELogico.getOperandoEsquerdo().aceitar(this);
-            Object b = noELogico.getOperandoDireito().aceitar(this);
-            String valor = a + " && " + b;
-            return geraCodigoComParenteses(valor, noELogico);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaDiferenca noDiferenca) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaE no) throws ExcecaoVisitaASA
         {
-            Object a = noDiferenca.getOperandoEsquerdo().aceitar(this);
-            Object b = noDiferenca.getOperandoDireito().aceitar(this);
-            String valor = a + " != " + b;
-            return geraCodigoComParenteses(valor, noDiferenca);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaDiferenca no) throws ExcecaoVisitaASA
         {
-            NoExpressao opEsq = no.getOperandoEsquerdo();
-            NoExpressao opDir = no.getOperandoDireito();
-            Object a = opEsq.aceitar(this);
-            Object b = opDir.aceitar(this);
-
-            String valor = a + " == " + b;
-
-            return geraCodigoComParenteses(valor, no);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaMaior noMaior) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
         {
-            Object a = noMaior.getOperandoEsquerdo().aceitar(this);
-            Object b = noMaior.getOperandoDireito().aceitar(this);
-
-            String valor = a + " > " + b;
-            return geraCodigoComParenteses(valor, noMaior);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaMaiorIgual noMaiorIgual) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
         {
-            Object a = noMaiorIgual.getOperandoEsquerdo().aceitar(this);
-            Object b = noMaiorIgual.getOperandoDireito().aceitar(this);
-
-            String valor = a + " >= " + b;
-            return geraCodigoComParenteses(valor, noMaiorIgual);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaMenor noMenor) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
         {
-            Object a = noMenor.getOperandoEsquerdo().aceitar(this);
-            Object b = noMenor.getOperandoDireito().aceitar(this);
-
-            String valor = a + " < " + b;
-            return geraCodigoComParenteses(valor, noMenor);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoLogicaMenorIgual noMenorIgual) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaMenor no) throws ExcecaoVisitaASA
         {
-            Object a = noMenorIgual.getOperandoEsquerdo().aceitar(this);
-            Object b = noMenorIgual.getOperandoDireito().aceitar(this);
-
-            String valor = a + " <= " + b;
-            return geraCodigoComParenteses(valor, noMenorIgual);
+            geraCodigoComParenteses(no);
+            return null;
         }
 
         @Override
-        public String visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoLogicaMenorIgual no) throws ExcecaoVisitaASA
+        {
+            geraCodigoComParenteses(no);
+            return null;
+        }
+
+        @Override
+        public Void visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
         {
             String nome = noDeclaracao.getNome();
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
 
-            StringBuilder builder = new StringBuilder();
-            builder.append(String.format("%s %s", tipo, geraNomeValido(nome)));
+            saida.format("%s %s", tipo, geraNomeValido(nome));
 
             if (noDeclaracao.possuiInicializacao())
             {
-                Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
-                builder.append(String.format(" = %s", inicializacao));
+                saida.append(" = ");
+                noDeclaracao.getInicializacao().aceitar(this);
             }
 
-            return builder.toString();
+            return null;
         }
 
         @Override
-        public String visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
+        public Void visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
         {
             String nome = no.getNome();
             String tipo = getNomeTipoJava(no.getTipoDado());
-            String codigoGerado = String.format("%s %s[]", tipo, geraNomeValido(nome));
+            saida.format("%s %s[]", tipo, geraNomeValido(nome));
 
             if (no.possuiInicializacao())
             {
-                Object inicializacao = no.getInicializacao().aceitar(this);
-                codigoGerado += String.format(" = %s", inicializacao.toString());
+                saida.append(" = ");
+                no.getInicializacao().aceitar(this);
             }
             else
             {
-                NoExpressao noTamanho = no.getTamanho();
-                String codigoTamanho = "";
-                if (noTamanho != null)
+                saida.format(" = new %s[", tipo);
+                if(no.getTamanho() != null)
                 {
-                    codigoTamanho = noTamanho.aceitar(this).toString();
+                    no.getTamanho().aceitar(this);
                 }
-                codigoGerado += String.format(" = new %s[%s]", tipo, codigoTamanho);
+                saida.append("]");
             }
 
-            return codigoGerado;
+            return null;
         }
 
         @Override
-        public String visitar(NoVetor noVetor) throws ExcecaoVisitaASA
+        public Void visitar(NoVetor noVetor) throws ExcecaoVisitaASA
         {
-            String codigo = "{";
+            saida.append("{");
 
             List<Object> valores = noVetor.getValores();
             int totalValores = valores.size();
             for (int i = 0; i < totalValores; i++)
             {
-                codigo += valores.get(i).toString();
+                saida.append(valores.get(i).toString());
                 if (i < totalValores - 1)
                 {
-                    codigo += ", ";
+                    saida.append(", ");
                 }
             }
 
-            codigo += "}";
-            return codigo;
+            saida.append("}");
+
+            return null;
         }
 
         @Override
-        public String visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
+        public Void visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
         {
-            String nome = noDeclaracao.getNome();// + "[" + codigoLinhas + "][" + codigoColunas + "]";
+            String nome = noDeclaracao.getNome();
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            String codigoGerado = String.format("%s %s[][]", tipo, geraNomeValido(nome));
+            saida.format("%s %s[][]", tipo, geraNomeValido(nome));
 
+            saida.append(" = ");
+            
             if (noDeclaracao.possuiInicializacao())
             {
-                Object inicializacao = noDeclaracao.getInicializacao().aceitar(this);
-                codigoGerado += String.format(" = %s", inicializacao.toString());
+                noDeclaracao.getInicializacao().aceitar(this);
             }
             else
             {
-                NoExpressao noLinhas = noDeclaracao.getNumeroLinhas();
-                NoExpressao noColunas = noDeclaracao.getNumeroColunas();
-                String colunas = "";
-                String linhas = "";
-                if (noLinhas != null)
+                saida.append(" new ")
+                        .append(tipo)
+                        .append("[");
+                
+                if (noDeclaracao.getNumeroLinhas() != null)
                 {
-                    linhas = noLinhas.aceitar(this).toString();
+                    noDeclaracao.getNumeroLinhas().aceitar(this);
                 }
-                if (noColunas != null)
+                
+                saida.append("][");
+                
+                if (noDeclaracao.getNumeroColunas() != null)
                 {
-                    colunas = noColunas.aceitar(this).toString();
+                    noDeclaracao.getNumeroColunas().aceitar(this);
                 }
-                codigoGerado += String.format(" = new %s[%s][%s]", tipo, linhas, colunas);
+                
+                saida.append("]");
             }
 
-            return codigoGerado;
+            return null;
         }
 
         @Override
-        public String visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
+        public Void visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
         {
-            String codigo = "{";
+            saida.append("{");
 
             List<List<Object>> valores = noMatriz.getValores();
             int totalLinhas = valores.size();
@@ -604,166 +580,183 @@ public class GeradorCodigoJava
             for (int i = 0; i < totalLinhas; i++)
             {
                 totalColunas = valores.get(i).size();
-                codigo += "{";
+                saida.append("{");
                 for (int j = 0; j < totalColunas; j++)
                 {
-                    codigo += valores.get(i).get(j).toString();
+                    saida.append(valores.get(i).get(j).toString());
                     if (j < totalColunas - 1)
                     {
-                        codigo += ", ";
+                        saida.append(", ");
                     }
                 }
-                codigo += "}";
+                saida.append("}");
                 if (i < totalLinhas - 1)
                 {
-                    codigo += ",";
+                    saida.append(",");
                 }
             }
 
-            codigo += "}";
-            return codigo;
+            saida.append("}");
+
+            return null;
         }
 
         @Override
-        public String visitar(NoRetorne no) throws ExcecaoVisitaASA
+        public Void visitar(NoRetorne no) throws ExcecaoVisitaASA
         {
             NoExpressao expressao = no.getExpressao();
             if (expressao != null)
             {
-                return "return " + expressao.aceitar(this);
+                saida.append("return ");
+                expressao.aceitar(this);
             }
-            return "return";
+            else
+            {
+                saida.append("return");
+            }
+
+            return null;
         }
 
         @Override
-        public String visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
+        public Void visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
         {
-            Object indice = no.getIndice().aceitar(this);
-            return geraNomeValido(no.getNome()) + "[" + indice + "]";
+            saida.append(geraNomeValido(no.getNome()));
+
+            saida.append("[");
+            no.getIndice().aceitar(this);
+            saida.append("]");
+
+            return null;
         }
 
         @Override
-        public String visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
+        public Void visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
         {
-            Object linha = no.getLinha().aceitar(this);
-            Object coluna = no.getColuna().aceitar(this);
-            return geraNomeValido(no.getNome()) + "[" + linha + "][" + coluna + "]";
+            saida.append(geraNomeValido(no.getNome()))
+                    .append("[");
+
+            no.getLinha().aceitar(this);
+
+            saida.append("][");
+
+            no.getColuna().aceitar(this);
+
+            saida.append("]");
+
+            return null;
         }
 
         @Override
-        public String visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
+        public Void visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
         {
             String nome = geraNomeValido(no.getNome());
             if (no.getEscopo() != null)
             {
-                return no.getEscopo() + "." + nome;
+                saida.append(no.getEscopo())
+                        .append(".");
             }
+            saida.append(nome);
 
-            return nome;
+            return null;
         }
 
         @Override
-        public String visitar(NoEnquanto no) throws ExcecaoVisitaASA
+        public Void visitar(NoEnquanto no) throws ExcecaoVisitaASA
         {
-            StringBuilder builder = new StringBuilder();
-            String condicao = no.getCondicao().aceitar(this).toString();
-            builder.append("while(")
-                    .append(condicao)
-                    .append(")")
-                    .append(System.lineSeparator())
-                    .append(geraIdentacao())
-                    .append("{")
-                    .append(System.lineSeparator());
+            saida.append("while(");
 
-            builder.append(visitarBlocos(no.getBlocos()))
-                    .append(System.lineSeparator())
-                    .append(geraIdentacao())
-                    .append("}")
-                    .append(System.lineSeparator());
+            no.getCondicao().aceitar(this);
 
-            return builder.toString();
+            saida.append(")").println();
+            saida.append(geraIdentacao()).append("{").println();
+
+            visitarBlocos(no.getBlocos());
+
+            saida.println();
+            
+            saida.append(geraIdentacao()).append("}").println();
+
+            return null;
         }
 
         @Override
-        public String visitar(NoPara no) throws ExcecaoVisitaASA
+        public Void visitar(NoPara no) throws ExcecaoVisitaASA
         {
-            StringBuilder builder = new StringBuilder();
-            String condicao = no.getCondicao().aceitar(this).toString();
-            String inicializacao = "";
+            saida.append("for(");
             if (no.getInicializacao() != null)
             {
-                inicializacao = no.getInicializacao().aceitar(this).toString();
+                no.getInicializacao().aceitar(this);
             }
-            String incremento = "";
+
+            saida.append("; "); // separador depois da inicialização do for 
+
+            no.getCondicao().aceitar(this);
+
+            saida.append("; "); // separador depois da c
+
             if (no.getIncremento() != null)
             {
-                incremento = no.getIncremento().aceitar(this).toString();
+                no.getIncremento().aceitar(this);
             }
-            builder.append(String.format("for(%s; %s; %s)", inicializacao, condicao, incremento))
-                    .append(System.lineSeparator())
-                    .append(geraIdentacao()).append("{")
-                    .append(System.lineSeparator());
 
-            builder.append(visitarBlocos(no.getBlocos()))
-                    .append(System.lineSeparator());
+            saida.append(")").println(); // fecha o parênteses do for
+            saida.append(geraIdentacao()).append("{").println();
 
-            builder.append(geraIdentacao())
-                    .append("}")
-                    .append(System.lineSeparator());
+            visitarBlocos(no.getBlocos());
 
-            return builder.toString();
+            saida.println();
+
+            saida.append(geraIdentacao()).append("}").println();
+
+            return null;
         }
 
         @Override
-        public String visitar(NoSe no) throws ExcecaoVisitaASA
+        public Void visitar(NoSe no) throws ExcecaoVisitaASA
         {
-            String condicao = no.getCondicao().aceitar(this).toString();
-            List<NoBloco> blocosVerdadeiros = no.getBlocosVerdadeiros();
-            List<NoBloco> blocosFalsos = no.getBlocosFalsos();
-            StringBuilder builder = new StringBuilder("if(" + condicao + ")")
-                    .append(System.lineSeparator())
-                    .append(geraIdentacao()).append("{")
-                    .append(System.lineSeparator());
+            saida.append("if(");
+            
+            no.getCondicao().aceitar(this);
+            
+            saida.append(")").println();
 
+            saida.append(geraIdentacao()).append("{").println();
+
+            List<NoBloco> blocosVerdadeiros = no.getBlocosVerdadeiros();
             if (blocosVerdadeiros != null)
             {
-                builder.append(visitarBlocos(blocosVerdadeiros))
-                        .append(System.lineSeparator());
+                visitarBlocos(blocosVerdadeiros);
+                saida.println();
             }
 
-            builder.append(geraIdentacao())
-                    .append("}")
-                    .append(System.lineSeparator());
+            saida.append(geraIdentacao()).append("}").println();
 
+            List<NoBloco> blocosFalsos = no.getBlocosFalsos();
             if (blocosFalsos != null)
             {
-                builder.append(geraIdentacao())
-                        .append("else").
-                        append(System.lineSeparator());
+                saida.append(geraIdentacao()).append("else").println();
+                saida.append(geraIdentacao()).append("{").println();
 
-                builder.append(geraIdentacao())
-                        .append("{")
-                        .append(System.lineSeparator());
+                visitarBlocos(blocosFalsos);
 
-                builder.append(visitarBlocos(blocosFalsos))
-                        .append(System.lineSeparator());
+                saida.println();
 
-                builder.append(geraIdentacao())
-                        .append("}")
-                        .append(System.lineSeparator());
+                saida.append(geraIdentacao()).append("}").println();
             }
-            return builder.toString();
+
+            return null;
         }
 
         @Override
-        public String visitar(NoEscolha no) throws ExcecaoVisitaASA
+        public Void visitar(NoEscolha no) throws ExcecaoVisitaASA
         {
-            String expressao = no.getExpressao().aceitar(this).toString();
-            StringBuilder builder = new StringBuilder("switch(" + expressao + ")")
-                    .append(System.lineSeparator())
-                    .append(geraIdentacao())
-                    .append("{")
-                    .append(System.lineSeparator());
+            saida.append("switch(");
+            
+            no.getExpressao().aceitar(this);
+            
+            saida.append(")").println();
+            saida.append(geraIdentacao()).append("{").println();
 
             List<NoCaso> casos = no.getCasos();
             if (casos != null)
@@ -773,172 +766,180 @@ public class GeradorCodigoJava
                     NoExpressao expressaoCaso = caso.getExpressao();
                     if (expressaoCaso != null)
                     {
-                        builder.append(geraIdentacao())
-                                .append("case ")
-                                .append(caso.getExpressao().aceitar(this))
-                                .append(":")
-                                .append(System.lineSeparator());
+                        saida.append(geraIdentacao()).append("case ");
+                        
+                        expressaoCaso.aceitar(this);
+
+                        saida.append(":").println();
                     }
                     else
                     {
-                        builder.append(geraIdentacao())
-                                .append("default:");
+                        saida.append(geraIdentacao()).append("default:");
                     }
 
-                    builder.append(visitarBlocos(caso.getBlocos()))
-                            .append(System.lineSeparator());
+                    visitarBlocos(caso.getBlocos());
+
+                    saida.println();
                 }
             }
 
-            builder.append(geraIdentacao())
-                    .append("}")
-                    .append(System.lineSeparator());
+            saida.append(geraIdentacao()).append("}").println();
 
-            return builder.toString();
+            return null;
         }
 
         @Override
-        public String visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
+        public Void visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
         {
+            saida.append("do").println();
+            saida.append(geraIdentacao()).append("{").println();
+
             List<NoBloco> blocos = no.getBlocos();
-            String condicao = no.getCondicao().aceitar(this).toString();
-            StringBuilder builder = new StringBuilder("do")
-                    .append(System.lineSeparator());
-
-            builder.append(geraIdentacao())
-                    .append("{")
-                    .append(System.lineSeparator());
-
             if (blocos != null)
             {
-                builder.append(visitarBlocos(blocos))
-                        .append(System.lineSeparator());
+                visitarBlocos(blocos);
+                saida.println();
             }
 
-            builder.append(geraIdentacao())
-                    .append("}")
-                    .append(System.lineSeparator());
+            saida.append(geraIdentacao()).append("}").println();
 
-            builder.append(geraIdentacao())
-                    .append("while(")
-                    .append(condicao)
-                    .append(");")
-                    .append(System.lineSeparator());
+            saida.append(geraIdentacao()).append("while(");
+            
+            no.getCondicao().aceitar(this);
+            
+            saida.append(");").println();
 
-            return builder.toString();
+            return null;
         }
 
         @Override
-        public String visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
+        public Void visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
         {
-            return no.getOperandoEsquerdo().aceitar(this) + " = " + no.getOperandoDireito().aceitar(this);
+            no.getOperandoEsquerdo().aceitar(this);
+            
+            saida.append(" = ");
+            
+            no.getOperandoDireito().aceitar(this);
+            
+            return null;
         }
 
         @Override
-        public String visitar(NoMenosUnario no) throws ExcecaoVisitaASA
+        public Void visitar(NoMenosUnario no) throws ExcecaoVisitaASA
         {
-            return "-" + no.getExpressao().aceitar(this);
+            saida.append("-");
+            no.getExpressao().aceitar(this);
+            
+            return null;
         }
 
         @Override
-        public String visitar(NoNao no) throws ExcecaoVisitaASA
+        public Void visitar(NoNao no) throws ExcecaoVisitaASA
         {
-            return "!" + no.getExpressao().aceitar(this);
+            saida.append("!");
+            no.getExpressao().aceitar(this);
+            
+            return null;
         }
 
         @Override
-        public String visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
+        public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
             String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
             String nomeFuncao = no.getNome();
             if (escopoFuncao.isEmpty() && "leia".equals(nomeFuncao)) //a função 'leia' tem um tratamento especial
             {
-                return geraCodigoParaFuncaoLeia(no);
+                geraCodigoParaFuncaoLeia(no);
+                return null;
             }
-            StringBuilder builder = new StringBuilder();
-            builder.append(String.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao)));
+            
+            saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
             List<NoExpressao> parametros = no.getParametros();
             int totalParametros = parametros.size();
             for (int i = 0; i < totalParametros; i++)
             {
-                String parametro = parametros.get(i).aceitar(this).toString();
-                builder.append(parametro);
+                parametros.get(i).aceitar(this);
                 if (i < totalParametros - 1)
                 {
-                    builder.append(", ");
+                    saida.append(", ");
                 }
             }
-            builder.append(")");
+            saida.append(")");
 
-            return builder.toString();
+            return null;
         }
 
-        private String getNomeDaReferencia(NoReferencia no) throws ExcecaoVisitaASA
+        private void geraNomeDaReferencia(NoReferencia no) throws ExcecaoVisitaASA
         {
             String nome = geraNomeValido(no.getNome());
-            if (no instanceof NoReferenciaVariavel)
+            saida.append(nome);
+            if (no instanceof NoReferenciaVetor)
             {
-                return nome;
-            }
-            else if (no instanceof NoReferenciaVetor)
-            {
+                saida.append("[");
                 NoReferenciaVetor noVetor = (NoReferenciaVetor) no;
-                String indice = noVetor.getIndice().aceitar(this).toString();
-                nome += String.format("[%s]", indice);
+                noVetor.getIndice().aceitar(this);
+                saida.append("]");
+                
             }
-            else //NoReferenciaMatriz
+            else if (no instanceof NoReferenciaMatriz) //NoReferenciaMatriz
             {
+                saida.append("[");
                 NoReferenciaMatriz noMatriz = (NoReferenciaMatriz) no;
-                String linha = noMatriz.getLinha().aceitar(this).toString();
-                String coluna = noMatriz.getColuna().aceitar(this).toString();
-                nome += String.format("[%s][%s]", linha, coluna);
+                noMatriz.getLinha().aceitar(this);
+                saida.append("][");
+                noMatriz.getColuna().aceitar(this);
+                saida.append("]");
             }
-            return nome;
         }
 
         private String geraCodigoParaFuncaoLeia(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
-            StringBuilder builder = new StringBuilder();
             List<NoExpressao> parametros = no.getParametros();
             for (int i = 0; i < parametros.size(); i++)
             {
                 NoReferencia noRef = (NoReferencia) parametros.get(i);
+                
+                geraNomeDaReferencia(noRef); // gera nome da variável + colchetes de vetores ou matrizes incluíndo as expressões dos índices
+                
                 NoDeclaracao origem = noRef.getOrigemDaReferencia();
                 TipoDado tipo = TipoDado.CADEIA;
-                String nomeVariavel = getNomeDaReferencia(noRef); // nome da variável + colchetes de vetores ou matrizes incluíndo as expressões dos índices
-                String nomeFuncao = "";
                 if (origem != null) // parece que tem um bug no leia passando 'cadeia' como parametro, a origem do 'leia' é nula
                 {
                     tipo = origem.getTipoDado();
-                    String nomeTipoCamelCase = tipo.getNome().substring(0, 1).toUpperCase() + tipo.getNome().substring(1);
-                    nomeFuncao = "leia" + nomeTipoCamelCase;
                 }
-                builder.append(String.format("%s = %s()", nomeVariavel, nomeFuncao));
+                String nomeFuncao = "leia" + GeradorCodigoUtils.getNomeTipoEmCamelCase(tipo);
+                saida.format(" = %s()", nomeFuncao);
                 if (i < parametros.size() - 1) // adiciona um ponto e vírgula depois de cada atribuição gerada, exceto para a última
                 {
-                    builder.append(";")
-                            .append(System.lineSeparator());
+                    saida.append(";").println();
                 }
             }
-            return builder.toString();
+            return null;
         }
 
         @Override
-        public String visitar(NoPare noPare) throws ExcecaoVisitaASA
+        public Void visitar(NoPare noPare) throws ExcecaoVisitaASA
         {
-            return "break";
+            saida.append("break");
+            
+            return null;
         }
 
         @Override
         public Object visitar(NoBitwiseNao no) throws ExcecaoVisitaASA
         {
-            return "~" + no.getExpressao().aceitar(this);
+            saida.append("~");
+            no.getExpressao().aceitar(this);
+            
+            return null;
         }
 
         @Override
         public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
         {
-            return "continue";
+            saida.append("continue");
+            
+            return null;
         }
     }
 
@@ -958,6 +959,35 @@ public class GeradorCodigoJava
         return "_" + nomeAtual;
     }
 
+    
+    private static final Map<Class, String> OPERADORES = new HashMap<>();
+    static
+    {
+        OPERADORES.put(NoOperacaoAtribuicao.class, "=");
+        OPERADORES.put(NoOperacaoDivisao.class, "/");
+        OPERADORES.put(NoOperacaoModulo.class, "%");
+        OPERADORES.put(NoOperacaoMultiplicacao.class, "*");
+        OPERADORES.put(NoOperacaoSoma.class, "+");
+        OPERADORES.put(NoOperacaoSubtracao.class, "-");
+        
+        OPERADORES.put(NoMenosUnario.class, "-");
+        
+        OPERADORES.put(NoOperacaoLogicaDiferenca.class, "!=");
+        OPERADORES.put(NoOperacaoLogicaIgualdade.class, "==");
+        OPERADORES.put(NoOperacaoLogicaMaior.class, ">");
+        OPERADORES.put(NoOperacaoLogicaMaiorIgual.class, ">=");
+        OPERADORES.put(NoOperacaoLogicaMenor.class, "<");
+        OPERADORES.put(NoOperacaoLogicaMenorIgual.class, "<=");
+        OPERADORES.put(NoOperacaoLogicaOU.class, "||");
+        OPERADORES.put(NoOperacaoLogicaE.class, "&&");
+        
+        OPERADORES.put(NoOperacaoBitwiseE.class, "&");
+        OPERADORES.put(NoOperacaoBitwiseOu.class, "|");
+        OPERADORES.put(NoOperacaoBitwiseXOR.class, "^");
+        OPERADORES.put(NoOperacaoBitwiseLeftShift.class, "<<");
+        OPERADORES.put(NoOperacaoBitwiseRightShift.class, ">>");
+    }
+    
     private static boolean ehUmaPalavraReservadaNoJava(String nome)
     {
         return (Arrays.binarySearch(PALAVRAS_RESERVADAS_JAVA, nome) >= 0);
