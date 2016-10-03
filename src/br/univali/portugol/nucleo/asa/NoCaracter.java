@@ -8,7 +8,7 @@ package br.univali.portugol.nucleo.asa;
  * 
  * @see TipoDado
  */
-public final class NoCaracter extends NoValor<Character>
+public final class NoCaracter extends NoExpressaoLiteral<Character>
 {
     /**
      * 

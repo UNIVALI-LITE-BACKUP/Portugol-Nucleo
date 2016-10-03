@@ -1,60 +1,12 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirConstanteBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroExcedente;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosInicializacaoVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoMatrizLiteral;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroConstanteNaoEncontradaNaBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroParaSemExpressaoComparacao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeLinhasIncializacaoMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroBibliotecaNaoInserida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoMatrizEmBranco;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoVetorMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoVetorLiteral;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroVetorSemElementos;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosColunaInicializacaoMatriz;
 import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoSimboloGlobalOcultado;
 import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoValorExpressaoSeraConvertido;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoAtribuirEmMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoAtribuirEmVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoInicializarMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoInicializarVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmChamadaFuncao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmConstante;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirMatrizVetorEmVariavel;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroBlocoInvalido;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInclusaoBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoConstante;
+import br.univali.portugol.nucleo.analise.semantica.erros.*;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosFuncao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmExpressao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroComandoNaoSuportado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroFuncaoSemRetorne;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroPassagemParametroInvalida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantificadorParametroFuncao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSemanticoNaoTratado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoInicializado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloRedeclarado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoMaximoMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoMaximoVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTipoParametroIncompativel;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
-import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoValorSeraConvertido;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
-import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstante;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstantes;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametro;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametros;
+import br.univali.portugol.nucleo.bibliotecas.base.*;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -1008,7 +960,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                         {
                             for (int coluna = 0; coluna < valores.get(linha).size(); coluna++)
                             {
-                                if (!(valores.get(linha).get(coluna) instanceof NoValor))
+                                if (!(valores.get(linha).get(coluna) instanceof NoExpressaoLiteral))
                                 {
                                     notificarErroSemantico(new ErroInicializacaoConstante(noDeclaracaoMatriz, linha, coluna));
                                 }
@@ -1129,12 +1081,12 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         if (inicializacao instanceof NoMenosUnario)
                         {
-                            if (!(((NoMenosUnario) inicializacao).getExpressao() instanceof NoValor))
+                            if (!(((NoMenosUnario) inicializacao).getExpressao() instanceof NoExpressaoLiteral))
                             {
                                 notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
                             }
                         }
-                        else if (!(inicializacao instanceof NoValor))
+                        else if (!(inicializacao instanceof NoExpressaoLiteral))
                         {
                             notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
                         }
@@ -1259,7 +1211,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                             for (int indice = 0; indice < noVetor.getValores().size(); indice++)
                             {
-                                if (!(noVetor.getValores().get(indice) instanceof NoValor))
+                                if (!(noVetor.getValores().get(indice) instanceof NoExpressaoLiteral))
                                 {
                                     notificarErroSemantico(new ErroInicializacaoConstante(noDeclaracaoVetor, indice));
                                 }

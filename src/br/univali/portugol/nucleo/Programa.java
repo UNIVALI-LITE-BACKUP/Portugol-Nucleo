@@ -174,7 +174,7 @@ public abstract class Programa
         ativadorDePontoDesParada.ativaPontosDeParada(linhasComPontosDeParadaAtivados, arvoreSintaticaAbstrataPrograma);
     }
 
-    protected abstract void executar(String[] parametros) throws ErroExecucao;
+    protected abstract void executar(String[] parametros) throws ErroExecucao, InterruptedException;
 
     /**
      * Implementa uma tarefa para disparar a execução do programa com os
@@ -215,10 +215,10 @@ public abstract class Programa
                 resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                 resultadoExecucao.setErro(erroExecucao);
             }
-//            catch (InterruptedException excecao)
-//            {
-//                resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
-//            }
+            catch (InterruptedException excecao)
+            {
+                resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
+            }
 
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
 

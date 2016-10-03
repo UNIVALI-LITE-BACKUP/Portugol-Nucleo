@@ -7,7 +7,7 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see TipoDado
  */
-public final class NoLogico extends NoValor<Boolean>
+public final class NoLogico extends NoExpressaoLiteral<Boolean>
 {
     /**
      * @param valor     o valor lógico representado por este nó da árvore

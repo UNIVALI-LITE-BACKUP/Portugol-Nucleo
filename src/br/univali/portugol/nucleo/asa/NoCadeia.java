@@ -8,7 +8,7 @@ package br.univali.portugol.nucleo.asa;
  * 
  * @see TipoDado
  */
-public final class NoCadeia extends NoValor<String>
+public final class NoCadeia extends NoExpressaoLiteral<String>
 {
     /**
      * @param valor     a cadeia representada por este nó da árvore

@@ -7,7 +7,7 @@ import br.univali.portugol.nucleo.asa.NoReferencia;
 import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
 import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
 import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
-import br.univali.portugol.nucleo.asa.NoValor;
+import br.univali.portugol.nucleo.asa.NoExpressaoLiteral;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**

@@ -4,12 +4,12 @@ package br.univali.portugol.nucleo.asa;
  *
  * @author Luiz Fernando Noschang
  */
-public abstract class NoValor<T> extends NoExpressao
+public abstract class NoExpressaoLiteral<T> extends NoExpressao
 {
-    private T valor;
-    private TrechoCodigoFonte trechoCodigoFonte;
+    private final T valor;
+//    private TrechoCodigoFonte trechoCodigoFonte;
 
-    public NoValor(T valor)
+    public NoExpressaoLiteral(T valor)
     {
         this.valor = valor;
     }    
@@ -28,6 +28,7 @@ public abstract class NoValor<T> extends NoExpressao
      * @param trechoCodigoFonte     o trecho do código fonte no qual o caracter se encontra
      * @since 1.0
      */
+    @Override
     public final void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
     {
         this.trechoCodigoFonte = trechoCodigoFonte;

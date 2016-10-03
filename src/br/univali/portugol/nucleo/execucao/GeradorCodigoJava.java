@@ -118,9 +118,9 @@ public class GeradorCodigoJava
             }
             else
             {
-                saida.append("(String[] parametros) throws ErroExecucao");
+                saida.append("(String[] parametros)");
             }
-
+            saida.append(" throws ErroExecucao, InterruptedException");
             saida.println(); // pula uma linha depois da declaração da assinatura do método
             saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
 
@@ -308,6 +308,12 @@ public class GeradorCodigoJava
             return null;
         }
 
+        private boolean ehComparacaoDeStrings(NoExpressao a, NoExpressao b)
+        {
+            return a.getTipoResultante() == TipoDado.CADEIA
+                    && b.getTipoResultante() == TipoDado.CADEIA;
+        }
+
         private void geraCodigoComParenteses(NoOperacao no) throws ExcecaoVisitaASA
         {
             if (no.estaEntreParenteses())
@@ -316,14 +322,25 @@ public class GeradorCodigoJava
             }
 
             no.getOperandoEsquerdo().aceitar(this);
-
-            String operador = OPERADORES.get(no.getClass());
-
-            assert (operador != null);
-
-            saida.format(" %s ", operador);
+            
+            boolean comparandoStrings = ehComparacaoDeStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
+            if (!comparandoStrings)
+            {
+                String operador = OPERADORES.get(no.getClass());
+                assert (operador != null);
+                saida.format(" %s ", operador);
+            }
+            else
+            {
+                saida.append(".equals(");
+            }
 
             no.getOperandoDireito().aceitar(this);
+            
+            if (comparandoStrings)
+            {
+                saida.append(")"); // fecha o parênteses do .equals()
+            }
 
             if (no.estaEntreParenteses())
             {
