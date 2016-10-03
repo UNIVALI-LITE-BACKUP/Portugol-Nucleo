@@ -2,9 +2,9 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,270 +16,258 @@ import java.util.Map;
 public class GeradorCodigoJava
 {
     private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
-    private Visitor visitor;
-    private int nivelEscopo = 1;
-    private PrintWriter saida;
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
-        this.nivelEscopo = 1;
-        this.saida = saida;
-        this.visitor = new Visitor();
-
-        saida.append("package programas;").println();
-
-        geraCodigoImportacoes(getListaImportacoes(asa));
-
-        saida.format("public class %s extends Programa", nomeClasseJava).println();
-        saida.append("{").println(); // chave de abertura da classe
-
-        geraCodigoDosAtributos(asa);
-
-        geraMetodos(asa);
-
-        saida.append("}").println(); // fecha a classe
+        new GeradorCodigo(asa, saida)
+                .geraPackage("programas")
+                .pulaLinha()
+                .geraImportacaoPara(ErroExecucao.class)
+                .geraImportacaoPara(Programa.class)
+                .geraImportacaoDasBibliotecasIncluidas()
+                .pulaLinha()
+                .geraNomeDaClasse(nomeClasseJava)
+                .geraChaveDeAberturaDaClasse()
+                .pulaLinha()
+                .geraAtributosParaAsBibliotecasIncluidas()
+                .pulaLinha()
+                .geraAtributosParaAsVariaveisGlobais()
+                .pulaLinha()
+                .geraMetodos()
+                .geraChaveDeFechamentoDaClasse();
     }
 
-    private void geraMetodos(ASAPrograma asa) throws ExcecaoVisitaASA
+    private static class GeradorCodigo extends VisitanteASABasico
     {
-        List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
-        for (NoDeclaracao declaracao : declaracoes)
+        private final PrintWriter saida;
+        private final ASAPrograma asa;
+        private int nivelEscopo = 1;
+
+        public GeradorCodigo(ASAPrograma asa, PrintWriter saida)
         {
-            if (declaracao instanceof NoDeclaracaoFuncao)
+            this.saida = saida;
+            this.asa = asa;
+        }
+
+        private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
+        {
+            nivelEscopo++;
+            for (NoBloco bloco : blocos)
             {
-                geraMetodo((NoDeclaracaoFuncao) declaracao);
+                saida.append(geraIdentacao());
+
+                bloco.aceitar(this);
+
+                if (blocoFinalizaComPontoEVirgula(bloco))
+                {
+                    saida.append(";");
+                }
+                saida.println();
             }
+            nivelEscopo--;
         }
-    }
 
-    private String geraQuantificador(Quantificador quantificador)
-    {
-        switch (quantificador)
+        private static boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
         {
-            case VETOR:
-                return "[]";
-            case MATRIZ:
-                return "[][]";
-        }
-        return "";
-    }
-
-    private void geraStringDosParametros(NoDeclaracaoFuncao noFuncao)
-    {
-        List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
-
-        saida.append("("); // parenteses de início da lista de parâmetros
-        int size = parametros.size();
-        for (int i = 0; i < size; i++)
-        {
-            NoDeclaracaoParametro noParametro = parametros.get(i);
-
-            saida.append(getNomeTipoJava(noParametro.getTipoDado()))
-                    .append(" ") // espaço entre o tipo e o nome
-                    .append(geraNomeValido(noParametro.getNome()))
-                    .append(geraQuantificador(noParametro.getQuantificador()));
-            
-            if (i < size - 1)
+            boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
+            boolean ehDesvio = bloco instanceof NoSe || bloco instanceof NoEscolha;
+            if (!ehLoop && !ehDesvio)
             {
-                saida.append(", ");
+                return true;
             }
-        }
-        saida.append(")"); // parenteses de fim da lista de parâmetros
-    }
 
-    private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
-    {
-        saida.println();
-        saida.append(geraIdentacao());
-
-        String nome = noFuncao.getNome();
-        boolean metodoPrincipal = "inicio".equals(nome);
-        if (metodoPrincipal)
-        {
-            nome = "executar";
-            saida.append("@Override").println();
+            return false;
         }
 
-        saida.append(geraIdentacao())
-                .append(metodoPrincipal ? "protected" : "private")
-                .append(" ")
-                .append(getNomeTipoJava(noFuncao.getTipoDado()))
-                .append(geraQuantificador(noFuncao.getQuantificador()))
-                .append(" ")
-                .append(geraNomeValido(nome));
-
-        if (!metodoPrincipal)
+        private static String geraQuantificador(Quantificador quantificador)
         {
-            geraStringDosParametros(noFuncao);
-        }
-        else
-        {
-            saida.append("(String[] parametros) throws ErroExecucao");
-        }
-
-        saida.println(); // pula uma linha depois da declaração da assinatura do método
-        saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
-
-        visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
-                
-        saida.println();
-        saida.append(geraIdentacao()).append("}").println(); // finaliza o escopo do método
-        saida.println(); // linha em branco depois de cada método
-    }
-
-    private boolean podeDeclararNoComoAtributo(NoDeclaracao no)
-    {
-        return no instanceof NoDeclaracaoVariavel
-                || no instanceof NoDeclaracaoVetor
-                || no instanceof NoDeclaracaoMatriz;
-    }
-
-    private void geraAtributosParaAsVariaveisGlobais(ASAPrograma asa) throws ExcecaoVisitaASA
-    {
-        List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
-        boolean existemVariaveisGlobais = false;
-        for (NoDeclaracao no : variaveisGlobais)
-        {
-            if (podeDeclararNoComoAtributo(no))
+            switch (quantificador)
             {
-                existemVariaveisGlobais = true;
-                saida.append(geraIdentacao())
-                        .append("private ")
-                        .append(no.constante() ? "final " : "");
-                
-                no.aceitar(visitor);
-                
-                saida.append(";").println();
+                case VETOR:
+                    return "[]";
+                case MATRIZ:
+                    return "[][]";
             }
+            return "";
         }
 
-        if (existemVariaveisGlobais)
+        private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
         {
-            saida.println(); // deixa uma linha em branco depois dos atributos globais
-        }
-    }
-
-    private void geraAtributosParaAsBibliotecasIncluidas(ASAPrograma asa)
-    {
-        List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
-        for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
-        {
-            String tipo = biblioteca.getNome();
-            String nome = tipo; // quando a biblioteca não tem alias o nome e o tipo são idênticos
-            if (biblioteca.getAlias() != null)
-            {
-                nome = biblioteca.getAlias();
-            }
-            saida.append(geraIdentacao())
-                    .format("private final %s %s = new %s();", tipo, geraNomeValido(nome), tipo)
-                    .println();
-        }
-
-        if (!libsIncluidas.isEmpty())
-        {
-            saida.println(); // deixa uma linha em branco depois dos atributos das bibliotecas
-        }
-    }
-
-    private void geraCodigoDosAtributos(ASAPrograma asa) throws ExcecaoVisitaASA
-    {
-        //as bibliotecas são criadas antes dos outros atributos porque alguns exemplos
-        //usam as próprias bibliotecas para inicializar atributos, isso gera um erro sintático no Java (referenciar um atributo final antes de inicializá-lo)
-        geraAtributosParaAsBibliotecasIncluidas(asa);
-
-        geraAtributosParaAsVariaveisGlobais(asa);
-    }
-
-    private String getNomeTipoJava(TipoDado tipoPortugol)
-    {
-        switch (tipoPortugol)
-        {
-            case INTEIRO:
-                return "int";
-            case REAL:
-                return "double";
-            case CADEIA:
-                return "String";
-            case CARACTER:
-                return "char";
-            case LOGICO:
-                return "boolean";
-            case VAZIO:
-                return "void";
-        }
-
-        String mensagem = String.format("Não foi possível traduzir o tipo %s do Portugol para um tipo JAva.", tipoPortugol.getNome());
-        throw new IllegalStateException(mensagem);
-    }
-
-    private List<String> getListaImportacoes(ASAPrograma asa)
-    {
-        List<String> importacoes = new ArrayList<>();
-
-        // importação para a classe base do programa
-        importacoes.add(Programa.class.getCanonicalName());
-
-        // importação para as bibliotecas do PS
-        List<NoInclusaoBiblioteca> bibliotecasIncluidas = asa.getListaInclusoesBibliotecas();
-
-        for (NoInclusaoBiblioteca biblioteca : bibliotecasIncluidas)
-        {
-            importacoes.add(PACOTE_DAS_LIBS + biblioteca.getNome());
-        }
-
-        return importacoes;
-    }
-
-    private void geraCodigoImportacoes(List<String> importacoes)
-    {
-        //importa classe de erro do método executar()
-        saida.append("import br.univali.portugol.nucleo.mensagens.ErroExecucao;").println();
-
-        for (String importacao : importacoes)
-        {
-            saida.format("import %s;", importacao).println();
-        }
-
-        saida.println(); // pula uma linha depois das importações
-    }
-
-    private boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
-    {
-        boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
-        boolean ehDesvio = bloco instanceof NoSe || bloco instanceof NoEscolha;
-        if (!ehLoop && !ehDesvio)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
-    {
-        nivelEscopo++;
-        for (NoBloco bloco : blocos)
-        {
-            saida.append(geraIdentacao());
-            
-            bloco.aceitar(visitor);
-
-            if (blocoFinalizaComPontoEVirgula(bloco))
-            {
-                saida.append(";");
-            }
             saida.println();
+            saida.append(geraIdentacao());
+
+            String nome = noFuncao.getNome();
+            boolean metodoPrincipal = "inicio".equals(nome);
+            if (metodoPrincipal)
+            {
+                nome = "executar";
+                saida.append("@Override").println();
+            }
+
+            saida.append(geraIdentacao())
+                    .append(metodoPrincipal ? "protected" : "private")
+                    .append(" ")
+                    .append(getNomeTipoJava(noFuncao.getTipoDado()))
+                    .append(geraQuantificador(noFuncao.getQuantificador()))
+                    .append(" ")
+                    .append(geraNomeValido(nome));
+
+            if (!metodoPrincipal)
+            {
+                geraStringDosParametros(noFuncao);
+            }
+            else
+            {
+                saida.append("(String[] parametros) throws ErroExecucao");
+            }
+
+            saida.println(); // pula uma linha depois da declaração da assinatura do método
+            saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
+
+            visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
+
+            saida.println();
+            saida.append(geraIdentacao()).append("}").println(); // finaliza o escopo do método
+            saida.println(); // linha em branco depois de cada método
         }
-        nivelEscopo--;
-    }
 
-    private String geraIdentacao()
-    {
-        return String.format("%" + (nivelEscopo * 3) + "s", " ");
-    }
+        private boolean podeDeclararNoComoAtributo(NoDeclaracao no)
+        {
+            return no instanceof NoDeclaracaoVariavel
+                    || no instanceof NoDeclaracaoVetor
+                    || no instanceof NoDeclaracaoMatriz;
+        }
 
-    private class Visitor extends VisitanteASABasico
-    {
+        private String getNomeTipoJava(TipoDado tipoPortugol)
+        {
+            switch (tipoPortugol)
+            {
+                case INTEIRO:
+                    return "int";
+                case REAL:
+                    return "double";
+                case CADEIA:
+                    return "String";
+                case CARACTER:
+                    return "char";
+                case LOGICO:
+                    return "boolean";
+                case VAZIO:
+                    return "void";
+            }
+
+            String mensagem = String.format("Não foi possível traduzir o tipo %s do Portugol para um tipo JAva.", tipoPortugol.getNome());
+            throw new IllegalStateException(mensagem);
+        }
+
+        private void geraStringDosParametros(NoDeclaracaoFuncao noFuncao)
+        {
+            List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
+
+            saida.append("("); // parenteses de início da lista de parâmetros
+            int size = parametros.size();
+            for (int i = 0; i < size; i++)
+            {
+                NoDeclaracaoParametro noParametro = parametros.get(i);
+
+                saida.append(getNomeTipoJava(noParametro.getTipoDado()))
+                        .append(" ") // espaço entre o tipo e o nome
+                        .append(geraNomeValido(noParametro.getNome()))
+                        .append(geraQuantificador(noParametro.getQuantificador()));
+
+                if (i < size - 1)
+                {
+                    saida.append(", ");
+                }
+            }
+            saida.append(")"); // parenteses de fim da lista de parâmetros
+        }
+
+        public GeradorCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
+        {
+            List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
+            boolean existemVariaveisGlobais = false;
+            for (NoDeclaracao no : variaveisGlobais)
+            {
+                if (podeDeclararNoComoAtributo(no))
+                {
+                    existemVariaveisGlobais = true;
+                    saida.append(geraIdentacao())
+                            .append("private ")
+                            .append(no.constante() ? "final " : "");
+
+                    no.aceitar(this);
+
+                    saida.append(";").println();
+                }
+            }
+
+            if (existemVariaveisGlobais)
+            {
+                saida.println(); // deixa uma linha em branco depois dos atributos globais
+            }
+
+            return this;
+        }
+
+        public GeradorCodigo geraAtributosParaAsBibliotecasIncluidas()
+        {
+            List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
+            for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
+            {
+                String tipo = biblioteca.getNome();
+                String nome = tipo; // quando a biblioteca não tem alias o nome e o tipo são idênticos
+                if (biblioteca.getAlias() != null)
+                {
+                    nome = biblioteca.getAlias();
+                }
+                saida.append(geraIdentacao())
+                        .format("private final %s %s = new %s();", tipo, geraNomeValido(nome), tipo)
+                        .println();
+            }
+
+            if (!libsIncluidas.isEmpty())
+            {
+                saida.println(); // deixa uma linha em branco depois dos atributos das bibliotecas
+            }
+
+            return this;
+        }
+
+        private String geraIdentacao()
+        {
+            return String.format("%" + (nivelEscopo * 3) + "s", " ");
+        }
+
+        public GeradorCodigo pulaLinha()
+        {
+            saida.println();
+            return this;
+        }
+
+        public GeradorCodigo geraPackage(String stringPackage)
+        {
+            saida.append("package ")
+                    .append(stringPackage)
+                    .append(";")
+                    .println();
+
+            return this;
+        }
+
+        public GeradorCodigo geraMetodos() throws ExcecaoVisitaASA
+        {
+            List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
+            for (NoDeclaracao declaracao : declaracoes)
+            {
+                if (declaracao instanceof NoDeclaracaoFuncao)
+                {
+                    geraMetodo((NoDeclaracaoFuncao) declaracao);
+                }
+            }
+            return this;
+        }
+
         @Override
         public Void visitar(NoInteiro noInteiro) throws ExcecaoVisitaASA
         {
@@ -326,23 +314,23 @@ public class GeradorCodigoJava
             {
                 saida.append("(");
             }
-            
+
             no.getOperandoEsquerdo().aceitar(this);
-            
+
             String operador = OPERADORES.get(no.getClass());
-            
-            assert(operador != null);
-            
+
+            assert (operador != null);
+
             saida.format(" %s ", operador);
-            
+
             no.getOperandoDireito().aceitar(this);
-            
+
             if (no.estaEntreParenteses())
             {
                 saida.append(")");
             }
         }
-        
+
         @Override
         public Void visitar(NoOperacaoBitwiseLeftShift no) throws ExcecaoVisitaASA
         {
@@ -501,7 +489,7 @@ public class GeradorCodigoJava
             else
             {
                 saida.format(" = new %s[", tipo);
-                if(no.getTamanho() != null)
+                if (no.getTamanho() != null)
                 {
                     no.getTamanho().aceitar(this);
                 }
@@ -540,7 +528,7 @@ public class GeradorCodigoJava
             saida.format("%s %s[][]", tipo, geraNomeValido(nome));
 
             saida.append(" = ");
-            
+
             if (noDeclaracao.possuiInicializacao())
             {
                 noDeclaracao.getInicializacao().aceitar(this);
@@ -550,19 +538,19 @@ public class GeradorCodigoJava
                 saida.append(" new ")
                         .append(tipo)
                         .append("[");
-                
+
                 if (noDeclaracao.getNumeroLinhas() != null)
                 {
                     noDeclaracao.getNumeroLinhas().aceitar(this);
                 }
-                
+
                 saida.append("][");
-                
+
                 if (noDeclaracao.getNumeroColunas() != null)
                 {
                     noDeclaracao.getNumeroColunas().aceitar(this);
                 }
-                
+
                 saida.append("]");
             }
 
@@ -674,7 +662,7 @@ public class GeradorCodigoJava
             visitarBlocos(no.getBlocos());
 
             saida.println();
-            
+
             saida.append(geraIdentacao()).append("}").println();
 
             return null;
@@ -716,9 +704,9 @@ public class GeradorCodigoJava
         public Void visitar(NoSe no) throws ExcecaoVisitaASA
         {
             saida.append("if(");
-            
+
             no.getCondicao().aceitar(this);
-            
+
             saida.append(")").println();
 
             saida.append(geraIdentacao()).append("{").println();
@@ -752,9 +740,9 @@ public class GeradorCodigoJava
         public Void visitar(NoEscolha no) throws ExcecaoVisitaASA
         {
             saida.append("switch(");
-            
+
             no.getExpressao().aceitar(this);
-            
+
             saida.append(")").println();
             saida.append(geraIdentacao()).append("{").println();
 
@@ -767,7 +755,7 @@ public class GeradorCodigoJava
                     if (expressaoCaso != null)
                     {
                         saida.append(geraIdentacao()).append("case ");
-                        
+
                         expressaoCaso.aceitar(this);
 
                         saida.append(":").println();
@@ -804,9 +792,9 @@ public class GeradorCodigoJava
             saida.append(geraIdentacao()).append("}").println();
 
             saida.append(geraIdentacao()).append("while(");
-            
+
             no.getCondicao().aceitar(this);
-            
+
             saida.append(");").println();
 
             return null;
@@ -816,11 +804,11 @@ public class GeradorCodigoJava
         public Void visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
         {
             no.getOperandoEsquerdo().aceitar(this);
-            
+
             saida.append(" = ");
-            
+
             no.getOperandoDireito().aceitar(this);
-            
+
             return null;
         }
 
@@ -829,7 +817,7 @@ public class GeradorCodigoJava
         {
             saida.append("-");
             no.getExpressao().aceitar(this);
-            
+
             return null;
         }
 
@@ -838,7 +826,7 @@ public class GeradorCodigoJava
         {
             saida.append("!");
             no.getExpressao().aceitar(this);
-            
+
             return null;
         }
 
@@ -852,7 +840,7 @@ public class GeradorCodigoJava
                 geraCodigoParaFuncaoLeia(no);
                 return null;
             }
-            
+
             saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
             List<NoExpressao> parametros = no.getParametros();
             int totalParametros = parametros.size();
@@ -879,7 +867,7 @@ public class GeradorCodigoJava
                 NoReferenciaVetor noVetor = (NoReferenciaVetor) no;
                 noVetor.getIndice().aceitar(this);
                 saida.append("]");
-                
+
             }
             else if (no instanceof NoReferenciaMatriz) //NoReferenciaMatriz
             {
@@ -898,9 +886,9 @@ public class GeradorCodigoJava
             for (int i = 0; i < parametros.size(); i++)
             {
                 NoReferencia noRef = (NoReferencia) parametros.get(i);
-                
+
                 geraNomeDaReferencia(noRef); // gera nome da variável + colchetes de vetores ou matrizes incluíndo as expressões dos índices
-                
+
                 NoDeclaracao origem = noRef.getOrigemDaReferencia();
                 TipoDado tipo = TipoDado.CADEIA;
                 if (origem != null) // parece que tem um bug no leia passando 'cadeia' como parametro, a origem do 'leia' é nula
@@ -921,7 +909,7 @@ public class GeradorCodigoJava
         public Void visitar(NoPare noPare) throws ExcecaoVisitaASA
         {
             saida.append("break");
-            
+
             return null;
         }
 
@@ -930,7 +918,7 @@ public class GeradorCodigoJava
         {
             saida.append("~");
             no.getExpressao().aceitar(this);
-            
+
             return null;
         }
 
@@ -938,29 +926,74 @@ public class GeradorCodigoJava
         public Object visitar(NoContinue noContinue) throws ExcecaoVisitaASA
         {
             saida.append("continue");
-            
+
             return null;
         }
-    }
 
-    /**
-     * *
-     * @param nomeAtual O nome atual da variável, vetor, matriz, parâmetro ou
-     * função
-     * @return Um nome que não conflite com as palavras reservadas do java
-     */
-    private String geraNomeValido(String nomeAtual)
-    {
-        if (!ehUmaPalavraReservadaNoJava(nomeAtual))
+        public GeradorCodigo geraImportacaoPara(Class classe)
         {
-            return nomeAtual;
+            saida.append("import ")
+                    .append(classe.getCanonicalName())
+                    .append(";")
+                    .println();
+
+            return this;
         }
 
-        return "_" + nomeAtual;
+        private GeradorCodigo geraImportacaoDasBibliotecasIncluidas()
+        {
+            for (NoInclusaoBiblioteca no : asa.getListaInclusoesBibliotecas())
+            {
+                saida.append("import ")
+                        .append(PACOTE_DAS_LIBS)
+                        .append(no.getNome())
+                        .append(";")
+                        .println();
+
+            }
+
+            return this;
+        }
+
+        private GeradorCodigo geraNomeDaClasse(String nomeClasseJava)
+        {
+            saida.format("public class %s extends Programa", nomeClasseJava).println();
+
+            return this;
+        }
+
+        public GeradorCodigo geraChaveDeAberturaDaClasse()
+        {
+            saida.append("{").println();
+
+            return this;
+        }
+
+        public GeradorCodigo geraChaveDeFechamentoDaClasse()
+        {
+            saida.append("}").println();
+
+            return this;
+        }
+
+        /**
+         * @param nomeAtual O nome atual da variável, vetor, matriz, parâmetro
+         * ou função
+         * @return Um nome que não conflite com as palavras reservadas do java
+         */
+        private static String geraNomeValido(String nomeAtual)
+        {
+            if (!ehUmaPalavraReservadaNoJava(nomeAtual))
+            {
+                return nomeAtual;
+            }
+
+            return "_" + nomeAtual;
+        }
     }
 
-    
     private static final Map<Class, String> OPERADORES = new HashMap<>();
+
     static
     {
         OPERADORES.put(NoOperacaoAtribuicao.class, "=");
@@ -969,9 +1002,9 @@ public class GeradorCodigoJava
         OPERADORES.put(NoOperacaoMultiplicacao.class, "*");
         OPERADORES.put(NoOperacaoSoma.class, "+");
         OPERADORES.put(NoOperacaoSubtracao.class, "-");
-        
+
         OPERADORES.put(NoMenosUnario.class, "-");
-        
+
         OPERADORES.put(NoOperacaoLogicaDiferenca.class, "!=");
         OPERADORES.put(NoOperacaoLogicaIgualdade.class, "==");
         OPERADORES.put(NoOperacaoLogicaMaior.class, ">");
@@ -980,14 +1013,14 @@ public class GeradorCodigoJava
         OPERADORES.put(NoOperacaoLogicaMenorIgual.class, "<=");
         OPERADORES.put(NoOperacaoLogicaOU.class, "||");
         OPERADORES.put(NoOperacaoLogicaE.class, "&&");
-        
+
         OPERADORES.put(NoOperacaoBitwiseE.class, "&");
         OPERADORES.put(NoOperacaoBitwiseOu.class, "|");
         OPERADORES.put(NoOperacaoBitwiseXOR.class, "^");
         OPERADORES.put(NoOperacaoBitwiseLeftShift.class, "<<");
         OPERADORES.put(NoOperacaoBitwiseRightShift.class, ">>");
     }
-    
+
     private static boolean ehUmaPalavraReservadaNoJava(String nome)
     {
         return (Arrays.binarySearch(PALAVRAS_RESERVADAS_JAVA, nome) >= 0);
