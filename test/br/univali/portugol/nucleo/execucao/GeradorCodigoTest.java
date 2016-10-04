@@ -15,6 +15,68 @@ public class GeradorCodigoTest
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
 
+    @Test
+    public void testeConversaoAutomaticaDeTipos() throws Exception
+    {
+        String portugol = "programa                                             \n"
+                + "{                                                            \n"
+                + "     real a                                                  \n"
+                + "     inteiro b                                               \n"                
+                + "                                                             \n"
+                + "	funcao inicio()                                         \n"
+                + "	{                                                       \n"
+                + "         b = a                                               \n"
+                + "         a = b                                               \n"
+                + "         b = trunca(a)                                       \n"
+                + "         a = trunca(b)                                       \n"
+                + "         b = testa(a)                                       \n"
+                + "         a = testa(b)                                       \n"                
+                + "	}                                                       \n"
+                + "	funcao inteiro trunca(real x)                           \n"
+                + "	{                                                       \n"
+                + "         retorne x                                           \n"
+                + "	}                                                       \n"
+                + "	funcao real testa(inteiro x)                            \n"
+                + "	{                                                       \n"
+                + "         retorne x                                           \n"
+                + "	}                                                       \n"                
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private double a;                                         \n"
+                + "   private int b;                                            \n"
+                + "                                                             \n"
+                + "   public ProgramaTeste() throws ErroExecucao {}             \n"                
+                + "                                                             \n"
+                + "   @Override                                                 \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao, InterruptedException    \n"
+                + "   {                                                         \n"
+                + "         b = (int)a;                                         \n"
+                + "         a = b                                               \n"
+                + "         b = trunca(a)                                       \n"
+                + "         a = trunca(b)                                       \n"
+                + "         b = (int)testa((int)a);                                       \n"
+                + "         a = testa(b)                                       \n"                                
+                + "   }                                                         \n"
+                + "   private int trunca(double x)                              \n"
+                + "   {                                                         \n"
+                + "       retorne (int)x;                                       \n"
+                + "   }                                                         \n"                
+                + "	private double testa(int x)                             \n"
+                + "	{                                                       \n"
+                + "         retorne x;                                           \n"
+                + "	}                                                       \n"                                
+                + "}";
+
+        comparaCodigos(portugol, codigoJavaEsperado);
+    }
+    
     
     @Test
     public void testeComparacaoDeStringComEquals() throws Exception
@@ -28,6 +90,8 @@ public class GeradorCodigoTest
                 + "	{                                                       \n"
                 + "         se (umaFrase == outraFrase)                         \n"
                 + "		escreva(\"teste\")                              \n"
+                + "         se (umaFrase != outraFrase)                         \n"
+                + "		escreva(\"teste\")                              \n"                
                 + "         se (a == outraFrase)                                \n"
                 + "		escreva(\"teste\")                              \n"                
                 + "         se (a == b)                                         \n"
@@ -57,6 +121,9 @@ public class GeradorCodigoTest
                 + "   protected void executar(String[] parametros) throws ErroExecucao, InterruptedException    \n"
                 + "   {                                                         \n"
                 + "         if (umaFrase.equals(outraFrase)) {                  \n"
+                + "		escreva(\"teste\");                             \n"
+                + "         }                                                   \n"
+                + "         if (!umaFrase.equals(outraFrase)) {                  \n"
                 + "		escreva(\"teste\");                             \n"
                 + "         }                                                   \n"
                 + "         if (a == outraFrase) {                              \n"
