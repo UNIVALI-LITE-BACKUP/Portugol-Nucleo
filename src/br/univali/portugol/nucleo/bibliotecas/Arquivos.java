@@ -292,7 +292,8 @@ public final class Arquivos extends Biblioteca
         throw new ErroExecucaoBiblioteca("O número máximo de arquivos que podem ser abertos ao mesmo tempo foi atingido");
     }
 
-    @DocumentacaoFuncao(descricao = "Abre um janela que permite ao usuário navegar nos diretórios do computador e selecionar um arquivo",
+    @DocumentacaoFuncao(
+            descricao = "Abre um janela que permite ao usuário navegar nos diretórios do computador e selecionar um arquivo",
             parametros =
             {
                 @DocumentacaoParametro(nome = "formatos_suportados",
@@ -305,18 +306,17 @@ public final class Arquivos extends Biblioteca
                         descricao = "Quando verdadeiro, inclui automaticamente um formato que permite selecionar "
                         + "qualquer arquivo. Este formato também será incluído se nenhum outro formato for informado "
                         + "no parâmetro 'formatos_suportados'"
-                ),
-                @DocumentacaoParametro(nome = "arquivo_selecionado",
-                        descricao = "A variável que receberá o caminho do arquivo selecionado pelo usuário"
                 )
             },
-            retorno = "verdadeiro se o usuário selecionou um arquivo. Falso se o usuário cancelou a seleção do arquivo",
+            retorno = "O arquivo_selecionado ou uma string vazia caso o usuário tenha cancelado.",
             autores =
             {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
+
             }
     )
-    public Boolean selecionar_arquivo(final ReferenciaVetor<String> formatos_suportados, final Boolean aceitar_todos_arquivos, final ReferenciaVariavel<String> arquivo_selecionado) throws ErroExecucaoBiblioteca
+    public String selecionar_arquivo(final String formatos_suportados[], final Boolean aceitar_todos_arquivos) throws ErroExecucaoBiblioteca
     {
         synchronized (Arquivos.this)
         {
@@ -342,20 +342,20 @@ public final class Arquivos extends Biblioteca
                             dialogo.addChoosableFileFilter(filtro);
                         }
 
-                        if (aceitar_todos_arquivos || formatos_suportados.numeroElementos() == 0)
+                        if (aceitar_todos_arquivos || formatos_suportados.length == 0)
                         {
                             dialogo.addChoosableFileFilter(obterFiltroTodosArquivos());
                         }
 
                         Window janelaPai = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
-                        
+
                         if (dialogo.showDialog(janelaPai, null) == JFileChooser.APPROVE_OPTION)
                         {
-                            arquivo_selecionado.definirValor(obterCaminhoArquivo(dialogo.getSelectedFile()));
-                            resultadoSelecao.setArquivoSelecionado(true);
+                            String arquivoSelecionado = obterCaminhoArquivo(dialogo.getSelectedFile());
+                            resultadoSelecao.setArquivoSelecionado(arquivoSelecionado);
                         }
-                        
-                        synchronized(Arquivos.this)
+
+                        synchronized (Arquivos.this)
                         {
                             Arquivos.this.notifyAll();
                         }
@@ -376,141 +376,154 @@ public final class Arquivos extends Biblioteca
                 throw new ErroExecucaoBiblioteca(excecao);
             }
 
-            return resultadoSelecao.isArquivoSelecionado();
+            return resultadoSelecao.getArquivoSelecionado();
         }
     }
-    
 
     @DocumentacaoFuncao(descricao = "Altera um vetor para que ele represente as pastas existentes em um diretório",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "caminho_pai",
-                    descricao = "Define o diretório cujas pastas serão listadas"
-            ),
-            @DocumentacaoParametro(nome = "vetor_pastas",
-                    descricao = "Vetor destino que contará com as pastas encontradas"
-            )
-        },
-        autores =
-        {
-            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
-            @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
-        }
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "caminho_pai",
+                        descricao = "Define o diretório cujas pastas serão listadas"
+                ),
+                @DocumentacaoParametro(nome = "vetor_pastas",
+                        descricao = "Vetor destino que contará com as pastas encontradas"
+                )
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
+            }
     )
     public void listar_pastas(final String caminho_pai, final ReferenciaVetor<String> vetor_pastas) throws ErroExecucaoBiblioteca
     {
         File arquivo = programa.resolverCaminho(new File(caminho_pai));
-        
-        if(arquivo.exists()){
+
+        if (arquivo.exists())
+        {
             File[] arquivos = arquivo.listFiles();
             List<Object> strings = new ArrayList<>();
 
             for (File arquivo1 : arquivos)
             {
-                if(arquivo1.isDirectory()){
+                if (arquivo1.isDirectory())
+                {
                     strings.add(arquivo1.getName());
                 }
             }
             vetor_pastas.getVetor().inicializarComValores(strings);
         }
-        else{
-            throw new ErroExecucaoBiblioteca(caminho_pai+" não é um caminho possível");
+        else
+        {
+            throw new ErroExecucaoBiblioteca(caminho_pai + " não é um caminho possível");
         }
     }
+
     @DocumentacaoFuncao(descricao = "Altera um vetor para que ele represente os arquivos existentes em um diretório",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "caminho_pai",
-                    descricao = "Define o diretório cujas pastas serão listadas"
-            ),
-            @DocumentacaoParametro(nome = "vetor_arquivos",
-                    descricao = "Vetor destino que contará com as pastas encontradas"
-            )
-        },
-        autores =
-        {
-            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
-            @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
-        }
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "caminho_pai",
+                        descricao = "Define o diretório cujas pastas serão listadas"
+                ),
+                @DocumentacaoParametro(nome = "vetor_arquivos",
+                        descricao = "Vetor destino que contará com as pastas encontradas"
+                )
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
+            }
     )
     public void listar_arquivos(final String caminho_pai, final ReferenciaVetor<String> vetor_arquivos) throws ErroExecucaoBiblioteca
     {
         File arquivo = programa.resolverCaminho(new File(caminho_pai));
-        
-        if(arquivo.exists()){
+
+        if (arquivo.exists())
+        {
             File[] arquivos = arquivo.listFiles();
             List<Object> strings = new ArrayList<>();
 
             for (File arquivo1 : arquivos)
             {
-                if(arquivo1.isFile()){
+                if (arquivo1.isFile())
+                {
                     strings.add(arquivo1.getName());
                 }
             }
             vetor_arquivos.getVetor().inicializarComValores(strings);
         }
-        else{
-            throw new ErroExecucaoBiblioteca(caminho_pai+" não é um caminho possível");
+        else
+        {
+            throw new ErroExecucaoBiblioteca(caminho_pai + " não é um caminho possível");
         }
     }
+
     @DocumentacaoFuncao(descricao = "Altera um vetor para que ele represente os arquivos existentes em um diretório",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "caminho_pai",
-                    descricao = "Define o diretório cujas pastas serão listadas"
-            ),
-            @DocumentacaoParametro(nome = "vetor_arquivos",
-                    descricao = "Vetor destino que contará com as pastas encontradas"
-            ),
-            @DocumentacaoParametro(nome = "vetor_tipos",
-                    descricao = "Vetor destino que contará com as pastas encontradas"
-            )
-        },
-        autores =
-        {
-            @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
-            @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
-        }
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "caminho_pai",
+                        descricao = "Define o diretório cujas pastas serão listadas"
+                ),
+                @DocumentacaoParametro(nome = "vetor_arquivos",
+                        descricao = "Vetor destino que contará com as pastas encontradas"
+                ),
+                @DocumentacaoParametro(nome = "vetor_tipos",
+                        descricao = "Vetor destino que contará com as pastas encontradas"
+                )
+            },
+            autores =
+            {
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
+            }
     )
     public void listar_arquivos_por_tipo(final String caminho_pai, final ReferenciaVetor<String> vetor_arquivos, final ReferenciaVetor<String> vetor_tipos) throws ErroExecucaoBiblioteca
     {
         File arquivo = programa.resolverCaminho(new File(caminho_pai));
-        
-        if(arquivo.exists()){
+
+        if (arquivo.exists())
+        {
             File[] arquivos = arquivo.listFiles(new java.io.FileFilter()
             {
                 @Override
                 public boolean accept(File pathname)
                 {
-                    for(int i=0; i<vetor_tipos.numeroElementos();i++)
+                    for (int i = 0; i < vetor_tipos.numeroElementos(); i++)
                     {
                         try
                         {
-                            if(pathname.toString().toLowerCase().endsWith(vetor_tipos.obterValor(i).toLowerCase())){
+                            if (pathname.toString().toLowerCase().endsWith(vetor_tipos.obterValor(i).toLowerCase()))
+                            {
                                 return true;
+
                             }
                         }
                         catch (ErroExecucaoBiblioteca ex)
                         {
-                            Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Arquivos.class
+                                    .getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     return false;
-                    
+
                 }
             });
             List<Object> strings = new ArrayList<>();
 
             for (File arquivo1 : arquivos)
             {
-                if(arquivo1.isFile()){
+                if (arquivo1.isFile())
+                {
                     strings.add(arquivo1.getName());
                 }
             }
             vetor_arquivos.getVetor().inicializarComValores(strings);
         }
-        else{
-            throw new ErroExecucaoBiblioteca(caminho_pai+" não é um caminho possível");
+        else
+        {
+            throw new ErroExecucaoBiblioteca(caminho_pai + " não é um caminho possível");
         }
     }
 
@@ -526,13 +539,13 @@ public final class Arquivos extends Biblioteca
         }
     }
 
-    private List<FileFilter> criarFiltros(ReferenciaVetor<String> formatos) throws ErroExecucaoBiblioteca
+    private List<FileFilter> criarFiltros(String formatos[]) throws ErroExecucaoBiblioteca
     {
         List<FileFilter> filtros = new ArrayList<>();
 
-        for (int i = 0; i < formatos.numeroElementos(); i++)
+        for (int i = 0; i < formatos.length; i++)
         {
-            String formato = formatos.obterValor(i);
+            String formato = formatos[i];
 
             try
             {
@@ -547,18 +560,19 @@ public final class Arquivos extends Biblioteca
         }
 
         return filtros;
+
     }
 
     private final class ResultadoSelecao
     {
-        private boolean arquivoSelecionado = false;
+        private String arquivoSelecionado = "";
 
-        public void setArquivoSelecionado(boolean arquivoSelecionado)
+        public void setArquivoSelecionado(String arquivoSelecionado)
         {
             this.arquivoSelecionado = arquivoSelecionado;
         }
 
-        public boolean isArquivoSelecionado()
+        public String getArquivoSelecionado()
         {
             return arquivoSelecionado;
         }
@@ -687,6 +701,7 @@ public final class Arquivos extends Biblioteca
         }
 
         return dialogoSelecao;
+
     }
 
     private final class Arquivo
@@ -713,12 +728,9 @@ public final class Arquivos extends Biblioteca
             {
                 abrirParaLeitura();
             }
-            else
+            else if (modoAcesso == ModoAcesso.ESCRITA)
             {
-                if (modoAcesso == ModoAcesso.ESCRITA)
-                {
-                    abrirParaEscrita();
-                }
+                abrirParaEscrita();
             }
         }
 
@@ -820,12 +832,9 @@ public final class Arquivos extends Biblioteca
                     escritor.flush();
                     escritor.close();
                 }
-                else
+                else if (modoAcesso == ModoAcesso.LEITURA)
                 {
-                    if (modoAcesso == ModoAcesso.LEITURA)
-                    {
-                        leitor.close();
-                    }
+                    leitor.close();
                 }
             }
             catch (IOException | NullPointerException excecao)
