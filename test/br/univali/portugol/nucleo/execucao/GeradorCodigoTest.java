@@ -1,9 +1,12 @@
 package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
+import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
+import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -16,11 +19,47 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
 
     @Test
+    public void testeNegacao() throws Exception
+    {
+        String portugol = "programa                                             \n"
+                + "{                                                            \n"
+                + "     cadeia a = \"teste\"                                    \n"
+                + "     cadeia b = \"teste\"                                    \n"                
+                + "                                                             \n"
+                + "	funcao inicio()                                         \n"
+                + "	{                                                       \n"
+                + "         se (nao (a != b)){}                                   \n"                
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "   private String a = \"teste\";                             \n"
+                + "   private String b = \"teste\";                             \n"
+                + "                                                             \n"
+                + "   public ProgramaTeste() throws ErroExecucao {}             \n"                
+                + "                                                             \n"
+                + "   @Override                                                 \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao, InterruptedException    \n"
+                + "   {                                                         \n"
+                + "         if (!(!a.equals(b))){}                                \n"                
+                + "   }                                                         \n"
+                + "}";
+
+        comparaCodigos(portugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testeConversaoAutomaticaDeTipos() throws Exception
     {
         String portugol = "programa                                             \n"
                 + "{                                                            \n"
-                + "     real a                                                  \n"
+                + "     real a = 0.0                                            \n"
                 + "     inteiro b                                               \n"                
                 + "                                                             \n"
                 + "	funcao inicio()                                         \n"
@@ -49,7 +88,7 @@ public class GeradorCodigoTest
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
-                + "   private double a;                                         \n"
+                + "   private double a = 0.0;                                   \n"
                 + "   private int b;                                            \n"
                 + "                                                             \n"
                 + "   public ProgramaTeste() throws ErroExecucao {}             \n"                
@@ -83,16 +122,14 @@ public class GeradorCodigoTest
     {
         String portugol = "programa                                             \n"
                 + "{                                                            \n"
-                + "     cadeia umaFrase, outraFrase                             \n"
-                + "     inteiro a, b                                            \n"                
+                + "     cadeia umaFrase = \"a\", outraFrase = \"a\"             \n"
+                + "     inteiro a = 0, b = 0                                    \n"                
                 + "                                                             \n"
                 + "	funcao inicio()                                         \n"
                 + "	{                                                       \n"
                 + "         se (umaFrase == outraFrase)                         \n"
                 + "		escreva(\"teste\")                              \n"
                 + "         se (umaFrase != outraFrase)                         \n"
-                + "		escreva(\"teste\")                              \n"                
-                + "         se (a == outraFrase)                                \n"
                 + "		escreva(\"teste\")                              \n"                
                 + "         se (a == b)                                         \n"
                 + "		escreva(\"teste\")                              \n"                
@@ -110,10 +147,10 @@ public class GeradorCodigoTest
                 + "                                                             \n"
                 + "public class ProgramaTeste extends Programa                  \n"
                 + "{                                                            \n"
-                + "   private String umaFrase;                                  \n"
-                + "   private String outraFrase;                                \n"
-                + "   private int a;                                        \n"
-                + "   private int b;                                        \n"                
+                + "   private String umaFrase = \"a\";                          \n"
+                + "   private String outraFrase = \"a\";                        \n"
+                + "   private int a = 0;                                        \n"
+                + "   private int b = 0;                                        \n"                
                 + "                                                             \n"
                 + "   public ProgramaTeste() throws ErroExecucao {}    \n"                
                 + "                                                             \n"
@@ -126,9 +163,6 @@ public class GeradorCodigoTest
                 + "         if (!umaFrase.equals(outraFrase)) {                  \n"
                 + "		escreva(\"teste\");                             \n"
                 + "         }                                                   \n"
-                + "         if (a == outraFrase) {                              \n"
-                + "		escreva(\"teste\");                             \n"                
-                + "         }                                                   \n"                
                 + "         if (a == b) {                                       \n"
                 + "		escreva(\"teste\");                             \n"                
                 + "         }                                                   \n"                
@@ -144,9 +178,46 @@ public class GeradorCodigoTest
         comparaCodigos(portugol, codigoJavaEsperado);
     }
 
+    @Test
+    public void testePalavrasReservadasDoJavaEmFuncoes() throws Exception
+    {
+        // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
+        String portugol = ""
+                + "programa                                                         \n"
+                + "{                                                                \n"
+                + "     funcao inicio()                                             \n"
+                + "     {                                                           \n"
+                + "     }                                                           \n"
+                + "     funcao float(inteiro int, logico boolean[])                                             \n"
+                + "     {                                                           \n"
+                + "     }                                                           \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                               \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;        \n"
+                + "import br.univali.portugol.nucleo.Programa;                      \n"
+                + "                                                                 \n"
+                + "public class ProgramaTeste extends Programa                      \n"
+                + "{                                                                \n"
+                + "   public ProgramaTeste() throws ErroExecucao {}                 \n"                
+                + "                                                                 \n"                
+                + "   @Override                                                     \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao, InterruptedException    \n"
+                + "   {                                                             \n"
+                + "   }                                                             \n"
+                + "   private void _float(int _int, boolean _boolean[]) throws ErroExecucao, InterruptedException             \n"
+                + "   {                                                             \n"
+                + "   }                                                             \n"
+                + "}";
+
+        comparaCodigos(portugol, codigoJavaEsperado);
+
+    }
+    
     
     @Test
-    public void testePalavrasReservadasDoJava() throws Exception
+    public void testePalavrasReservadasDoJavaEmVariaveis() throws Exception
     {
         // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
         String portugol = ""
@@ -171,9 +242,6 @@ public class GeradorCodigoTest
                 + "     cadeia char                                                 \n"
                 + "                                                                 \n"
                 + "     funcao inicio()                                             \n"
-                + "     {                                                           \n"
-                + "     }                                                           \n"
-                + "     funcao float(inteiro int, logico boolean[])                                             \n"
                 + "     {                                                           \n"
                 + "     }                                                           \n"
                 + "}";
@@ -208,9 +276,6 @@ public class GeradorCodigoTest
                 + "                                                                 \n"                
                 + "   @Override                                                     \n"
                 + "   protected void executar(String[] parametros) throws ErroExecucao, InterruptedException    \n"
-                + "   {                                                             \n"
-                + "   }                                                             \n"
-                + "   private void _float(int _int, boolean _boolean[]) throws ErroExecucao, InterruptedException             \n"
                 + "   {                                                             \n"
                 + "   }                                                             \n"
                 + "}";
@@ -593,7 +658,7 @@ public class GeradorCodigoTest
                 + "         inteiro x = (10 / 2)                                \n"
                 + "         inteiro a[] = {1, 2, 3}                             \n"
                 + "         inteiro u[3]                                        \n"
-                + "         inteiro x[2][2]                                     \n"
+                + "         inteiro v[2][2]                                     \n"
                 + "         inteiro b[][] = {{1, 2, 3}, {4,5,6}}                \n"
                 + "         inteiro c = a[0]                                    \n"
                 + "         inteiro d = b[0][1]                                 \n"
@@ -624,55 +689,13 @@ public class GeradorCodigoTest
                 + "      int x = (10/2);                                        \n"
                 + "      int a[] = {1, 2, 3};                                   \n"
                 + "      int u[] = new int[3];                                  \n"
-                + "      int x[][] = new int[2][2];                             \n"
+                + "      int v[][] = new int[2][2];                             \n"
                 + "      int b[][] = {{1, 2, 3}, {4,5,6}};                      \n"
                 + "      int c = a[0];                                          \n"
                 + "      int d = b[0][1];                                       \n"
                 + "      int f = x;                                             \n"
                 + "      b[0][0] = 1;                                           \n"
                 + "      u[1] = 1;                                              \n"
-                + "   }                                                         \n"
-                + "}";
-
-        comparaCodigos(codigoPortugol, codigoJavaEsperado);
-    }
-
-    @Test
-    public void testGeracaoFuncaoRetornandoArrays() throws Exception
-    {
-        String codigoPortugol = "programa {                                     \n"
-                + "	funcao inicio() {                                       \n"
-                + "	}                                                       \n"
-                + "	funcao inteiro retornaInteiro() {                       \n"
-                + "	}                                                       \n"
-                + "	funcao inteiro[] retornaArray() {                       \n"
-                + "	}                                                       \n"
-                + "	funcao inteiro[][] retornaMatriz() {                    \n"
-                + "	}                                                       \n"
-                + "}";
-
-        String codigoJavaEsperado = ""
-                + "package programas;                                           \n"
-                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
-                + "import br.univali.portugol.nucleo.Programa;                  \n"
-                + "                                                             \n"
-                + "public class ProgramaTeste extends Programa                  \n"
-                + "{                                                            \n"
-                + "                                                             \n"
-                + "   public ProgramaTeste() throws ErroExecucao {}    \n"                
-                + "                                                             \n"                
-                + "   @Override                                                 \n"
-                + "   protected void executar(String[] parametros) throws ErroExecucao, InterruptedException    \n"
-                + "   {                                                         \n"
-                + "   }                                                         \n"
-                + "   private int retornaInteiro() throws ErroExecucao, InterruptedException                               \n"
-                + "   {                                                         \n"
-                + "   }                                                         \n"
-                + "   private int[] retornaArray() throws ErroExecucao, InterruptedException                              \n"
-                + "   {                                                         \n"
-                + "   }                                                         \n"
-                + "   private int[][] retornaMatriz() throws ErroExecucao, InterruptedException                           \n"
-                + "   {                                                         \n"
                 + "   }                                                         \n"
                 + "}";
 
@@ -952,7 +975,7 @@ public class GeradorCodigoTest
                 + "	inteiro i = 10                                          \n"
                 + "	cadeia c = \"teste\"                                    \n"
                 + "     logico l = verdadeiro                                   \n"
-                + "     caracter c = 'a'                                        \n"
+                + "     caracter ch = 'a'                                        \n"
                 + "     real r = 53.23                                          \n"
                 + "	funcao inicio() {                                       \n"
                 + "	}                                                       \n"
@@ -966,7 +989,7 @@ public class GeradorCodigoTest
                 + "   private int i =  10;                                      \n"
                 + "   private  String c = \"teste\";                            \n"
                 + "   private  boolean l = true;                                \n"
-                + "   private  char c = 'a';                                    \n"
+                + "   private  char ch = 'a';                                    \n"
                 + "   private  double r = 53.23;                                \n"
                 + "                                                             \n"
                 + "                                                             \n"
@@ -1044,7 +1067,19 @@ public class GeradorCodigoTest
 
     private void comparaCodigos(String codigoPortugol, String codigoJavaEsperado) throws Exception
     {
-        analisador.analisar(codigoPortugol);
+        ResultadoAnalise resultado = analisador.analisar(codigoPortugol);
+        assertNotNull(resultado);
+        assertNotNull(resultado.getErros());
+        List<ErroAnalise> erros = resultado.getErros();
+        if (!erros.isEmpty())
+        {
+            for (ErroAnalise erro : erros)
+            {
+                System.out.println(erro);
+            }
+        }
+        assertEquals(0, resultado.getErros().size());
+        
         ASAPrograma asa = (ASAPrograma) analisador.getASA();
 
         // gera o código e escreve em um ByteArrayOutputStream

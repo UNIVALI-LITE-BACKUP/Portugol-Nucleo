@@ -35,7 +35,7 @@ public class GeradorCodigoJava
                 .geraAtributosParaAsVariaveisGlobais()
                 .pulaLinha()
                 .geraConstrutor(nomeClasseJava)
-                .pulaLinha()                
+                .pulaLinha()
                 .geraMetodos()
                 .geraChaveDeFechamentoDaClasse();
     }
@@ -317,6 +317,16 @@ public class GeradorCodigoJava
                     && b.getTipoResultante() == TipoDado.CADEIA;
         }
 
+        private boolean usaOperadorPadrao(NoOperacao no, boolean operandosSaoStrings)
+        {
+            if (no instanceof NoOperacaoLogicaIgualdade || no instanceof NoOperacaoLogicaDiferenca)
+            {
+                return !operandosSaoStrings;
+            }
+
+            return true;
+        }
+
         private void geraCodigoComParenteses(NoOperacao no) throws ExcecaoVisitaASA
         {
             if (no.estaEntreParenteses())
@@ -324,11 +334,18 @@ public class GeradorCodigoJava
                 saida.append("(");
             }
 
+            boolean operandosSaoStrings = operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
+            boolean usaOperadorPadrao = usaOperadorPadrao(no, operandosSaoStrings);
+            
+            boolean precisaDeNegacao = !usaOperadorPadrao && (no instanceof NoOperacaoLogicaDiferenca);
+            if (precisaDeNegacao)
+            {
+                saida.append("!"); // not equals
+            }
+            
             no.getOperandoEsquerdo().aceitar(this);
             
-            boolean comparandoStrings = no instanceof NoOperacaoLogicaIgualdade 
-                    && operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
-            if (!comparandoStrings)
+            if (usaOperadorPadrao)
             {
                 String operador = OPERADORES.get(no.getClass());
                 assert (operador != null);
@@ -340,8 +357,8 @@ public class GeradorCodigoJava
             }
 
             no.getOperandoDireito().aceitar(this);
-            
-            if (comparandoStrings)
+
+            if (!usaOperadorPadrao)
             {
                 saida.append(")"); // fecha o parênteses do .equals()
             }
@@ -619,20 +636,21 @@ public class GeradorCodigoJava
                 saida.append("return ");
                 if (no.temPai())
                 {
-                    
+
                     if (no.getPai() instanceof NoDeclaracaoFuncao)
                     {
-                        TipoDado tipoRetornoFuncao = ((NoDeclaracaoFuncao)no.getPai()).getTipoDado();
+                        TipoDado tipoRetornoFuncao = ((NoDeclaracaoFuncao) no.getPai()).getTipoDado();
                         if (expressao.getTipoResultante() == TipoDado.REAL && tipoRetornoFuncao == TipoDado.INTEIRO)
                         {
                             saida.append("(int)");
                         }
                     }
                 }
-                else{
+                else
+                {
                     throw new IllegalStateException("retorne não tem pai!");
                 }
-                    
+
                 expressao.aceitar(this);
             }
             else
@@ -842,7 +860,7 @@ public class GeradorCodigoJava
         {
             NoExpressao opEsquerdo = no.getOperandoEsquerdo();
             NoExpressao opDireito = no.getOperandoDireito();
-            
+
             opEsquerdo.aceitar(this);
 
             saida.append(" = ");
@@ -854,7 +872,7 @@ public class GeradorCodigoJava
             {
                 saida.append("(int)");
             }
-            
+
             no.getOperandoDireito().aceitar(this);
 
             return null;
@@ -891,7 +909,7 @@ public class GeradorCodigoJava
 
             saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
             List<NoExpressao> parametrosPassados = no.getParametros();
-            List<NoDeclaracaoParametro> parametrosEsperados = Collections.EMPTY_LIST;  
+            List<NoDeclaracaoParametro> parametrosEsperados = Collections.EMPTY_LIST;
             if (no.getOrigemDaReferencia() != null)
             {
                 parametrosEsperados = no.getOrigemDaReferencia().getParametros();
@@ -903,16 +921,16 @@ public class GeradorCodigoJava
                 if (i < parametrosEsperados.size())
                 {
                     NoDeclaracaoParametro parametroEsperado = parametrosEsperados.get(i);
-                
+
                     // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
                     if (parametroEsperado.getTipoDado() == TipoDado.INTEIRO && parametroPassado.getTipoResultante() == TipoDado.REAL)
                     {
                         saida.append("(int)");
                     }
                 }
-                
+
                 parametroPassado.aceitar(this);
-                
+
                 if (i < totalParametros - 1)
                 {
                     saida.append(", ");
