@@ -106,12 +106,10 @@ public class GeradorCodigoJava
                 saida.append("@Override").println();
             }
 
-            String tipoRetorno = (noFuncao.getTipoDado() != TipoDado.VAZIO) ? noFuncao.getTipoDado().getTipoJava().getSimpleName() : "void";
-
             saida.append(geraIdentacao())
                     .append(metodoPrincipal ? "protected" : "private")
                     .append(" ")
-                    .append(tipoRetorno)
+                    .append(getNomeTipoJava(noFuncao.getTipoDado()))
                     .append(geraQuantificador(noFuncao.getQuantificador()))
                     .append(" ")
                     .append(geraNomeValido(nome));
@@ -142,6 +140,28 @@ public class GeradorCodigoJava
                     || no instanceof NoDeclaracaoMatriz;
         }
 
+        private String getNomeTipoJava(TipoDado tipoPortugol)
+        {
+            switch (tipoPortugol)
+            {
+                case INTEIRO:
+                    return "int";
+                case REAL:
+                    return "double";
+                case CADEIA:
+                    return "String";
+                case CARACTER:
+                    return "char";
+                case LOGICO:
+                    return "boolean";
+                case VAZIO:
+                    return "void";
+            }
+
+            String mensagem = String.format("Não foi possível traduzir o tipo %s do Portugol para um tipo JAva.", tipoPortugol.getNome());
+            throw new IllegalStateException(mensagem);
+        }
+
         private void geraStringDosParametros(NoDeclaracaoFuncao noFuncao)
         {
             List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
@@ -152,7 +172,7 @@ public class GeradorCodigoJava
             {
                 NoDeclaracaoParametro noParametro = parametros.get(i);
 
-                saida.append(noParametro.getTipoDado().getTipoJava().getSimpleName())
+                saida.append(getNomeTipoJava(noParametro.getTipoDado()))
                         .append(" ") // espaço entre o tipo e o nome
                         .append(geraNomeValido(noParametro.getNome()))
                         .append(geraQuantificador(noParametro.getQuantificador()));
@@ -304,8 +324,8 @@ public class GeradorCodigoJava
             }
 
             no.getOperandoEsquerdo().aceitar(this);
-
-            boolean comparandoStrings = no instanceof NoOperacaoLogicaIgualdade
+            
+            boolean comparandoStrings = no instanceof NoOperacaoLogicaIgualdade 
                     && operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
             if (!comparandoStrings)
             {
@@ -319,7 +339,7 @@ public class GeradorCodigoJava
             }
 
             no.getOperandoDireito().aceitar(this);
-
+            
             if (comparandoStrings)
             {
                 saida.append(")"); // fecha o parênteses do .equals()
@@ -461,7 +481,7 @@ public class GeradorCodigoJava
         public Void visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
         {
             String nome = noDeclaracao.getNome();
-            String tipo = noDeclaracao.getTipoDado().getTipoJava().getSimpleName();
+            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
 
             saida.format("%s %s", tipo, geraNomeValido(nome));
 
@@ -478,7 +498,7 @@ public class GeradorCodigoJava
         public Void visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
         {
             String nome = no.getNome();
-            String tipo = no.getTipoDado().getTipoJava().getSimpleName();
+            String tipo = getNomeTipoJava(no.getTipoDado());
             saida.format("%s %s[]", tipo, geraNomeValido(nome));
 
             if (no.possuiInicializacao())
@@ -524,7 +544,7 @@ public class GeradorCodigoJava
         public Void visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
         {
             String nome = noDeclaracao.getNome();
-            String tipo = noDeclaracao.getTipoDado().getTipoJava().getSimpleName();
+            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
             saida.format("%s %s[][]", tipo, geraNomeValido(nome));
 
             saida.append(" = ");
