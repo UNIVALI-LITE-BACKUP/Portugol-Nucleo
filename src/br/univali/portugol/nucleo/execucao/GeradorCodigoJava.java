@@ -33,6 +33,8 @@ public class GeradorCodigoJava
                 .pulaLinha()
                 .geraAtributosParaAsVariaveisGlobais()
                 .pulaLinha()
+                .geraConstrutor(nomeClasseJava)
+                .pulaLinha()                
                 .geraMetodos()
                 .geraChaveDeFechamentoDaClasse();
     }
@@ -105,7 +107,7 @@ public class GeradorCodigoJava
             }
 
             String tipoRetorno = (noFuncao.getTipoDado() != TipoDado.VAZIO) ? noFuncao.getTipoDado().getTipoJava().getSimpleName() : "void";
-            
+
             saida.append(geraIdentacao())
                     .append(metodoPrincipal ? "protected" : "private")
                     .append(" ")
@@ -302,8 +304,8 @@ public class GeradorCodigoJava
             }
 
             no.getOperandoEsquerdo().aceitar(this);
-            
-            boolean comparandoStrings = no instanceof NoOperacaoLogicaIgualdade 
+
+            boolean comparandoStrings = no instanceof NoOperacaoLogicaIgualdade
                     && operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
             if (!comparandoStrings)
             {
@@ -317,7 +319,7 @@ public class GeradorCodigoJava
             }
 
             no.getOperandoDireito().aceitar(this);
-            
+
             if (comparandoStrings)
             {
                 saida.append(")"); // fecha o parênteses do .equals()
@@ -949,6 +951,17 @@ public class GeradorCodigoJava
                         .println();
 
             }
+
+            return this;
+        }
+
+        private GeradorCodigo geraConstrutor(String nomeDaClasseJava)
+        {
+            saida.append(geraIdentacao())
+                    .append("public ")
+                    .append(nomeDaClasseJava)
+                    .append("() throws ErroExecucao {}")
+                    .println();
 
             return this;
         }

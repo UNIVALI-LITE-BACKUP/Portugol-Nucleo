@@ -101,7 +101,7 @@ public class IntegracaoGeradorCodigoJavacTest
                         System.out.println("\t" + erro);
                     }
                 }
-                //Assert.assertEquals(0, erros.size());
+                Assert.assertEquals(0, erros.size());
             }
         }
     }
