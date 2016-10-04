@@ -308,7 +308,7 @@ public class GeradorCodigoJava
             return null;
         }
 
-        private boolean ehComparacaoDeStrings(NoExpressao a, NoExpressao b)
+        private boolean operandosSaoStrings(NoExpressao a, NoExpressao b)
         {
             return a.getTipoResultante() == TipoDado.CADEIA
                     && b.getTipoResultante() == TipoDado.CADEIA;
@@ -323,7 +323,8 @@ public class GeradorCodigoJava
 
             no.getOperandoEsquerdo().aceitar(this);
             
-            boolean comparandoStrings = ehComparacaoDeStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
+            boolean comparandoStrings = no instanceof NoOperacaoLogicaIgualdade 
+                    && operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
             if (!comparandoStrings)
             {
                 String operador = OPERADORES.get(no.getClass());

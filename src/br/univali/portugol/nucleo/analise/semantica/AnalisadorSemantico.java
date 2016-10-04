@@ -2023,6 +2023,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         try
         {
             operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this);
+            noOperacao.getOperandoEsquerdo().setTipoResultante(operandoEsquerdo);
         }
         catch (ExcecaoVisitaASA excecao)
         {
@@ -2035,6 +2036,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         try
         {
             operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this);
+            noOperacao.getOperandoDireito().setTipoResultante(operandoDireito);
         }
         catch (ExcecaoVisitaASA excecao)
         {
