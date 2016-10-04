@@ -21,7 +21,7 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * @since 1.0
  */
-public final class NoReferenciaVetor extends NoReferencia
+public final class NoReferenciaVetor extends NoReferencia<NoDeclaracaoVetor>
 {
     private final NoExpressao noIndice;
 

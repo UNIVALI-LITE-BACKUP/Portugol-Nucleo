@@ -19,7 +19,12 @@ public final class NoInteiro extends NoExpressaoLiteral<Integer>
         super(valor);
     }
 
-    
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.INTEIRO;
+    }
+
     /**
      * {@inheritDoc }
      */

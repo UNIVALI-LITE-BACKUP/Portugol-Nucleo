@@ -1867,6 +1867,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             try
             {
+                noRetorne.setPai(funcaoAtual.getOrigemDoSimbolo());
                 tipoExpressaoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
                 tipoRetornoFuncao = tabelaCompatibilidadeTipos.obterTipoRetornoFuncao(funcaoAtual.getTipoDado(), tipoExpressaoRetorno);
             }

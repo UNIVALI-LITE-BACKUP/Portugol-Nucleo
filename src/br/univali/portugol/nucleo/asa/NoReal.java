@@ -18,7 +18,13 @@ public final class NoReal extends NoExpressaoLiteral<Double>
     {
         super(valor);
     }
-    
+
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.REAL;
+    }
+
     /**
      * {@inheritDoc }
      */

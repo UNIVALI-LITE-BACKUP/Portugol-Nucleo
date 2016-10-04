@@ -69,12 +69,12 @@ public abstract class No
         return pontoParada.estaAtivo() && estado == Programa.Estado.BREAK_POINT;
     }
 
-    protected boolean temPai()
+    public boolean temPai()
     {
         return pai != null;
     }
 
-    protected NoBloco getPai()
+    public NoBloco getPai()
     {
         if (!temPai())
         {

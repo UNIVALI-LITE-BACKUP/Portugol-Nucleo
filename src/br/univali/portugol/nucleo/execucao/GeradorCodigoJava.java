@@ -6,6 +6,7 @@ import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -616,6 +617,22 @@ public class GeradorCodigoJava
             if (expressao != null)
             {
                 saida.append("return ");
+                if (no.temPai())
+                {
+                    
+                    if (no.getPai() instanceof NoDeclaracaoFuncao)
+                    {
+                        TipoDado tipoRetornoFuncao = ((NoDeclaracaoFuncao)no.getPai()).getTipoDado();
+                        if (expressao.getTipoResultante() == TipoDado.REAL && tipoRetornoFuncao == TipoDado.INTEIRO)
+                        {
+                            saida.append("(int)");
+                        }
+                    }
+                }
+                else{
+                    throw new IllegalStateException("retorne não tem pai!");
+                }
+                    
                 expressao.aceitar(this);
             }
             else
@@ -823,10 +840,21 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
         {
-            no.getOperandoEsquerdo().aceitar(this);
+            NoExpressao opEsquerdo = no.getOperandoEsquerdo();
+            NoExpressao opDireito = no.getOperandoDireito();
+            
+            opEsquerdo.aceitar(this);
 
             saida.append(" = ");
 
+            // verifica se é necessário fazer cast de um double para int
+            TipoDado tipoOpEsquerdo = opEsquerdo.getTipoResultante();
+            TipoDado tipoOpDireito = opDireito.getTipoResultante();
+            if (tipoOpEsquerdo == TipoDado.INTEIRO && tipoOpDireito == TipoDado.REAL)
+            {
+                saida.append("(int)");
+            }
+            
             no.getOperandoDireito().aceitar(this);
 
             return null;
@@ -862,11 +890,29 @@ public class GeradorCodigoJava
             }
 
             saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
-            List<NoExpressao> parametros = no.getParametros();
-            int totalParametros = parametros.size();
+            List<NoExpressao> parametrosPassados = no.getParametros();
+            List<NoDeclaracaoParametro> parametrosEsperados = Collections.EMPTY_LIST;  
+            if (no.getOrigemDaReferencia() != null)
+            {
+                parametrosEsperados = no.getOrigemDaReferencia().getParametros();
+            }
+            int totalParametros = parametrosPassados.size();
             for (int i = 0; i < totalParametros; i++)
             {
-                parametros.get(i).aceitar(this);
+                NoExpressao parametroPassado = parametrosPassados.get(i);
+                if (i < parametrosEsperados.size())
+                {
+                    NoDeclaracaoParametro parametroEsperado = parametrosEsperados.get(i);
+                
+                    // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
+                    if (parametroEsperado.getTipoDado() == TipoDado.INTEIRO && parametroPassado.getTipoResultante() == TipoDado.REAL)
+                    {
+                        saida.append("(int)");
+                    }
+                }
+                
+                parametroPassado.aceitar(this);
+                
                 if (i < totalParametros - 1)
                 {
                     saida.append(", ");

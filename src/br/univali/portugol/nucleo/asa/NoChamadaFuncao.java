@@ -23,7 +23,7 @@ import java.util.List;
  * @version 1.0
  *
  */
-public final class NoChamadaFuncao extends NoReferencia
+public final class NoChamadaFuncao extends NoReferencia<NoDeclaracaoFuncao>
 {
     private List<NoExpressao> parametros;
 
@@ -109,5 +109,5 @@ public final class NoChamadaFuncao extends NoReferencia
     {
         return (estado == Programa.Estado.BREAK_POINT && pontoDeParadaEstaAtivo()) || estado == Programa.Estado.STEP_OVER;
     }
-
+    
 }
