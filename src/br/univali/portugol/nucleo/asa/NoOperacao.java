@@ -1,5 +1,9 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+import java.util.EnumMap;
+import java.util.HashMap;
+
 /**
  * Representa uma operação no código fonte.
  * <p>
@@ -23,6 +27,7 @@ public abstract class NoOperacao extends NoExpressao
     private NoExpressao operandoEsquerdo;
     private NoExpressao operandoDireito;
     private TrechoCodigoFonte trechoCodigoFonteOperador;
+    private TipoDado tipoResultante;
 
     /**
      * 
@@ -105,4 +110,37 @@ public abstract class NoOperacao extends NoExpressao
 
         return new TrechoCodigoFonte(linha, inicioOpEsquerdo, tamanhoTexto);
     }
+    
+    private TipoDado geraTipoResultante()
+    {
+        TipoDado tipoOpEsquerdo = operandoEsquerdo.getTipoResultante();
+        TipoDado tipoOpDireito = operandoDireito.getTipoResultante();
+
+        if (tipoOpEsquerdo != tipoOpDireito)
+        {
+            if (tipoOpEsquerdo == TipoDado.INTEIRO && tipoOpDireito == TipoDado.REAL)
+            {
+                return TipoDado.REAL;
+            }
+            
+            if (tipoOpEsquerdo == TipoDado.REAL && tipoOpDireito == TipoDado.INTEIRO)
+            {
+                return TipoDado.REAL;
+            }
+            
+        }
+        
+        return tipoOpEsquerdo;
+    }
+    
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        if (tipoResultante == null)
+        {
+            tipoResultante = geraTipoResultante();
+        }
+        return tipoResultante;
+    }
+    
 }

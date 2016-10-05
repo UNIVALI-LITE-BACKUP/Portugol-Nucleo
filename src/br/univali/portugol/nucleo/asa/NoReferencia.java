@@ -12,6 +12,7 @@ package br.univali.portugol.nucleo.asa;
  *
  * @author Luiz Fernando Noschang
  * @version 1.0
+ * @param <T>
  *
  * @see NoChamadaFuncao
  * @see NoReferenciaMatriz
@@ -43,10 +44,9 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
     @Override
     public TipoDado getTipoResultante()
     {
-        NoDeclaracao declaraco = getOrigemDaReferencia();
-        if (declaraco != null)
+        if (origemDaReferencia != null)
         {
-            return declaraco.getTipoDado();
+            return origemDaReferencia.getTipoDado();
         }
         return null;
     }

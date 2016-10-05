@@ -244,6 +244,8 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
     }
 
+        
+
     private List<ModoAcesso> obterModosAcessoPassados(NoChamadaFuncao chamadaFuncao)
     {
         List<ModoAcesso> modosAcesso = new ArrayList<>();
@@ -261,7 +263,6 @@ public final class AnalisadorSemantico implements VisitanteASA
                         try
                         {
                             Simbolo simbolo = memoria.getSimbolo(noReferenciaVariavel.getNome());
-
                             if (simbolo.constante())
                             {
                                 modosAcesso.add(ModoAcesso.POR_VALOR);
@@ -2024,7 +2025,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         try
         {
             operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this);
-            noOperacao.getOperandoEsquerdo().setTipoResultante(operandoEsquerdo);
+            //noOperacao.getOperandoEsquerdo().setTipoResultante(operandoEsquerdo);
         }
         catch (ExcecaoVisitaASA excecao)
         {
@@ -2037,7 +2038,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         try
         {
             operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this);
-            noOperacao.getOperandoDireito().setTipoResultante(operandoDireito);
+            //noOperacao.getOperandoDireito().setTipoResultante(operandoDireito);
         }
         catch (ExcecaoVisitaASA excecao)
         {
@@ -2204,7 +2205,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 simbolo.getOrigemDoSimbolo().adicionarReferencia(noReferenciaVariavel);
             }
-
+            
             return simbolo.getTipoDado();
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)

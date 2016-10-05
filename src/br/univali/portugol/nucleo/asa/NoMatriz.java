@@ -5,23 +5,23 @@ import java.util.List;
 /**
  * Representa uma matriz no código fonte.
  * <p>
- * Este nó da ASA representa uma matriz literal no código fonte.
- * Uma matriz literal é declarada da seguinte forma:
- * 
+ * Este nó da ASA representa uma matriz literal no código fonte. Uma matriz
+ * literal é declarada da seguinte forma:
+ *
  * <code><pre>
- * 
+ *
  *    funcao exemploMatrizLiteral()
  *    {
- *        inteiro matriz[][] = 
+ *        inteiro matriz[][] =
  *        {
  *          { 1, 2, 3 },
  *          { 4, 5, 6 },
  *          { 7, 8, 9 }
  *        }
  *    }
- * 
+ *
  * </pre></code>
- * 
+ *
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
@@ -31,8 +31,8 @@ public final class NoMatriz extends NoExpressao
     private TrechoCodigoFonte trechoCodigoFonte;
 
     /**
-     * 
-     * @param valores     uma lista de listas contendo os valores da matriz.
+     *
+     * @param valores uma lista de listas contendo os valores da matriz.
      * @since 1.0
      */
     public NoMatriz(List<List<Object>> valores)
@@ -41,10 +41,11 @@ public final class NoMatriz extends NoExpressao
     }
 
     /**
-     * Obtém os valores armazenados nesta matriz. O valor retornado é uma lista contendo outras listas.
-     * Cada lista representa uma linha da matriz e cada valor da lista corresponde a uma coluna.
-     * 
-     * @return     os valores armazenados na matriz.
+     * Obtém os valores armazenados nesta matriz. O valor retornado é uma lista
+     * contendo outras listas. Cada lista representa uma linha da matriz e cada
+     * valor da lista corresponde a uma coluna.
+     *
+     * @return os valores armazenados na matriz.
      * @since 1.0
      */
     public List<List<Object>> getValores()
@@ -52,20 +53,21 @@ public final class NoMatriz extends NoExpressao
         return valores;
     }
 
-     /**
+    /**
      * Define o trecho do código fonte no qual este vetor se encontra.
-     * 
-     * @param trechoCodigoFonte     o trecho do código fonte no qual este vetor se encontra.
+     *
+     * @param trechoCodigoFonte o trecho do código fonte no qual este vetor se
+     * encontra.
      * @since 1.0
      */
     public void setTrechoCodigoFonte(TrechoCodigoFonte trechoCodigoFonte)
     {
         this.trechoCodigoFonte = trechoCodigoFonte;
     }
-    
+
     /**
      * {@inheritDoc }
-     */    
+     */
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
@@ -79,5 +81,11 @@ public final class NoMatriz extends NoExpressao
     public Object aceitar(VisitanteASA visitante) throws ExcecaoVisitaASA
     {
         return visitante.visitar(this);
+    }
+
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.VAZIO;
     }
 }

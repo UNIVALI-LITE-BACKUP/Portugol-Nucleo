@@ -74,4 +74,10 @@ public final class NoVetor extends NoExpressao
     {
         return visitante.visitar(this);
     }
+    
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.VAZIO;
+    }
 }

@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -868,13 +869,25 @@ public class GeradorCodigoJava
             // verifica se é necessário fazer cast de um double para int
             TipoDado tipoOpEsquerdo = opEsquerdo.getTipoResultante();
             TipoDado tipoOpDireito = opDireito.getTipoResultante();
-            if (tipoOpEsquerdo == TipoDado.INTEIRO && tipoOpDireito == TipoDado.REAL)
+            boolean castEhNecessario = tipoOpEsquerdo == TipoDado.INTEIRO && tipoOpDireito == TipoDado.REAL;
+            if (castEhNecessario)
             {
                 saida.append("(int)");
             }
 
+            boolean opDireitoEhOperacao = opDireito instanceof NoOperacao;
+            if (castEhNecessario && opDireitoEhOperacao) // coloca toda a operação dentro de parênteses para que o cast seja aplicado no resultado da operação
+            {
+                saida.append("(");
+            }
+            
             no.getOperandoDireito().aceitar(this);
 
+            if (castEhNecessario && opDireitoEhOperacao) // coloca toda a operação dentro de parênteses para que o cast seja aplicado no resultado da operação
+            {
+                saida.append(")");
+            }
+            
             return null;
         }
 

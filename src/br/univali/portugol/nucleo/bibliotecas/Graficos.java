@@ -639,7 +639,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_imagem(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca
+    public void desenhar_imagem(final Integer x, final Integer y, Integer endereco) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco));
     }

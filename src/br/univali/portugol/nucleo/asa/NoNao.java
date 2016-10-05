@@ -69,4 +69,10 @@ public final class NoNao extends NoExpressao
     {
         return visitante.visitar(this);
     }
+    
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return expressao.getTipoResultante();
+    }
 }

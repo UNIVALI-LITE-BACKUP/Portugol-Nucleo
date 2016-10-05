@@ -38,7 +38,7 @@ import br.univali.portugol.nucleo.Programa;
 public abstract class NoExpressao extends NoBloco
 {
     private boolean entreParentes = false;
-    private TipoDado tipoResultante;
+    //private TipoDado tipoResultante;
     
     public void setEstaEntreParenteses(boolean estaEntreParentes)
     {
@@ -49,15 +49,12 @@ public abstract class NoExpressao extends NoBloco
         return this.entreParentes;
     }
     
-    public void setTipoResultante(TipoDado tipo)
-    {
-        this.tipoResultante = tipo;
-    }
+//    public void setTipoResultante(TipoDado tipo)
+//    {
+//        this.tipoResultante = tipo;
+//    }
     
-    public TipoDado getTipoResultante()
-    {
-        return tipoResultante; 
-    }
+    public abstract TipoDado getTipoResultante();
     
     /**
      * Obtém o trecho do código fonte no qual esta expressão se encontra.
