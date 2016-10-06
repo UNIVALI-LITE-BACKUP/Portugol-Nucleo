@@ -765,7 +765,6 @@ public final class AnalisadorSemantico implements VisitanteASA
             if (metaDadosBiblioteca != null)
             {
                 MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
-
                 if (metaDadosFuncao == null)
                 {
                     notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));

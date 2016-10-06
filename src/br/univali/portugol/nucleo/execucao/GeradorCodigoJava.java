@@ -2,10 +2,15 @@ package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
+import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
+import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametros;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -337,15 +342,15 @@ public class GeradorCodigoJava
 
             boolean operandosSaoStrings = operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
             boolean usaOperadorPadrao = usaOperadorPadrao(no, operandosSaoStrings);
-            
+
             boolean precisaDeNegacao = !usaOperadorPadrao && (no instanceof NoOperacaoLogicaDiferenca);
             if (precisaDeNegacao)
             {
                 saida.append("!"); // not equals
             }
-            
+
             no.getOperandoEsquerdo().aceitar(this);
-            
+
             if (usaOperadorPadrao)
             {
                 String operador = OPERADORES.get(no.getClass());
@@ -880,14 +885,14 @@ public class GeradorCodigoJava
             {
                 saida.append("(");
             }
-            
+
             no.getOperandoDireito().aceitar(this);
 
             if (castEhNecessario && opDireitoEhOperacao) // coloca toda a operação dentro de parênteses para que o cast seja aplicado no resultado da operação
             {
                 saida.append(")");
             }
-            
+
             return null;
         }
 
@@ -909,6 +914,59 @@ public class GeradorCodigoJava
             return null;
         }
 
+        private String getNomeBiblioteca(String escopo)
+        {
+            List<NoInclusaoBiblioteca> libs = asa.getListaInclusoesBibliotecas();
+            for (NoInclusaoBiblioteca lib : libs)
+            {
+                if(lib.getAlias().equals(escopo)) 
+                    return lib.getNome();
+            }
+            
+            throw new IllegalArgumentException("Não foi possível encontrar a biblioteca para o escopo " + escopo);
+        }
+        
+        private List<TipoDado> getTiposDosParametrosEsperados(NoChamadaFuncao no)
+        {
+            List<TipoDado> tipos = new ArrayList<>();
+
+            if (no.getEscopo() != null) // é uma função de biblioteca?
+            {
+                String nomeBiblioteca = getNomeBiblioteca(no.getEscopo());
+                try
+                {
+                    MetaDadosBiblioteca metadadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(nomeBiblioteca);
+                    assert(metadadosBiblioteca != null);
+                    MetaDadosFuncao metaDadosFuncao = metadadosBiblioteca.obterMetaDadosFuncoes().obter(no.getNome());
+                    assert(metaDadosFuncao != null);
+                    MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
+                    int totalParametros = metaDadosParametros.quantidade();
+                    for (int i = 0; i < totalParametros; i++)
+                    {
+                        tipos.add(metaDadosParametros.obter(i).getTipoDado());
+                    }
+                    return tipos;
+                }
+                catch (ErroCarregamentoBiblioteca ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+
+            // é uma função comum
+            if (no.getOrigemDaReferencia() != null)
+            {
+                List<NoDeclaracaoParametro> parametros = no.getOrigemDaReferencia().getParametros();
+                for (NoDeclaracaoParametro parametro : parametros)
+                {
+                    tipos.add(parametro.getTipoDado());
+                }
+                return tipos;
+            }
+
+            return Collections.EMPTY_LIST;
+        }
+
         @Override
         public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
@@ -922,27 +980,36 @@ public class GeradorCodigoJava
 
             saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
             List<NoExpressao> parametrosPassados = no.getParametros();
-            List<NoDeclaracaoParametro> parametrosEsperados = Collections.EMPTY_LIST;
-            if (no.getOrigemDaReferencia() != null)
-            {
-                parametrosEsperados = no.getOrigemDaReferencia().getParametros();
-            }
+            List<TipoDado> tiposEsperados = getTiposDosParametrosEsperados(no);
             int totalParametros = parametrosPassados.size();
             for (int i = 0; i < totalParametros; i++)
             {
                 NoExpressao parametroPassado = parametrosPassados.get(i);
-                if (i < parametrosEsperados.size())
+                boolean precisaDeCast = false;
+                boolean parametroEhUmaOperacao = false;
+                if (i < tiposEsperados.size())
                 {
-                    NoDeclaracaoParametro parametroEsperado = parametrosEsperados.get(i);
+                    TipoDado tipoEsperado = tiposEsperados.get(i);
 
                     // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
-                    if (parametroEsperado.getTipoDado() == TipoDado.INTEIRO && parametroPassado.getTipoResultante() == TipoDado.REAL)
+                    precisaDeCast = tipoEsperado == TipoDado.INTEIRO && parametroPassado.getTipoResultante() == TipoDado.REAL;
+                    parametroEhUmaOperacao = parametroPassado instanceof NoOperacao;
+                    if (precisaDeCast)
                     {
                         saida.append("(int)");
+                        if (parametroEhUmaOperacao)
+                        {
+                            saida.append("("); //coloca toda a operação que está sendo passada por parâmetro entre parênteses para que o cast seja aplicado em toda a operação
+                        }
                     }
                 }
 
                 parametroPassado.aceitar(this);
+
+                if (precisaDeCast && parametroEhUmaOperacao)
+                {
+                    saida.append(")");
+                }
 
                 if (i < totalParametros - 1)
                 {
