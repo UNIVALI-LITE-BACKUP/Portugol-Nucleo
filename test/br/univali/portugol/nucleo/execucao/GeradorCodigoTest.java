@@ -19,6 +19,52 @@ public class GeradorCodigoTest
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
 
     @Test
+    public void testeParametroPorReferencia() throws Exception
+    {
+        String portugol = "programa                                             \n"
+                + "{                                                            \n"
+                + "	funcao inicio()                                         \n"
+                + "	{                                                       \n"
+                + "         inteiro a = 10                                      \n"
+                + "         teste(a)                                            \n"                
+                + "	}                                                       \n"
+                + "	funcao teste(inteiro & x)                                \n"
+                + "	{                                                       \n"
+                + "         x = 11                                              \n"                
+                + "	}                                                       \n"
+                + "}";
+
+        String codigoJavaEsperado = ""
+                + "package programas;                                           \n"
+                + "import br.univali.portugol.nucleo.mensagens.ErroExecucao;    \n"
+                + "import br.univali.portugol.nucleo.Programa;                  \n"
+                + "                                                             \n"
+                + "public class ProgramaTeste extends Programa                  \n"
+                + "{                                                            \n"
+                + "                                                             \n"
+                + "   public ProgramaTeste() throws ErroExecucao {}             \n"                
+                + "                                                             \n"
+                + "   @Override                                                 \n"
+                + "   protected void executar(String[] parametros) throws ErroExecucao, InterruptedException    \n"
+                + "   {                                                         \n"
+                + "         int a = 10;                                         \n"
+                + "         Map retornos = teste(a);                                           \n"                
+                + "         a = (int)retornos.get(\"a\");                                           \n"                                
+                + "   }                                                         \n"
+                + "   private Map<String, Object> teste(int a) throws ErroExecucao, InterruptedException    \n"
+                + "   {                                                         \n"
+                + "         a = 11;                                             \n"                
+                + "         Map<String, Object> retornos = new HashMap();       \n"                
+                + "         retornos.put(\"a\", a);                             \n"                                
+                + "         return retornos;                                    \n"                                                
+                + "   }                                                         \n"
+
+                + "}";
+
+        comparaCodigos(portugol, codigoJavaEsperado);
+    }
+    
+    @Test
     public void testeNegacao() throws Exception
     {
         String portugol = "programa                                             \n"

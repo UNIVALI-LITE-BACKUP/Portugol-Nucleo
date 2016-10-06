@@ -919,16 +919,30 @@ public class GeradorCodigoJava
             List<NoInclusaoBiblioteca> libs = asa.getListaInclusoesBibliotecas();
             for (NoInclusaoBiblioteca lib : libs)
             {
-                if(lib.getAlias().equals(escopo)) 
+                if (lib.getAlias().equals(escopo))
+                {
                     return lib.getNome();
+                }
             }
-            
+
             throw new IllegalArgumentException("Não foi possível encontrar a biblioteca para o escopo " + escopo);
         }
-        
-        private List<TipoDado> getTiposDosParametrosEsperados(NoChamadaFuncao no)
+
+        private class MetaPametro
         {
-            List<TipoDado> tipos = new ArrayList<>();
+            public final TipoDado tipoDado;
+            public final ModoAcesso modoAcesso;
+
+            public MetaPametro(TipoDado tipoDado, ModoAcesso modoAcesso)
+            {
+                this.tipoDado = tipoDado;
+                this.modoAcesso = modoAcesso;
+            }
+        }
+
+        private List<MetaPametro> getMetaDadosDosParametrosEsperados(NoChamadaFuncao no)
+        {
+            List<MetaPametro> metaDados = new ArrayList<>();
 
             if (no.getEscopo() != null) // é uma função de biblioteca?
             {
@@ -936,16 +950,19 @@ public class GeradorCodigoJava
                 try
                 {
                     MetaDadosBiblioteca metadadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(nomeBiblioteca);
-                    assert(metadadosBiblioteca != null);
+                    assert (metadadosBiblioteca != null);
                     MetaDadosFuncao metaDadosFuncao = metadadosBiblioteca.obterMetaDadosFuncoes().obter(no.getNome());
-                    assert(metaDadosFuncao != null);
+                    assert (metaDadosFuncao != null);
                     MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
                     int totalParametros = metaDadosParametros.quantidade();
                     for (int i = 0; i < totalParametros; i++)
                     {
-                        tipos.add(metaDadosParametros.obter(i).getTipoDado());
+                        TipoDado tipoDado = metaDadosParametros.obter(i).getTipoDado();
+                        ModoAcesso modoAcesso = metaDadosParametros.obter(i).getModoAcesso();
+                        String nome = metaDadosParametros.obter(i).getNome();
+                        metaDados.add(new MetaPametro(tipoDado, modoAcesso));
                     }
-                    return tipos;
+                    return metaDados;
                 }
                 catch (ErroCarregamentoBiblioteca ex)
                 {
@@ -959,14 +976,34 @@ public class GeradorCodigoJava
                 List<NoDeclaracaoParametro> parametros = no.getOrigemDaReferencia().getParametros();
                 for (NoDeclaracaoParametro parametro : parametros)
                 {
-                    tipos.add(parametro.getTipoDado());
+                    metaDados.add(new MetaPametro(parametro.getTipoDado(), parametro.getModoAcesso()));
                 }
-                return tipos;
+                return metaDados;
             }
 
             return Collections.EMPTY_LIST;
         }
 
+        private void criaValueHoldersParaParametrosPorReferencia(List<MetaPametro> metaDadosDosParametros, 
+                                        List<NoExpressao> parametrosPassados)
+        {
+            assert(metaDadosDosParametros.size() == parametrosPassados.size());
+            
+            for (int i = 0; i < metaDadosDosParametros.size(); i++ )
+            {
+                if (metaDadosDosParametros.get(i).modoAcesso == ModoAcesso.POR_REFERENCIA)
+                {
+                    String nomeParametroPassado = ((NoReferencia)parametrosPassados.get(i)).getNome();
+                    String nomeHolder = "holder_" + nomeParametroPassado;
+                    saida.append("ValueHolder ")
+                            .append(nomeHolder)
+                            .append(" = new ValueHolder(")
+                            .append(nomeParametroPassado)
+                            .append(");").println();
+                }
+            }
+        }
+        
         @Override
         public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
@@ -978,22 +1015,30 @@ public class GeradorCodigoJava
                 return null;
             }
 
+            List<MetaPametro> metaDadosParametrosEsperados = getMetaDadosDosParametrosEsperados(no);
+            
+            
+            criaValueHoldersParaParametrosPorReferencia(metaDadosParametrosEsperados, no.getParametros());
+            
             saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
             List<NoExpressao> parametrosPassados = no.getParametros();
-            List<TipoDado> tiposEsperados = getTiposDosParametrosEsperados(no);
+            
             int totalParametros = parametrosPassados.size();
             for (int i = 0; i < totalParametros; i++)
             {
                 NoExpressao parametroPassado = parametrosPassados.get(i);
                 boolean precisaDeCast = false;
                 boolean parametroEhUmaOperacao = false;
-                if (i < tiposEsperados.size())
+                boolean passandoPorReferencia = false;
+                if (i < metaDadosParametrosEsperados.size())
                 {
-                    TipoDado tipoEsperado = tiposEsperados.get(i);
+                    TipoDado tipoEsperado = metaDadosParametrosEsperados.get(i).tipoDado;
+                    ModoAcesso modoAcessoEsperado = metaDadosParametrosEsperados.get(i).modoAcesso;
 
                     // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
                     precisaDeCast = tipoEsperado == TipoDado.INTEIRO && parametroPassado.getTipoResultante() == TipoDado.REAL;
                     parametroEhUmaOperacao = parametroPassado instanceof NoOperacao;
+                    passandoPorReferencia = modoAcessoEsperado == ModoAcesso.POR_REFERENCIA;
                     if (precisaDeCast)
                     {
                         saida.append("(int)");
@@ -1004,7 +1049,16 @@ public class GeradorCodigoJava
                     }
                 }
 
-                parametroPassado.aceitar(this);
+                // verifica se é um parametro por referência
+                if (!passandoPorReferencia)
+                {
+                    parametroPassado.aceitar(this);
+                }
+                else
+                {
+                    saida.append( "holder_")
+                            .append(((NoReferencia)parametrosPassados.get(i)).getNome());
+                }
 
                 if (precisaDeCast && parametroEhUmaOperacao)
                 {
@@ -1255,4 +1309,5 @@ public class GeradorCodigoJava
         "null",
         "true"
     };
+
 }
