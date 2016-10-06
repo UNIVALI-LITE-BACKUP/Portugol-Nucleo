@@ -135,7 +135,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Boolean fim_arquivo(Integer endereco) throws ErroExecucaoBiblioteca
+    public boolean fim_arquivo(Integer endereco) throws ErroExecucaoBiblioteca
     {
         return obterArquivo(endereco).fim();
     }
@@ -188,7 +188,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Boolean arquivo_existe(String caminho_arquivo) throws ErroExecucaoBiblioteca
+    public boolean arquivo_existe(String caminho_arquivo) throws ErroExecucaoBiblioteca
     {
         File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
 
@@ -228,7 +228,7 @@ public final class Arquivos extends Biblioteca
     }
 
     @Override
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
         this.programa = programa;
         this.arquivos = new Arquivo[NUMERO_MAXIMO_ARQUIVOS];
@@ -316,7 +316,7 @@ public final class Arquivos extends Biblioteca
 
             }
     )
-    public String selecionar_arquivo(final String formatos_suportados[], final Boolean aceitar_todos_arquivos) throws ErroExecucaoBiblioteca
+    public String selecionar_arquivo(final String formatos_suportados[], final boolean aceitar_todos_arquivos) throws ErroExecucaoBiblioteca
     {
         synchronized (Arquivos.this)
         {

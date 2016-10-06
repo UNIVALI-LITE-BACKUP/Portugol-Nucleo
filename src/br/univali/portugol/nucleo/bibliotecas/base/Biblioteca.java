@@ -245,7 +245,7 @@ public abstract class Biblioteca
      *
      * @see TipoBiblioteca
      */
-    protected void inicializar() throws ErroExecucaoBiblioteca
+    public void inicializar() throws ErroExecucaoBiblioteca
     {
 
     }
@@ -268,7 +268,7 @@ public abstract class Biblioteca
      *
      * @see TipoBiblioteca
      */
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
 
     }

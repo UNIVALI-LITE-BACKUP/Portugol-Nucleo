@@ -36,22 +36,22 @@ import javax.imageio.ImageIO;
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
     @DocumentacaoConstante(descricao = "constante que representa a cor 'preto'")
-    public static final Integer COR_PRETO = Color.BLACK.getRGB();
+    public static final int COR_PRETO = Color.BLACK.getRGB();
 
     @DocumentacaoConstante(descricao = "constante que representa a cor 'branca'")
-    public static final Integer COR_BRANCO = Color.WHITE.getRGB();
+    public static final int COR_BRANCO = Color.WHITE.getRGB();
 
     @DocumentacaoConstante(descricao = "constante que representa a cor 'azul'")
-    public static final Integer COR_AZUL = Color.BLUE.getRGB();
+    public static final int COR_AZUL = Color.BLUE.getRGB();
 
     @DocumentacaoConstante(descricao = "constante que representa a cor 'vermelho'")
-    public static final Integer COR_VERMELHO = Color.RED.getRGB();
+    public static final int COR_VERMELHO = Color.RED.getRGB();
 
     @DocumentacaoConstante(descricao = "constante que representa a cor 'verde'")
-    public static final Integer COR_VERDE = Color.GREEN.getRGB();
+    public static final int COR_VERDE = Color.GREEN.getRGB();
 
     @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
-    public static final Integer COR_AMARELO = Color.YELLOW.getRGB();
+    public static final int COR_AMARELO = Color.YELLOW.getRGB();
 
     private Programa programa;
     private JanelaGrafica janela;
@@ -59,7 +59,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     private boolean inicializado = false;
 
     @Override
-    protected void inicializar(final Programa programa, final List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(final Programa programa, final List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
         this.programa = programa;
         this.janela = JanelaGraficaImpl.criar(programa);
@@ -112,7 +112,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void iniciar_modo_grafico(final Boolean manter_visivel) throws ErroExecucaoBiblioteca
+    public void iniciar_modo_grafico(final boolean manter_visivel) throws ErroExecucaoBiblioteca
     {
         janela.exibir(true);
         inicializado = true;
@@ -203,7 +203,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_dimensoes_janela(final Integer largura, final Integer altura) throws ErroExecucaoBiblioteca
+    public void definir_dimensoes_janela(final int largura, final int altura) throws ErroExecucaoBiblioteca
     {
         janela().definirDimensoes(largura, altura);
     }
@@ -271,7 +271,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer renderizar_imagem(Integer largura, Integer altura) throws ErroExecucaoBiblioteca
+    public int renderizar_imagem(int largura, int altura) throws ErroExecucaoBiblioteca
     {
         BufferedImage imagem = janela().getSuperficieDesenho().renderizarImagem(largura, altura);
 
@@ -304,7 +304,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_retangulo(final Integer x, final Integer y, final Integer largura, final Integer altura, final Boolean arredondar_cantos, final Boolean preencher) throws ErroExecucaoBiblioteca
+    public void desenhar_retangulo(final int x, final int y, final int largura, final int altura, final boolean arredondar_cantos, final boolean preencher) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharRetangulo(x, y, largura, altura, arredondar_cantos, preencher);
     }
@@ -334,7 +334,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_elipse(final Integer x, final Integer y, final Integer largura, final Integer altura, final Boolean preencher) throws ErroExecucaoBiblioteca
+    public void desenhar_elipse(final int x, final int y, final int largura, final int altura, final boolean preencher) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharElipse(x, y, largura, altura, preencher);
     }
@@ -354,7 +354,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_ponto(final Integer x, final Integer y) throws ErroExecucaoBiblioteca
+    public void desenhar_ponto(final int x, final int y) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharPonto(x, y);
     }
@@ -376,7 +376,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_linha(final Integer x1, final Integer y1, final Integer x2, final Integer y2) throws ErroExecucaoBiblioteca
+    public void desenhar_linha(final int x1, final int y1, final int x2, final int y2) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharLinha(x1, y1, x2, y2);
     }
@@ -395,7 +395,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer carregar_imagem(String caminho) throws ErroExecucaoBiblioteca
+    public int carregar_imagem(String caminho) throws ErroExecucaoBiblioteca
     {
         File arquivo = programa.resolverCaminho(new File(caminho));
 
@@ -442,7 +442,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer transformar_imagem(Integer endereco, Boolean espelhamento_horizontal, Boolean espelhamento_vertical, Integer rotacao, Integer cor_ignorada) throws ErroExecucaoBiblioteca
+    public int transformar_imagem(int endereco, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca
     {
         BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
 
@@ -480,7 +480,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer transformar_porcao_imagem(Integer endereco, Integer x, Integer y, Integer largura, Integer altura, Boolean espelhamento_horizontal, Boolean espelhamento_vertical, Integer rotacao, Integer cor_ignorada) throws ErroExecucaoBiblioteca
+    public int transformar_porcao_imagem(int endereco, int x, int y, int largura, int altura, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca
     {
         BufferedImage imagemTransformada = copiarPorcaoImagem((BufferedImage) cacheImagens.obterImagem(endereco), x, y, largura, altura);
 
@@ -639,7 +639,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_imagem(final Integer x, final Integer y, Integer endereco) throws ErroExecucaoBiblioteca
+    public void desenhar_imagem(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco));
     }
@@ -664,7 +664,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_porcao_imagem(final Integer x, final Integer y, final Integer xi, final Integer yi, final Integer largura, final Integer altura, Integer endereco) throws ErroExecucaoBiblioteca
+    public void desenhar_porcao_imagem(final int x, final int y, final int xi, final int yi, final int largura, final int altura, int endereco) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco));
     }
@@ -680,7 +680,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void liberar_imagem(Integer endereco) throws ErroExecucaoBiblioteca
+    public void liberar_imagem(int endereco) throws ErroExecucaoBiblioteca
     {
         cacheImagens.liberarImagem(endereco);
     }
@@ -701,7 +701,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
             }
     )
-    public void desenhar_texto(final Integer x, final Integer y, final String texto) throws ErroExecucaoBiblioteca
+    public void desenhar_texto(final int x, final int y, final String texto) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().desenharTexto(texto, x, y);
     }
@@ -720,7 +720,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_cor(final Integer cor) throws ErroExecucaoBiblioteca
+    public void definir_cor(final int cor) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().definirCor(cor);
     }
@@ -779,7 +779,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_estilo_texto(final Boolean italico, final Boolean negrito, final Boolean sublinhado) throws ErroExecucaoBiblioteca
+    public void definir_estilo_texto(final boolean italico, final boolean negrito, final boolean sublinhado) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().definirEstiloTexto(italico, negrito, sublinhado);
     }
@@ -796,7 +796,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer largura_texto(String texto) throws ErroExecucaoBiblioteca
+    public int largura_texto(String texto) throws ErroExecucaoBiblioteca
     {
         return janela().getSuperficieDesenho().larguraTexto(texto);
     }
@@ -813,7 +813,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer altura_texto(String texto) throws ErroExecucaoBiblioteca
+    public int altura_texto(String texto) throws ErroExecucaoBiblioteca
     {
         return janela().getSuperficieDesenho().alturaTexto(texto);
     }
@@ -830,7 +830,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer largura_imagem(Integer endereco) throws ErroExecucaoBiblioteca
+    public int largura_imagem(int endereco) throws ErroExecucaoBiblioteca
     {
         return cacheImagens.obterImagem(endereco).getWidth(null);
     }
@@ -847,7 +847,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer altura_imagem(Integer endereco) throws ErroExecucaoBiblioteca
+    public int altura_imagem(int endereco) throws ErroExecucaoBiblioteca
     {
         return cacheImagens.obterImagem(endereco).getHeight(null);
     }
@@ -867,7 +867,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             },
             referencia = "http://pt.wikipedia.org/wiki/RGB"
     )
-    public Integer criar_cor(Integer vermelho, Integer verde, Integer azul) throws ErroExecucaoBiblioteca
+    public int criar_cor(int vermelho, int verde, int azul) throws ErroExecucaoBiblioteca
     {
         try
         {
@@ -924,7 +924,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_icone_janela(Integer endereco) throws ErroExecucaoBiblioteca
+    public void definir_icone_janela(int endereco) throws ErroExecucaoBiblioteca
     {
         janela().definirIcone(cacheImagens.obterImagem(endereco));
     }
@@ -949,7 +949,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_opacidade(Integer opacidade) throws ErroExecucaoBiblioteca
+    public void definir_opacidade(int opacidade) throws ErroExecucaoBiblioteca
     {
         try
         {
@@ -981,7 +981,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_rotacao(Integer rotacao) throws ErroExecucaoBiblioteca
+    public void definir_rotacao(int rotacao) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().definirRotacao(rotacao);
     }
@@ -1005,7 +1005,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer largura_janela() throws ErroExecucaoBiblioteca
+    public int largura_janela() throws ErroExecucaoBiblioteca
     {
         return janela().getLargura();
     }
@@ -1017,7 +1017,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer altura_janela() throws ErroExecucaoBiblioteca
+    public int altura_janela() throws ErroExecucaoBiblioteca
     {
         return janela().getAltura();
     }
@@ -1030,7 +1030,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer largura_tela() throws ErroExecucaoBiblioteca
+    public int largura_tela() throws ErroExecucaoBiblioteca
     {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         
@@ -1045,7 +1045,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer altura_tela() throws ErroExecucaoBiblioteca
+    public int altura_tela() throws ErroExecucaoBiblioteca
     {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         

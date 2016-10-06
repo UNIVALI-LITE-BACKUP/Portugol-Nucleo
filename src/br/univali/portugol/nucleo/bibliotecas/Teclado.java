@@ -546,7 +546,7 @@ public final class Teclado extends Biblioteca
     }
     
     @Override
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
     {
         for (Biblioteca biblioteca : bibliotecasReservadas)
         {

@@ -2,8 +2,6 @@ package br.univali.portugol.nucleo.bibliotecas;
 
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.ReferenciaMatriz;
-import br.univali.portugol.nucleo.bibliotecas.base.ReferenciaVetor;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
@@ -58,9 +56,9 @@ public final class Util extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Integer numero_elementos(ReferenciaVetor<Object> vetor) throws ErroExecucaoBiblioteca
+    public int numero_elementos(Object vetor[]) throws ErroExecucaoBiblioteca
     {
-        return vetor.numeroElementos();
+        return vetor.length;
     }
     
     @DocumentacaoFuncao
@@ -76,9 +74,9 @@ public final class Util extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Integer numero_linhas(ReferenciaMatriz<Object> matriz) throws ErroExecucaoBiblioteca
+    public int numero_linhas(Object matriz[][]) throws ErroExecucaoBiblioteca
     {
-        return matriz.numeroLinhas();
+        return matriz.length;
     }
     
     @DocumentacaoFuncao
@@ -94,9 +92,9 @@ public final class Util extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Integer numero_colunas(ReferenciaMatriz<Object> matriz) throws ErroExecucaoBiblioteca
+    public int numero_colunas(Object matriz[][]) throws ErroExecucaoBiblioteca
     {
-        return matriz.numeroColunas();
+        return matriz[0].length;
     }
     
     @DocumentacaoFuncao
@@ -113,7 +111,7 @@ public final class Util extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )
-    public Integer sorteia(Integer minimo, Integer maximo) throws ErroExecucaoBiblioteca
+    public int sorteia(int minimo, int maximo) throws ErroExecucaoBiblioteca
     {
         if (minimo > maximo)
         {
@@ -139,7 +137,7 @@ public final class Util extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public void aguarde(Integer intervalo) throws ErroExecucaoBiblioteca, InterruptedException
+    public void aguarde(int intervalo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         Thread.sleep(intervalo);
     }
@@ -152,7 +150,7 @@ public final class Util extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )      
-    public Integer tempo_decorrido() throws ErroExecucaoBiblioteca
+    public int tempo_decorrido() throws ErroExecucaoBiblioteca
     {
         return (int) (System.currentTimeMillis() - horaInicial);
     }

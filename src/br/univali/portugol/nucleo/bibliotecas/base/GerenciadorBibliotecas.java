@@ -87,7 +87,7 @@ public final class GerenciadorBibliotecas
             bibliotecasDisponiveis.add("Texto");
             bibliotecasDisponiveis.add("Tipos");
             bibliotecasDisponiveis.add("Mouse");
-            bibliotecasDisponiveis.add("Arquivos");
+            //bibliotecasDisponiveis.add("Arquivos");
             bibliotecasDisponiveis.add("Sons");
             
             Collections.sort(bibliotecasDisponiveis);
@@ -592,9 +592,10 @@ public final class GerenciadorBibliotecas
     {
         Class classeTipo = metodo.getParameterTypes()[indice];
         
-        if (eReferencia(classeTipo))
+        if (classeTipo.isArray())
         {
-            classeTipo = obterTipoReferencia(metodo.getGenericParameterTypes()[indice]);
+            
+            classeTipo = classeTipo.getComponentType();// obterTipoReferencia(metodo.getGenericParameterTypes()[indice]);
             
             if (classeTipo == null)
             {
@@ -604,8 +605,18 @@ public final class GerenciadorBibliotecas
         
         if (classeTipo.isArray())
         {
-            throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o tipo do parâmetro '%s' do método '%s' não pode ser um vetor nem uma matriz", nomeParametro, metodo.getName()));
+            classeTipo = classeTipo.getComponentType();
         }
+        
+        if (classeTipo == java.lang.Object.class)
+        {
+            return TipoDado.TODOS;
+        }
+        
+//        if (classeTipo.isArray())
+//        {
+//            throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o tipo do parâmetro '%s' do método '%s' não pode ser um vetor nem uma matriz", nomeParametro, metodo.getName()));
+//        }
         
         if (classeTipo == Integer.TYPE) throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o parâmetro '%s' do método '%s' deve ser do tipo '%s' ao invés do tipo primitivo '%s'", nomeParametro, metodo.getName(), Integer.class.getName(), Integer.TYPE.getSimpleName()));
         if (classeTipo == Double.TYPE) throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o parâmetro '%s' do método '%s' deve ser do tipo '%s' ao invés do tipo primitivo '%s'", nomeParametro, metodo.getName(), Double.class.getName(), Double.TYPE.getSimpleName()));
