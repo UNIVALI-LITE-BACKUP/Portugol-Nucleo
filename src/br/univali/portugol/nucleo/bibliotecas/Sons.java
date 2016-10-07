@@ -56,7 +56,7 @@ public final class Sons extends Biblioteca
 
     private final AudioFormat formatoDeAudio = criaFormatoDeAudioPadrao();
 
-    private Integer volumeGeral = 100;
+    private int volumeGeral = 100;
 
     private Programa programa;
 
@@ -72,10 +72,10 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer carregar_som(String caminho_som) throws ErroExecucaoBiblioteca
+    public int carregar_som(String caminho_som) throws ErroExecucaoBiblioteca
     {
         File caminho = resolveCaminho(caminho_som);
-        Integer indice = indiceDosSons.incrementAndGet();
+        int indice = indiceDosSons.incrementAndGet();
         sons.put(indice, new Som(caminho, indice));
         return indice;
     }
@@ -101,7 +101,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void liberar_som(Integer endereco) throws ErroExecucaoBiblioteca
+    public void liberar_som(int endereco) throws ErroExecucaoBiblioteca
     {
         if (sons.containsKey(endereco))
         {
@@ -126,14 +126,14 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer reproduzir_som(Integer endereco, Boolean repetir) throws ErroExecucaoBiblioteca
+    public int reproduzir_som(int endereco, boolean repetir) throws ErroExecucaoBiblioteca
     {
         if (sons.containsKey(endereco))
         {
             try
             {
                 Som som = sons.get(endereco);
-                Integer enderecoDaReproducao = indiceDasReproducoes.incrementAndGet();
+                int enderecoDaReproducao = indiceDasReproducoes.incrementAndGet();
                 Reproducao reproducao = new Reproducao(som, formatoDeAudio, enderecoDaReproducao);
                 reproducao.setVolumeGeral(volumeGeral / 100f);
                 reproducoes.put(enderecoDaReproducao, reproducao);
@@ -159,7 +159,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void interromper_som(Integer endereco) throws ErroExecucaoBiblioteca
+    public void interromper_som(int endereco) throws ErroExecucaoBiblioteca
     {
         synchronized (reproducoes)
         {
@@ -184,7 +184,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume_reproducao(Integer endereco, Integer volume) throws ErroExecucaoBiblioteca
+    public void definir_volume_reproducao(int endereco, int volume) throws ErroExecucaoBiblioteca
     {
         synchronized (reproducoes)
         {
@@ -210,7 +210,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume(Integer volume) throws ErroExecucaoBiblioteca
+    public void definir_volume(int volume) throws ErroExecucaoBiblioteca
     {
         synchronized (reproducoes)
         {
@@ -230,7 +230,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public Integer obter_volume() throws ErroExecucaoBiblioteca
+    public int obter_volume() throws ErroExecucaoBiblioteca
     {
         return volumeGeral;
     }
@@ -247,7 +247,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public Integer obter_volume_reproducao(Integer endereco) throws ErroExecucaoBiblioteca
+    public int obter_volume_reproducao(int endereco) throws ErroExecucaoBiblioteca
     {
         synchronized (reproducoes)
         {
@@ -267,7 +267,7 @@ public final class Sons extends Biblioteca
     }
 
     @Override
-    protected void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca
     {
         synchronized (reproducoes)
         {
@@ -282,9 +282,9 @@ public final class Sons extends Biblioteca
 
     private class ListenerDeInterrupcaoDeAudio implements LineListener
     {
-        private final Integer endereco;
+        private final int endereco;
 
-        public ListenerDeInterrupcaoDeAudio(Integer endereco)
+        public ListenerDeInterrupcaoDeAudio(int endereco)
         {
             this.endereco = endereco;
         }
@@ -311,12 +311,12 @@ public final class Sons extends Biblioteca
     private class Reproducao
     {
         private Clip reprodutor;
-        private final Integer endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
+        private final int endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
         private FloatControl controleDeVolume = null;
 
-        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws IOException, UnsupportedAudioFileException
+        public Reproducao(Som som, AudioFormat formatoDeAudio, int endereco) throws IOException, UnsupportedAudioFileException
         {
             this.endereco = endereco;
             try
@@ -380,7 +380,7 @@ public final class Sons extends Biblioteca
             return volume;
         }
 
-        public Integer getEndereco()
+        public int getEndereco()
         {
             return endereco;
         }

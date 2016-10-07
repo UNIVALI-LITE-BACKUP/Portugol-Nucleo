@@ -52,13 +52,13 @@ public final class Mouse extends Biblioteca
     private int ultimoBotao = -1;    
         
     @DocumentacaoConstante(descricao = "Código numérico do botão esquerdo do mouse")
-    public static final Integer BOTAO_ESQUERDO = 0;
+    public static final int BOTAO_ESQUERDO = 0;
     
     @DocumentacaoConstante(descricao = "Código numérico do botão direito do mouse")
-    public static final Integer BOTAO_DIREITO = 1;
+    public static final int BOTAO_DIREITO = 1;
     
     @DocumentacaoConstante(descricao = "Código numérico do botão do meio do mouse")
-    public static final Integer BOTAO_MEIO = 2;
+    public static final int BOTAO_MEIO = 2;
 
     public Mouse()
     {
@@ -203,7 +203,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se o <param>botão</param> estiver pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )
-    public Boolean botao_pressionado(Integer botao) throws ErroExecucaoBiblioteca
+    public boolean botao_pressionado(int botao) throws ErroExecucaoBiblioteca
     {
         if ((botao >= 0) && (botao < buffer.length))
         {
@@ -221,7 +221,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se houver um botão do mouse pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )    
-    public Boolean algum_botao_pressionado() throws ErroExecucaoBiblioteca
+    public boolean algum_botao_pressionado() throws ErroExecucaoBiblioteca
     {
         return botoesPressionados > 0;
     }
@@ -235,7 +235,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o código do botão lido"
     )
-    public Integer ler_botao() throws ErroExecucaoBiblioteca, InterruptedException
+    public int ler_botao() throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (Mouse.this)
         {
@@ -256,7 +256,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "a coordenada X do mouse neste instante"            
     )
-    public Integer posicao_x() throws ErroExecucaoBiblioteca
+    public int posicao_x() throws ErroExecucaoBiblioteca
     {
         return x;
     }
@@ -270,7 +270,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "a coordenada Y do mouse neste instante"
     )    
-    public Integer posicao_y() throws ErroExecucaoBiblioteca
+    public int posicao_y() throws ErroExecucaoBiblioteca
     {
         return y;
     }

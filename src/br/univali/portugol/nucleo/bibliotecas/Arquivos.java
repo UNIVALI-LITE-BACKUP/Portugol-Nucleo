@@ -3,7 +3,6 @@ package br.univali.portugol.nucleo.bibliotecas;
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.ReferenciaVariavel;
 import br.univali.portugol.nucleo.bibliotecas.base.ReferenciaVetor;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
@@ -235,7 +234,7 @@ public final class Arquivos extends Biblioteca
     }
 
     @Override
-    protected void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca
     {
         for (int indice = NUMERO_MAXIMO_ARQUIVOS - 1; indice >= 0; indice--)
         {

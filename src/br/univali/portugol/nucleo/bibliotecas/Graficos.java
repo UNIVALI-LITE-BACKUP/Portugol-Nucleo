@@ -67,7 +67,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     }
 
     @Override
-    protected void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca
     {
         janela.ocultar();
         cacheImagens.liberar();

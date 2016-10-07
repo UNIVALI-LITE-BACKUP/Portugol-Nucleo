@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
 @DocumentacaoBiblioteca(descricao = "Esta biblioteca contém funções que permitem converter os tipos de dado do Portugol entre si", versao = "1.0")
 public final class Tipos extends Biblioteca
 {
-    private static final Pattern padraoInteiroNotacaoHexadecimal = Pattern.compile("^(0x|0X)?([0-9]|[a-f]|[A-F])+$");
-    private static final Pattern padraoInteiroNotacaoBinaria = Pattern.compile("^(0b|0B)?[0-1]+$");
-    private static final Pattern padraoInteiroNotacaoDecimal = Pattern.compile("^-?\\d+$");
-    private static final Pattern padraoReal = Pattern.compile("^-?\\d+\\.\\d+$");
-    private static final Pattern padraoLogico = Pattern.compile("^verdadeiro|falso$");
+    private static final Pattern PADRAO_INTEIRO_NOTACAO_HEXADECIMAL = Pattern.compile("^(0x|0X)?([0-9]|[a-f]|[A-F])+$");
+    private static final Pattern PADRAO_INTEIRO_NOTACAO_BINARIA = Pattern.compile("^(0b|0B)?[0-1]+$");
+    private static final Pattern PADRAO_INTEIRO_NOTACAO_DECIMAL = Pattern.compile("^-?\\d+$");
+    private static final Pattern PADRAO_REAL = Pattern.compile("^-?\\d+\\.\\d+$");
+    private static final Pattern PADRAO_LOGICO = Pattern.compile("^verdadeiro|falso$");
     
     @DocumentacaoFuncao
     (
@@ -67,9 +67,9 @@ public final class Tipos extends Biblioteca
     {
         switch (base)
         {
-            case 2: return padraoInteiroNotacaoBinaria.matcher(cad).find();
-            case 10: return padraoInteiroNotacaoDecimal.matcher(cad).find();
-            case 16: return padraoInteiroNotacaoHexadecimal.matcher(cad).find();
+            case 2: return PADRAO_INTEIRO_NOTACAO_BINARIA.matcher(cad).find();
+            case 10: return PADRAO_INTEIRO_NOTACAO_DECIMAL.matcher(cad).find();
+            case 16: return PADRAO_INTEIRO_NOTACAO_HEXADECIMAL.matcher(cad).find();
         }
         
         throw new ErroExecucaoBiblioteca(String.format("A base informada (%d) é inválida, a base deve ser um dos seguintes valores: 2; 10; 16", base));
@@ -90,7 +90,7 @@ public final class Tipos extends Biblioteca
     )    
     public boolean cadeia_e_real(String cad) throws ErroExecucaoBiblioteca
     {
-        return padraoReal.matcher(cad).find();
+        return PADRAO_REAL.matcher(cad).find();
     }
     
     @DocumentacaoFuncao
@@ -108,7 +108,7 @@ public final class Tipos extends Biblioteca
     )    
     public boolean cadeia_e_logico(String cad) throws ErroExecucaoBiblioteca
     {
-        return padraoLogico.matcher(cad).find();
+        return PADRAO_LOGICO.matcher(cad).find();
     }
 
     @DocumentacaoFuncao
@@ -235,7 +235,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public Double cadeia_para_real(String valor) throws ErroExecucaoBiblioteca
+    public double cadeia_para_real(String valor) throws ErroExecucaoBiblioteca
     {        
         try
         {
@@ -579,9 +579,9 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String real_para_cadeia(Double valor) throws ErroExecucaoBiblioteca
+    public String real_para_cadeia(double valor) throws ErroExecucaoBiblioteca
     {        
-        return valor.toString();
+        return String.valueOf(valor);
     }
     
     @DocumentacaoFuncao
@@ -597,9 +597,9 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public int real_para_inteiro(Double valor) throws ErroExecucaoBiblioteca
+    public int real_para_inteiro(double valor) throws ErroExecucaoBiblioteca
     {        
-        return valor.intValue();
+        return (int) valor;
     }
     
     private String lpad(int quantidade, String cadeia) throws ErroExecucaoBiblioteca

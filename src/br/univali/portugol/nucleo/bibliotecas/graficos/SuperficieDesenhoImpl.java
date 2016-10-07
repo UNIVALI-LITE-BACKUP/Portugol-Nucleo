@@ -170,7 +170,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirFonteTexto(String nome)
     {
-        Integer underline = (Integer) fonteTexto.getAttributes().get(TextAttribute.UNDERLINE);
+        int underline = (Integer) fonteTexto.getAttributes().get(TextAttribute.UNDERLINE);
         Font fonte = new Font(nome, Font.PLAIN, 12);
 
         fonte = fonte.deriveFont(fonteTexto.getStyle(), fonteTexto.getSize2D());
@@ -221,9 +221,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirTamanhoTexto(double tamanho)
     {
-        Double t = tamanho;
-
-        fonteTexto = fonteTexto.deriveFont(t.floatValue());
+        fonteTexto = fonteTexto.deriveFont((float) tamanho);
 
         dimensoesFonte = getFontMetrics(fonteTexto);
         operacoes.add(new OperacaoDefinirFonte(fonteTexto));

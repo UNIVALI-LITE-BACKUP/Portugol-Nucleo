@@ -19,8 +19,8 @@ import java.util.Random;
 )
 public final class Util extends Biblioteca
 {
-    private Random random = new Random(System.currentTimeMillis());
-    private long horaInicial = System.currentTimeMillis();
+    private final Random random = new Random(System.currentTimeMillis());
+    private final long horaInicial = System.currentTimeMillis();
     
     @DocumentacaoFuncao
     (

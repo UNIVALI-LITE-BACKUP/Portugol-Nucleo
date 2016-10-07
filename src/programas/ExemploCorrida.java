@@ -123,7 +123,7 @@ public class ExemploCorrida extends Programa {
         sm.inicializar(this, libs);
         txt.inicializar();
 
-        setDiretorioTrabalho(new File("E:/PortugolStudio/Portugol-Studio-Recursos/exemplos/jogos"));
+        setDiretorioTrabalho(new File("../Portugol-Studio-Recursos/exemplos/jogos"));
 
         inicializar();
         while (tela_atual != TELA_SAIR) {
@@ -137,7 +137,14 @@ public class ExemploCorrida extends Programa {
         }
 
         finalizar();
-
+        
+        g.finalizar();
+        t.finalizar();
+        u.finalizar();
+        m.finalizar();
+        tp.finalizar();
+        sm.finalizar();
+        txt.finalizar();
     }
 
     private void inicializar() throws ErroExecucao, InterruptedException {
@@ -589,7 +596,7 @@ public class ExemploCorrida extends Programa {
             interromper_som(rep_som_alarme_combustivel);
 
         } else if (nivel_combustivel_critico()) {
-            reproduzir_som(som_alarme_combustivel, rep_som_alarme_combustivel, true);
+            reproduzir_som(som_alarme_combustivel, rep_som_alarme_combustivel, false);
 
         } else {
             interromper_som(rep_som_alarme_combustivel);
@@ -672,6 +679,7 @@ public class ExemploCorrida extends Programa {
     }
 
     private void sortear_posicao_galao(int indice) throws ErroExecucao, InterruptedException {
+        
         int largura = OBJETOS[_OBJ_GALAO_COMBUSTIVEL][_LARGURA];
         int altura = OBJETOS[_OBJ_GALAO_COMBUSTIVEL][_ALTURA];
         double maior_distancia = 0.0;
@@ -686,7 +694,7 @@ public class ExemploCorrida extends Programa {
         y = m.menor_numero(y, -(altura * 2.0));
         galoes[indice][_X] = x;
         galoes[indice][_Y] = y;
-
+        
     }
 
     private void atualizar_posicao_pontos_reparo() throws ErroExecucao, InterruptedException {

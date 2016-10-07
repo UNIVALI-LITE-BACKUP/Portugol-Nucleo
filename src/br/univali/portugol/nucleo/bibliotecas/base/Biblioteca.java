@@ -288,7 +288,7 @@ public abstract class Biblioteca
      * @see GerenciadorBibliotecas
      *
      */
-    protected void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca
     {
 
     }

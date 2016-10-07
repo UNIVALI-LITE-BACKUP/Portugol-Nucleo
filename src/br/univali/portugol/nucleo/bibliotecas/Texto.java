@@ -30,7 +30,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public Integer numero_caracteres(String cadeia) throws ErroExecucaoBiblioteca
+    public int numero_caracteres(String cadeia) throws ErroExecucaoBiblioteca
     {
         return cadeia.length();
     }
@@ -114,7 +114,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )    
-    public String preencher_a_esquerda(Character car, Integer tamanho, String cad) throws ErroExecucaoBiblioteca
+    public String preencher_a_esquerda(Character car, int tamanho, String cad) throws ErroExecucaoBiblioteca
     {
         if (cad.length() < tamanho)
         {
@@ -152,7 +152,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )    
-    public Character obter_caracter(String cad, Integer indice) throws ErroExecucaoBiblioteca
+    public Character obter_caracter(String cad, int indice) throws ErroExecucaoBiblioteca
     {
         if (indice < 0)
         {
@@ -194,7 +194,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Integer posicao_texto(String texto, String cadeia, Integer posicao_inicial) throws ErroExecucaoBiblioteca
+    public int posicao_texto(String texto, String cadeia, int posicao_inicial) throws ErroExecucaoBiblioteca
     {
         return cadeia.indexOf(texto, posicao_inicial);
     }
@@ -219,7 +219,7 @@ public final class Texto extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public String extrair_subtexto(String cadeia, Integer posicao_inicial, Integer posicao_final) throws ErroExecucaoBiblioteca
+    public String extrair_subtexto(String cadeia, int posicao_inicial, int posicao_final) throws ErroExecucaoBiblioteca
     {
         try
         {
