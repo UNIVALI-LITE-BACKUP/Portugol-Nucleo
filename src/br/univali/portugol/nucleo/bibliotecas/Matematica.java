@@ -9,7 +9,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import java.math.BigDecimal;
 
 /**
  *
@@ -90,10 +89,12 @@ public final class Matematica extends Biblioteca
     )
     public double arredondar(double numero, int casas) throws ErroExecucaoBiblioteca
     {
-        BigDecimal decimal = new BigDecimal(numero);
-        decimal = decimal.setScale(casas, BigDecimal.ROUND_HALF_UP);
-
-        return decimal.doubleValue();
+        double factor = 1.0;
+        
+        for (int i = 1; i <= casas; i++)
+            factor *= 10;
+        
+        return Math.round(numero * factor) / factor;
     }
 
     @DocumentacaoFuncao(

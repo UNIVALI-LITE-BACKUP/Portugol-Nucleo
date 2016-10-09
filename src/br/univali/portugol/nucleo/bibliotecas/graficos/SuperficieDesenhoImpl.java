@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.font.TextAttribute;
@@ -39,6 +40,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     private Color cor = new Color(0, 0, 0, opacidade);
 
     private BufferStrategy buffer;
+    private Rectangle areaGrafica;
 
     public SuperficieDesenhoImpl()
     {
@@ -114,12 +116,13 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     {
         setBounds(0, 0, largura, altura);
         criarBuffer();
+        areaGrafica = getBounds();
     }
 
     @Override
     public void limpar()
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoLimpar(getBounds());
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoLimpar(areaGrafica);
         indiceOperacao++;
     }
 
