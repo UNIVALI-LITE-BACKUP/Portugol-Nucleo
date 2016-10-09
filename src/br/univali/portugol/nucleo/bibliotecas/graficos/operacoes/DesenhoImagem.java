@@ -1,9 +1,9 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoImagem;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -19,7 +19,7 @@ public final class DesenhoImagem extends OperacaoGrafica
     public int opacidade;
     public double rotacao;
 
-    public DesenhoImagem(CacheOperacoesGraficas<DesenhoImagem> cache)
+    public DesenhoImagem(CacheOperacoesDesenhoImagem cache)
     {
         super(cache);
     }

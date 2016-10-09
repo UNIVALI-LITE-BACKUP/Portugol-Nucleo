@@ -1,7 +1,7 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoElipse;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
 /**
@@ -17,7 +17,7 @@ public final class DesenhoElipse extends OperacaoGrafica
     public boolean preencher;
     public double rotacao;
 
-    public DesenhoElipse(CacheOperacoesGraficas<DesenhoElipse> cache)
+    public DesenhoElipse(CacheOperacoesDesenhoElipse cache)
     {
         super(cache);
     }

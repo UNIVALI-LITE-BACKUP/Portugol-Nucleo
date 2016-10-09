@@ -1,17 +1,15 @@
-package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
+package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.OperacaoGrafica;
 
 /**
  *
  * @author Luiz Fernando Noschang
  * @param <T> Uma operação gráfica otimizada
  */
-public final class CacheOperacoesGraficas<T extends OperacaoGrafica>
+public abstract class CacheOperacoesGraficas<T extends OperacaoGrafica>
 {
     private final OperacaoGrafica[] OPERACOES;
-    private final Class<T> CLASSE_OPERACAO;
 
     private final int QUANTIDADE_MAXIMA;
     private final int QUANTIDADE_ALOCACAO;
@@ -19,7 +17,7 @@ public final class CacheOperacoesGraficas<T extends OperacaoGrafica>
     private int indiceObtencao = 0;
     private int indiceDevolucao = 0;
 
-    public CacheOperacoesGraficas(Class<T> classeOperacao, int quantidadeMaxima, int quantidadeAlocacao)
+    public CacheOperacoesGraficas(int quantidadeMaxima, int quantidadeAlocacao)
     {
         if (quantidadeAlocacao > quantidadeMaxima)
         {
@@ -29,7 +27,6 @@ public final class CacheOperacoesGraficas<T extends OperacaoGrafica>
         QUANTIDADE_MAXIMA = quantidadeMaxima;
         QUANTIDADE_ALOCACAO = quantidadeAlocacao;
 
-        CLASSE_OPERACAO = classeOperacao;
         OPERACOES = new OperacaoGrafica[quantidadeMaxima];
 
         alocarOperacoes();
@@ -37,8 +34,6 @@ public final class CacheOperacoesGraficas<T extends OperacaoGrafica>
 
     private void alocarOperacoes()
     {
-        try
-        {
             int indice = indiceObtencao;
             int posicoesVerificadas = 0;
             int operacoesAlocadas = 0;
@@ -47,8 +42,7 @@ public final class CacheOperacoesGraficas<T extends OperacaoGrafica>
             {
                 if (OPERACOES[indice] == null)
                 {
-                    Constructor<T> construtor = CLASSE_OPERACAO.getConstructor(CacheOperacoesGraficas.class);
-                    OPERACOES[indice] = construtor.newInstance(this);
+                    OPERACOES[indice] = criarInstancia();
                     operacoesAlocadas++;
                 }
 
@@ -57,12 +51,6 @@ public final class CacheOperacoesGraficas<T extends OperacaoGrafica>
                 indiceDevolucao = indice;
             }
             while (operacoesAlocadas < QUANTIDADE_ALOCACAO && posicoesVerificadas < QUANTIDADE_MAXIMA);
-
-        }
-        catch (InvocationTargetException | NoSuchMethodException | SecurityException | IllegalAccessException | InstantiationException ex)
-        {
-            throw new RuntimeException(ex);
-        }
     }
 
     public T obter()
@@ -99,4 +87,6 @@ public final class CacheOperacoesGraficas<T extends OperacaoGrafica>
         }
         while (posicoesVerificadas < QUANTIDADE_MAXIMA);
     }
+    
+    protected abstract T criarInstancia();
 }

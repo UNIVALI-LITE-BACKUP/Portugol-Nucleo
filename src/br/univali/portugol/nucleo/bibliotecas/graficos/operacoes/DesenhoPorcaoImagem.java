@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;

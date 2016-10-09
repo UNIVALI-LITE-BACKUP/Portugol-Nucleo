@@ -1,5 +1,16 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDefinirCor;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDefinirFonte;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoElipse;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoImagem;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoLinha;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoPoligono;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoPonto;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoPorcaoImagem;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoRetangulo;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoTexto;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesLimpar;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -14,31 +25,31 @@ public final class PoolOperacoesGraficas
     private static final int QUANTIDADE_MAXIMA_OPERACOES = 128;
     private static final int QUANTIDADE_INICIAL_OPERACOES = 8;
 
-    private final CacheOperacoesGraficas<DesenhoImagem> CACHE_OPERACOES_DESENHO_IMAGEM;
-    private final CacheOperacoesGraficas<OperacaoDefinirCor> CACHE_OPERACOES_DEFINIR_COR;
-    private final CacheOperacoesGraficas<DesenhoRetangulo> CACHE_OPERACOES_DESENHO_RETANGULO;
-    private final CacheOperacoesGraficas<DesenhoElipse> CACHE_OPERACOES_DESENHO_ELIPSE;
-    private final CacheOperacoesGraficas<DesenhoLinha> CACHE_OPERACOES_DESENHO_LINHA;
-    private final CacheOperacoesGraficas<DesenhoPoligono> CACHE_OPERACOES_DESENHO_POLIGONO;
-    private final CacheOperacoesGraficas<DesenhoPonto> CACHE_OPERACOES_DESENHO_PONTO;
-    private final CacheOperacoesGraficas<DesenhoPorcaoImagem> CACHE_OPERACOES_DESENHO_PORCAO_IMAGEM;
-    private final CacheOperacoesGraficas<DesenhoTexto> CACHE_OPERACOES_DESENHO_TEXTO;
-    private final CacheOperacoesGraficas<OperacaoDefinirFonte> CACHE_OPERACOES_DEFINIR_FONTE;
-    private final CacheOperacoesGraficas<OperacaoLimpar> CACHE_OPERACOES_LIMPAR;
+    private final CacheOperacoesDesenhoElipse CACHE_OPERACOES_DESENHO_ELIPSE;
+    private final CacheOperacoesDesenhoImagem CACHE_OPERACOES_DESENHO_IMAGEM;
+    private final CacheOperacoesDesenhoLinha CACHE_OPERACOES_DESENHO_LINHA;
+    private final CacheOperacoesDesenhoPoligono CACHE_OPERACOES_DESENHO_POLIGONO;
+    private final CacheOperacoesDesenhoPonto CACHE_OPERACOES_DESENHO_PONTO;
+    private final CacheOperacoesDesenhoPorcaoImagem CACHE_OPERACOES_DESENHO_PORCAO_IMAGEM;
+    private final CacheOperacoesDesenhoRetangulo CACHE_OPERACOES_DESENHO_RETANGULO;
+    private final CacheOperacoesDesenhoTexto CACHE_OPERACOES_DESENHO_TEXTO;
+    private final CacheOperacoesDefinirCor CACHE_OPERACOES_DEFINIR_COR;
+    private final CacheOperacoesDefinirFonte CACHE_OPERACOES_DEFINIR_FONTE;
+    private final CacheOperacoesLimpar CACHE_OPERACOES_LIMPAR;
 
     public PoolOperacoesGraficas()
     {
-        CACHE_OPERACOES_DESENHO_IMAGEM = new CacheOperacoesGraficas<>(DesenhoImagem.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DEFINIR_COR = new CacheOperacoesGraficas<>(OperacaoDefinirCor.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DESENHO_RETANGULO = new CacheOperacoesGraficas<>(DesenhoRetangulo.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DESENHO_ELIPSE = new CacheOperacoesGraficas<>(DesenhoElipse.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DESENHO_LINHA = new CacheOperacoesGraficas<>(DesenhoLinha.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DESENHO_POLIGONO = new CacheOperacoesGraficas<>(DesenhoPoligono.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DESENHO_PONTO = new CacheOperacoesGraficas<>(DesenhoPonto.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DESENHO_PORCAO_IMAGEM = new CacheOperacoesGraficas<>(DesenhoPorcaoImagem.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DESENHO_TEXTO = new CacheOperacoesGraficas<>(DesenhoTexto.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_DEFINIR_FONTE = new CacheOperacoesGraficas<>(OperacaoDefinirFonte.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
-        CACHE_OPERACOES_LIMPAR = new CacheOperacoesGraficas<>(OperacaoLimpar.class, QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_ELIPSE = new CacheOperacoesDesenhoElipse(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_IMAGEM = new CacheOperacoesDesenhoImagem(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_LINHA = new CacheOperacoesDesenhoLinha(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_POLIGONO = new CacheOperacoesDesenhoPoligono(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_PONTO = new CacheOperacoesDesenhoPonto(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_PORCAO_IMAGEM = new CacheOperacoesDesenhoPorcaoImagem(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_RETANGULO = new CacheOperacoesDesenhoRetangulo(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DESENHO_TEXTO = new CacheOperacoesDesenhoTexto(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DEFINIR_COR = new CacheOperacoesDefinirCor(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_DEFINIR_FONTE = new CacheOperacoesDefinirFonte(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
+        CACHE_OPERACOES_LIMPAR = new CacheOperacoesLimpar(QUANTIDADE_MAXIMA_OPERACOES, QUANTIDADE_INICIAL_OPERACOES);
     }
 
     public DesenhoImagem obterOperacaoDesenhoImagem(int x, int y, BufferedImage imagem, int opacidade, double rotacao)
@@ -163,13 +174,13 @@ public final class PoolOperacoesGraficas
 
         return operacaoDefinirFonte;
     }
-    
+
     public OperacaoLimpar obterOperacaoLimpar(Rectangle areaGraficos)
     {
         OperacaoLimpar operacaoLimpar = CACHE_OPERACOES_LIMPAR.obter();
-        
+
         operacaoLimpar.areaGraficos = areaGraficos;
-        
+
         return operacaoLimpar;
     }
 }

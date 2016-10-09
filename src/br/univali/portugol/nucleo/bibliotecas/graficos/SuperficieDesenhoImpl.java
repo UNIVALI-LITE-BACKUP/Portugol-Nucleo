@@ -28,7 +28,7 @@ import java.util.Map;
 final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 {
     private final PoolOperacoesGraficas POOL_OPERACOES_GRAFICAS = new PoolOperacoesGraficas();
-    
+
     private final OperacaoGrafica[] operacoes = new OperacaoGrafica[512];
     private int indiceOperacao = 0;
 
@@ -95,7 +95,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
             operacoes[i].liberar();
             operacoes[i] = null;
         }
-        
+
         indiceOperacao = 0;
     }
 
@@ -131,7 +131,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     {
         this.cor = obterCorTransparente(cor, opacidade);
         this.operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirCor(this.cor);
-        
+
         indiceOperacao++;
     }
 
@@ -141,7 +141,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         this.opacidade = opacidade;
         this.cor = obterCorTransparente(this.cor.getRGB(), opacidade);
         this.operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirCor(this.cor);
-        
+
         indiceOperacao++;
     }
 
@@ -183,9 +183,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 
         //Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonte.getAttributes();
         //atributos.put(TextAttribute.UNDERLINE, underline);
-
         //fonte = fonte.deriveFont(atributos);
-
         fonteTexto = fonte;
         dimensoesFonte = getFontMetrics(fonte);
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonte);
@@ -223,7 +221,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 
         dimensoesFonte = getFontMetrics(fonteTexto);
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonteTexto);
-        
+
         indiceOperacao++;
     }
 
@@ -290,11 +288,11 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     {
         BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graficos = (Graphics2D) imagem.getGraphics();
-        
+
         graficos.setColor(cor);
         graficos.setFont(fonteTexto);
         graficos.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
+
         for (int i = 0; i < indiceOperacao; i++)
         {
             operacoes[i].executar(graficos);
@@ -302,7 +300,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         }
 
         indiceOperacao = 0;
-        
+
         return imagem;
     }
 

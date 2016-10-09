@@ -1,7 +1,7 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 /**
  *
