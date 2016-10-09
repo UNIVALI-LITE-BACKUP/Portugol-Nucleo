@@ -8,17 +8,17 @@ import java.awt.Rectangle;
  *
  * @author Luiz Fernando Noschang
  */
-public final class OperacaoDefinirCor implements OperacaoGrafica
+public final class OperacaoDefinirCor extends OperacaoGrafica
 {
-    private final Color cor;
+    public Color cor;
 
-    public OperacaoDefinirCor(Color cor)
+    public OperacaoDefinirCor(CacheOperacoesGraficas<OperacaoDefinirCor> cache)
     {
-        this.cor = cor;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         graficos.setColor(cor);
     }

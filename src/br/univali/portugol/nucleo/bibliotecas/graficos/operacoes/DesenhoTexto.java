@@ -9,23 +9,20 @@ import java.awt.geom.AffineTransform;
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoTexto implements OperacaoGrafica
+public final class DesenhoTexto extends OperacaoGrafica
 {
-    private final int x;
-    private final int y;
-    private final String texto;
-    private final double rotacao;
+    public int x;
+    public int y;
+    public String texto;
+    public double rotacao;
 
-    public DesenhoTexto(int x, int y, String texto, double rotacao)
+    public DesenhoTexto(CacheOperacoesGraficas<DesenhoTexto> cache)
     {
-        this.x = x;
-        this.y = y;
-        this.texto = texto;
-        this.rotacao = rotacao;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         FontMetrics dimensoesFonte = graficos.getFontMetrics();
 

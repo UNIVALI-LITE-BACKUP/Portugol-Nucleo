@@ -7,19 +7,18 @@ import java.awt.Rectangle;
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoPonto implements OperacaoGrafica
+public final class DesenhoPonto extends OperacaoGrafica
 {
-    private final int x;
-    private final int y;
+    public int x;
+    public int y;
 
-    public DesenhoPonto(int x, int y)
+    public DesenhoPonto(CacheOperacoesGraficas<DesenhoPonto> cache)
     {
-        this.x = x;
-        this.y = y;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         graficos.drawLine(x, y, x, y);
     }

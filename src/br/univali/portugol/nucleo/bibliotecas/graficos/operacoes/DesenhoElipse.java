@@ -8,27 +8,22 @@ import java.awt.geom.AffineTransform;
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoElipse implements OperacaoGrafica
+public final class DesenhoElipse extends OperacaoGrafica
 {
-    private final int x;
-    private final int y;
-    private final int largura;
-    private final int altura;
-    private final boolean preencher;
-    private final double rotacao;
+    public int x;
+    public int y;
+    public int largura;
+    public int altura;
+    public boolean preencher;
+    public double rotacao;
 
-    public DesenhoElipse(int x, int y, int largura, int altura, boolean preencher, double rotacao)
+    public DesenhoElipse(CacheOperacoesGraficas<DesenhoElipse> cache)
     {
-        this.x = x;
-        this.y = y;
-        this.largura = largura;
-        this.altura = altura;
-        this.preencher = preencher;
-        this.rotacao = rotacao;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         AffineTransform transformacao = graficos.getTransform();
 

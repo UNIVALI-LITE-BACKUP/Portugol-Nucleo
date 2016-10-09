@@ -8,25 +8,21 @@ import java.awt.geom.AffineTransform;
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoLinha implements OperacaoGrafica
+public final class DesenhoLinha extends OperacaoGrafica
 {
-    private final int x1;
-    private final int y1;
-    private final int x2;
-    private final int y2;
-    private final double rotacao;
+    public int x1;
+    public int y1;
+    public int x2;
+    public int y2;
+    public double rotacao;
 
-    public DesenhoLinha(int x1, int y1, int x2, int y2, double rotacao)
+    public DesenhoLinha(CacheOperacoesGraficas<DesenhoLinha> cache)
     {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
-        this.rotacao = rotacao;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         AffineTransform transformacao = graficos.getTransform();
         

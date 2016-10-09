@@ -5,9 +5,21 @@ import java.awt.Rectangle;
 
 /**
  *
- * @author Luiz Fernando Noschang
+ * @author Luiz Fernando
  */
-public interface OperacaoGrafica
+public abstract class OperacaoGrafica
 {
-    public void executar(Graphics2D graficos, Rectangle areaGraficos);
+    private final CacheOperacoesGraficas cache;
+
+    public OperacaoGrafica(CacheOperacoesGraficas cache)
+    {
+        this.cache = cache;
+    }
+    
+    public final void liberar()
+    {
+        cache.devolver(this);
+    }
+    
+    public abstract void executar(Graphics2D graficos);
 }

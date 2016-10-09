@@ -8,17 +8,17 @@ import java.awt.Rectangle;
  *
  * @author Luiz Fernando Noschang
  */
-public final class OperacaoDefinirFonte implements OperacaoGrafica
+public final class OperacaoDefinirFonte extends OperacaoGrafica
 {
-    private final Font fonte;
+    public Font fonte;
 
-    public OperacaoDefinirFonte(Font fonte)
+    public OperacaoDefinirFonte(CacheOperacoesGraficas<OperacaoDefinirFonte> cache)
     {
-        this.fonte = fonte;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         graficos.setFont(fonte);
     }

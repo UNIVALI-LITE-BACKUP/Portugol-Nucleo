@@ -3,48 +3,45 @@ package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoPoligono implements OperacaoGrafica
+public final class DesenhoPoligono extends OperacaoGrafica
 {
-    private final int[][] pontos;
-    private final boolean preencher;
-    private double rotacao;
+    public int[][] pontos;
+    public boolean preencher;
+    public double rotacao;
 
-    public DesenhoPoligono(int[][] pontos, boolean preencher, double rotacao)
+    public DesenhoPoligono(CacheOperacoesGraficas<DesenhoPoligono> cache)
     {
-        this.pontos = pontos;
-        this.preencher = preencher;
-        this.rotacao = rotacao;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         Polygon poligono = new Polygon();
-        
+
         int x, y, xCentro, yCentro;
-        
+
         int xMaximo = Integer.MIN_VALUE;
         int xMinimo = Integer.MAX_VALUE;
-        
+
         int yMaximo = Integer.MIN_VALUE;
         int yMinimo = Integer.MAX_VALUE;
-        
+
         for (int[] ponto : pontos)
         {
             x = ponto[0];
-            y = ponto[1];            
-            
+            y = ponto[1];
+
             poligono.addPoint(x, y);
-            
+
             if (rotacao != 0.0)
-            {            
+            {
                 if (x > xMaximo)
                 {
                     xMaximo = x;
@@ -66,14 +63,14 @@ public final class DesenhoPoligono implements OperacaoGrafica
                 }
             }
         }
-        
+
         AffineTransform transformacao = graficos.getTransform();
-        
+
         if (rotacao != 0.0)
         {
             xCentro = xMinimo + (Math.abs(xMaximo - xMinimo) / 2);
             yCentro = yMinimo + (Math.abs(yMaximo - yMinimo) / 2);
-            
+
             graficos.rotate(rotacao, xCentro, yCentro);
         }
 
@@ -85,7 +82,7 @@ public final class DesenhoPoligono implements OperacaoGrafica
         {
             graficos.draw(poligono);
         }
-        
+
         if (rotacao != 0.0)
         {
             graficos.setTransform(transformacao);

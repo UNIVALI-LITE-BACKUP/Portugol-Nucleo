@@ -8,32 +8,26 @@ import java.awt.geom.AffineTransform;
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoRetangulo implements OperacaoGrafica
+public final class DesenhoRetangulo extends OperacaoGrafica
 {
-    private final int x;
-    private final int y;
-    private final int largura;
-    private final int altura;
-    private final boolean preencher;
-    private final boolean arredondarCantos;
-    private final double rotacao;
+    public int x;
+    public int y;
+    public int largura;
+    public int altura;
+    public boolean preencher;
+    public boolean arredondarCantos;
+    public double rotacao;
 
-    public DesenhoRetangulo(int x, int y, int largura, int altura, boolean arredondarCantos, boolean preencher, double rotacao)
+    public DesenhoRetangulo(CacheOperacoesGraficas cache)
     {
-        this.x = x;
-        this.y = y;
-        this.largura = largura;
-        this.altura = altura;
-        this.preencher = preencher;
-        this.arredondarCantos = arredondarCantos;
-        this.rotacao = rotacao;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         AffineTransform transformacao = graficos.getTransform();
-        
+
         if (rotacao != 0.0)
         {
             graficos.rotate(rotacao, x + (largura / 2), y + (altura / 2));

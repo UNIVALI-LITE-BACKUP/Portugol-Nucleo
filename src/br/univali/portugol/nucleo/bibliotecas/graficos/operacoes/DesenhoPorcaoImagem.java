@@ -11,33 +11,25 @@ import java.awt.image.BufferedImage;
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoPorcaoImagem implements OperacaoGrafica
+public final class DesenhoPorcaoImagem extends OperacaoGrafica
 {
-    private final int x;
-    private final int y;
-    private final int xi;
-    private final int yi;
-    private final int largura;
-    private final int altura;
-    private final BufferedImage imagem;
-    private final int opacidade;
-    private final double rotacao;
+    public int x;
+    public int y;
+    public int xi;
+    public int yi;
+    public int largura;
+    public int altura;
+    public BufferedImage imagem;
+    public int opacidade;
+    public double rotacao;
 
-    public DesenhoPorcaoImagem(int x, int y, int xi, int yi, int largura, int altura, BufferedImage imagem, int opacidade, double rotacao)
+    public DesenhoPorcaoImagem(CacheOperacoesGraficas<DesenhoPorcaoImagem> cache)
     {
-        this.x = x;
-        this.y = y;
-        this.xi = xi;
-        this.yi = yi;
-        this.largura = largura;
-        this.altura = altura;
-        this.imagem = imagem;
-        this.opacidade = opacidade;
-        this.rotacao = rotacao;
+        super(cache);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void executar(Graphics2D graficos)
     {
         AffineTransform transformacao = graficos.getTransform();
 
