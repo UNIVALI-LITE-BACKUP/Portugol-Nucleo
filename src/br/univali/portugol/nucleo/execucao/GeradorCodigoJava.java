@@ -1003,7 +1003,6 @@ public class GeradorCodigoJava
 //                }
 //            }
 //        }
-        
         @Override
         public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
@@ -1014,14 +1013,29 @@ public class GeradorCodigoJava
                 geraCodigoParaFuncaoLeia(no);
                 return null;
             }
+            else if (escopoFuncao.equals("Util") && nomeFuncao.equals("numero_elementos"))
+            {
+                
+                NoReferencia noReferencia = ((NoReferencia) no.getParametros().get(0));
+                String nomeArray = noReferencia.getNome();
+                saida.append(nomeArray);
+                
+                if (nomeFuncao.equals("numero_colunas"))
+                {
+                    saida.append("[0]");
+                }
+                
+                saida.append(".lenght");
+
+                return null;
+            }
 
             List<MetaPametro> metaDadosParametrosEsperados = getMetaDadosDosParametrosEsperados(no);
-            
+
             //criaValueHoldersParaParametrosPorReferencia(metaDadosParametrosEsperados, no.getParametros());
-            
             saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
             List<NoExpressao> parametrosPassados = no.getParametros();
-            
+
             int totalParametros = parametrosPassados.size();
             for (int i = 0; i < totalParametros; i++)
             {
@@ -1051,7 +1065,7 @@ public class GeradorCodigoJava
                 // verifica se é um parametro por referência
                 //if (!passandoPorReferencia)
                 //{
-                    parametroPassado.aceitar(this);
+                parametroPassado.aceitar(this);
                 //}
                 //else
                 //{
