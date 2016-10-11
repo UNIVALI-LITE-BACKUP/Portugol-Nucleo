@@ -1108,22 +1108,6 @@ public class GeradorCodigoJava
                 geraCodigoParaFuncaoLeia(no);
                 return null;
             }
-            else if (escopoFuncao.equals("Util") && nomeFuncao.equals("numero_elementos"))
-            {
-
-                NoReferencia noReferencia = ((NoReferencia) no.getParametros().get(0));
-                String nomeArray = noReferencia.getNome();
-                saida.append(nomeArray);
-
-                if (nomeFuncao.equals("numero_colunas"))
-                {
-                    saida.append("[0]");
-                }
-
-                saida.append(".lenght");
-
-                return null;
-            }
 
             List<MetaPametro> metaDadosParametrosEsperados = getMetaDadosDosParametrosEsperados(no);
 
