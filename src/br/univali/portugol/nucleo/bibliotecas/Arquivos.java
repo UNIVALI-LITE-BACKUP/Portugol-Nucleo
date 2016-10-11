@@ -3,7 +3,6 @@ package br.univali.portugol.nucleo.bibliotecas;
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.ReferenciaVetor;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.Autor;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
@@ -26,8 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
@@ -56,10 +53,10 @@ public final class Arquivos extends Biblioteca
     private FiltroExtensao filtroTodosArquivos;
 
     @DocumentacaoConstante(descricao = "indica à biblioteca que o arquivo deve ser aberto apenas para leitura")
-    public static final Integer MODO_LEITURA = ModoAcesso.LEITURA.ordinal();
+    public static final int MODO_LEITURA = ModoAcesso.LEITURA.ordinal();
 
     @DocumentacaoConstante(descricao = "indica à biblioteca que o arquivo deve ser aberto apenas para escrita")
-    public static final Integer MODO_ESCRITA = ModoAcesso.ESCRITA.ordinal();
+    public static final int MODO_ESCRITA = ModoAcesso.ESCRITA.ordinal();
 
     @DocumentacaoFuncao(
             descricao = "Abre um arquivo para leitura ou escrita. No modo leitura, caso o arquivo informado não exista, será gerado "
@@ -70,7 +67,8 @@ public final class Arquivos extends Biblioteca
             + "escrevê-lo novamente no arquivo.",
             parametros =
             {
-                @DocumentacaoParametro(nome = "caminho_arquivo", descricao = "o nome do arquivo que se quer abrir"),
+                @DocumentacaoParametro(nome = "caminho_arquivo", descricao = "o nome do arquivo que se quer abrir")
+                ,
 
                 @DocumentacaoParametro(nome = "modo_acesso", descricao = "determina se o arquivo será aberto para leitura ou para escrita.<br>Constantes aceitas: MODO_LEITURA | MODO_ESCRITA")
             },
@@ -80,7 +78,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer abrir_arquivo(String caminho_arquivo, Integer modo_acesso) throws ErroExecucaoBiblioteca
+    public int abrir_arquivo(String caminho_arquivo, int modo_acesso) throws ErroExecucaoBiblioteca
     {
         File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
 
@@ -113,7 +111,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void fechar_arquivo(Integer endereco) throws ErroExecucaoBiblioteca
+    public void fechar_arquivo(int endereco) throws ErroExecucaoBiblioteca
     {
         Arquivo arquivo = obterArquivo(endereco);
         arquivo.fechar();
@@ -134,7 +132,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public boolean fim_arquivo(Integer endereco) throws ErroExecucaoBiblioteca
+    public boolean fim_arquivo(int endereco) throws ErroExecucaoBiblioteca
     {
         return obterArquivo(endereco).fim();
     }
@@ -152,7 +150,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public String ler_linha(Integer endereco) throws ErroExecucaoBiblioteca
+    public String ler_linha(int endereco) throws ErroExecucaoBiblioteca
     {
         return obterArquivo(endereco).ler();
     }
@@ -162,7 +160,8 @@ public final class Arquivos extends Biblioteca
             + "escrita. Se o arquivo estiver em modo de leitura, será gerado um erro.",
             parametros =
             {
-                @DocumentacaoParametro(nome = "linha", descricao = "a linha a ser escrita no arquivo"),
+                @DocumentacaoParametro(nome = "linha", descricao = "a linha a ser escrita no arquivo")
+                ,
                 @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do arquivo")
             },
             autores =
@@ -170,7 +169,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void escrever_linha(String linha, Integer endereco) throws ErroExecucaoBiblioteca
+    public void escrever_linha(String linha, int endereco) throws ErroExecucaoBiblioteca
     {
         obterArquivo(endereco).escrever(linha);
     }
@@ -246,7 +245,7 @@ public final class Arquivos extends Biblioteca
         }
     }
 
-    private Arquivo obterArquivo(Integer endereco) throws ErroExecucaoBiblioteca
+    private Arquivo obterArquivo(int endereco) throws ErroExecucaoBiblioteca
     {
         if (endereco >= 0 && endereco < NUMERO_MAXIMO_ARQUIVOS)
         {
@@ -300,7 +299,8 @@ public final class Arquivos extends Biblioteca
                         + "arquivo é formado por uma descrição e uma lista de extensões válidas. A descrição deve "
                         + "estar separada da lista de extensões pelo caracter '|' e cada extensão deverá estar "
                         + "separada da outra pelo caracter ','. Ex.: 'Arquivos de texto|txt', 'Arquivos de imagem|png,jpg,jpeg,bmp'"
-                ),
+                )
+                ,
                 @DocumentacaoParametro(nome = "aceitar_todos_arquivos",
                         descricao = "Quando verdadeiro, inclui automaticamente um formato que permite selecionar "
                         + "qualquer arquivo. Este formato também será incluído se nenhum outro formato for informado "
@@ -310,7 +310,8 @@ public final class Arquivos extends Biblioteca
             retorno = "O arquivo_selecionado ou uma string vazia caso o usuário tenha cancelado.",
             autores =
             {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+                ,
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
 
             }
@@ -384,34 +385,46 @@ public final class Arquivos extends Biblioteca
             {
                 @DocumentacaoParametro(nome = "caminho_pai",
                         descricao = "Define o diretório cujas pastas serão listadas"
-                ),
+                )
+                ,
                 @DocumentacaoParametro(nome = "vetor_pastas",
                         descricao = "Vetor destino que contará com as pastas encontradas"
                 )
             },
             autores =
             {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+                ,
                 @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
             }
     )
-    public void listar_pastas(final String caminho_pai, final ReferenciaVetor<String> vetor_pastas) throws ErroExecucaoBiblioteca
+    public void listar_pastas(final String caminho_pai, final String[] vetor_pastas) throws ErroExecucaoBiblioteca
     {
-        File arquivo = programa.resolverCaminho(new File(caminho_pai));
+        int indice = 0;
+        File diretorio = programa.resolverCaminho(new File(caminho_pai));
 
-        if (arquivo.exists())
+        if (diretorio.exists())
         {
-            File[] arquivos = arquivo.listFiles();
-            List<Object> strings = new ArrayList<>();
+            File[] pastas = diretorio.listFiles();
 
-            for (File arquivo1 : arquivos)
+            if (pastas.length > vetor_pastas.length)
             {
-                if (arquivo1.isDirectory())
+                throw new ErroExecucaoBiblioteca(String.format("Não foi possível listar as pastas pois o vetor passado é muito pequeno. O diretório escolhido possui %d pastas, mas o vetor passado comporta apenas %d elementos. Aumente o tamanho do vetor ou escolha outro diretório para listar as pastas.", pastas.length, vetor_pastas.length));
+            }
+
+            for (File pasta : pastas)
+            {
+                if (pasta.isDirectory())
                 {
-                    strings.add(arquivo1.getName());
+                    vetor_pastas[indice] = pasta.getName();
+                    indice++;
                 }
             }
-            vetor_pastas.getVetor().inicializarComValores(strings);
+
+            for (int i = indice; i < vetor_pastas.length; i++)
+            {
+                vetor_pastas[i] = "";
+            }
         }
         else
         {
@@ -424,34 +437,46 @@ public final class Arquivos extends Biblioteca
             {
                 @DocumentacaoParametro(nome = "caminho_pai",
                         descricao = "Define o diretório cujas pastas serão listadas"
-                ),
+                )
+                ,
                 @DocumentacaoParametro(nome = "vetor_arquivos",
                         descricao = "Vetor destino que contará com as pastas encontradas"
                 )
             },
             autores =
             {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+                ,
                 @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
             }
     )
-    public void listar_arquivos(final String caminho_pai, final ReferenciaVetor<String> vetor_arquivos) throws ErroExecucaoBiblioteca
+    public void listar_arquivos(final String caminho_pai, final String[] vetor_arquivos) throws ErroExecucaoBiblioteca
     {
-        File arquivo = programa.resolverCaminho(new File(caminho_pai));
+        int indice = 0;
+        File diretorio = programa.resolverCaminho(new File(caminho_pai));
 
-        if (arquivo.exists())
+        if (diretorio.exists())
         {
-            File[] arquivos = arquivo.listFiles();
-            List<Object> strings = new ArrayList<>();
+            File[] arquivos_listados = diretorio.listFiles();
 
-            for (File arquivo1 : arquivos)
+            if (arquivos_listados.length > vetor_arquivos.length)
             {
-                if (arquivo1.isFile())
+                throw new ErroExecucaoBiblioteca(String.format("Não foi possível listar os arquivos pois o vetor passado é muito pequeno. O diretório escolhido possui %d arquivos, mas o vetor passado comporta apenas %d elementos. Aumente o tamanho do vetor ou escolha outro diretório para listar os arquivos.", arquivos_listados.length, vetor_arquivos.length));
+            }
+
+            for (File arquivo : arquivos_listados)
+            {
+                if (arquivo.isFile())
                 {
-                    strings.add(arquivo1.getName());
+                    vetor_arquivos[indice] = arquivo.getName();
+                    indice++;
                 }
             }
-            vetor_arquivos.getVetor().inicializarComValores(strings);
+
+            for (int i = indice; i < vetor_arquivos.length; i++)
+            {
+                vetor_arquivos[i] = "";
+            }
         }
         else
         {
@@ -464,61 +489,67 @@ public final class Arquivos extends Biblioteca
             {
                 @DocumentacaoParametro(nome = "caminho_pai",
                         descricao = "Define o diretório cujas pastas serão listadas"
-                ),
+                )
+                ,
                 @DocumentacaoParametro(nome = "vetor_arquivos",
                         descricao = "Vetor destino que contará com as pastas encontradas"
-                ),
+                )
+                ,
                 @DocumentacaoParametro(nome = "vetor_tipos",
                         descricao = "Vetor destino que contará com as pastas encontradas"
                 )
             },
             autores =
             {
-                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br"),
+                @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
+                ,
                 @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
             }
     )
-    public void listar_arquivos_por_tipo(final String caminho_pai, final ReferenciaVetor<String> vetor_arquivos, final ReferenciaVetor<String> vetor_tipos) throws ErroExecucaoBiblioteca
+    public void listar_arquivos_por_tipo(final String caminho_pai, final String[] vetor_arquivos, final String[] vetor_tipos) throws ErroExecucaoBiblioteca
     {
-        File arquivo = programa.resolverCaminho(new File(caminho_pai));
+        int indice = 0;
+        File diretorio = programa.resolverCaminho(new File(caminho_pai));
 
-        if (arquivo.exists())
+        if (diretorio.exists())
         {
-            File[] arquivos = arquivo.listFiles(new java.io.FileFilter()
+            File[] arquivos_listados = diretorio.listFiles(new java.io.FileFilter()
             {
                 @Override
                 public boolean accept(File pathname)
                 {
-                    for (int i = 0; i < vetor_tipos.numeroElementos(); i++)
+                    for (String vetor_tipo : vetor_tipos)
                     {
-                        try
+                        if (pathname.toString().toLowerCase().endsWith(vetor_tipo.toLowerCase()))
                         {
-                            if (pathname.toString().toLowerCase().endsWith(vetor_tipos.obterValor(i).toLowerCase()))
-                            {
-                                return true;
-
-                            }
-                        }
-                        catch (ErroExecucaoBiblioteca ex)
-                        {
-                            Logger.getLogger(Arquivos.class
-                                    .getName()).log(Level.SEVERE, null, ex);
+                            return true;
                         }
                     }
+
                     return false;
 
                 }
             });
-            List<Object> strings = new ArrayList<>();
 
-            for (File arquivo1 : arquivos)
+            if (arquivos_listados.length > vetor_arquivos.length)
             {
-                if (arquivo1.isFile())
+                throw new ErroExecucaoBiblioteca(String.format("Não foi possível listar os arquivos pois o vetor passado é muito pequeno. O diretório escolhido possui %d arquivos, mas o vetor passado comporta apenas %d elementos. Aumente o tamanho do vetor ou escolha outro diretório para listar os arquivos.", arquivos_listados.length, vetor_arquivos.length));
+            }
+
+            for (File arquivo : arquivos_listados)
+            {
+                if (arquivo.isFile())
                 {
-                    strings.add(arquivo1.getName());
+                    vetor_arquivos[indice] = arquivo.getName();
+                    indice++;
                 }
             }
-            vetor_arquivos.getVetor().inicializarComValores(strings);
+
+            for (int i = indice; i < vetor_arquivos.length; i++)
+            {
+                vetor_arquivos[i] = "";
+            }
+
         }
         else
         {

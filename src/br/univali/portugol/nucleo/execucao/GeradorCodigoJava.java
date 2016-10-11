@@ -505,14 +505,28 @@ public class GeradorCodigoJava
         public Void visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
         {
             String nome = noDeclaracao.getNome();
-            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
+            String nomeTipo = getNomeTipoJava(noDeclaracao.getTipoDado());
 
-            saida.format("%s %s", tipo, geraNomeValido(nome));
+            saida.format("%s %s", nomeTipo, geraNomeValido(nome));
 
             if (noDeclaracao.possuiInicializacao())
             {
                 saida.append(" = ");
+
+                // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
+                boolean precisaDeCast = noDeclaracao.getTipoDado() == TipoDado.INTEIRO && noDeclaracao.getInicializacao().getTipoResultante() == TipoDado.REAL;
+
+                if (precisaDeCast)
+                {
+                    saida.append("(int) (");
+                }
+
                 noDeclaracao.getInicializacao().aceitar(this);
+
+                if (precisaDeCast)
+                {
+                    saida.append(")");
+                }
             }
 
             return null;
@@ -552,7 +566,15 @@ public class GeradorCodigoJava
             int totalValores = valores.size();
             for (int i = 0; i < totalValores; i++)
             {
-                saida.append(valores.get(i).toString());
+                if (valores.get(i) instanceof NoExpressaoLiteral)
+                {
+                    saida.append(valores.get(i).toString());
+                }
+                else
+                {
+                    ((NoExpressao) valores.get(i)).aceitar(this);
+                }
+
                 if (i < totalValores - 1)
                 {
                     saida.append(", ");
@@ -797,9 +819,75 @@ public class GeradorCodigoJava
             return null;
         }
 
+        private boolean contemCasosNaoConstantes(List<NoCaso> casos)
+        {
+            for (NoCaso caso: casos)
+            {
+                if (caso.getExpressao() != null)
+                {
+                    if (!(caso.getExpressao() instanceof NoExpressaoLiteral))
+                        return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        private boolean simularBreakCaso = false;
+        private static final String NOME_VARIAVEL_BREAK = "___sw_break___";
+        
+        private void substituirEscolhaPorSeSenao(NoEscolha noEscolha) throws ExcecaoVisitaASA
+        {
+            simularBreakCaso = true;
+            
+            saida.append("{");
+            pulaLinha();
+            
+            saida.append(geraIdentacao()).append(geraIdentacao()).append("boolean " + NOME_VARIAVEL_BREAK + " = false;");
+            pulaLinha();
+            pulaLinha();
+            
+            List<NoCaso> casos = noEscolha.getCasos();
+            
+            for (NoCaso noCaso: casos)
+            {
+                NoExpressao verificacaoBreak = new NoNao(new NoReferenciaVariavel(null, NOME_VARIAVEL_BREAK));
+                NoExpressao comparacaoCaso;
+                
+                // case default: 
+                if (noCaso.getExpressao() == null)
+                {
+                    comparacaoCaso = new NoLogico(true);
+                }
+                else
+                {
+                    // case expressao_nao_constante:
+                    comparacaoCaso = new NoOperacaoLogicaIgualdade(noEscolha.getExpressao(), noCaso.getExpressao());
+                }
+                
+                NoExpressao condicao = new NoOperacaoLogicaE(verificacaoBreak, comparacaoCaso);
+                NoSe se = new NoSe(condicao);
+                se.setBlocosVerdadeiros(noCaso.getBlocos());
+                
+                saida.append(geraIdentacao());
+                se.aceitar(this);
+                pulaLinha();
+            }
+                
+            saida.append("}");
+        }
+                
         @Override
         public Void visitar(NoEscolha no) throws ExcecaoVisitaASA
         {
+            simularBreakCaso = false;
+            
+            if (contemCasosNaoConstantes(no.getCasos()))
+            {
+                substituirEscolhaPorSeSenao(no);
+                return null;
+            }
+            
             saida.append("switch(");
 
             no.getExpressao().aceitar(this);
@@ -919,9 +1007,16 @@ public class GeradorCodigoJava
             List<NoInclusaoBiblioteca> libs = asa.getListaInclusoesBibliotecas();
             for (NoInclusaoBiblioteca lib : libs)
             {
-                if (lib.getAlias().equals(escopo))
+                if (lib.getAlias() != null)
                 {
-                    return lib.getNome();
+                    if (lib.getAlias().equals(escopo))
+                    {
+                        return lib.getNome();
+                    }
+                }
+                else if (lib.getNome().equals(escopo))
+                {
+                    return escopo;
                 }
             }
 
@@ -1015,16 +1110,16 @@ public class GeradorCodigoJava
             }
             else if (escopoFuncao.equals("Util") && nomeFuncao.equals("numero_elementos"))
             {
-                
+
                 NoReferencia noReferencia = ((NoReferencia) no.getParametros().get(0));
                 String nomeArray = noReferencia.getNome();
                 saida.append(nomeArray);
-                
+
                 if (nomeFuncao.equals("numero_colunas"))
                 {
                     saida.append("[0]");
                 }
-                
+
                 saida.append(".lenght");
 
                 return null;
@@ -1139,7 +1234,14 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoPare noPare) throws ExcecaoVisitaASA
         {
-            saida.append("break");
+            if (simularBreakCaso)
+            {
+                saida.append(NOME_VARIAVEL_BREAK).append(" = true");
+            }
+            else
+            {            
+                saida.append("break");
+            }
 
             return null;
         }

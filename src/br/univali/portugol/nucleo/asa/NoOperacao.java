@@ -1,8 +1,13 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.analise.semantica.TabelaCompatibilidadeTiposPortugol;
+import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
+import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoValorSeraConvertido;
 import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Representa uma operação no código fonte.
@@ -118,16 +123,22 @@ public abstract class NoOperacao extends NoExpressao
 
         if (tipoOpEsquerdo != tipoOpDireito)
         {
-            if (tipoOpEsquerdo == TipoDado.INTEIRO && tipoOpDireito == TipoDado.REAL)
+            try
             {
-                return TipoDado.REAL;
+                return TabelaCompatibilidadeTiposPortugol.INSTANCE.obterTipoRetornoOperacao(this.getClass(), tipoOpEsquerdo, tipoOpDireito);
             }
-            
-            if (tipoOpEsquerdo == TipoDado.REAL && tipoOpDireito == TipoDado.INTEIRO)
+            catch (NullPointerException ex)
             {
-                return TipoDado.REAL;
+                Logger.getLogger(NoOperacao.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+            catch (ExcecaoImpossivelDeterminarTipoDado ex)
+            {
+                Logger.getLogger(NoOperacao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (ExcecaoValorSeraConvertido ex)
+            {
+                return ex.getTipoSaida();
+            }
         }
         
         return tipoOpEsquerdo;

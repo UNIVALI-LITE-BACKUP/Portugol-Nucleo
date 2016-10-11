@@ -25,7 +25,9 @@ import java.util.List;
  */
 public final class NoChamadaFuncao extends NoReferencia<NoDeclaracaoFuncao>
 {
+    private boolean funcaoDeBiblioteca = false;
     private List<NoExpressao> parametros;
+    private TipoDado tipoRetornoBiblioteca = TipoDado.VAZIO;
 
     /**
      * @param escopo o escopo da função sendo referenciada. Se o escopo for
@@ -109,5 +111,35 @@ public final class NoChamadaFuncao extends NoReferencia<NoDeclaracaoFuncao>
     {
         return (estado == Programa.Estado.BREAK_POINT && pontoDeParadaEstaAtivo()) || estado == Programa.Estado.STEP_OVER;
     }
-    
+
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        if (isFuncaoDeBiblioteca())
+        {
+            return getTipoRetornoBiblioteca();
+        }
+        
+        return super.getTipoResultante();
+    }
+
+    public boolean isFuncaoDeBiblioteca()
+    {
+        return funcaoDeBiblioteca;
+    }
+
+    public void setFuncaoDeBiblioteca(boolean funcaoDeBiblioteca)
+    {
+        this.funcaoDeBiblioteca = funcaoDeBiblioteca;
+    }
+
+    public void setTipoRetornoBiblioteca(TipoDado tipoRetornoBiblioteca)
+    {
+        this.tipoRetornoBiblioteca = tipoRetornoBiblioteca;
+    }
+
+    public TipoDado getTipoRetornoBiblioteca()
+    {
+        return tipoRetornoBiblioteca;
+    }
 }

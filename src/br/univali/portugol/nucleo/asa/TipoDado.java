@@ -33,7 +33,7 @@ public enum TipoDado
      *
      * @since 1.0
      */
-    INTEIRO("inteiro", "inteiro", 0, Integer.class),
+    INTEIRO("inteiro", "inteiro", 0, Integer.TYPE),
     
     /**
      * Representa os valores reais no Portugol. Os valores reais são todos os números fracionários positivos
@@ -54,7 +54,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    REAL("real", "real", 0.0, Double.class),
+    REAL("real", "real", 0.0, Double.TYPE),
     
     /**
      * Representa os valores lógicos (verdadeiro ou falso) no Portugol. 
@@ -72,7 +72,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    LOGICO("logico", "lógico", false, Boolean.class),
+    LOGICO("logico", "lógico", false, Boolean.TYPE),
     
     /**
      * Representa as cadeias de carcateres, ou seja, os valores textuais, no Portugol.
@@ -114,7 +114,7 @@ public enum TipoDado
      * 
      * @since 1.0
      */
-    CARACTER("caracter", "caracter", '\0', Character.class),
+    CARACTER("caracter", "caracter", '\0', Character.TYPE),
     
     /**
      * Este é um tipo de dados especial utilizado apenas nas declarações de função para indicar

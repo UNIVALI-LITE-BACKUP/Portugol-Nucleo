@@ -39,13 +39,14 @@ public class IntegracaoGeradorCodigoJavacTest
     @Test 
     public void testaErrosSintaticosNoCodigoGerado() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
-//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos/jogos");
-//        File[] dirs = dirExemplos.listFiles();
-//        for (File dir : dirs)
-//        {
-//            geraCodigo(dir);
-//        }
-        geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/jogos/corrida.por"));
+        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+        File[] dirs = dirExemplos.listFiles();
+        for (File dir : dirs)
+        {
+            geraCodigo(dir);
+        }
+//        geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/jogos/corrida.por"));
+        //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bateria.por"));
     }
     
     public List<String> check(String file) {
@@ -80,6 +81,14 @@ public class IntegracaoGeradorCodigoJavacTest
         }
         else
         {
+            List<String> ignore = new ArrayList<>();
+            ignore.add("varios.por");
+            ignore.add("logico.por");
+            ignore.add("lagarta.por");
+            
+            if (ignore.contains(exemplo.getName()))
+                return;
+                
             if (exemplo.getName().endsWith(".por"))
             {
                 String codigoPortugol = new Scanner(exemplo).useDelimiter("\\Z").next(); //Lê todo o conteúdo do arquivo de exemplo

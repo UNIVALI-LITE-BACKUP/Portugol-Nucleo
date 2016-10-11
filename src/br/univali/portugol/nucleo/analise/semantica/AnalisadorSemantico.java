@@ -765,10 +765,16 @@ public final class AnalisadorSemantico implements VisitanteASA
             if (metaDadosBiblioteca != null)
             {
                 MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
+                
                 if (metaDadosFuncao == null)
                 {
                     notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
                     throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
+                }
+                else
+                {
+                    chamadaFuncao.setFuncaoDeBiblioteca(true);
+                    chamadaFuncao.setTipoRetornoBiblioteca(metaDadosFuncao.getTipoDado());
                 }
             }
             else
@@ -2227,6 +2233,9 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             if (metaDadosConstante != null)
             {
+                noReferenciaVariavel.setVariavelDeBiblioteca(true);
+                noReferenciaVariavel.setTipoBiblioteca(metaDadosConstante.getTipoDado());
+                
                 return metaDadosConstante.getTipoDado();
             }
 

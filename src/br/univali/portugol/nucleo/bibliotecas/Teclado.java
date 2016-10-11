@@ -535,7 +535,7 @@ public final class Teclado extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }            
     )
-    public Character caracter_tecla(int tecla) throws ErroExecucaoBiblioteca
+    public char caracter_tecla(int tecla) throws ErroExecucaoBiblioteca
     {
         return (char) (int) tecla;
     }

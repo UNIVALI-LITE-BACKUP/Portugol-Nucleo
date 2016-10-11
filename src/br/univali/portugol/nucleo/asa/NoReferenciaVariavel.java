@@ -23,6 +23,8 @@ package br.univali.portugol.nucleo.asa;
  */
 public final class NoReferenciaVariavel extends NoReferencia<NoDeclaracaoVariavel>
 {
+    private boolean variavelDeBiblioteca = false;
+    private TipoDado tipoBiblioteca = TipoDado.VAZIO;
     /**
      *
      * @param nome o nome da variável que está sendo referenciada.
@@ -67,4 +69,37 @@ public final class NoReferenciaVariavel extends NoReferencia<NoDeclaracaoVariave
     {
         return getNome();
     }
+
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        if (isVariavelDeBiblioteca())
+        {
+            return getTipoBiblioteca();
+        }
+        
+        return super.getTipoResultante();
+    }
+
+    public TipoDado getTipoBiblioteca()
+    {
+        return tipoBiblioteca;
+    }
+
+    public void setTipoBiblioteca(TipoDado tipoBiblioteca)
+    {
+        this.tipoBiblioteca = tipoBiblioteca;
+    }
+    
+    public boolean isVariavelDeBiblioteca()
+    {
+        return variavelDeBiblioteca;
+    }
+
+    public void setVariavelDeBiblioteca(boolean variavelDeBiblioteca)
+    {
+        this.variavelDeBiblioteca = variavelDeBiblioteca;
+    }
+    
+    
 }

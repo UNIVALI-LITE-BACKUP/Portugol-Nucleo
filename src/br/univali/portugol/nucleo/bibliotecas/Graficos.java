@@ -761,7 +761,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void definir_tamanho_texto(final Double tamanho) throws ErroExecucaoBiblioteca
+    public void definir_tamanho_texto(final double tamanho) throws ErroExecucaoBiblioteca
     {
         janela().getSuperficieDesenho().definirTamanhoTexto(tamanho);
     }
