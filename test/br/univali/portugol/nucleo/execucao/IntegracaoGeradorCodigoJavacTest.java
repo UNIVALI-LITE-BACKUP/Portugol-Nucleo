@@ -39,14 +39,14 @@ public class IntegracaoGeradorCodigoJavacTest
     @Test 
     public void testaErrosSintaticosNoCodigoGerado() throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
-        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
-        File[] dirs = dirExemplos.listFiles();
-        for (File dir : dirs)
-        {
-            geraCodigo(dir);
-        }
-//        geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/jogos/corrida.por"));
-        //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bateria.por"));
+//        File dirExemplos = new File("../Portugol-Studio-Recursos/exemplos");
+//        File[] dirs = dirExemplos.listFiles();
+//        for (File dir : dirs)
+//        {
+//            geraCodigo(dir);
+//        }
+        geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/jogos/corrida.por"));
+        geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bateria.por"));
     }
     
     public List<String> check(String file) {

@@ -1,0 +1,21 @@
+package programas;
+
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import br.univali.portugol.nucleo.Programa;
+
+public class testGeracaoFuncaoComParametros extends Programa
+{
+
+    public testGeracaoFuncaoComParametros() throws ErroExecucao
+    {
+    }
+
+    @Override
+    protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
+    {
+    }
+
+    private void testando(int x, double y) throws ErroExecucao, InterruptedException
+    {
+    }
+}

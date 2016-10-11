@@ -1,0 +1,22 @@
+package programas;
+
+import br.univali.portugol.nucleo.mensagens.ErroExecucao;
+import br.univali.portugol.nucleo.Programa;
+
+public class testeDeclaracaoVetorMatriz extends Programa
+{
+    private final int TAM = 5;
+    private String frases[] = new String[TAM];
+
+    public testeDeclaracaoVetorMatriz() throws ErroExecucao
+    {
+    }
+
+    @Override
+    protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
+    {
+        int vetor[] = new int[3];
+        boolean matriz[][] = new boolean[2][2];
+        char letras[][] = new char[TAM][TAM];
+    }
+}
