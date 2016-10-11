@@ -105,11 +105,11 @@ public class ExemploBateria extends Programa
 
         Graficos.inicializar(this, libs);
         Teclado.inicializar(this, libs);
-        Util.inicializar();
+        Util.inicializar(this, libs);
         Mouse.inicializar(this, libs);
-        Tipos.inicializar();
+        Tipos.inicializar(this, libs);
         Sons.inicializar(this, libs);
-        Matematica.inicializar();
+        Matematica.inicializar(this, libs);
 
         setDiretorioTrabalho(new File("../Portugol-Studio-Recursos/exemplos/musica"));
 

@@ -237,21 +237,6 @@ public abstract class Biblioteca
 
     /**
      * Este método será chamado automaticamente para inicializar as bibliotecas
-     * do tipo {@link TipoBiblioteca#COMPARTILHADA}. O método será chamado
-     * apenas uma vez, na primeira vez em que a biblioteca for carregada em
-     * memória
-     *
-     * @throws ErroExecucaoBiblioteca
-     *
-     * @see TipoBiblioteca
-     */
-    public void inicializar() throws ErroExecucaoBiblioteca
-    {
-
-    }
-
-    /**
-     * Este método será chamado automaticamente para inicializar as bibliotecas
      * do tipo {@link TipoBiblioteca#RESERVADA}. O método será chamado no início
      * da execução de cada {@link Programa}
      *

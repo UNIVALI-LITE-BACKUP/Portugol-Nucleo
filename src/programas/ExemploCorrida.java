@@ -210,11 +210,11 @@ public class ExemploCorrida extends Programa
 
         g.inicializar(this, libs);
         t.inicializar(this, libs);
-        u.inicializar();
+        u.inicializar(this, libs);
         m.inicializar(this, libs);
-        tp.inicializar();
+        tp.inicializar(this, libs);
         sm.inicializar(this, libs);
-        txt.inicializar();
+        txt.inicializar(this, libs);
 
         setDiretorioTrabalho(new File("../Portugol-Studio-Recursos/exemplos/jogos"));
 
