@@ -223,6 +223,9 @@ public abstract class Programa
             }
             catch (ErroExecucao erroExecucao)
             {
+                erroExecucao.setLinha(ultimaLinha);
+                erroExecucao.setColuna(ultimaColuna);
+                
                 resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
                 resultadoExecucao.setErro(erroExecucao);
             }
@@ -290,7 +293,44 @@ public abstract class Programa
             Variavel.limpaCache();
         }
     }
+    
+    private int ultimaLinha = 0;
+    private int ultimaColuna = 0;
 
+    protected void realizarParada(int linha, int coluna) throws ErroExecucao, InterruptedException
+    {
+        synchronized (LOCK)
+        {
+            ultimaLinha = linha;
+            ultimaColuna = coluna;
+            
+            if (this.estado == Estado.STEP_OVER)
+            {
+                disparaDestacar(linha);
+                LOCK.wait();
+            }
+//            else if ( this.estado == Estado.STEP_INTO)
+//            {
+//                disparaDestacar(trechoCodigoFonte);
+//            }
+//            else
+//            {
+//                disparaDestacar((trechoCodigoFonte != null) ? trechoCodigoFonte.getLinha() : -1);
+//            }
+        }
+    }
+    
+    private  void disparaDestacar(int linha)
+    {
+        if (linha >= 0)
+        {
+            for (ObservadorExecucao observador : observadores)
+            {
+                observador.highlightLinha(linha);
+            }
+        }
+    }
+    
     /**
      * Obtém a lista de funções declaradas atualmente no programa
      *

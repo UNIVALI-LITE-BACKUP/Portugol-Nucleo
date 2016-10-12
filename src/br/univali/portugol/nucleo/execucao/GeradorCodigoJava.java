@@ -63,12 +63,9 @@ public class GeradorCodigoJava
             nivelEscopo++;
             for (NoBloco bloco : blocos)
             {
-                pulaLinha();
-                saida.append(geraIdentacao());
-                saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
-                pulaLinha();
-                pulaLinha();
-                
+                geraDeteccaoInterrupcao();
+                geraParadaPassoAPasso(bloco);
+
                 saida.append(geraIdentacao());
 
                 bloco.aceitar(this);
@@ -80,6 +77,53 @@ public class GeradorCodigoJava
                 saida.println();
             }
             nivelEscopo--;
+        }
+
+        private void geraDeteccaoInterrupcao()
+        {
+            pulaLinha();
+            saida.append(geraIdentacao());
+            saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
+            pulaLinha();
+            pulaLinha();
+        }
+
+        private void geraParadaPassoAPasso(NoBloco no)
+        {
+            if (no.ehParavel(Programa.Estado.STEP_OVER))
+            {
+                if (no instanceof NoSe || no instanceof NoEnquanto)
+                {
+                    int linha;
+                    int coluna;
+                    TrechoCodigoFonte trechoCodigoFonte;
+
+                    if (no instanceof NoSe)
+                    {
+                        trechoCodigoFonte = ((NoSe) no).getCondicao().getTrechoCodigoFonte();
+                    }
+                    else if (no instanceof NoEnquanto)
+                    {
+                        trechoCodigoFonte = ((NoEnquanto) no).getCondicao().getTrechoCodigoFonte();
+                    }
+                    else
+                    {
+                        trechoCodigoFonte = no.getTrechoCodigoFonte();
+                    }
+
+                    if (trechoCodigoFonte != null)
+                    {
+                        linha = trechoCodigoFonte.getLinha();
+                        coluna = trechoCodigoFonte.getColuna();
+
+                        pulaLinha();
+                        saida.append(geraIdentacao());
+                        saida.append(String.format("realizarParada(%d, %d);", linha, coluna));
+                        pulaLinha();
+                        pulaLinha();
+                    }
+                }
+            }
         }
 
         private static boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
@@ -138,6 +182,8 @@ public class GeradorCodigoJava
             saida.append(" throws ErroExecucao, InterruptedException");
             saida.println(); // pula uma linha depois da declaração da assinatura do método
             saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
+
+            geraParadaPassoAPasso(noFuncao);
 
             visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
 
@@ -827,39 +873,43 @@ public class GeradorCodigoJava
 
         private boolean contemCasosNaoConstantes(List<NoCaso> casos)
         {
-            for (NoCaso caso: casos)
+            for (NoCaso caso : casos)
             {
                 if (caso.getExpressao() != null)
                 {
                     if (!(caso.getExpressao() instanceof NoExpressaoLiteral))
+                    {
                         return true;
+                    }
                 }
             }
-            
+
             return false;
         }
-        
+
         private boolean simularBreakCaso = false;
         private static final String NOME_VARIAVEL_BREAK = "___sw_break___";
-        
+
         private void substituirEscolhaPorSeSenao(NoEscolha noEscolha) throws ExcecaoVisitaASA
         {
             simularBreakCaso = true;
-            
+
+            geraParadaPassoAPasso(noEscolha.getExpressao());
+
             saida.append("{");
             pulaLinha();
-            
+
             saida.append(geraIdentacao()).append(geraIdentacao()).append("boolean " + NOME_VARIAVEL_BREAK + " = false;");
             pulaLinha();
             pulaLinha();
-            
+
             List<NoCaso> casos = noEscolha.getCasos();
-            
-            for (NoCaso noCaso: casos)
+
+            for (NoCaso noCaso : casos)
             {
                 NoExpressao verificacaoBreak = new NoNao(new NoReferenciaVariavel(null, NOME_VARIAVEL_BREAK));
                 NoExpressao comparacaoCaso;
-                
+
                 // case default: 
                 if (noCaso.getExpressao() == null)
                 {
@@ -870,30 +920,38 @@ public class GeradorCodigoJava
                     // case expressao_nao_constante:
                     comparacaoCaso = new NoOperacaoLogicaIgualdade(noEscolha.getExpressao(), noCaso.getExpressao());
                 }
-                
+
                 NoExpressao condicao = new NoOperacaoLogicaE(verificacaoBreak, comparacaoCaso);
+
+                if (noCaso.getExpressao() != null)
+                {
+                    condicao.setTrechoCodigoFonte(noCaso.getExpressao().getTrechoCodigoFonte());
+                }
+
                 NoSe se = new NoSe(condicao);
                 se.setBlocosVerdadeiros(noCaso.getBlocos());
-                
+
+                geraParadaPassoAPasso(se);
+
                 saida.append(geraIdentacao());
                 se.aceitar(this);
                 pulaLinha();
             }
-                
+
             saida.append("}");
         }
-                
+
         @Override
         public Void visitar(NoEscolha no) throws ExcecaoVisitaASA
         {
             simularBreakCaso = false;
-            
+
             if (contemCasosNaoConstantes(no.getCasos()))
             {
                 substituirEscolhaPorSeSenao(no);
                 return null;
             }
-            
+
             saida.append("switch(");
 
             no.getExpressao().aceitar(this);
@@ -1229,7 +1287,7 @@ public class GeradorCodigoJava
                 saida.append(NOME_VARIAVEL_BREAK).append(" = true");
             }
             else
-            {            
+            {
                 saida.append("break");
             }
 
