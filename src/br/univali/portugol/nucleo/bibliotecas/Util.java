@@ -30,7 +30,7 @@ public final class Util extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public String obter_diretorio_usuario() throws ErroExecucaoBiblioteca
+    public String obter_diretorio_usuario() throws ErroExecucaoBiblioteca, InterruptedException
     {
         try
         {
@@ -54,37 +54,37 @@ public final class Util extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int numero_elementos(Object vetor[]) throws ErroExecucaoBiblioteca
+    public int numero_elementos(Object vetor[]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return vetor.length;
     }
 
     @NaoExportar
-    public int numero_elementos(String vetor[]) throws ErroExecucaoBiblioteca
+    public int numero_elementos(String vetor[]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return vetor.length;
     }
 
     @NaoExportar
-    public int numero_elementos(int vetor[]) throws ErroExecucaoBiblioteca
+    public int numero_elementos(int vetor[]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return vetor.length;
     }
 
     @NaoExportar
-    public int numero_elementos(double vetor[]) throws ErroExecucaoBiblioteca
+    public int numero_elementos(double vetor[]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return vetor.length;
     }
 
     @NaoExportar
-    public int numero_elementos(char vetor[]) throws ErroExecucaoBiblioteca
+    public int numero_elementos(char vetor[]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return vetor.length;
     }
 
     @NaoExportar
-    public int numero_elementos(boolean vetor[]) throws ErroExecucaoBiblioteca
+    public int numero_elementos(boolean vetor[]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return vetor.length;
     }
@@ -101,37 +101,37 @@ public final class Util extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int numero_linhas(Object matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_linhas(Object matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz.length;
     }
 
     @NaoExportar
-    public int numero_linhas(String matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_linhas(String matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz.length;
     }
 
     @NaoExportar
-    public int numero_linhas(int matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_linhas(int matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz.length;
     }
 
     @NaoExportar
-    public int numero_linhas(double matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_linhas(double matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz.length;
     }
 
     @NaoExportar
-    public int numero_linhas(char matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_linhas(char matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz.length;
     }
 
     @NaoExportar
-    public int numero_linhas(boolean matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_linhas(boolean matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz.length;
     }
@@ -148,37 +148,37 @@ public final class Util extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int numero_colunas(Object matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_colunas(Object matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz[0].length;
     }
 
     @NaoExportar
-    public int numero_colunas(double matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_colunas(double matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz[0].length;
     }
 
     @NaoExportar
-    public int numero_colunas(int matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_colunas(int matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz[0].length;
     }
 
     @NaoExportar
-    public int numero_colunas(char matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_colunas(char matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz[0].length;
     }
 
     @NaoExportar
-    public int numero_colunas(String matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_colunas(String matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz[0].length;
     }
 
     @NaoExportar
-    public int numero_colunas(boolean matriz[][]) throws ErroExecucaoBiblioteca
+    public int numero_colunas(boolean matriz[][]) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return matriz[0].length;
     }
@@ -197,7 +197,7 @@ public final class Util extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int sorteia(int minimo, int maximo) throws ErroExecucaoBiblioteca
+    public int sorteia(int minimo, int maximo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (minimo > maximo)
         {
@@ -222,7 +222,7 @@ public final class Util extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void aguarde(int intervalo) throws ErroExecucaoBiblioteca, InterruptedException
+    public void aguarde(int intervalo) throws ErroExecucaoBiblioteca, InterruptedException, InterruptedException
     {
         Thread.sleep(intervalo);
     }
@@ -234,7 +234,7 @@ public final class Util extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int tempo_decorrido() throws ErroExecucaoBiblioteca
+    public int tempo_decorrido() throws ErroExecucaoBiblioteca, InterruptedException
     {
         return (int) (System.currentTimeMillis() - horaInicial);
     }

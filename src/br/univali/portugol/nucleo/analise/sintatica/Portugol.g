@@ -1255,7 +1255,7 @@ expressao8 returns[NoExpressao expressao] @init
 	pilhaContexto.push("expressao8");
 }:	
 	
-	( ab = '(' vExpressao = expressao fp = ')' { vExpressao.setEstaEntreParenteses(true); } 
+	( ab = '(' vExpressao = expressao fp = ')' { if (vExpressao != null){ vExpressao.setEstaEntreParenteses(true); } } 
 	| vExpressao = referencia
 	| vExpressao = tipoPrimitivo 
 	| vExpressao = matrizVetor) 

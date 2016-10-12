@@ -477,7 +477,7 @@ public final class Teclado extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se a <param>tecla</param> estiver pressionada no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )
-    public boolean tecla_pressionada(int tecla) throws ErroExecucaoBiblioteca
+    public boolean tecla_pressionada(int tecla) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return buffer[tecla];
     }
@@ -492,7 +492,7 @@ public final class Teclado extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se houver uma tecla pressionada no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )    
-    public boolean alguma_tecla_pressionada() throws ErroExecucaoBiblioteca
+    public boolean alguma_tecla_pressionada() throws ErroExecucaoBiblioteca, InterruptedException
     {
         return temTeclaPressionada;
     }
@@ -507,7 +507,7 @@ public final class Teclado extends Biblioteca
         },
         retorno = "o código da tecla lida"
     )
-    public int ler_tecla() throws ErroExecucaoBiblioteca, InterruptedException
+    public int ler_tecla() throws ErroExecucaoBiblioteca, InterruptedException, InterruptedException
     {
         synchronized (Teclado.this)
         {
@@ -535,7 +535,7 @@ public final class Teclado extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }            
     )
-    public char caracter_tecla(int tecla) throws ErroExecucaoBiblioteca
+    public char caracter_tecla(int tecla) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return (char) (int) tecla;
     }
@@ -546,7 +546,7 @@ public final class Teclado extends Biblioteca
     }
     
     @Override
-    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
     {
         for (Biblioteca biblioteca : bibliotecasReservadas)
         {
@@ -555,12 +555,12 @@ public final class Teclado extends Biblioteca
     }
     
     @Override
-    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca, InterruptedException
     {
         instalarTeclado(biblioteca);
     }
     
-    private void instalarTeclado(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
+    private void instalarTeclado(Biblioteca biblioteca) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (biblioteca instanceof InstaladorTeclado)
         {
@@ -570,6 +570,6 @@ public final class Teclado extends Biblioteca
     
     public interface InstaladorTeclado
     {
-        public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucaoBiblioteca;
+        public void instalarTeclado(KeyListener observadorTeclado) throws ErroExecucaoBiblioteca, InterruptedException;
     }
 }

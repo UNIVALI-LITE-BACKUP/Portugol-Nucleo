@@ -94,7 +94,7 @@ final class RenomeadorDeSimbolos
 
         try
         {
-            Programa programaCompilado = Portugol.compilar(programa);
+            Programa programaCompilado = Portugol.compilarParaAnalise(programa);
             BuscadorDeSimbolo buscadorDeSimbolo = new BuscadorDeSimbolo();
 
             buscadorDeSimbolo.buscarSimbolo(programaCompilado, linha, coluna);
@@ -141,7 +141,7 @@ final class RenomeadorDeSimbolos
 
         try
         {
-            Programa programaCompilado = Portugol.compilar(programa);
+            Programa programaCompilado = Portugol.compilarParaAnalise(programa);
             BuscadorDeSimbolo buscadorDeSimbolo = new BuscadorDeSimbolo();
 
             buscadorDeSimbolo.buscarSimbolo(programaCompilado, linha, coluna);

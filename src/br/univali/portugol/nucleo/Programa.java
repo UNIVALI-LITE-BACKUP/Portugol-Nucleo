@@ -10,6 +10,7 @@ import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
+import br.univali.portugol.nucleo.execucao.TradutorErrosExecucao;
 import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroValorEntradaInvalido;
 import br.univali.portugol.nucleo.execucao.es.Armazenador;
@@ -21,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -63,7 +63,7 @@ public abstract class Programa
      *    
      * Nesta implementação, o tempo foi aumentado (exageradamente) para 2 horas.
      */
-    private static final ExecutorService servicoExecucao = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.HOURS, new SynchronousQueue<Runnable>(), new NamedThreadFactory("Portugol Núcleo (Thread de programa #%d", Thread.MAX_PRIORITY));
+    private static final ExecutorService POOL_DE_THREADS = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 2L, TimeUnit.HOURS, new SynchronousQueue<Runnable>(), new NamedThreadFactory("Portugol Núcleo (Thread de programa #%d", Thread.MAX_PRIORITY));
 
     private Saida saida;
     private Entrada entrada;
@@ -84,6 +84,8 @@ public abstract class Programa
 
     private volatile boolean lendo = false;
     private volatile boolean leituraIgnorada = false;
+
+    private final Object LOCK = new Object();
 
     public static enum Estado
     {
@@ -143,6 +145,7 @@ public abstract class Programa
      *
      * @param parametros lista de parâmetros que serão passados ao programa no
      * momento da execução.
+     * @param estado
      *
      * @since 2.0
      */
@@ -151,25 +154,28 @@ public abstract class Programa
         if (!isExecutando())
         {
             tarefaExecucao = new TarefaExecucao(parametros, estado);
-            controleTarefaExecucao = servicoExecucao.submit(tarefaExecucao);
+            controleTarefaExecucao = POOL_DE_THREADS.submit(tarefaExecucao);
         }
     }
 
-    public synchronized void continuar(Programa.Estado estado)
+    public void continuar(Programa.Estado estado)
     {
-        if (isExecutando())
+        synchronized (LOCK)
         {
-            tarefaExecucao.continuar(estado);
-            if (this.isLendo())
+            if (isExecutando())
             {
-                setLeituraIgnorada(true);
+                tarefaExecucao.continuar(estado);
+                if (this.isLendo())
+                {
+                    setLeituraIgnorada(true);
+                }
+                this.estado = estado;
+                LOCK.notifyAll();
             }
-            this.estado = estado;
-            notifyAll();
-        }
-        else
-        {
-            throw new IllegalStateException("O programa não pode ser continuado pois não foi iniciado");
+            else
+            {
+                throw new IllegalStateException("O programa não pode ser continuado pois não foi iniciado");
+            }
         }
     }
 
@@ -213,7 +219,6 @@ public abstract class Programa
                 notificarInicioExecucao();
                 inicializaBibliotecasIncluidas();
                 executar(parametros);
-                finalizaBibliotecasIncluidas();
                 //depurador.executar(Programa.this, parametros);
             }
             catch (ErroExecucao erroExecucao)
@@ -225,22 +230,49 @@ public abstract class Programa
             {
                 resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
             }
+            catch (Exception excecao)
+            {
+                TradutorErrosExecucao tradutorErros = new TradutorErrosExecucao();
+
+                if (excecao.getCause() instanceof InterruptedException)
+                {
+                    resultadoExecucao.setModoEncerramento(ModoEncerramento.INTERRUPCAO);
+                }
+                else
+                {
+                    resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
+                    resultadoExecucao.setErro(tradutorErros.traduzir(excecao));
+                }
+            }
+            finally
+            {
+                try
+                {
+                    finalizaBibliotecasIncluidas();
+                }
+                catch (InterruptedException | ErroExecucaoBiblioteca ex)
+                {
+                    Logger.getLogger(Programa.class.getName()).log(Level.SEVERE, "Não era pra acontecer", ex);
+                }
+            }
 
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
 
             notificarEncerramentoExecucao(resultadoExecucao);
-
         }
 
-        public synchronized void continuar(Programa.Estado estado)
+        public void continuar(Programa.Estado estado)
         {
-            if (isLendo())
+            synchronized (LOCK)
             {
-                setLeituraIgnorada(true);
-            }
+                if (isLendo())
+                {
+                    setLeituraIgnorada(true);
+                }
 
-            Programa.this.estado = estado;
-            notifyAll();
+                Programa.this.estado = estado;
+                LOCK.notifyAll();
+            }
         }
     }
 
@@ -586,24 +618,36 @@ public abstract class Programa
         }
     }
 
-    private synchronized void setLendo(boolean lendo)
+    private void setLendo(boolean lendo)
     {
-        this.lendo = lendo;
+        synchronized (LOCK)
+        {
+            this.lendo = lendo;
+        }
     }
 
-    private synchronized boolean isLendo()
+    private boolean isLendo()
     {
-        return lendo;
+        synchronized (LOCK)
+        {
+            return lendo;
+        }
     }
 
-    private synchronized void setLeituraIgnorada(boolean leituraIgnorada)
+    private void setLeituraIgnorada(boolean leituraIgnorada)
     {
-        this.leituraIgnorada = leituraIgnorada;
+        synchronized (LOCK)
+        {
+            this.leituraIgnorada = leituraIgnorada;
+        }
     }
 
-    private synchronized boolean isLeituraIgnorada()
+    private boolean isLeituraIgnorada()
     {
-        return leituraIgnorada;
+        synchronized (LOCK)
+        {
+            return leituraIgnorada;
+        }
     }
 
     protected double leiaReal() throws ErroExecucao
@@ -647,9 +691,9 @@ public abstract class Programa
             // a entrada é síncrona, podemos seguir em frente e pegar o valor 
             if (mediador.getValor() == null && !mediador.isCancelado())
             {
-                synchronized (this)
+                synchronized (LOCK)
                 {
-                    wait();
+                    LOCK.wait();
                 }
             }
 
@@ -688,7 +732,7 @@ public abstract class Programa
         @Override
         public Object getValor()
         {
-            synchronized (this)
+            synchronized (LOCK)
             {
                 return valor;
             }
@@ -697,26 +741,26 @@ public abstract class Programa
         @Override
         public void setValor(Object valor)
         {
-            synchronized (this)
+            synchronized (LOCK)
             {
                 this.valor = valor;
-                this.notifyAll();
+                LOCK.notifyAll();
             }
         }
 
         @Override
         public void cancelarLeitura()
         {
-            synchronized (this)
+            synchronized (LOCK)
             {
                 this.cancelado = true;
-                this.notifyAll();
+                LOCK.notifyAll();
             }
         }
 
         public boolean isCancelado()
         {
-            synchronized (this)
+            synchronized (LOCK)
             {
                 return cancelado;
             }
@@ -743,56 +787,52 @@ public abstract class Programa
         }
     }
 
-    private List<Biblioteca> obterBibliotecasIncluidas() throws IllegalArgumentException, IllegalAccessException
-    {
-        Field atributos[] = this.getClass().getDeclaredFields();
-        List<Biblioteca> bibliotecas = new ArrayList<>();
-        for (Field atributo : atributos)
-        {
-            boolean acessoPermitido = atributo.isAccessible();
-            if (!acessoPermitido)
-            {
-                atributo.setAccessible(true);
-            }
-            if (atributo.get(this) instanceof Biblioteca)
-            {
-                bibliotecas.add((Biblioteca) atributo.get(this));
-            }
-            atributo.setAccessible(acessoPermitido);
-        }
-        return bibliotecas;
-    }
-
-    protected void inicializaBibliotecasIncluidas() throws ErroExecucaoBiblioteca
+    private List<Biblioteca> obterBibliotecasIncluidas() throws ErroExecucaoBiblioteca, InterruptedException
     {
         try
         {
-            List<Biblioteca> bibliotecasReservadas = obterBibliotecasIncluidas();
-            for (Biblioteca biblioteca : bibliotecasReservadas)
+            Field atributos[] = this.getClass().getDeclaredFields();
+            List<Biblioteca> bibliotecas = new ArrayList<>();
+
+            for (Field atributo : atributos)
             {
-                biblioteca.inicializar(this, bibliotecasReservadas);
+                boolean acessoPermitido = atributo.isAccessible();
+                if (!acessoPermitido)
+                {
+                    atributo.setAccessible(true);
+                }
+                if (atributo.get(this) instanceof Biblioteca)
+                {
+                    bibliotecas.add((Biblioteca) atributo.get(this));
+                }
+                atributo.setAccessible(acessoPermitido);
             }
+
+            return bibliotecas;
         }
-        catch (Exception e)
+        catch (IllegalAccessException | IllegalArgumentException | SecurityException ex)
         {
-            throw new ErroExecucaoBiblioteca(e);
+            throw new ErroExecucaoBiblioteca(ex);
         }
     }
 
-    protected void finalizaBibliotecasIncluidas() throws ErroExecucaoBiblioteca
+    protected void inicializaBibliotecasIncluidas() throws ErroExecucaoBiblioteca, InterruptedException
     {
-        try
+        List<Biblioteca> bibliotecasReservadas = obterBibliotecasIncluidas();
+
+        for (Biblioteca biblioteca : bibliotecasReservadas)
         {
-            List<Biblioteca> bibliotecasReservadas = obterBibliotecasIncluidas();
-            for (Biblioteca biblioteca : bibliotecasReservadas)
-            {
-                biblioteca.finalizar();
-            }
-        }
-        catch (Exception e)
-        {
-            throw new ErroExecucaoBiblioteca(e);
+            biblioteca.inicializar(this, bibliotecasReservadas);
         }
     }
 
+    protected void finalizaBibliotecasIncluidas() throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        List<Biblioteca> bibliotecasReservadas = obterBibliotecasIncluidas();
+
+        for (Biblioteca biblioteca : bibliotecasReservadas)
+        {
+            biblioteca.finalizar();
+        }
+    }
 }

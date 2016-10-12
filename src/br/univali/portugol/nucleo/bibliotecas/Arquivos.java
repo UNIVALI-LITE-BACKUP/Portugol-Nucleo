@@ -78,7 +78,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int abrir_arquivo(String caminho_arquivo, int modo_acesso) throws ErroExecucaoBiblioteca
+    public int abrir_arquivo(String caminho_arquivo, int modo_acesso) throws ErroExecucaoBiblioteca, InterruptedException
     {
         File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
 
@@ -111,7 +111,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void fechar_arquivo(int endereco) throws ErroExecucaoBiblioteca
+    public void fechar_arquivo(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         Arquivo arquivo = obterArquivo(endereco);
         arquivo.fechar();
@@ -132,7 +132,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public boolean fim_arquivo(int endereco) throws ErroExecucaoBiblioteca
+    public boolean fim_arquivo(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return obterArquivo(endereco).fim();
     }
@@ -150,7 +150,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public String ler_linha(int endereco) throws ErroExecucaoBiblioteca
+    public String ler_linha(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return obterArquivo(endereco).ler();
     }
@@ -169,7 +169,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void escrever_linha(String linha, int endereco) throws ErroExecucaoBiblioteca
+    public void escrever_linha(String linha, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         obterArquivo(endereco).escrever(linha);
     }
@@ -186,7 +186,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public boolean arquivo_existe(String caminho_arquivo) throws ErroExecucaoBiblioteca
+    public boolean arquivo_existe(String caminho_arquivo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
 
@@ -204,7 +204,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void apagar_arquivo(String caminho_arquivo) throws ErroExecucaoBiblioteca
+    public void apagar_arquivo(String caminho_arquivo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         File arquivo = programa.resolverCaminho(new File(caminho_arquivo));
 
@@ -226,14 +226,14 @@ public final class Arquivos extends Biblioteca
     }
 
     @Override
-    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
     {
         this.programa = programa;
         this.arquivos = new Arquivo[NUMERO_MAXIMO_ARQUIVOS];
     }
 
     @Override
-    public void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca, InterruptedException
     {
         for (int indice = NUMERO_MAXIMO_ARQUIVOS - 1; indice >= 0; indice--)
         {
@@ -245,7 +245,7 @@ public final class Arquivos extends Biblioteca
         }
     }
 
-    private Arquivo obterArquivo(int endereco) throws ErroExecucaoBiblioteca
+    private Arquivo obterArquivo(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (endereco >= 0 && endereco < NUMERO_MAXIMO_ARQUIVOS)
         {
@@ -277,7 +277,7 @@ public final class Arquivos extends Biblioteca
         return false;
     }
 
-    private int obterProximoIndiceLivre() throws ErroExecucaoBiblioteca
+    private int obterProximoIndiceLivre() throws ErroExecucaoBiblioteca, InterruptedException
     {
         for (int indice = NUMERO_MAXIMO_ARQUIVOS - 1; indice >= 0; indice--)
         {
@@ -316,7 +316,7 @@ public final class Arquivos extends Biblioteca
 
             }
     )
-    public String selecionar_arquivo(final String formatos_suportados[], final boolean aceitar_todos_arquivos) throws ErroExecucaoBiblioteca
+    public String selecionar_arquivo(final String formatos_suportados[], final boolean aceitar_todos_arquivos) throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (Arquivos.this)
         {
@@ -367,14 +367,7 @@ public final class Arquivos extends Biblioteca
                 }
             });
 
-            try
-            {
-                wait();
-            }
-            catch (InterruptedException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(excecao);
-            }
+            wait();
 
             return resultadoSelecao.getArquivoSelecionado();
         }
@@ -398,7 +391,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
             }
     )
-    public void listar_pastas(final String caminho_pai, final String[] vetor_pastas) throws ErroExecucaoBiblioteca
+    public void listar_pastas(final String caminho_pai, final String[] vetor_pastas) throws ErroExecucaoBiblioteca, InterruptedException
     {
         int indice = 0;
         File diretorio = programa.resolverCaminho(new File(caminho_pai));
@@ -450,7 +443,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
             }
     )
-    public void listar_arquivos(final String caminho_pai, final String[] vetor_arquivos) throws ErroExecucaoBiblioteca
+    public void listar_arquivos(final String caminho_pai, final String[] vetor_arquivos) throws ErroExecucaoBiblioteca, InterruptedException
     {
         int indice = 0;
         File diretorio = programa.resolverCaminho(new File(caminho_pai));
@@ -506,7 +499,7 @@ public final class Arquivos extends Biblioteca
                 @Autor(nome = "Alisson Steffens", email = "noschang@univali.br")
             }
     )
-    public void listar_arquivos_por_tipo(final String caminho_pai, final String[] vetor_arquivos, final String[] vetor_tipos) throws ErroExecucaoBiblioteca
+    public void listar_arquivos_por_tipo(final String caminho_pai, final String[] vetor_arquivos, final String[] vetor_tipos) throws ErroExecucaoBiblioteca, InterruptedException
     {
         int indice = 0;
         File diretorio = programa.resolverCaminho(new File(caminho_pai));
@@ -750,7 +743,7 @@ public final class Arquivos extends Biblioteca
             this.arquivo = arquivo;
         }
 
-        public void abrir(ModoAcesso modoAcesso) throws ErroExecucaoBiblioteca
+        public void abrir(ModoAcesso modoAcesso) throws ErroExecucaoBiblioteca, InterruptedException
         {
             this.modoAcesso = modoAcesso;
 
@@ -764,7 +757,7 @@ public final class Arquivos extends Biblioteca
             }
         }
 
-        private void abrirParaLeitura() throws ErroExecucaoBiblioteca
+        private void abrirParaLeitura() throws ErroExecucaoBiblioteca, InterruptedException
         {
             try
             {
@@ -776,7 +769,7 @@ public final class Arquivos extends Biblioteca
             }
         }
 
-        private void abrirParaEscrita() throws ErroExecucaoBiblioteca
+        private void abrirParaEscrita() throws ErroExecucaoBiblioteca, InterruptedException
         {
             try
             {
@@ -793,7 +786,7 @@ public final class Arquivos extends Biblioteca
             }
         }
 
-        public String ler() throws ErroExecucaoBiblioteca
+        public String ler() throws ErroExecucaoBiblioteca, InterruptedException
         {
             if (modoAcesso == ModoAcesso.LEITURA)
             {
@@ -820,7 +813,7 @@ public final class Arquivos extends Biblioteca
             }
         }
 
-        public void escrever(String linha) throws ErroExecucaoBiblioteca
+        public void escrever(String linha) throws ErroExecucaoBiblioteca, InterruptedException
         {
             if (modoAcesso == ModoAcesso.ESCRITA)
             {
@@ -841,7 +834,7 @@ public final class Arquivos extends Biblioteca
             }
         }
 
-        public boolean fim() throws ErroExecucaoBiblioteca
+        public boolean fim() throws ErroExecucaoBiblioteca, InterruptedException
         {
             if (modoAcesso == ModoAcesso.LEITURA)
             {
@@ -853,7 +846,7 @@ public final class Arquivos extends Biblioteca
             }
         }
 
-        public void fechar() throws ErroExecucaoBiblioteca
+        public void fechar() throws ErroExecucaoBiblioteca, InterruptedException
         {
             try
             {

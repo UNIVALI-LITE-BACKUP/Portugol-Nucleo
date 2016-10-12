@@ -241,23 +241,30 @@ public final class GerenciadorBibliotecas
         {
             if (jogaExcecao(metodo, ErroExecucaoBiblioteca.class))
             {
-                if (!metodo.getReturnType().isArray())
+                if (jogaExcecao(metodo, InterruptedException.class))
                 {
-                    DocumentacaoFuncao documentacaoFuncao = obterAnotacaoMetodo(nomeBiblioteca, metodo, DocumentacaoFuncao.class);
+                    if (!metodo.getReturnType().isArray())
+                    {
+                        DocumentacaoFuncao documentacaoFuncao = obterAnotacaoMetodo(nomeBiblioteca, metodo, DocumentacaoFuncao.class);
 
-                    MetaDadosFuncao metaDadosFuncao = new MetaDadosFuncao();
+                        MetaDadosFuncao metaDadosFuncao = new MetaDadosFuncao();
 
-                    metaDadosFuncao.setNome(metodo.getName());
-                    metaDadosFuncao.setDocumentacao(documentacaoFuncao);
-                    metaDadosFuncao.setQuantificador(Quantificador.VALOR);
-                    metaDadosFuncao.setTipoDado(obterTipoDadoMetodo(nomeBiblioteca, metodo));
-                    metaDadosFuncao.setMetaDadosParametros(obterMetaDadosParametros(nomeBiblioteca, metodo, documentacaoFuncao));
+                        metaDadosFuncao.setNome(metodo.getName());
+                        metaDadosFuncao.setDocumentacao(documentacaoFuncao);
+                        metaDadosFuncao.setQuantificador(Quantificador.VALOR);
+                        metaDadosFuncao.setTipoDado(obterTipoDadoMetodo(nomeBiblioteca, metodo));
+                        metaDadosFuncao.setMetaDadosParametros(obterMetaDadosParametros(nomeBiblioteca, metodo, documentacaoFuncao));
 
-                    return metaDadosFuncao;
+                        return metaDadosFuncao;
+                    }
+                    else
+                    {
+                        throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o retorno do método '%s' não pode ser um vetor nem uma matriz para ser exportado como uma função", metodo.getName()));
+                    }
                 }
                 else
                 {
-                    throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o retorno do método '%s' não pode ser um vetor nem uma matriz para ser exportado como uma função", metodo.getName()));
+                    throw new ErroCarregamentoBiblioteca(nomeBiblioteca, String.format("o método '%s' deve jogar uma exceção do tipo '%s' para ser exportado como uma função", metodo.getName(), InterruptedException.class.getName()));
                 }
             }
 

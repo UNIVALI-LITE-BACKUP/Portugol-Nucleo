@@ -63,7 +63,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean cadeia_e_inteiro(String cad, int base) throws ErroExecucaoBiblioteca
+    public boolean cadeia_e_inteiro(String cad, int base) throws ErroExecucaoBiblioteca, InterruptedException
     {
         switch (base)
         {
@@ -88,7 +88,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean cadeia_e_real(String cad) throws ErroExecucaoBiblioteca
+    public boolean cadeia_e_real(String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return PADRAO_REAL.matcher(cad).find();
     }
@@ -106,7 +106,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean cadeia_e_logico(String cad) throws ErroExecucaoBiblioteca
+    public boolean cadeia_e_logico(String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return PADRAO_LOGICO.matcher(cad).find();
     }
@@ -124,7 +124,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean cadeia_e_caracter(String cad) throws ErroExecucaoBiblioteca
+    public boolean cadeia_e_caracter(String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return cad.length() == 1;
     }
@@ -142,7 +142,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public char cadeia_para_caracter(String valor) throws ErroExecucaoBiblioteca
+    public char cadeia_para_caracter(String valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         if (valor.length() == 1)
         {
@@ -189,7 +189,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public int cadeia_para_inteiro(String valor, int base) throws ErroExecucaoBiblioteca
+    public int cadeia_para_inteiro(String valor, int base) throws ErroExecucaoBiblioteca, InterruptedException
     {      
         if (base == 2 || base == 10 || base == 16)
         {
@@ -235,7 +235,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public double cadeia_para_real(String valor) throws ErroExecucaoBiblioteca
+    public double cadeia_para_real(String valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         try
         {
@@ -260,7 +260,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean cadeia_para_logico(String valor) throws ErroExecucaoBiblioteca
+    public boolean cadeia_para_logico(String valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         switch (valor)
         {
@@ -284,7 +284,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean inteiro_e_caracter(int _int) throws ErroExecucaoBiblioteca
+    public boolean inteiro_e_caracter(int _int) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return (_int >= 0 && _int <= 9);
     }    
@@ -326,7 +326,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String inteiro_para_cadeia(int valor, int base) throws ErroExecucaoBiblioteca
+    public String inteiro_para_cadeia(int valor, int base) throws ErroExecucaoBiblioteca, InterruptedException
     {     
         if (base == 2 || base == 10 || base == 16)
         {
@@ -361,7 +361,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public char inteiro_para_caracter(int valor) throws ErroExecucaoBiblioteca
+    public char inteiro_para_caracter(int valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         if (valor >= 0 && valor <= 9)
         {
@@ -384,7 +384,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean inteiro_para_logico(int valor) throws ErroExecucaoBiblioteca
+    public boolean inteiro_para_logico(int valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         if (valor <= 0)            
         {
@@ -407,7 +407,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public double inteiro_para_real(int valor) throws ErroExecucaoBiblioteca
+    public double inteiro_para_real(int valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return valor;
     }
@@ -425,7 +425,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean caracter_e_inteiro(char car) throws ErroExecucaoBiblioteca
+    public boolean caracter_e_inteiro(char car) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return cadeia_e_inteiro(new String(new char[]{ car }), 10);
     }
@@ -443,7 +443,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean caracter_e_logico(char car) throws ErroExecucaoBiblioteca
+    public boolean caracter_e_logico(char car) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return (car == 'S' || car == 's' || car == 'N' || car == 'n');
     }
@@ -462,7 +462,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caracter_para_cadeia(char valor) throws ErroExecucaoBiblioteca
+    public String caracter_para_cadeia(char valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return new String(new char[]{ valor });
     }
@@ -480,7 +480,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public int caracter_para_inteiro(char valor) throws ErroExecucaoBiblioteca
+    public int caracter_para_inteiro(char valor) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cadeia_para_inteiro(caracter_para_cadeia(valor), 10);
     }
@@ -498,7 +498,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public boolean caracter_para_logico(char valor) throws ErroExecucaoBiblioteca
+    public boolean caracter_para_logico(char valor) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (valor == 'S' || valor == 's')
         {
@@ -525,7 +525,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String logico_para_cadeia(boolean valor) throws ErroExecucaoBiblioteca
+    public String logico_para_cadeia(boolean valor) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return (valor)? "verdadeiro" : "falso";
     }
@@ -543,7 +543,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public int logico_para_inteiro(boolean valor) throws ErroExecucaoBiblioteca
+    public int logico_para_inteiro(boolean valor) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return (valor)? 1 : 0;
     }
@@ -561,7 +561,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public char logico_para_caracter(boolean valor) throws ErroExecucaoBiblioteca
+    public char logico_para_caracter(boolean valor) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return (valor)? 'S' : 'N';
     }
@@ -579,7 +579,7 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String real_para_cadeia(double valor) throws ErroExecucaoBiblioteca
+    public String real_para_cadeia(double valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return String.valueOf(valor);
     }
@@ -597,12 +597,12 @@ public final class Tipos extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public int real_para_inteiro(double valor) throws ErroExecucaoBiblioteca
+    public int real_para_inteiro(double valor) throws ErroExecucaoBiblioteca, InterruptedException
     {        
         return (int) valor;
     }
     
-    private String lpad(int quantidade, String cadeia) throws ErroExecucaoBiblioteca
+    private String lpad(int quantidade, String cadeia) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (cadeia.length() < quantidade)
         {

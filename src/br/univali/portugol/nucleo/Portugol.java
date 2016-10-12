@@ -14,12 +14,22 @@ public final class Portugol
 {    
     public static final String QUEBRA_DE_LINHA = "\n";
     
-    public static Programa compilar(String codigo) throws ErroCompilacao
+    private static Programa compilar(String codigo, boolean paraExecucao) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();
-        Programa programa = compilador.compilar(codigo);
+        Programa programa = compilador.compilar(codigo, paraExecucao);
         
         return programa;
+    }
+    
+    public static Programa compilarParaAnalise(String codigo) throws ErroCompilacao
+    {
+        return compilar(codigo, false);
+    }
+    
+    public static Programa compilarParaExecucao(String codigo) throws ErroCompilacao
+    {
+        return compilar(codigo, true);
     }
     
     public static String renomearSimbolo(String programa, int linha, int coluna, String novoNome) throws ErroAoRenomearSimbolo

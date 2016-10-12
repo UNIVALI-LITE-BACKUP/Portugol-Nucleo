@@ -30,7 +30,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public int numero_caracteres(String cadeia) throws ErroExecucaoBiblioteca
+    public int numero_caracteres(String cadeia) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cadeia.length();
     }
@@ -48,7 +48,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caixa_alta(String cad) throws ErroExecucaoBiblioteca
+    public String caixa_alta(String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cad.toUpperCase();
     }    
@@ -66,7 +66,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caixa_baixa(String cad) throws ErroExecucaoBiblioteca
+    public String caixa_baixa(String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cad.toLowerCase();
     }
@@ -86,7 +86,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String substituir(String cad, String texto_pesquisa, String texto_substituto) throws ErroExecucaoBiblioteca
+    public String substituir(String cad, String texto_pesquisa, String texto_substituto) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cad.replace(texto_pesquisa, texto_substituto);
     }
@@ -114,7 +114,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )    
-    public String preencher_a_esquerda(char car, int tamanho, String cad) throws ErroExecucaoBiblioteca
+    public String preencher_a_esquerda(char car, int tamanho, String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (cad.length() < tamanho)
         {
@@ -152,7 +152,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )    
-    public char obter_caracter(String cad, int indice) throws ErroExecucaoBiblioteca
+    public char obter_caracter(String cad, int indice) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (indice < 0)
         {
@@ -194,7 +194,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public int posicao_texto(String texto, String cadeia, int posicao_inicial) throws ErroExecucaoBiblioteca
+    public int posicao_texto(String texto, String cadeia, int posicao_inicial) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cadeia.indexOf(texto, posicao_inicial);
     }
@@ -219,7 +219,7 @@ public final class Texto extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public String extrair_subtexto(String cadeia, int posicao_inicial, int posicao_final) throws ErroExecucaoBiblioteca
+    public String extrair_subtexto(String cadeia, int posicao_inicial, int posicao_final) throws ErroExecucaoBiblioteca, InterruptedException
     {
         try
         {

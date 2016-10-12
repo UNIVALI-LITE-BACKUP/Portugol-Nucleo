@@ -203,7 +203,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se o <param>botão</param> estiver pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )
-    public boolean botao_pressionado(int botao) throws ErroExecucaoBiblioteca
+    public boolean botao_pressionado(int botao) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if ((botao >= 0) && (botao < buffer.length))
         {
@@ -221,7 +221,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o resultado do teste. <tipo>Verdadeiro</tipo> se houver um botão do mouse pressionado no momento do teste. Caso contrário, retorna <tipo>falso</tipo>"
     )    
-    public boolean algum_botao_pressionado() throws ErroExecucaoBiblioteca
+    public boolean algum_botao_pressionado() throws ErroExecucaoBiblioteca, InterruptedException
     {
         return botoesPressionados > 0;
     }
@@ -235,7 +235,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "o código do botão lido"
     )
-    public int ler_botao() throws ErroExecucaoBiblioteca, InterruptedException
+    public int ler_botao() throws ErroExecucaoBiblioteca, InterruptedException, InterruptedException
     {
         synchronized (Mouse.this)
         {
@@ -256,7 +256,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "a coordenada X do mouse neste instante"            
     )
-    public int posicao_x() throws ErroExecucaoBiblioteca
+    public int posicao_x() throws ErroExecucaoBiblioteca, InterruptedException
     {
         return x;
     }
@@ -270,7 +270,7 @@ public final class Mouse extends Biblioteca
         },
         retorno = "a coordenada Y do mouse neste instante"
     )    
-    public int posicao_y() throws ErroExecucaoBiblioteca
+    public int posicao_y() throws ErroExecucaoBiblioteca, InterruptedException
     {
         return y;
     }
@@ -283,7 +283,7 @@ public final class Mouse extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     ) 
-    public void ocultar_cursor() throws ErroExecucaoBiblioteca
+    public void ocultar_cursor() throws ErroExecucaoBiblioteca, InterruptedException
     {
         for (InstaladorMouse instaladorMouse : instaladores)
         {
@@ -299,7 +299,7 @@ public final class Mouse extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )     
-    public void exibir_cursor() throws ErroExecucaoBiblioteca
+    public void exibir_cursor() throws ErroExecucaoBiblioteca, InterruptedException
     {
         for (InstaladorMouse instaladorMouse : instaladores)
         {
@@ -336,7 +336,7 @@ public final class Mouse extends Biblioteca
     }
     
     @Override
-    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
     {
         for (Biblioteca biblioteca : bibliotecasReservadas)
         {
@@ -345,12 +345,12 @@ public final class Mouse extends Biblioteca
     }
     
     @Override
-    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca, InterruptedException
     {
         instalarMouse(biblioteca);
     }
     
-    private void instalarMouse(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
+    private void instalarMouse(Biblioteca biblioteca) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (biblioteca instanceof InstaladorMouse)
         {
@@ -361,7 +361,7 @@ public final class Mouse extends Biblioteca
     
     public interface InstaladorMouse
     {
-        public void instalarMouse(MouseAdapter observadorMouse, FocusListener observadorFoco) throws ErroExecucaoBiblioteca;
-        public void definirCursor(Cursor cursor) throws ErroExecucaoBiblioteca;
+        public void instalarMouse(MouseAdapter observadorMouse, FocusListener observadorFoco) throws ErroExecucaoBiblioteca, InterruptedException;
+        public void definirCursor(Cursor cursor) throws ErroExecucaoBiblioteca, InterruptedException;
     }
 }

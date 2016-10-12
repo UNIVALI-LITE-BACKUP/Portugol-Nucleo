@@ -72,7 +72,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int carregar_som(String caminho_som) throws ErroExecucaoBiblioteca
+    public int carregar_som(String caminho_som) throws ErroExecucaoBiblioteca, InterruptedException
     {
         File caminho = resolveCaminho(caminho_som);
         int indice = indiceDosSons.incrementAndGet();
@@ -101,7 +101,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void liberar_som(int endereco) throws ErroExecucaoBiblioteca
+    public void liberar_som(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (sons.containsKey(endereco))
         {
@@ -126,7 +126,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public int reproduzir_som(int endereco, boolean repetir) throws ErroExecucaoBiblioteca
+    public int reproduzir_som(int endereco, boolean repetir) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (sons.containsKey(endereco))
         {
@@ -159,7 +159,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void interromper_som(int endereco) throws ErroExecucaoBiblioteca
+    public void interromper_som(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (reproducoes)
         {
@@ -184,7 +184,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume_reproducao(int endereco, int volume) throws ErroExecucaoBiblioteca
+    public void definir_volume_reproducao(int endereco, int volume) throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (reproducoes)
         {
@@ -210,7 +210,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume(int volume) throws ErroExecucaoBiblioteca
+    public void definir_volume(int volume) throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (reproducoes)
         {
@@ -230,7 +230,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public int obter_volume() throws ErroExecucaoBiblioteca
+    public int obter_volume() throws ErroExecucaoBiblioteca, InterruptedException
     {
         return volumeGeral;
     }
@@ -247,7 +247,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public int obter_volume_reproducao(int endereco) throws ErroExecucaoBiblioteca
+    public int obter_volume_reproducao(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (reproducoes)
         {
@@ -261,13 +261,13 @@ public final class Sons extends Biblioteca
     }
 
     @Override
-    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
     {
         this.programa = programa;
     }
 
     @Override
-    public void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca, InterruptedException
     {
         synchronized (reproducoes)
         {
@@ -297,6 +297,10 @@ public final class Sons extends Biblioteca
                 try
                 {
                     interromper_som(endereco);
+                }
+                catch (InterruptedException ex)
+                {
+                    throw new RuntimeException(ex);
                 }
                 catch (ErroExecucaoBiblioteca excecao)
                 {
@@ -480,7 +484,7 @@ public final class Sons extends Biblioteca
         private final File arquivo;
         private final int endereco;
 
-        public Som(File arquivo, int endereco) throws ErroExecucaoBiblioteca
+        public Som(File arquivo, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
         {
             this.dados = carregarDados(arquivo);
             this.arquivo = arquivo;
@@ -502,7 +506,7 @@ public final class Sons extends Biblioteca
             return endereco;
         }
 
-        private byte[] carregarDados(File arquivo) throws ErroExecucaoBiblioteca
+        private byte[] carregarDados(File arquivo) throws ErroExecucaoBiblioteca, InterruptedException
         {
             try
             {

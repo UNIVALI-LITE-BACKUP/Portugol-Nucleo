@@ -46,7 +46,7 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public double potencia(double base, double expoente) throws ErroExecucaoBiblioteca
+    public double potencia(double base, double expoente) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.pow(base, expoente);
     }
@@ -65,7 +65,7 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public double raiz(double radicando, double indice) throws ErroExecucaoBiblioteca
+    public double raiz(double radicando, double indice) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.pow(radicando, 1.0 / indice);
     }
@@ -87,7 +87,7 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public double arredondar(double numero, int casas) throws ErroExecucaoBiblioteca
+    public double arredondar(double numero, int casas) throws ErroExecucaoBiblioteca, InterruptedException
     {
         double factor = 1.0;
         
@@ -112,7 +112,7 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public double logaritmo(double numero, double base) throws ErroExecucaoBiblioteca
+    public double logaritmo(double numero, double base) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.log(numero) / Math.log(base);
     }
@@ -130,7 +130,7 @@ public final class Matematica extends Biblioteca
             retorno = "o seno do <param>ângulo</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Seno"
     )
-    public double seno(double angulo) throws ErroExecucaoBiblioteca
+    public double seno(double angulo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.sin(angulo);
     }
@@ -148,7 +148,7 @@ public final class Matematica extends Biblioteca
             retorno = "o cosseno do <param>ângulo</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Cosseno"
     )
-    public double cosseno(double angulo) throws ErroExecucaoBiblioteca
+    public double cosseno(double angulo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.cos(angulo);
     }
@@ -166,7 +166,7 @@ public final class Matematica extends Biblioteca
             retorno = "a tagente do <param>ângulo</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Tangente"
     )
-    public double tangente(double angulo) throws ErroExecucaoBiblioteca
+    public double tangente(double angulo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.tan(angulo);
     }
@@ -184,7 +184,7 @@ public final class Matematica extends Biblioteca
             retorno = "o valor absoluto do <param>número</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_modular"
     )
-    public double valor_absoluto(double numero) throws ErroExecucaoBiblioteca
+    public double valor_absoluto(double numero) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.abs(numero);
     }
@@ -202,7 +202,7 @@ public final class Matematica extends Biblioteca
             },
             retorno = "o maior número"
     )
-    public double maior_numero(double numeroA, double numeroB) throws ErroExecucaoBiblioteca
+    public double maior_numero(double numeroA, double numeroB) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.max(numeroA, numeroB);
     }
@@ -220,7 +220,7 @@ public final class Matematica extends Biblioteca
             },
             retorno = "o menor número"
     )
-    public double menor_numero(double numeroA, double numeroB) throws ErroExecucaoBiblioteca
+    public double menor_numero(double numeroA, double numeroB) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.min(numeroA, numeroB);
     }

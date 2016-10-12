@@ -194,7 +194,7 @@ public class ExemploCorrida extends Programa
     private int rep_som_ligar = -1;
     private int rep_som_alarme_combustivel = -1;
 
-    public ExemploCorrida() throws ErroExecucao
+    public ExemploCorrida() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -63,6 +63,12 @@ public class GeradorCodigoJava
             nivelEscopo++;
             for (NoBloco bloco : blocos)
             {
+                pulaLinha();
+                saida.append(geraIdentacao());
+                saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
+                pulaLinha();
+                pulaLinha();
+                
                 saida.append(geraIdentacao());
 
                 bloco.aceitar(this);
@@ -1277,7 +1283,7 @@ public class GeradorCodigoJava
             saida.append(geraIdentacao())
                     .append("public ")
                     .append(nomeDaClasseJava)
-                    .append("() throws ErroExecucao {}")
+                    .append("() throws ErroExecucao, InterruptedException {}")
                     .println();
 
             return this;
