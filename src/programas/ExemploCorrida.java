@@ -65,79 +65,79 @@ public class ExemploCorrida extends Programa
     {
         {
             0, 0, 44, 96
-        }, 
+        },
         {
             43, 0, 44, 96
-        }, 
+        },
         {
             86, 0, 44, 96
-        }, 
+        },
         {
             129, 0, 44, 96
-        }, 
+        },
         {
             172, 0, 44, 96
-        }, 
+        },
         {
             0, 97, 44, 96
-        }, 
+        },
         {
             43, 97, 44, 96
-        }, 
+        },
         {
             86, 97, 44, 96
-        }, 
+        },
         {
             129, 97, 44, 96
-        }, 
+        },
         {
             172, 97, 44, 96
-        }, 
+        },
         {
             0, 195, 44, 96
-        }, 
+        },
         {
             43, 195, 44, 96
-        }, 
+        },
         {
             86, 195, 44, 96
-        }, 
+        },
         {
             129, 195, 44, 96
-        }, 
+        },
         {
             172, 197, 44, 94
-        }, 
+        },
         {
             0, 293, 42, 99
-        }, 
+        },
         {
             42, 293, 42, 99
-        }, 
+        },
         {
             85, 293, 42, 99
-        }, 
+        },
         {
             128, 293, 42, 99
-        }, 
+        },
         {
             172, 293, 42, 99
-        }, 
+        },
         {
             217, 0, 41, 87
-        }, 
+        },
         {
             217, 89, 41, 87
-        }, 
+        },
         {
             217, 179, 41, 87
-        }, 
+        },
         {
             217, 269, 41, 88
-        }, 
+        },
         {
             263, 0, 66, 374
-        }, 
+        },
         {
             331, 0, 67, 370
         }
@@ -146,10 +146,10 @@ public class ExemploCorrida extends Programa
     {
         {
             0, 0, 400, 28
-        }, 
+        },
         {
             402, 0, 21, 31
-        }, 
+        },
         {
             425, 1, 26, 27
         }
@@ -202,20 +202,6 @@ public class ExemploCorrida extends Programa
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
 
-        List<Biblioteca> libs = new ArrayList<>();
-        libs.add(g);
-        libs.add(t);
-        libs.add(m);
-        libs.add(sm);
-
-        g.inicializar(this, libs);
-        t.inicializar(this, libs);
-        u.inicializar(this, libs);
-        m.inicializar(this, libs);
-        tp.inicializar(this, libs);
-        sm.inicializar(this, libs);
-        txt.inicializar(this, libs);
-
         setDiretorioTrabalho(new File("../Portugol-Studio-Recursos/exemplos/jogos"));
 
         inicializar();
@@ -233,13 +219,6 @@ public class ExemploCorrida extends Programa
 
         finalizar();
 
-        g.finalizar();
-        t.finalizar();
-        u.finalizar();
-        m.finalizar();
-        tp.finalizar();
-        sm.finalizar();
-        txt.finalizar();
     }
 
     private void inicializar() throws ErroExecucao, InterruptedException
@@ -1456,9 +1435,10 @@ public class ExemploCorrida extends Programa
 
     public static void main(String[] args) throws Exception
     {
-        new ExemploCorrida().executar(new String[]
-        {
-        });
+        ExemploCorrida programa = new ExemploCorrida();
+        programa.inicializaBibliotecasIncluidas();
+        programa.executar(new String[]{});
+        programa.finalizaBibliotecasIncluidas();
     }
 
 }

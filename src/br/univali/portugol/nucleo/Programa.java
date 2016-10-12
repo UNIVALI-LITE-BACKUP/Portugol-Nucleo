@@ -3,6 +3,8 @@ package br.univali.portugol.nucleo;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.bibliotecas.base.Biblioteca;
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.execucao.es.Entrada;
 import br.univali.portugol.nucleo.execucao.es.EntradaSaidaPadrao;
 import br.univali.portugol.nucleo.execucao.ModoEncerramento;
@@ -17,7 +19,9 @@ import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.simbolos.Variavel;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -207,7 +211,9 @@ public abstract class Programa
             try
             {
                 notificarInicioExecucao();
+                inicializaBibliotecasIncluidas();
                 executar(parametros);
+                finalizaBibliotecasIncluidas();
                 //depurador.executar(Programa.this, parametros);
             }
             catch (ErroExecucao erroExecucao)
@@ -232,7 +238,7 @@ public abstract class Programa
             {
                 setLeituraIgnorada(true);
             }
-        
+
             Programa.this.estado = estado;
             notifyAll();
         }
@@ -505,7 +511,7 @@ public abstract class Programa
             };
         }
     }
-    
+
     protected void escreva(Object... listaParametrosPassados) throws ErroExecucao
     {
         if (saida == null)
@@ -599,32 +605,32 @@ public abstract class Programa
     {
         return leituraIgnorada;
     }
-    
+
     protected double leiaReal() throws ErroExecucao
     {
         return (Double) leia(TipoDado.REAL);
     }
-    
+
     protected int leiaInteiro() throws ErroExecucao
     {
         return (Integer) leia(TipoDado.INTEIRO);
     }
-    
+
     protected boolean leiaLogico() throws ErroExecucao
     {
         return (Boolean) leia(TipoDado.LOGICO);
     }
-    
+
     protected char leiaCaracter() throws ErroExecucao
     {
         return (Character) leia(TipoDado.CARACTER);
     }
-    
+
     protected String leiaCadeia() throws ErroExecucao
     {
         return (String) leia(TipoDado.CADEIA);
     }
-    
+
     private Object leia(TipoDado tipoDado) throws ErroExecucao
     {
         assert (entrada != null);
@@ -716,7 +722,7 @@ public abstract class Programa
             }
         }
     }
-    
+
     public class ValueHolder<T>
     {
         private T value;
@@ -734,6 +740,58 @@ public abstract class Programa
         public T getValue()
         {
             return value;
+        }
+    }
+
+    private List<Biblioteca> obterBibliotecasIncluidas() throws IllegalArgumentException, IllegalAccessException
+    {
+        Field atributos[] = this.getClass().getDeclaredFields();
+        List<Biblioteca> bibliotecas = new ArrayList<>();
+        for (Field atributo : atributos)
+        {
+            boolean acessoPermitido = atributo.isAccessible();
+            if (!acessoPermitido)
+            {
+                atributo.setAccessible(true);
+            }
+            if (atributo.get(this) instanceof Biblioteca)
+            {
+                bibliotecas.add((Biblioteca) atributo.get(this));
+            }
+            atributo.setAccessible(acessoPermitido);
+        }
+        return bibliotecas;
+    }
+
+    protected void inicializaBibliotecasIncluidas() throws ErroExecucaoBiblioteca
+    {
+        try
+        {
+            List<Biblioteca> bibliotecasReservadas = obterBibliotecasIncluidas();
+            for (Biblioteca biblioteca : bibliotecasReservadas)
+            {
+                biblioteca.inicializar(this, bibliotecasReservadas);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new ErroExecucaoBiblioteca(e);
+        }
+    }
+
+    protected void finalizaBibliotecasIncluidas() throws ErroExecucaoBiblioteca
+    {
+        try
+        {
+            List<Biblioteca> bibliotecasReservadas = obterBibliotecasIncluidas();
+            for (Biblioteca biblioteca : bibliotecasReservadas)
+            {
+                biblioteca.finalizar();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new ErroExecucaoBiblioteca(e);
         }
     }
 

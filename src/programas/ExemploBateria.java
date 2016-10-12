@@ -96,21 +96,6 @@ public class ExemploBateria extends Programa
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
-        List<Biblioteca> libs = new ArrayList<>();
-        libs.add(Graficos);
-        libs.add(Teclado);
-        libs.add(Matematica);
-        libs.add(Sons);
-        libs.add(Mouse);
-
-        Graficos.inicializar(this, libs);
-        Teclado.inicializar(this, libs);
-        Util.inicializar(this, libs);
-        Mouse.inicializar(this, libs);
-        Tipos.inicializar(this, libs);
-        Sons.inicializar(this, libs);
-        Matematica.inicializar(this, libs);
-
         setDiretorioTrabalho(new File("../Portugol-Studio-Recursos/exemplos/musica"));
 
         inicializar();
@@ -321,7 +306,10 @@ public class ExemploBateria extends Programa
 
     public static void main(String[] args) throws ErroExecucao, InterruptedException
     {
-        new ExemploBateria().executar(args);
+        ExemploBateria programa = new ExemploBateria();
+        programa.inicializaBibliotecasIncluidas();
+        programa.executar(new String[]{});
+        programa.finalizaBibliotecasIncluidas();
 
     }
 
