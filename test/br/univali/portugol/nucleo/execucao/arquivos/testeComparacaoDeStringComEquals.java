@@ -10,7 +10,7 @@ public class testeComparacaoDeStringComEquals extends Programa
     private int a = 0;
     private int b = 0;
 
-    public testeComparacaoDeStringComEquals() throws ErroExecucao
+    public testeComparacaoDeStringComEquals() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testeParametroPorReferencia extends Programa
 {
 
-    public testeParametroPorReferencia() throws ErroExecucao
+    public testeParametroPorReferencia() throws ErroExecucao, InterruptedException
     {
     }
 

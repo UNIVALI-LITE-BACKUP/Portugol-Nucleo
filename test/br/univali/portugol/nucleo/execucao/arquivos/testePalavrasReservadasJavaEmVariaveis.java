@@ -23,7 +23,7 @@ public class testePalavrasReservadasJavaEmVariaveis extends Programa
     private String _short;
     private String _char;
 
-    public testePalavrasReservadasJavaEmVariaveis() throws ErroExecucao
+    public testePalavrasReservadasJavaEmVariaveis() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testGeracaoChamaFuncoes extends Programa
 {
 
-    public testGeracaoChamaFuncoes() throws ErroExecucao
+    public testGeracaoChamaFuncoes() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -10,7 +10,7 @@ public class testInclusaoBibliotecasComESemAliases extends Programa
     private final Graficos g = new Graficos();
     private final Mouse Mouse = new Mouse();
 
-    public testInclusaoBibliotecasComESemAliases() throws ErroExecucao
+    public testInclusaoBibliotecasComESemAliases() throws ErroExecucao, InterruptedException
     {
     }
 

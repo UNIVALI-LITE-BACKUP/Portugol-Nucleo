@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testGeracaoFuncaoComParametrosQueSaoArrays extends Programa
 {
 
-    public testGeracaoFuncaoComParametrosQueSaoArrays() throws ErroExecucao
+    public testGeracaoFuncaoComParametrosQueSaoArrays() throws ErroExecucao, InterruptedException
     {
     }
 

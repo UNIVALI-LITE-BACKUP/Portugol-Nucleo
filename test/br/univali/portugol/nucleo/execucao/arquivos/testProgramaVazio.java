@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testProgramaVazio extends Programa
 {
 
-    public testProgramaVazio() throws ErroExecucao
+    public testProgramaVazio() throws ErroExecucao, InterruptedException
     {
     }
 

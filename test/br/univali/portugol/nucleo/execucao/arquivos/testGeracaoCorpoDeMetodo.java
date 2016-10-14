@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testGeracaoCorpoDeMetodo extends Programa
 {
 
-    public testGeracaoCorpoDeMetodo() throws ErroExecucao
+    public testGeracaoCorpoDeMetodo() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testGeracaoSeSenao extends Programa
 {
 
-    public testGeracaoSeSenao() throws ErroExecucao
+    public testGeracaoSeSenao() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -91,13 +91,13 @@ public class GeradorCodigoTest
         writer.flush();
         String codigoGerado = bos.toString();
 
-        //System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
+        System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
         codigoGerado = codigoGerado.replaceAll("\\s+|\\\\n", ""); //remove todos os espaços e caracteres não visíveis
         codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+|\\\\n", "");
 
-        //System.out.println(codigoJavaEsperado);
-        //System.out.println(codigoGerado);
-        //System.out.println();
+        System.out.println(codigoJavaEsperado);
+        System.out.println(codigoGerado);
+        System.out.println();
         assertEquals(codigoJavaEsperado, codigoGerado);
     }
 

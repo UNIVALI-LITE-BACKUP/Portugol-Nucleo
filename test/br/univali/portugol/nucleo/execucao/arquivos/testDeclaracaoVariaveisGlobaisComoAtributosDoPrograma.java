@@ -12,7 +12,7 @@ public class testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma extends Progr
     private char e1;
     private double f;
 
-    public testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma() throws ErroExecucao
+    public testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma() throws ErroExecucao, InterruptedException
     {
     }
 

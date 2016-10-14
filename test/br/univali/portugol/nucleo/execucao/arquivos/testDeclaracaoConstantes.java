@@ -8,7 +8,7 @@ public class testDeclaracaoConstantes extends Programa
     private final int i = 10;
     private final String c = "teste";
 
-    public testDeclaracaoConstantes() throws ErroExecucao
+    public testDeclaracaoConstantes() throws ErroExecucao, InterruptedException
     {
     }
 

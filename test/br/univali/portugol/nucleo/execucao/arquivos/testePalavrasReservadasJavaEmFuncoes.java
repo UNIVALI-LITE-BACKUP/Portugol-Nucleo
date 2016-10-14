@@ -5,7 +5,7 @@ import br.univali.portugol.nucleo.Programa;
 
 public class testePalavrasReservadasJavaEmFuncoes extends Programa
 {
-    public testePalavrasReservadasJavaEmFuncoes() throws ErroExecucao
+    public testePalavrasReservadasJavaEmFuncoes() throws ErroExecucao, InterruptedException
     {
     }
 

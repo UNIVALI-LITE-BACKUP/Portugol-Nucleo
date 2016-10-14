@@ -8,7 +8,7 @@ public class testeNegacao extends Programa
     private String a = "teste";
     private String b = "teste";
 
-    public testeNegacao() throws ErroExecucao
+    public testeNegacao() throws ErroExecucao, InterruptedException
     {
     }
 

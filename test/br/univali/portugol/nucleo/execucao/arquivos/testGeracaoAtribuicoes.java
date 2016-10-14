@@ -18,7 +18,7 @@ public class testGeracaoAtribuicoes extends Programa
         }
     };
 
-    public testGeracaoAtribuicoes() throws ErroExecucao
+    public testGeracaoAtribuicoes() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testLeia extends Programa
 {
 
-    public testLeia() throws ErroExecucao
+    public testLeia() throws ErroExecucao, InterruptedException
     {
     }
 

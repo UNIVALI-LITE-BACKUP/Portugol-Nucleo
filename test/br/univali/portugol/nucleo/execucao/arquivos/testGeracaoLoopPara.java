@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testGeracaoLoopPara extends Programa
 {
 
-    public testGeracaoLoopPara() throws ErroExecucao
+    public testGeracaoLoopPara() throws ErroExecucao, InterruptedException
     {
     }
 

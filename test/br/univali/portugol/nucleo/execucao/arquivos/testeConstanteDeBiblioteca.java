@@ -8,7 +8,7 @@ public class testeConstanteDeBiblioteca extends Programa
 {
     private final Matematica mat = new Matematica();
 
-    public testeConstanteDeBiblioteca() throws ErroExecucao
+    public testeConstanteDeBiblioteca() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.Programa;
 public class testNoEscolha extends Programa
 {
 
-    public testNoEscolha() throws ErroExecucao
+    public testNoEscolha() throws ErroExecucao, InterruptedException
     {
     }
 

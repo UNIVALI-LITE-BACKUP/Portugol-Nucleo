@@ -11,7 +11,7 @@ public class testVariaveisGlobaisInicializadasComValoresSimples extends Programa
     private char ch = 'a';
     private double r = 53.23;
 
-    public testVariaveisGlobaisInicializadasComValoresSimples() throws ErroExecucao
+    public testVariaveisGlobaisInicializadasComValoresSimples() throws ErroExecucao, InterruptedException
     {
     }
 

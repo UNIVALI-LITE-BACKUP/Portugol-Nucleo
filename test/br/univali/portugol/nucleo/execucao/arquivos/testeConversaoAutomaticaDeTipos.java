@@ -10,7 +10,7 @@ public class testeConversaoAutomaticaDeTipos extends Programa
     private double a = 0.0;
     private int b;
 
-    public testeConversaoAutomaticaDeTipos() throws ErroExecucao
+    public testeConversaoAutomaticaDeTipos() throws ErroExecucao, InterruptedException
     {
     }
 

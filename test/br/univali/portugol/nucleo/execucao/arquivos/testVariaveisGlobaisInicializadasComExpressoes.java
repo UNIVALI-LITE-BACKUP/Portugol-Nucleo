@@ -10,7 +10,7 @@ public class testVariaveisGlobaisInicializadasComExpressoes extends Programa
     private boolean l = true && true || false;
     private double r = 53.23 + 0.01;
 
-    public testVariaveisGlobaisInicializadasComExpressoes() throws ErroExecucao
+    public testVariaveisGlobaisInicializadasComExpressoes() throws ErroExecucao, InterruptedException
     {
     }
 

@@ -8,7 +8,7 @@ public class testeDeclaracaoVetorMatriz extends Programa
     private final int TAM = 5;
     private String frases[] = new String[TAM];
 
-    public testeDeclaracaoVetorMatriz() throws ErroExecucao
+    public testeDeclaracaoVetorMatriz() throws ErroExecucao, InterruptedException
     {
     }
 
