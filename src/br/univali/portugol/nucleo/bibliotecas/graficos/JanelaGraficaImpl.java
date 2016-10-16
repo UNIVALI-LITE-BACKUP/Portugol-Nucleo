@@ -321,6 +321,18 @@ public final class JanelaGraficaImpl extends JFrame implements JanelaGrafica
         painelConteudo.add(superficie);
     }
 
+    @Override
+    public int largura()
+    {
+        return largura;
+    }
+
+    @Override
+    public int altura()
+    {
+        return altura;
+    }
+
     private static final class RetornoJanela
     {
         public JanelaGrafica janela;

@@ -117,6 +117,30 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         janela.exibir(true);
         inicializado = true;
     }
+    
+    @DocumentacaoFuncao(
+            descricao = "Obtém largura da janela",
+            autores =
+            {
+                @Autor(nome = "Bernardo de Oliveira Bruning", email = "bernardo.bruning@gmail.com")
+            }
+    )
+    public Integer largura_janela() throws ErroExecucaoBiblioteca
+    {
+        return this.janela.largura();
+    }
+    
+    @DocumentacaoFuncao(
+            descricao = "Obtém altura da janela",
+            autores =
+            {
+                @Autor(nome = "Bernardo de Oliveira Bruning", email = "bernardo.bruning@gmail.com")
+            }
+    )
+    public Integer altura_janela() throws ErroExecucaoBiblioteca
+    {
+        return this.janela.altura();
+    }
 
     @DocumentacaoFuncao(
             descricao = "Encerra o programa como se o usuário tivesse clicado no botão 'Fechar' da janela",
