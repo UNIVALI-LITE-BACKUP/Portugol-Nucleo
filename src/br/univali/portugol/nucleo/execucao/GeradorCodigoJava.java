@@ -61,9 +61,10 @@ public class GeradorCodigoJava
         private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
         {
             nivelEscopo++;
+            geraDeteccaoInterrupcao();
+            
             for (NoBloco bloco : blocos)
-            {
-                geraDeteccaoInterrupcao();
+            {                
                 geraParadaPassoAPasso(bloco);
 
                 saida.append(geraIdentacao());
@@ -81,7 +82,6 @@ public class GeradorCodigoJava
 
         private void geraDeteccaoInterrupcao()
         {
-            pulaLinha();
             saida.append(geraIdentacao());
             saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
             pulaLinha();
@@ -152,14 +152,14 @@ public class GeradorCodigoJava
 
         private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
         {
-            saida.println();
-            saida.append(geraIdentacao());
+            saida.println();            
 
             String nome = noFuncao.getNome();
             boolean metodoPrincipal = "inicio".equals(nome);
             if (metodoPrincipal)
             {
                 nome = "executar";
+                saida.append(geraIdentacao());
                 saida.append("@Override").println();
             }
 
@@ -1341,8 +1341,12 @@ public class GeradorCodigoJava
             saida.append(geraIdentacao())
                     .append("public ")
                     .append(nomeDaClasseJava)
-                    .append("() throws ErroExecucao, InterruptedException {}")
-                    .println();
+                    .append("() throws ErroExecucao, InterruptedException {");
+        
+            
+            geraDeteccaoInterrupcao();
+            
+            saida.append("}").println();
 
             return this;
         }
