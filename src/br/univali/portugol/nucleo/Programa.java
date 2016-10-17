@@ -299,14 +299,15 @@ public abstract class Programa
 
     protected void realizarParada(int linha, int coluna) throws ErroExecucao, InterruptedException
     {
-        synchronized (LOCK)
+        
+        ultimaLinha = linha;
+        ultimaColuna = coluna;
+        
+        if (this.estado == Estado.STEP_OVER)
         {
-            ultimaLinha = linha;
-            ultimaColuna = coluna;
-            
-            if (this.estado == Estado.STEP_OVER)
+            disparaDestacar(linha);
+            synchronized (LOCK)
             {
-                disparaDestacar(linha);
                 LOCK.wait();
             }
 //            else if ( this.estado == Estado.STEP_INTO)

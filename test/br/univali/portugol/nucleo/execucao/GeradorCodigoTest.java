@@ -5,71 +5,205 @@ import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 /**
  * @author Elieser
  */
-@RunWith(Parameterized.class)
 public class GeradorCodigoTest
 {
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
     private final GeradorCodigoJava gerador = new GeradorCodigoJava();
 
-    private final static FilenameFilter FILTRO_PORTUGOL = new FiltroArquivoPortugol();
+    @Rule
+    public TestName nomeTeste = new TestName();
 
-    private final String nomeTeste;
-
-    public GeradorCodigoTest(String nomeTeste)
+    @Test
+    public void testeParametroPorReferencia() throws Exception
     {
-        this.nomeTeste = nomeTeste;
-    }
-
-    @Parameters(name = "{0}") // usa o primeiro parâmetro do construtor como nome do teste
-    public static Iterable<String[]> geraNomesTestes()
-    {
-        /**
-         * Gera um teste unitário para cada par de arquivos .por e .java encontrados
-         */
-        
-        String caminhoArquivos = "test/br/univali/portugol/nucleo/execucao/arquivos/";
-        List<String[]> arquivos = new ArrayList<String[]>();
-
-        String[] nomesArquivos = new File(caminhoArquivos).list(FILTRO_PORTUGOL);
-
-        for (String nomeArquivo : nomesArquivos)
-        {
-            arquivos.add(new String[]
-            {
-                nomeArquivo.replace(".por", "")
-            });
-        }
-
-        return arquivos;
+        comparaCodigos();
     }
 
     @Test
-    public void teste() throws Exception
+    public void testeNegacao() throws Exception
     {
-        // lê o arquivo portugol e o código esperado em java 
-        String caminhoArquivos = "test/br/univali/portugol/nucleo/execucao/arquivos/";
-        File arquivoPortugol = new File(caminhoArquivos + nomeTeste + ".por");
-        File arquivoJava = new File(caminhoArquivos + nomeTeste + ".java");
+        comparaCodigos();
+    }
 
-        String codigoPortugol = new Scanner(arquivoPortugol).useDelimiter("\\Z").next(); //Lê todo o conteúdo do arquivo de exemplo
-        String codigoJavaEsperado = new Scanner(arquivoJava).useDelimiter("\\Z").next();
+    @Test
+    public void testeConversaoAutomaticaDeTipos() throws Exception
+    {
+        comparaCodigos();
+    }
 
-        // verifica se o código portugol não tem erros antes de gerar o código java
+    @Test
+    public void testeComparacaoDeStringComEquals() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testePalavrasReservadasJavaEmFuncoes() throws Exception
+    {
+        // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
+        comparaCodigos();
+
+    }
+
+    @Test
+    public void testePalavrasReservadasJavaEmVariaveis() throws Exception
+    {
+        // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
+        comparaCodigos();
+    }
+
+    @Test
+    public void testeDeclaracaoVetorMatriz() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testeConstanteDeBiblioteca() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testLeia() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testNoEscolha() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoSeSenao() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoChamaFuncoes() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoLoopPara() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoCorpoDeMetodo() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoAtribuicoes() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoFuncaoComParametrosQueSaoArrays() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoFuncaoComParametros() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testGeracaoFuncoesSimples() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testInclusaoBibliotecasComESemAliases() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testInclusaoBibliotecasComAliases() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testInclusaoBibliotecasSemAliases() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testDeclaracaoConstantes() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testVariaveisGlobaisInicializadasComExpressoes() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testVariaveisGlobaisInicializadasComValoresSimples() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    @Test
+    public void testProgramaVazio() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    private String getConteudoArquivo(String caminho) throws FileNotFoundException
+    {
+        String nomeCompleto = getClass().getCanonicalName();
+        int indicePonto = nomeCompleto.lastIndexOf(".");
+        caminho = nomeCompleto.substring(0, indicePonto).replace('.', '/') + caminho;
+        
+        InputStream stream = new FileInputStream("./test/" + caminho);
+        Scanner scanner = new Scanner(stream);
+        return scanner.useDelimiter("\\Z").next();
+    }
+    
+    private void comparaCodigos() throws Exception
+    {
+        String nome = "/arquivos/" + nomeTeste.getMethodName();
+        
+        String codigoPortugol = getConteudoArquivo(nome + ".por");
+        String codigoJavaEsperado = getConteudoArquivo(nome + ".java");
+                
         ResultadoAnalise resultado = analisador.analisar(codigoPortugol);
         assertNotNull(resultado);
         assertNotNull(resultado.getErros());
@@ -83,30 +217,23 @@ public class GeradorCodigoTest
         }
         assertEquals(0, resultado.getErros().size());
 
-        // gera o código e escreve em um ByteArrayOutputStream para os códigos sejam comparados através de duas strings
         ASAPrograma asa = (ASAPrograma) analisador.getASA();
+
+        // gera o código e escreve em um ByteArrayOutputStream
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(bos);//(System.out, true);
-        gerador.gera(asa, writer, nomeTeste);
+        gerador.gera(asa, writer, nomeTeste.getMethodName(), true);
         writer.flush();
         String codigoGerado = bos.toString();
-
         System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        
+
         codigoGerado = codigoGerado.replaceAll("\\s+|\\\\n", ""); //remove todos os espaços e caracteres não visíveis
         codigoJavaEsperado = codigoJavaEsperado.replaceAll("\\s+|\\\\n", "");
 
         System.out.println(codigoJavaEsperado);
         System.out.println(codigoGerado);
         System.out.println();
-        assertEquals(codigoJavaEsperado, codigoGerado);
-    }
 
-    private static class FiltroArquivoPortugol implements FilenameFilter
-    {
-        @Override
-        public boolean accept(File dir, String name)
-        {
-            return name.endsWith(".por");
-        }
+        assertEquals("Os códigos não são iguais!", codigoJavaEsperado, codigoGerado);
     }
 }

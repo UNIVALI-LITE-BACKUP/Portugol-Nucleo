@@ -23,10 +23,15 @@ import java.util.Map;
 public class GeradorCodigoJava
 {
     private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
-
+    
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
-        new GeradorCodigo(asa, saida)
+        gera(asa, saida, nomeClasseJava, false);
+    }
+    
+    public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA, IOException
+    {
+        new GeradorCodigo(asa, saida, gerandoCodigoParaTesteUnitario)
                 .geraPackage("programas")
                 .pulaLinha()
                 .geraImportacaoPara(ErroExecucao.class)
@@ -51,18 +56,18 @@ public class GeradorCodigoJava
         private final PrintWriter saida;
         private final ASAPrograma asa;
         private int nivelEscopo = 1;
+        private final boolean gerandoCodigoParaTesteUnitario; // O código gerado para rodar os testes unitários não inclui alguns detalhes relacionados com execução passo a passo e verificação de thread interrompida durante a execução do programa.
 
-        public GeradorCodigo(ASAPrograma asa, PrintWriter saida)
+        public GeradorCodigo(ASAPrograma asa, PrintWriter saida, boolean geraCodigoParaTesteUnitario)
         {
             this.saida = saida;
             this.asa = asa;
+            this.gerandoCodigoParaTesteUnitario = geraCodigoParaTesteUnitario;
         }
 
         private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
         {
             nivelEscopo++;
-            geraDeteccaoInterrupcao();
-            
             for (NoBloco bloco : blocos)
             {                
                 geraParadaPassoAPasso(bloco);
@@ -79,17 +84,28 @@ public class GeradorCodigoJava
             }
             nivelEscopo--;
         }
-
-        private void geraDeteccaoInterrupcao()
+        
+        private void geraVerificacaoThreadInterrompida()
         {
+            if (gerandoCodigoParaTesteUnitario)
+            {
+                return;
+            }
+            nivelEscopo++;
             saida.append(geraIdentacao());
             saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
+            nivelEscopo--;
             pulaLinha();
             pulaLinha();
         }
 
         private void geraParadaPassoAPasso(NoBloco no)
         {
+            if (gerandoCodigoParaTesteUnitario)
+            {
+                return;
+            }
+            
             if (no.ehParavel(Programa.Estado.STEP_OVER))
             {
                 if (no instanceof NoSe || no instanceof NoEnquanto)
@@ -152,6 +168,9 @@ public class GeradorCodigoJava
 
         private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
         {
+            
+            
+            
             saida.println();            
 
             String nome = noFuncao.getNome();
@@ -183,8 +202,9 @@ public class GeradorCodigoJava
             saida.println(); // pula uma linha depois da declaração da assinatura do método
             saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
 
+            geraVerificacaoThreadInterrompida();
             geraParadaPassoAPasso(noFuncao);
-
+            
             visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
 
             saida.println();
@@ -297,7 +317,7 @@ public class GeradorCodigoJava
 
         private String geraIdentacao()
         {
-            return String.format("%" + (nivelEscopo * 3) + "s", " ");
+            return String.format("%" + (nivelEscopo * 4) + "s", " ");
         }
 
         public GeradorCodigo pulaLinha()
@@ -787,6 +807,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoEnquanto no) throws ExcecaoVisitaASA
         {
+
             saida.append("while(");
 
             no.getCondicao().aceitar(this);
@@ -794,6 +815,9 @@ public class GeradorCodigoJava
             saida.append(")").println();
             saida.append(geraIdentacao()).append("{").println();
 
+            
+            geraVerificacaoThreadInterrompida();
+            
             visitarBlocos(no.getBlocos());
 
             saida.println();
@@ -826,6 +850,8 @@ public class GeradorCodigoJava
             saida.append(")").println(); // fecha o parênteses do for
             saida.append(geraIdentacao()).append("{").println();
 
+            geraVerificacaoThreadInterrompida();
+            
             visitarBlocos(no.getBlocos());
 
             saida.println();
@@ -995,6 +1021,8 @@ public class GeradorCodigoJava
             saida.append("do").println();
             saida.append(geraIdentacao()).append("{").println();
 
+            geraVerificacaoThreadInterrompida();
+            
             List<NoBloco> blocos = no.getBlocos();
             if (blocos != null)
             {
@@ -1343,9 +1371,6 @@ public class GeradorCodigoJava
                     .append(nomeDaClasseJava)
                     .append("() throws ErroExecucao, InterruptedException {");
         
-            
-            geraDeteccaoInterrupcao();
-            
             saida.append("}").println();
 
             return this;
