@@ -3,9 +3,6 @@ package br.univali.portugol.nucleo.asa;
 import br.univali.portugol.nucleo.analise.semantica.TabelaCompatibilidadeTiposPortugol;
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoValorSeraConvertido;
-import br.univali.portugol.nucleo.execucao.operacoes.Operacao;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
