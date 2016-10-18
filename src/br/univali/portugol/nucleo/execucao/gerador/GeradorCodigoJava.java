@@ -21,6 +21,7 @@ public class GeradorCodigoJava
     private final GeradorDeclaracaoMetodo geradorDeclaracaoMetodo = new GeradorDeclaracaoMetodo();
     private final GeradorOperacao geradorOperacao = new GeradorOperacao();
     private final GeradorAtributo geradorAtributo = new GeradorAtributo();
+    private final GeradorDeclaracaoVariavel geradorDeclaracaoVariavel = new GeradorDeclaracaoVariavel();
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
@@ -309,154 +310,35 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
         {
-            String nome = noDeclaracao.getNome();
-            String nomeTipo = Utils.getNomeTipoJava(noDeclaracao.getTipoDado());
-
-            saida.format("%s %s", nomeTipo, Utils.geraNomeValido(nome));
-
-            if (noDeclaracao.possuiInicializacao())
-            {
-                saida.append(" = ");
-
-                // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
-                boolean precisaDeCast = noDeclaracao.getTipoDado() == TipoDado.INTEIRO && noDeclaracao.getInicializacao().getTipoResultante() == TipoDado.REAL;
-
-                if (precisaDeCast)
-                {
-                    saida.append("(int) (");
-                }
-
-                noDeclaracao.getInicializacao().aceitar(this);
-
-                if (precisaDeCast)
-                {
-                    saida.append(")");
-                }
-            }
-
+            geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo);
             return null;
         }
 
         @Override
         public Void visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
         {
-            String nome = no.getNome();
-            String tipo = Utils.getNomeTipoJava(no.getTipoDado());
-            saida.format("%s %s[]", tipo, Utils.geraNomeValido(nome));
-
-            if (no.possuiInicializacao())
-            {
-                saida.append(" = ");
-                no.getInicializacao().aceitar(this);
-            }
-            else
-            {
-                saida.format(" = new %s[", tipo);
-                if (no.getTamanho() != null)
-                {
-                    no.getTamanho().aceitar(this);
-                }
-                saida.append("]");
-            }
-
+            geradorDeclaracaoVariavel.gera(no, saida, this, nivelEscopo);
             return null;
         }
 
         @Override
         public Void visitar(NoVetor noVetor) throws ExcecaoVisitaASA
         {
-            saida.append("{");
-
-            List<Object> valores = noVetor.getValores();
-            int totalValores = valores.size();
-            for (int i = 0; i < totalValores; i++)
-            {
-                if (valores.get(i) instanceof NoExpressaoLiteral)
-                {
-                    saida.append(valores.get(i).toString());
-                }
-                else
-                {
-                    ((NoExpressao) valores.get(i)).aceitar(this);
-                }
-
-                if (i < totalValores - 1)
-                {
-                    saida.append(", ");
-                }
-            }
-
-            saida.append("}");
-
+            geradorDeclaracaoVariavel.gera(noVetor, saida, this, nivelEscopo);
             return null;
         }
 
         @Override
         public Void visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
         {
-            String nome = noDeclaracao.getNome();
-            String tipo = Utils.getNomeTipoJava(noDeclaracao.getTipoDado());
-            saida.format("%s %s[][]", tipo, Utils.geraNomeValido(nome));
-
-            saida.append(" = ");
-
-            if (noDeclaracao.possuiInicializacao())
-            {
-                noDeclaracao.getInicializacao().aceitar(this);
-            }
-            else
-            {
-                saida.append(" new ")
-                        .append(tipo)
-                        .append("[");
-
-                if (noDeclaracao.getNumeroLinhas() != null)
-                {
-                    noDeclaracao.getNumeroLinhas().aceitar(this);
-                }
-
-                saida.append("][");
-
-                if (noDeclaracao.getNumeroColunas() != null)
-                {
-                    noDeclaracao.getNumeroColunas().aceitar(this);
-                }
-
-                saida.append("]");
-            }
-
+            geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo);
             return null;
         }
 
         @Override
         public Void visitar(NoMatriz noMatriz) throws ExcecaoVisitaASA
         {
-            saida.append("{");
-
-            List<List<Object>> valores = noMatriz.getValores();
-            int totalLinhas = valores.size();
-            int totalColunas = 0;
-            for (int i = 0; i < totalLinhas; i++)
-            {
-                totalColunas = valores.get(i).size();
-                saida.append("{");
-                for (int j = 0; j < totalColunas; j++)
-                {
-                    saida.append(valores.get(i).get(j).toString());
-                    if (j < totalColunas - 1)
-                    {
-                        saida.append(", ");
-                    }
-                }
-                saida.append("}");
-                if (i < totalLinhas - 1)
-                {
-                    saida.append(",");
-                }
-            }
-
-            saida.append("}");
-
+            geradorDeclaracaoVariavel.gera(noMatriz, saida, this, nivelEscopo);
             return null;
         }
 
