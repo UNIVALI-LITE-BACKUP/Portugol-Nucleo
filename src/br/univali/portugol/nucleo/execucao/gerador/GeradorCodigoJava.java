@@ -7,9 +7,7 @@ import br.univali.portugol.nucleo.execucao.gerador.helpers.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Elieser
@@ -22,6 +20,7 @@ public class GeradorCodigoJava
     private final GeradorSwitchCase geradorSwitchCase = new GeradorSwitchCase();
     private final GeradorDeclaracaoMetodo geradorDeclaracaoMetodo = new GeradorDeclaracaoMetodo();
     private final GeradorOperacao geradorOperacao = new GeradorOperacao();
+    private final GeradorAtributo geradorAtributo = new GeradorAtributo();
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
@@ -84,31 +83,15 @@ public class GeradorCodigoJava
             pulaLinha();
             pulaLinha();
         }
-
-        private boolean podeDeclararNoComoAtributo(NoDeclaracao no)
-        {
-            return no instanceof NoDeclaracaoVariavel
-                    || no instanceof NoDeclaracaoVetor
-                    || no instanceof NoDeclaracaoMatriz;
-        }
-
+        
         public VisitorGeracaoCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
         {
             List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
             boolean existemVariaveisGlobais = false;
             for (NoDeclaracao no : variaveisGlobais)
             {
-                if (podeDeclararNoComoAtributo(no))
-                {
-                    existemVariaveisGlobais = true;
-                    saida.append(geraIdentacao())
-                            .append("private ")
-                            .append(no.constante() ? "final " : "");
-
-                    no.aceitar(this);
-
-                    saida.append(";").println();
-                }
+                boolean atributoGerado = geradorAtributo.gera(no, saida, this, nivelEscopo);
+                existemVariaveisGlobais |= atributoGerado;
             }
 
             if (existemVariaveisGlobais)
@@ -124,15 +107,7 @@ public class GeradorCodigoJava
             List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
             for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
             {
-                String tipo = biblioteca.getNome();
-                String nome = tipo; // quando a biblioteca não tem alias o nome e o tipo são idênticos
-                if (biblioteca.getAlias() != null)
-                {
-                    nome = biblioteca.getAlias();
-                }
-                saida.append(geraIdentacao())
-                        .format("private final %s %s = new %s();", tipo, Utils.geraNomeValido(nome), tipo)
-                        .println();
+                geradorAtributo.gera(biblioteca, saida, nivelEscopo);
             }
 
             if (!libsIncluidas.isEmpty())
