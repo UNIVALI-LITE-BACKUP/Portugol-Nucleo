@@ -1,12 +1,20 @@
-package br.univali.portugol.nucleo.execucao.gerador;
+package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
+import br.univali.portugol.nucleo.asa.NoBloco;
+import br.univali.portugol.nucleo.asa.NoEnquanto;
+import br.univali.portugol.nucleo.asa.NoEscolha;
+import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
+import br.univali.portugol.nucleo.asa.NoPara;
 import br.univali.portugol.nucleo.asa.NoReferencia;
 import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
 import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
+import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.TipoDado;
+import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -17,6 +25,87 @@ import java.util.List;
  */
 public class Utils
 {
+
+    public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
+    {
+        for (NoBloco bloco : blocos)
+        {
+            geraParadaPassoAPasso(bloco, saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
+
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+
+            bloco.aceitar(visitor);
+
+            if (blocoFinalizaComPontoEVirgula(bloco))
+            {
+                saida.append(";");
+            }
+            saida.println();
+        }
+    }
+
+    public static void geraParadaPassoAPasso(NoBloco no, PrintWriter saida, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario)
+    {
+        if (gerandoCodigoParaTesteUnitario)
+        {
+            return;
+        }
+        
+        if (no.ehParavel(Programa.Estado.STEP_OVER))
+        {
+            if (no instanceof NoSe || no instanceof NoEnquanto)
+            {
+                int linha;
+                int coluna;
+                TrechoCodigoFonte trechoCodigoFonte;
+
+                if (no instanceof NoSe)
+                {
+                    trechoCodigoFonte = ((NoSe) no).getCondicao().getTrechoCodigoFonte();
+                }
+                else if (no instanceof NoEnquanto)
+                {
+                    trechoCodigoFonte = ((NoEnquanto) no).getCondicao().getTrechoCodigoFonte();
+                }
+                else
+                {
+                    trechoCodigoFonte = no.getTrechoCodigoFonte();
+                }
+
+                if (trechoCodigoFonte != null)
+                {
+                    linha = trechoCodigoFonte.getLinha();
+                    coluna = trechoCodigoFonte.getColuna();
+
+                    saida.println();
+                    saida.append(Utils.geraIdentacao(nivelEscopo));
+                    
+                    saida.append(String.format("realizarParada(%d, %d);", linha, coluna));
+                    
+                    saida.println();
+                    saida.println();
+                }
+            }
+        }
+    }
+
+    static boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
+    {
+        boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
+        boolean ehDesvio = bloco instanceof NoSe || bloco instanceof NoEscolha;
+        if (!ehLoop && !ehDesvio)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static String geraIdentacao(int nivelEscopo)
+    {
+        return String.format("%" + (nivelEscopo * 4) + "s", " ");
+    }
+
     public static String geraNomeValido(String nomeAtual)
     {
         if (!ehUmaPalavraReservadaNoJava(nomeAtual))

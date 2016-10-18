@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.execucao;
 
-import br.univali.portugol.nucleo.execucao.gerador.Utils;
+import br.univali.portugol.nucleo.execucao.gerador.helpers.Utils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

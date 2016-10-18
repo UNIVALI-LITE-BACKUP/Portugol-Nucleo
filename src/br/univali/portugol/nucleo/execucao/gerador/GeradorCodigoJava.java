@@ -1,18 +1,12 @@
 package br.univali.portugol.nucleo.execucao.gerador;
 
+import br.univali.portugol.nucleo.execucao.gerador.helpers.Utils;
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametros;
+import br.univali.portugol.nucleo.execucao.gerador.helpers.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +19,7 @@ public class GeradorCodigoJava
     private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
 
     private final GeradorChamadaMetodo geradorChamadaMetodo = new GeradorChamadaMetodo();
+    private final GeradorSwitchCase geradorSwitchCase = new GeradorSwitchCase();
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
@@ -33,7 +28,7 @@ public class GeradorCodigoJava
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA, IOException
     {
-        new GeradorCodigo(asa, saida, gerandoCodigoParaTesteUnitario)
+        new VisitorGeracaoCodigo(asa, saida, gerandoCodigoParaTesteUnitario)
                 .geraPackage("programas")
                 .pulaLinha()
                 .geraImportacaoPara(ErroExecucao.class)
@@ -53,18 +48,6 @@ public class GeradorCodigoJava
                 .geraChaveDeFechamentoDaClasse();
     }
 
-    private static boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
-    {
-        boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
-        boolean ehDesvio = bloco instanceof NoSe || bloco instanceof NoEscolha;
-        if (!ehLoop && !ehDesvio)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     private static String geraQuantificador(Quantificador quantificador)
     {
         switch (quantificador)
@@ -77,14 +60,14 @@ public class GeradorCodigoJava
         return "";
     }
 
-    private class GeradorCodigo extends VisitanteASABasico
+    private class VisitorGeracaoCodigo extends VisitanteASABasico
     {
         private final PrintWriter saida;
         private final ASAPrograma asa;
         private int nivelEscopo = 1;
         private final boolean gerandoCodigoParaTesteUnitario; // O código gerado para rodar os testes unitários não inclui alguns detalhes relacionados com execução passo a passo e verificação de thread interrompida durante a execução do programa.
 
-        public GeradorCodigo(ASAPrograma asa, PrintWriter saida, boolean geraCodigoParaTesteUnitario)
+        public VisitorGeracaoCodigo(ASAPrograma asa, PrintWriter saida, boolean geraCodigoParaTesteUnitario)
         {
             this.saida = saida;
             this.asa = asa;
@@ -94,20 +77,7 @@ public class GeradorCodigoJava
         private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
         {
             nivelEscopo++;
-            for (NoBloco bloco : blocos)
-            {
-                geraParadaPassoAPasso(bloco);
-
-                saida.append(geraIdentacao());
-
-                bloco.aceitar(this);
-
-                if (blocoFinalizaComPontoEVirgula(bloco))
-                {
-                    saida.append(";");
-                }
-                saida.println();
-            }
+            Utils.visitarBlocos(blocos, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
             nivelEscopo--;
         }
 
@@ -123,49 +93,6 @@ public class GeradorCodigoJava
             nivelEscopo--;
             pulaLinha();
             pulaLinha();
-        }
-
-        private void geraParadaPassoAPasso(NoBloco no)
-        {
-            if (gerandoCodigoParaTesteUnitario)
-            {
-                return;
-            }
-
-            if (no.ehParavel(Programa.Estado.STEP_OVER))
-            {
-                if (no instanceof NoSe || no instanceof NoEnquanto)
-                {
-                    int linha;
-                    int coluna;
-                    TrechoCodigoFonte trechoCodigoFonte;
-
-                    if (no instanceof NoSe)
-                    {
-                        trechoCodigoFonte = ((NoSe) no).getCondicao().getTrechoCodigoFonte();
-                    }
-                    else if (no instanceof NoEnquanto)
-                    {
-                        trechoCodigoFonte = ((NoEnquanto) no).getCondicao().getTrechoCodigoFonte();
-                    }
-                    else
-                    {
-                        trechoCodigoFonte = no.getTrechoCodigoFonte();
-                    }
-
-                    if (trechoCodigoFonte != null)
-                    {
-                        linha = trechoCodigoFonte.getLinha();
-                        coluna = trechoCodigoFonte.getColuna();
-
-                        pulaLinha();
-                        saida.append(geraIdentacao());
-                        saida.append(String.format("realizarParada(%d, %d);", linha, coluna));
-                        pulaLinha();
-                        pulaLinha();
-                    }
-                }
-            }
         }
 
         private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
@@ -203,7 +130,7 @@ public class GeradorCodigoJava
             saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
 
             geraVerificacaoThreadInterrompida();
-            geraParadaPassoAPasso(noFuncao);
+            Utils.geraParadaPassoAPasso(noFuncao, saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
 
             visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
 
@@ -264,7 +191,7 @@ public class GeradorCodigoJava
             saida.append(")"); // parenteses de fim da lista de parâmetros
         }
 
-        public GeradorCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
+        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
         {
             List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
             boolean existemVariaveisGlobais = false;
@@ -291,7 +218,7 @@ public class GeradorCodigoJava
             return this;
         }
 
-        public GeradorCodigo geraAtributosParaAsBibliotecasIncluidas()
+        public VisitorGeracaoCodigo geraAtributosParaAsBibliotecasIncluidas()
         {
             List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
             for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
@@ -317,16 +244,16 @@ public class GeradorCodigoJava
 
         private String geraIdentacao()
         {
-            return String.format("%" + (nivelEscopo * 4) + "s", " ");
+            return Utils.geraIdentacao(nivelEscopo);
         }
 
-        public GeradorCodigo pulaLinha()
+        public VisitorGeracaoCodigo pulaLinha()
         {
             saida.println();
             return this;
         }
 
-        public GeradorCodigo geraPackage(String stringPackage)
+        public VisitorGeracaoCodigo geraPackage(String stringPackage)
         {
             saida.append("package ")
                     .append(stringPackage)
@@ -336,7 +263,7 @@ public class GeradorCodigoJava
             return this;
         }
 
-        public GeradorCodigo geraMetodos() throws ExcecaoVisitaASA
+        public VisitorGeracaoCodigo geraMetodos() throws ExcecaoVisitaASA
         {
             List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
             for (NoDeclaracao declaracao : declaracoes)
@@ -896,120 +823,22 @@ public class GeradorCodigoJava
             return null;
         }
 
-        private boolean contemCasosNaoConstantes(List<NoCaso> casos)
-        {
-            for (NoCaso caso : casos)
-            {
-                if (caso.getExpressao() != null)
-                {
-                    if (!(caso.getExpressao() instanceof NoExpressaoLiteral))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
         private boolean simularBreakCaso = false;
-        private static final String NOME_VARIAVEL_BREAK = "___sw_break___";
-
-        private void substituirEscolhaPorSeSenao(NoEscolha noEscolha) throws ExcecaoVisitaASA
-        {
-            simularBreakCaso = true;
-
-            geraParadaPassoAPasso(noEscolha.getExpressao());
-
-            saida.append("{");
-            pulaLinha();
-
-            saida.append(geraIdentacao()).append(geraIdentacao()).append("boolean " + NOME_VARIAVEL_BREAK + " = false;");
-            pulaLinha();
-            pulaLinha();
-
-            List<NoCaso> casos = noEscolha.getCasos();
-
-            for (NoCaso noCaso : casos)
-            {
-                NoExpressao verificacaoBreak = new NoNao(new NoReferenciaVariavel(null, NOME_VARIAVEL_BREAK));
-                NoExpressao comparacaoCaso;
-
-                // case default: 
-                if (noCaso.getExpressao() == null)
-                {
-                    comparacaoCaso = new NoLogico(true);
-                }
-                else
-                {
-                    // case expressao_nao_constante:
-                    comparacaoCaso = new NoOperacaoLogicaIgualdade(noEscolha.getExpressao(), noCaso.getExpressao());
-                }
-
-                NoExpressao condicao = new NoOperacaoLogicaE(verificacaoBreak, comparacaoCaso);
-
-                if (noCaso.getExpressao() != null)
-                {
-                    condicao.setTrechoCodigoFonte(noCaso.getExpressao().getTrechoCodigoFonte());
-                }
-
-                NoSe se = new NoSe(condicao);
-                se.setBlocosVerdadeiros(noCaso.getBlocos());
-
-                geraParadaPassoAPasso(se);
-
-                saida.append(geraIdentacao());
-                se.aceitar(this);
-                pulaLinha();
-            }
-
-            saida.append("}");
-        }
 
         @Override
         public Void visitar(NoEscolha no) throws ExcecaoVisitaASA
         {
-            simularBreakCaso = false;
-
-            if (contemCasosNaoConstantes(no.getCasos()))
+            boolean contemCasosNaoConstantes = GeradorSwitchCase.contemCasosNaoConstantes(no);
+            simularBreakCaso = contemCasosNaoConstantes;
+            
+            if (!contemCasosNaoConstantes)
             {
-                substituirEscolhaPorSeSenao(no);
-                return null;
+                geradorSwitchCase.geraSwitchCase(no, saida, this, asa, nivelEscopo, gerandoCodigoParaTesteUnitario);
             }
-
-            saida.append("switch(");
-
-            no.getExpressao().aceitar(this);
-
-            saida.append(")").println();
-            saida.append(geraIdentacao()).append("{").println();
-
-            List<NoCaso> casos = no.getCasos();
-            if (casos != null)
+            else
             {
-                for (NoCaso caso : casos)
-                {
-                    NoExpressao expressaoCaso = caso.getExpressao();
-                    if (expressaoCaso != null)
-                    {
-                        saida.append(geraIdentacao()).append("case ");
-
-                        expressaoCaso.aceitar(this);
-
-                        saida.append(":").println();
-                    }
-                    else
-                    {
-                        saida.append(geraIdentacao()).append("default:");
-                    }
-
-                    visitarBlocos(caso.getBlocos());
-
-                    saida.println();
-                }
+                geradorSwitchCase.geraSeSenao(no, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
             }
-
-            saida.append(geraIdentacao()).append("}").println();
 
             return null;
         }
@@ -1124,7 +953,8 @@ public class GeradorCodigoJava
         {
             if (simularBreakCaso)
             {
-                saida.append(NOME_VARIAVEL_BREAK).append(" = true");
+                saida.append(GeradorSwitchCase.NOME_VARIAVEL_BREAK)
+                        .append(" = true");
             }
             else
             {
@@ -1151,7 +981,7 @@ public class GeradorCodigoJava
             return null;
         }
 
-        public GeradorCodigo geraImportacaoPara(Class classe)
+        public VisitorGeracaoCodigo geraImportacaoPara(Class classe)
         {
             saida.append("import ")
                     .append(classe.getCanonicalName())
@@ -1161,7 +991,7 @@ public class GeradorCodigoJava
             return this;
         }
 
-        private GeradorCodigo geraImportacaoDasBibliotecasIncluidas()
+        private VisitorGeracaoCodigo geraImportacaoDasBibliotecasIncluidas()
         {
             for (NoInclusaoBiblioteca no : asa.getListaInclusoesBibliotecas())
             {
@@ -1176,7 +1006,7 @@ public class GeradorCodigoJava
             return this;
         }
 
-        private GeradorCodigo geraConstrutor(String nomeDaClasseJava)
+        private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava)
         {
             saida.append(geraIdentacao())
                     .append("public ")
@@ -1188,21 +1018,21 @@ public class GeradorCodigoJava
             return this;
         }
 
-        private GeradorCodigo geraNomeDaClasse(String nomeClasseJava)
+        private VisitorGeracaoCodigo geraNomeDaClasse(String nomeClasseJava)
         {
             saida.format("public class %s extends Programa", nomeClasseJava).println();
 
             return this;
         }
 
-        public GeradorCodigo geraChaveDeAberturaDaClasse()
+        public VisitorGeracaoCodigo geraChaveDeAberturaDaClasse()
         {
             saida.append("{").println();
 
             return this;
         }
 
-        public GeradorCodigo geraChaveDeFechamentoDaClasse()
+        public VisitorGeracaoCodigo geraChaveDeFechamentoDaClasse()
         {
             saida.append("}").println();
 

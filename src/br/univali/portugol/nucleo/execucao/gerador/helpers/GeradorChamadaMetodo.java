@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao.gerador;
+package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Elieser
  */
-class GeradorChamadaMetodo
+public class GeradorChamadaMetodo
 {
     public void gera(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, ASAPrograma asa) throws ExcecaoVisitaASA
     {
