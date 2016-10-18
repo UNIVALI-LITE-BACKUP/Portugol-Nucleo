@@ -620,25 +620,6 @@ public class GeradorCodigoJava
             return null;
         }
 
-//        private void criaValueHoldersParaParametrosPorReferencia(List<MetaPametro> metaDadosDosParametros, 
-//                                        List<NoExpressao> parametrosPassados)
-//        {
-//            assert(metaDadosDosParametros.size() == parametrosPassados.size());
-//            
-//            for (int i = 0; i < metaDadosDosParametros.size(); i++ )
-//            {
-//                if (metaDadosDosParametros.get(i).modoAcesso == ModoAcesso.POR_REFERENCIA)
-//                {
-//                    String nomeParametroPassado = ((NoReferencia)parametrosPassados.get(i)).getNome();
-//                    String nomeHolder = "holder_" + nomeParametroPassado;
-//                    saida.append("ValueHolder ")
-//                            .append(nomeHolder)
-//                            .append(" = new ValueHolder(")
-//                            .append(nomeParametroPassado)
-//                            .append(");").println();
-//                }
-//            }
-//        }
         @Override
         public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {

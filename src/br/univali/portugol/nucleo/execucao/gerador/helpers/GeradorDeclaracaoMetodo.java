@@ -46,7 +46,7 @@ public class GeradorDeclaracaoMetodo
         saida.append(identacao).append("{").println(); // inicia o escopo do método
 
         Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
-        
+
         Utils.geraParadaPassoAPasso(noFuncao, saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
 
         Utils.visitarBlocos(noFuncao.getBlocos(), saida, visitor, nivelEscopo, gerandoCodigoParaTesteUnitario); // gera o código dentro do método
@@ -67,28 +67,28 @@ public class GeradorDeclaracaoMetodo
         }
         return "";
     }
-    
+
     private static void geraStringDosParametros(NoDeclaracaoFuncao noFuncao, PrintWriter saida)
+    {
+        List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
+
+        saida.append("("); // parenteses de início da lista de parâmetros
+        int size = parametros.size();
+        for (int i = 0; i < size; i++)
         {
-            List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
+            NoDeclaracaoParametro noParametro = parametros.get(i);
 
-            saida.append("("); // parenteses de início da lista de parâmetros
-            int size = parametros.size();
-            for (int i = 0; i < size; i++)
+            saida.append(Utils.getNomeTipoJava(noParametro.getTipoDado()))
+                    .append(" ") // espaço entre o tipo e o nome
+                    .append(Utils.geraNomeValido(noParametro.getNome()))
+                    .append(geraQuantificador(noParametro.getQuantificador()));
+
+            if (i < size - 1)
             {
-                NoDeclaracaoParametro noParametro = parametros.get(i);
-
-                saida.append(Utils.getNomeTipoJava(noParametro.getTipoDado()))
-                        .append(" ") // espaço entre o tipo e o nome
-                        .append(Utils.geraNomeValido(noParametro.getNome()))
-                        .append(geraQuantificador(noParametro.getQuantificador()));
-
-                if (i < size - 1)
-                {
-                    saida.append(", ");
-                }
+                saida.append(", ");
             }
-            saida.append(")"); // parenteses de fim da lista de parâmetros
         }
+        saida.append(")"); // parenteses de fim da lista de parâmetros
+    }
 
 }

@@ -25,7 +25,8 @@ public class GeradorChamadaMetodo
 
         List<ParametroEsperado> parametrosEsperados = getParametrosEsperados(no, asa);
 
-        //criaValueHoldersParaParametrosPorReferencia(metaDadosParametrosEsperados, no.getParametros());
+        criaValueHoldersParaParametrosPorReferencia(parametrosEsperados, no.getParametros(), saida);
+        
         saida.format("%s%s(", escopoFuncao, Utils.geraNomeValido(nomeFuncao));
         List<NoExpressao> parametrosPassados = no.getParametros();
 
@@ -48,17 +49,17 @@ public class GeradorChamadaMetodo
     {
         boolean precisaDeCast = false;
         boolean parametroEhOperacao = false;
-        //boolean passandoPorReferencia = false;
+        boolean passandoPorReferencia = false;
 
         if (parametroEsperado != null)
         {
             TipoDado tipoEsperado = parametroEsperado.tipoDado;
-            //ModoAcesso modoAcessoEsperado = metaDadosParametrosEsperados.get(i).modoAcesso;
+            ModoAcesso modoAcessoEsperado = parametroEsperado.modoAcesso;
 
             // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
             precisaDeCast = tipoEsperado == TipoDado.INTEIRO && parametroRecebido.getTipoResultante() == TipoDado.REAL;
             parametroEhOperacao = parametroRecebido instanceof NoOperacao;
-            //passandoPorReferencia = modoAcessoEsperado == ModoAcesso.POR_REFERENCIA;
+            passandoPorReferencia = modoAcessoEsperado == ModoAcesso.POR_REFERENCIA;
             if (precisaDeCast)
             {
                 saida.append("(int)");
@@ -70,15 +71,14 @@ public class GeradorChamadaMetodo
         }
 
         // verifica se é um parametro por referência
-        //if (!passandoPorReferencia)
-        //{
-        parametroRecebido.aceitar(visitor);
-        //}
-        //else
-        //{
-        //    saida.append( "holder_")
-        //            .append(((NoReferencia)parametrosPassados.get(i)).getNome());
-        //}
+        if (!passandoPorReferencia)
+        {
+            parametroRecebido.aceitar(visitor);
+        }
+        else
+        {
+            saida.append( "holder_").append(parametroEsperado.nome);
+        }
 
         if (precisaDeCast && parametroEhOperacao)
         {
@@ -90,11 +90,13 @@ public class GeradorChamadaMetodo
     {
         public final TipoDado tipoDado;
         public final ModoAcesso modoAcesso;
+        public final String nome;
 
-        public ParametroEsperado(TipoDado tipoDado, ModoAcesso modoAcesso)
+        public ParametroEsperado(TipoDado tipoDado, ModoAcesso modoAcesso, String nome)
         {
             this.tipoDado = tipoDado;
             this.modoAcesso = modoAcesso;
+            this.nome = nome;
         }
     }
 
@@ -117,7 +119,8 @@ public class GeradorChamadaMetodo
                 {
                     TipoDado tipoDado = metaDadosParametros.obter(i).getTipoDado();
                     ModoAcesso modoAcesso = metaDadosParametros.obter(i).getModoAcesso();
-                    metaDados.add(new ParametroEsperado(tipoDado, modoAcesso));
+                    String nome = metaDadosParametros.obter(i).getNome();
+                    metaDados.add(new ParametroEsperado(tipoDado, modoAcesso, nome));
                 }
                 return metaDados;
             }
@@ -133,7 +136,10 @@ public class GeradorChamadaMetodo
             List<NoDeclaracaoParametro> parametros = no.getOrigemDaReferencia().getParametros();
             for (NoDeclaracaoParametro parametro : parametros)
             {
-                metaDados.add(new ParametroEsperado(parametro.getTipoDado(), parametro.getModoAcesso()));
+                TipoDado tipo = parametro.getTipoDado();
+                ModoAcesso modoAcesso = parametro.getModoAcesso();
+                String nome = parametro.getNome();
+                metaDados.add(new ParametroEsperado(tipo, modoAcesso, nome));
             }
             return metaDados;
         }
@@ -163,6 +169,44 @@ public class GeradorChamadaMetodo
                 saida.append(";").println();
             }
         }
+    }
+
+    private void criaValueHoldersParaParametrosPorReferencia(List<ParametroEsperado> metaDadosDosParametros,
+            List<NoExpressao> parametrosPassados, PrintWriter saida)
+    {
+        //assert (metaDadosDosParametros.size() == parametrosPassados.size());
+
+        for (int i = 0; i < metaDadosDosParametros.size(); i++)
+        {
+            if (metaDadosDosParametros.get(i).modoAcesso == ModoAcesso.POR_REFERENCIA)
+            {
+                NoReferencia parametroPassado = (NoReferencia) parametrosPassados.get(i);
+                String nomeParametroPassado = parametroPassado.getNome();
+                String nomeTipoJava = getNomeTipoJava(parametroPassado);
+                String nomeHolder = "holder_" + nomeParametroPassado;
+                saida.append("ValueHolder<")
+                        .append(nomeTipoJava)
+                        .append("> ")
+                        .append(nomeHolder)
+                        .append(" = new ValueHolder(")
+                        .append(nomeParametroPassado)
+                        .append(");").println();
+            }
+        }
+    }
+    
+    private static String getNomeTipoJava(NoReferencia noReferencia)
+    {
+        switch (noReferencia.getTipoResultante())
+        {
+            case CADEIA: return "String";
+            case CARACTER: return "Character";
+            case INTEIRO: return "Integer";
+            case LOGICO: return "Boolean";
+            case REAL: return "Double";
+            case VAZIO: return "Void";
+        }
+        throw new IllegalArgumentException("Não existe tipo java equivalente!");
     }
 
 }
