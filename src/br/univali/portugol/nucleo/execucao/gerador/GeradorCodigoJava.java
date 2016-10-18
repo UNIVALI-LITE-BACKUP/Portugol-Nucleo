@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao;
+package br.univali.portugol.nucleo.execucao.gerador;
 
 import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
@@ -23,12 +23,14 @@ import java.util.Map;
 public class GeradorCodigoJava
 {
     private static final String PACOTE_DAS_LIBS = "br.univali.portugol.nucleo.bibliotecas.";
-    
+
+    private final GeradorChamadaMetodo geradorChamadaMetodo = new GeradorChamadaMetodo();
+
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
         gera(asa, saida, nomeClasseJava, false);
     }
-    
+
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA, IOException
     {
         new GeradorCodigo(asa, saida, gerandoCodigoParaTesteUnitario)
@@ -51,7 +53,31 @@ public class GeradorCodigoJava
                 .geraChaveDeFechamentoDaClasse();
     }
 
-    private static class GeradorCodigo extends VisitanteASABasico
+    private static boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
+    {
+        boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
+        boolean ehDesvio = bloco instanceof NoSe || bloco instanceof NoEscolha;
+        if (!ehLoop && !ehDesvio)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static String geraQuantificador(Quantificador quantificador)
+    {
+        switch (quantificador)
+        {
+            case VETOR:
+                return "[]";
+            case MATRIZ:
+                return "[][]";
+        }
+        return "";
+    }
+
+    private class GeradorCodigo extends VisitanteASABasico
     {
         private final PrintWriter saida;
         private final ASAPrograma asa;
@@ -69,7 +95,7 @@ public class GeradorCodigoJava
         {
             nivelEscopo++;
             for (NoBloco bloco : blocos)
-            {                
+            {
                 geraParadaPassoAPasso(bloco);
 
                 saida.append(geraIdentacao());
@@ -84,7 +110,7 @@ public class GeradorCodigoJava
             }
             nivelEscopo--;
         }
-        
+
         private void geraVerificacaoThreadInterrompida()
         {
             if (gerandoCodigoParaTesteUnitario)
@@ -105,7 +131,7 @@ public class GeradorCodigoJava
             {
                 return;
             }
-            
+
             if (no.ehParavel(Programa.Estado.STEP_OVER))
             {
                 if (no instanceof NoSe || no instanceof NoEnquanto)
@@ -142,36 +168,10 @@ public class GeradorCodigoJava
             }
         }
 
-        private static boolean blocoFinalizaComPontoEVirgula(NoBloco bloco)
-        {
-            boolean ehLoop = bloco instanceof NoPara || bloco instanceof NoEnquanto || bloco instanceof NoFacaEnquanto;
-            boolean ehDesvio = bloco instanceof NoSe || bloco instanceof NoEscolha;
-            if (!ehLoop && !ehDesvio)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private static String geraQuantificador(Quantificador quantificador)
-        {
-            switch (quantificador)
-            {
-                case VETOR:
-                    return "[]";
-                case MATRIZ:
-                    return "[][]";
-            }
-            return "";
-        }
-
         private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
         {
-            
-            
-            
-            saida.println();            
+
+            saida.println();
 
             String nome = noFuncao.getNome();
             boolean metodoPrincipal = "inicio".equals(nome);
@@ -188,7 +188,7 @@ public class GeradorCodigoJava
                     .append(getNomeTipoJava(noFuncao.getTipoDado()))
                     .append(geraQuantificador(noFuncao.getQuantificador()))
                     .append(" ")
-                    .append(geraNomeValido(nome));
+                    .append(Utils.geraNomeValido(nome));
 
             if (!metodoPrincipal)
             {
@@ -204,7 +204,7 @@ public class GeradorCodigoJava
 
             geraVerificacaoThreadInterrompida();
             geraParadaPassoAPasso(noFuncao);
-            
+
             visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
 
             saida.println();
@@ -253,7 +253,7 @@ public class GeradorCodigoJava
 
                 saida.append(getNomeTipoJava(noParametro.getTipoDado()))
                         .append(" ") // espaço entre o tipo e o nome
-                        .append(geraNomeValido(noParametro.getNome()))
+                        .append(Utils.geraNomeValido(noParametro.getNome()))
                         .append(geraQuantificador(noParametro.getQuantificador()));
 
                 if (i < size - 1)
@@ -303,7 +303,7 @@ public class GeradorCodigoJava
                     nome = biblioteca.getAlias();
                 }
                 saida.append(geraIdentacao())
-                        .format("private final %s %s = new %s();", tipo, geraNomeValido(nome), tipo)
+                        .format("private final %s %s = new %s();", tipo, Utils.geraNomeValido(nome), tipo)
                         .println();
             }
 
@@ -383,7 +383,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoCadeia noCadeia) throws ExcecaoVisitaASA
         {
-            String valor = GeradorCodigoUtils.preservaCaracteresEspeciais(noCadeia.getValor());
+            String valor = Utils.preservaCaracteresEspeciais(noCadeia.getValor());
             valor = '\"' + valor + '\"';
             saida.append(valor);
             return null;
@@ -579,7 +579,7 @@ public class GeradorCodigoJava
             String nome = noDeclaracao.getNome();
             String nomeTipo = getNomeTipoJava(noDeclaracao.getTipoDado());
 
-            saida.format("%s %s", nomeTipo, geraNomeValido(nome));
+            saida.format("%s %s", nomeTipo, Utils.geraNomeValido(nome));
 
             if (noDeclaracao.possuiInicializacao())
             {
@@ -609,7 +609,7 @@ public class GeradorCodigoJava
         {
             String nome = no.getNome();
             String tipo = getNomeTipoJava(no.getTipoDado());
-            saida.format("%s %s[]", tipo, geraNomeValido(nome));
+            saida.format("%s %s[]", tipo, Utils.geraNomeValido(nome));
 
             if (no.possuiInicializacao())
             {
@@ -663,7 +663,7 @@ public class GeradorCodigoJava
         {
             String nome = noDeclaracao.getNome();
             String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
-            saida.format("%s %s[][]", tipo, geraNomeValido(nome));
+            saida.format("%s %s[][]", tipo, Utils.geraNomeValido(nome));
 
             saida.append(" = ");
 
@@ -764,7 +764,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
         {
-            saida.append(geraNomeValido(no.getNome()));
+            saida.append(Utils.geraNomeValido(no.getNome()));
 
             saida.append("[");
             no.getIndice().aceitar(this);
@@ -776,7 +776,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
         {
-            saida.append(geraNomeValido(no.getNome()))
+            saida.append(Utils.geraNomeValido(no.getNome()))
                     .append("[");
 
             no.getLinha().aceitar(this);
@@ -793,7 +793,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
         {
-            String nome = geraNomeValido(no.getNome());
+            String nome = Utils.geraNomeValido(no.getNome());
             if (no.getEscopo() != null)
             {
                 saida.append(no.getEscopo())
@@ -815,9 +815,8 @@ public class GeradorCodigoJava
             saida.append(")").println();
             saida.append(geraIdentacao()).append("{").println();
 
-            
             geraVerificacaoThreadInterrompida();
-            
+
             visitarBlocos(no.getBlocos());
 
             saida.println();
@@ -851,7 +850,7 @@ public class GeradorCodigoJava
             saida.append(geraIdentacao()).append("{").println();
 
             geraVerificacaoThreadInterrompida();
-            
+
             visitarBlocos(no.getBlocos());
 
             saida.println();
@@ -1022,7 +1021,7 @@ public class GeradorCodigoJava
             saida.append(geraIdentacao()).append("{").println();
 
             geraVerificacaoThreadInterrompida();
-            
+
             List<NoBloco> blocos = no.getBlocos();
             if (blocos != null)
             {
@@ -1094,83 +1093,6 @@ public class GeradorCodigoJava
             return null;
         }
 
-        private String getNomeBiblioteca(String escopo)
-        {
-            List<NoInclusaoBiblioteca> libs = asa.getListaInclusoesBibliotecas();
-            for (NoInclusaoBiblioteca lib : libs)
-            {
-                if (lib.getAlias() != null)
-                {
-                    if (lib.getAlias().equals(escopo))
-                    {
-                        return lib.getNome();
-                    }
-                }
-                else if (lib.getNome().equals(escopo))
-                {
-                    return escopo;
-                }
-            }
-
-            throw new IllegalArgumentException("Não foi possível encontrar a biblioteca para o escopo " + escopo);
-        }
-
-        private class MetaPametro
-        {
-            public final TipoDado tipoDado;
-            public final ModoAcesso modoAcesso;
-
-            public MetaPametro(TipoDado tipoDado, ModoAcesso modoAcesso)
-            {
-                this.tipoDado = tipoDado;
-                this.modoAcesso = modoAcesso;
-            }
-        }
-
-        private List<MetaPametro> getMetaDadosDosParametrosEsperados(NoChamadaFuncao no)
-        {
-            List<MetaPametro> metaDados = new ArrayList<>();
-
-            if (no.getEscopo() != null) // é uma função de biblioteca?
-            {
-                String nomeBiblioteca = getNomeBiblioteca(no.getEscopo());
-                try
-                {
-                    MetaDadosBiblioteca metadadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(nomeBiblioteca);
-                    assert (metadadosBiblioteca != null);
-                    MetaDadosFuncao metaDadosFuncao = metadadosBiblioteca.obterMetaDadosFuncoes().obter(no.getNome());
-                    assert (metaDadosFuncao != null);
-                    MetaDadosParametros metaDadosParametros = metaDadosFuncao.obterMetaDadosParametros();
-                    int totalParametros = metaDadosParametros.quantidade();
-                    for (int i = 0; i < totalParametros; i++)
-                    {
-                        TipoDado tipoDado = metaDadosParametros.obter(i).getTipoDado();
-                        ModoAcesso modoAcesso = metaDadosParametros.obter(i).getModoAcesso();
-                        String nome = metaDadosParametros.obter(i).getNome();
-                        metaDados.add(new MetaPametro(tipoDado, modoAcesso));
-                    }
-                    return metaDados;
-                }
-                catch (ErroCarregamentoBiblioteca ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
-
-            // é uma função comum
-            if (no.getOrigemDaReferencia() != null)
-            {
-                List<NoDeclaracaoParametro> parametros = no.getOrigemDaReferencia().getParametros();
-                for (NoDeclaracaoParametro parametro : parametros)
-                {
-                    metaDados.add(new MetaPametro(parametro.getTipoDado(), parametro.getModoAcesso()));
-                }
-                return metaDados;
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
 //        private void criaValueHoldersParaParametrosPorReferencia(List<MetaPametro> metaDadosDosParametros, 
 //                                        List<NoExpressao> parametrosPassados)
 //        {
@@ -1193,117 +1115,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
-            String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
-            String nomeFuncao = no.getNome();
-            if (escopoFuncao.isEmpty() && "leia".equals(nomeFuncao)) //a função 'leia' tem um tratamento especial
-            {
-                geraCodigoParaFuncaoLeia(no);
-                return null;
-            }
-
-            List<MetaPametro> metaDadosParametrosEsperados = getMetaDadosDosParametrosEsperados(no);
-
-            //criaValueHoldersParaParametrosPorReferencia(metaDadosParametrosEsperados, no.getParametros());
-            saida.format("%s%s(", escopoFuncao, geraNomeValido(nomeFuncao));
-            List<NoExpressao> parametrosPassados = no.getParametros();
-
-            int totalParametros = parametrosPassados.size();
-            for (int i = 0; i < totalParametros; i++)
-            {
-                NoExpressao parametroPassado = parametrosPassados.get(i);
-                boolean precisaDeCast = false;
-                boolean parametroEhUmaOperacao = false;
-                //boolean passandoPorReferencia = false;
-                if (i < metaDadosParametrosEsperados.size())
-                {
-                    TipoDado tipoEsperado = metaDadosParametrosEsperados.get(i).tipoDado;
-                    //ModoAcesso modoAcessoEsperado = metaDadosParametrosEsperados.get(i).modoAcesso;
-
-                    // verifica se é necessário fazer cast de um double para int quando o parâmetro esperado é int
-                    precisaDeCast = tipoEsperado == TipoDado.INTEIRO && parametroPassado.getTipoResultante() == TipoDado.REAL;
-                    parametroEhUmaOperacao = parametroPassado instanceof NoOperacao;
-                    //passandoPorReferencia = modoAcessoEsperado == ModoAcesso.POR_REFERENCIA;
-                    if (precisaDeCast)
-                    {
-                        saida.append("(int)");
-                        if (parametroEhUmaOperacao)
-                        {
-                            saida.append("("); //coloca toda a operação que está sendo passada por parâmetro entre parênteses para que o cast seja aplicado em toda a operação
-                        }
-                    }
-                }
-
-                // verifica se é um parametro por referência
-                //if (!passandoPorReferencia)
-                //{
-                parametroPassado.aceitar(this);
-                //}
-                //else
-                //{
-                //    saida.append( "holder_")
-                //            .append(((NoReferencia)parametrosPassados.get(i)).getNome());
-                //}
-
-                if (precisaDeCast && parametroEhUmaOperacao)
-                {
-                    saida.append(")");
-                }
-
-                if (i < totalParametros - 1)
-                {
-                    saida.append(", ");
-                }
-            }
-            saida.append(")");
-
-            return null;
-        }
-
-        private void geraNomeDaReferencia(NoReferencia no) throws ExcecaoVisitaASA
-        {
-            String nome = geraNomeValido(no.getNome());
-            saida.append(nome);
-            if (no instanceof NoReferenciaVetor)
-            {
-                saida.append("[");
-                NoReferenciaVetor noVetor = (NoReferenciaVetor) no;
-                noVetor.getIndice().aceitar(this);
-                saida.append("]");
-
-            }
-            else if (no instanceof NoReferenciaMatriz) //NoReferenciaMatriz
-            {
-                saida.append("[");
-                NoReferenciaMatriz noMatriz = (NoReferenciaMatriz) no;
-                noMatriz.getLinha().aceitar(this);
-                saida.append("][");
-                noMatriz.getColuna().aceitar(this);
-                saida.append("]");
-            }
-        }
-
-        private String geraCodigoParaFuncaoLeia(NoChamadaFuncao no) throws ExcecaoVisitaASA
-        {
-            List<NoExpressao> parametros = no.getParametros();
-            for (int i = 0; i < parametros.size(); i++)
-            {
-                NoReferencia noRef = (NoReferencia) parametros.get(i);
-
-                geraNomeDaReferencia(noRef); // gera nome da variável + colchetes de vetores ou matrizes incluíndo as expressões dos índices
-
-                NoDeclaracao origem = noRef.getOrigemDaReferencia();
-                TipoDado tipo = TipoDado.CADEIA;
-                if (origem != null) // parece que tem um bug no leia passando 'cadeia' como parametro, a origem do 'leia' é nula
-                {
-                    tipo = origem.getTipoDado();
-                }
-                String nomeFuncao = "leia" + GeradorCodigoUtils.getNomeTipoEmCamelCase(tipo);
-                saida.format(" = %s()", nomeFuncao);
-                if (i < parametros.size() - 1) // adiciona um ponto e vírgula depois de cada atribuição gerada, exceto para a última
-                {
-                    saida.append(";").println();
-                }
-            }
+            geradorChamadaMetodo.gera(no, saida, this, asa);
             return null;
         }
 
@@ -1370,7 +1182,7 @@ public class GeradorCodigoJava
                     .append("public ")
                     .append(nomeDaClasseJava)
                     .append("() throws ErroExecucao, InterruptedException {");
-        
+
             saida.append("}").println();
 
             return this;
@@ -1402,15 +1214,7 @@ public class GeradorCodigoJava
          * ou função
          * @return Um nome que não conflite com as palavras reservadas do java
          */
-        private static String geraNomeValido(String nomeAtual)
-        {
-            if (!ehUmaPalavraReservadaNoJava(nomeAtual))
-            {
-                return nomeAtual;
-            }
-
-            return "_" + nomeAtual;
-        }
+        
     }
 
     private static final Map<Class, String> OPERADORES = new HashMap<>();
@@ -1441,65 +1245,5 @@ public class GeradorCodigoJava
         OPERADORES.put(NoOperacaoBitwiseLeftShift.class, "<<");
         OPERADORES.put(NoOperacaoBitwiseRightShift.class, ">>");
     }
-
-    private static boolean ehUmaPalavraReservadaNoJava(String nome)
-    {
-        return (Arrays.binarySearch(PALAVRAS_RESERVADAS_JAVA, nome) >= 0);
-    }
-
-    // lista de palavras reservadas java 'roubadas' da wikipedia e ordenadasalfabéticamente para possibilitar uma busca binária
-    private static final String[] PALAVRAS_RESERVADAS_JAVA =
-    {
-        "assert",
-        "boolean",
-        "break",
-        "byte",
-        "case",
-        "catch",
-        "char",
-        "class",
-        "const",
-        "continue",
-        "default",
-        "do",
-        "double",
-        "else",
-        "enum",
-        "final",
-        "finally",
-        "float",
-        "for",
-        "goto",
-        "if",
-        "import",
-        "instanceof",
-        "interface",
-        "int",
-        "long",
-        "native",
-        "new",
-        "package",
-        "private",
-        "protected",
-        "public",
-        "return",
-        "short",
-        "static",
-        "strictfp",
-        "super",
-        "switch",
-        "synchronized",
-        "this",
-        "throw",
-        "throws",
-        "transient",
-        "try",
-        "void",
-        "volatile",
-        "while",
-        "false",
-        "null",
-        "true"
-    };
 
 }

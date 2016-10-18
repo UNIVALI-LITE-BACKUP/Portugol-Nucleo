@@ -11,7 +11,7 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
-import br.univali.portugol.nucleo.execucao.GeradorCodigoJava;
+import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.File;

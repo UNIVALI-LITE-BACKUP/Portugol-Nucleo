@@ -6,6 +6,7 @@ Este é um teste de integração que percorre todos os exemplos do PS e para cad
  */
 package br.univali.portugol.nucleo.execucao;
 
+import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.asa.ASAPrograma;

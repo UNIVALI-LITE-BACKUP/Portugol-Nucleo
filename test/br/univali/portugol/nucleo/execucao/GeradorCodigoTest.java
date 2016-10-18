@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.execucao;
 
+import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
