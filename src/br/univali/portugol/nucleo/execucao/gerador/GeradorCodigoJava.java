@@ -111,11 +111,6 @@ public class GeradorCodigoJava
             return this;
         }
 
-        private String geraIdentacao()
-        {
-            return Utils.geraIdentacao(nivelEscopo);
-        }
-
         public VisitorGeracaoCodigo pulaLinha()
         {
             saida.println();
@@ -551,7 +546,10 @@ public class GeradorCodigoJava
             no.getCondicao().aceitar(this);
 
             saida.append(")").println();
-            saida.append(geraIdentacao()).append("{").println();
+
+            String identacao = Utils.geraIdentacao(nivelEscopo);
+
+            saida.append(identacao).append("{").println();
 
             geraVerificacaoThreadInterrompida();
 
@@ -559,7 +557,7 @@ public class GeradorCodigoJava
 
             saida.println();
 
-            saida.append(geraIdentacao()).append("}").println();
+            saida.append(identacao).append("}").println();
 
             return null;
         }
@@ -585,7 +583,10 @@ public class GeradorCodigoJava
             }
 
             saida.append(")").println(); // fecha o parênteses do for
-            saida.append(geraIdentacao()).append("{").println();
+
+            String identacao = Utils.geraIdentacao(nivelEscopo);
+
+            saida.append(identacao).append("{").println();
 
             geraVerificacaoThreadInterrompida();
 
@@ -593,7 +594,7 @@ public class GeradorCodigoJava
 
             saida.println();
 
-            saida.append(geraIdentacao()).append("}").println();
+            saida.append(identacao).append("}").println();
 
             return null;
         }
@@ -607,7 +608,9 @@ public class GeradorCodigoJava
 
             saida.append(")").println();
 
-            saida.append(geraIdentacao()).append("{").println();
+            String identacao = Utils.geraIdentacao(nivelEscopo);
+
+            saida.append(identacao).append("{").println();
 
             List<NoBloco> blocosVerdadeiros = no.getBlocosVerdadeiros();
             if (blocosVerdadeiros != null)
@@ -616,19 +619,19 @@ public class GeradorCodigoJava
                 saida.println();
             }
 
-            saida.append(geraIdentacao()).append("}").println();
+            saida.append(identacao).append("}").println();
 
             List<NoBloco> blocosFalsos = no.getBlocosFalsos();
             if (blocosFalsos != null)
             {
-                saida.append(geraIdentacao()).append("else").println();
-                saida.append(geraIdentacao()).append("{").println();
+                saida.append(identacao).append("else").println();
+                saida.append(identacao).append("{").println();
 
                 visitarBlocos(blocosFalsos);
 
                 saida.println();
 
-                saida.append(geraIdentacao()).append("}").println();
+                saida.append(identacao).append("}").println();
             }
 
             return null;
@@ -657,8 +660,10 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoFacaEnquanto no) throws ExcecaoVisitaASA
         {
+            String identacao = Utils.geraIdentacao(nivelEscopo);
+
             saida.append("do").println();
-            saida.append(geraIdentacao()).append("{").println();
+            saida.append(identacao).append("{").println();
 
             geraVerificacaoThreadInterrompida();
 
@@ -669,9 +674,9 @@ public class GeradorCodigoJava
                 saida.println();
             }
 
-            saida.append(geraIdentacao()).append("}").println();
+            saida.append(identacao).append("}").println();
 
-            saida.append(geraIdentacao()).append("while(");
+            saida.append(identacao).append("while(");
 
             no.getCondicao().aceitar(this);
 
@@ -819,7 +824,7 @@ public class GeradorCodigoJava
 
         private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava)
         {
-            saida.append(geraIdentacao())
+            saida.append(Utils.geraIdentacao(nivelEscopo))
                     .append("public ")
                     .append(nomeDaClasseJava)
                     .append("() throws ErroExecucao, InterruptedException {");
