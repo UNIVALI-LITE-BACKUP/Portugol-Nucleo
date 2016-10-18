@@ -192,23 +192,25 @@ public class GeradorCodigoTest
         String nomeCompleto = getClass().getCanonicalName();
         int indicePonto = nomeCompleto.lastIndexOf(".");
         caminho = nomeCompleto.substring(0, indicePonto).replace('.', '/') + caminho;
-        
+
         InputStream stream = new FileInputStream("./test/" + caminho);
         Scanner scanner = new Scanner(stream);
         return scanner.useDelimiter("\\Z").next();
     }
-    
+
     private void comparaCodigos() throws Exception
     {
         String nome = "/arquivos/" + nomeTeste.getMethodName();
-        
+
         String codigoPortugol = getConteudoArquivo(nome + ".por");
         String codigoJavaEsperado = getConteudoArquivo(nome + ".java");
-                
+
         ResultadoAnalise resultado = analisador.analisar(codigoPortugol);
         assertNotNull(resultado);
         assertNotNull(resultado.getErros());
         List<ErroAnalise> erros = resultado.getErros();
+        assertEquals(0, resultado.getErros().size());
+
         if (!erros.isEmpty())
         {
             for (ErroAnalise erro : erros)
@@ -216,8 +218,6 @@ public class GeradorCodigoTest
                 System.out.println(erro);
             }
         }
-        assertEquals(0, resultado.getErros().size());
-
         ASAPrograma asa = (ASAPrograma) analisador.getASA();
 
         // gera o código e escreve em um ByteArrayOutputStream

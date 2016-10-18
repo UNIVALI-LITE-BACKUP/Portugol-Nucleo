@@ -20,6 +20,7 @@ public class GeradorCodigoJava
 
     private final GeradorChamadaMetodo geradorChamadaMetodo = new GeradorChamadaMetodo();
     private final GeradorSwitchCase geradorSwitchCase = new GeradorSwitchCase();
+    private final GeradorDeclaracaoMetodo geradorDeclaracaoMetodo = new GeradorDeclaracaoMetodo();
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
@@ -46,18 +47,6 @@ public class GeradorCodigoJava
                 .pulaLinha()
                 .geraMetodos()
                 .geraChaveDeFechamentoDaClasse();
-    }
-
-    private static String geraQuantificador(Quantificador quantificador)
-    {
-        switch (quantificador)
-        {
-            case VETOR:
-                return "[]";
-            case MATRIZ:
-                return "[][]";
-        }
-        return "";
     }
 
     private class VisitorGeracaoCodigo extends VisitanteASABasico
@@ -95,100 +84,11 @@ public class GeradorCodigoJava
             pulaLinha();
         }
 
-        private void geraMetodo(NoDeclaracaoFuncao noFuncao) throws ExcecaoVisitaASA
-        {
-
-            saida.println();
-
-            String nome = noFuncao.getNome();
-            boolean metodoPrincipal = "inicio".equals(nome);
-            if (metodoPrincipal)
-            {
-                nome = "executar";
-                saida.append(geraIdentacao());
-                saida.append("@Override").println();
-            }
-
-            saida.append(geraIdentacao())
-                    .append(metodoPrincipal ? "protected" : "private")
-                    .append(" ")
-                    .append(getNomeTipoJava(noFuncao.getTipoDado()))
-                    .append(geraQuantificador(noFuncao.getQuantificador()))
-                    .append(" ")
-                    .append(Utils.geraNomeValido(nome));
-
-            if (!metodoPrincipal)
-            {
-                geraStringDosParametros(noFuncao);
-            }
-            else
-            {
-                saida.append("(String[] parametros)");
-            }
-            saida.append(" throws ErroExecucao, InterruptedException");
-            saida.println(); // pula uma linha depois da declaração da assinatura do método
-            saida.append(geraIdentacao()).append("{").println(); // inicia o escopo do método
-
-            geraVerificacaoThreadInterrompida();
-            Utils.geraParadaPassoAPasso(noFuncao, saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
-
-            visitarBlocos(noFuncao.getBlocos()); // gera o código dentro do método
-
-            saida.println();
-            saida.append(geraIdentacao()).append("}").println(); // finaliza o escopo do método
-            saida.println(); // linha em branco depois de cada método
-        }
-
         private boolean podeDeclararNoComoAtributo(NoDeclaracao no)
         {
             return no instanceof NoDeclaracaoVariavel
                     || no instanceof NoDeclaracaoVetor
                     || no instanceof NoDeclaracaoMatriz;
-        }
-
-        private String getNomeTipoJava(TipoDado tipoPortugol)
-        {
-            switch (tipoPortugol)
-            {
-                case INTEIRO:
-                    return "int";
-                case REAL:
-                    return "double";
-                case CADEIA:
-                    return "String";
-                case CARACTER:
-                    return "char";
-                case LOGICO:
-                    return "boolean";
-                case VAZIO:
-                    return "void";
-            }
-
-            String mensagem = String.format("Não foi possível traduzir o tipo %s do Portugol para um tipo JAva.", tipoPortugol.getNome());
-            throw new IllegalStateException(mensagem);
-        }
-
-        private void geraStringDosParametros(NoDeclaracaoFuncao noFuncao)
-        {
-            List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
-
-            saida.append("("); // parenteses de início da lista de parâmetros
-            int size = parametros.size();
-            for (int i = 0; i < size; i++)
-            {
-                NoDeclaracaoParametro noParametro = parametros.get(i);
-
-                saida.append(getNomeTipoJava(noParametro.getTipoDado()))
-                        .append(" ") // espaço entre o tipo e o nome
-                        .append(Utils.geraNomeValido(noParametro.getNome()))
-                        .append(geraQuantificador(noParametro.getQuantificador()));
-
-                if (i < size - 1)
-                {
-                    saida.append(", ");
-                }
-            }
-            saida.append(")"); // parenteses de fim da lista de parâmetros
         }
 
         public VisitorGeracaoCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
@@ -270,7 +170,7 @@ public class GeradorCodigoJava
             {
                 if (declaracao instanceof NoDeclaracaoFuncao)
                 {
-                    geraMetodo((NoDeclaracaoFuncao) declaracao);
+                    geradorDeclaracaoMetodo.gera((NoDeclaracaoFuncao) declaracao, saida, this, asa, nivelEscopo, gerandoCodigoParaTesteUnitario);
                 }
             }
             return this;
@@ -504,7 +404,7 @@ public class GeradorCodigoJava
         public Void visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
         {
             String nome = noDeclaracao.getNome();
-            String nomeTipo = getNomeTipoJava(noDeclaracao.getTipoDado());
+            String nomeTipo = Utils.getNomeTipoJava(noDeclaracao.getTipoDado());
 
             saida.format("%s %s", nomeTipo, Utils.geraNomeValido(nome));
 
@@ -535,7 +435,7 @@ public class GeradorCodigoJava
         public Void visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
         {
             String nome = no.getNome();
-            String tipo = getNomeTipoJava(no.getTipoDado());
+            String tipo = Utils.getNomeTipoJava(no.getTipoDado());
             saida.format("%s %s[]", tipo, Utils.geraNomeValido(nome));
 
             if (no.possuiInicializacao())
@@ -589,7 +489,7 @@ public class GeradorCodigoJava
         public Void visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
         {
             String nome = noDeclaracao.getNome();
-            String tipo = getNomeTipoJava(noDeclaracao.getTipoDado());
+            String tipo = Utils.getNomeTipoJava(noDeclaracao.getTipoDado());
             saida.format("%s %s[][]", tipo, Utils.geraNomeValido(nome));
 
             saida.append(" = ");
@@ -830,7 +730,7 @@ public class GeradorCodigoJava
         {
             boolean contemCasosNaoConstantes = GeradorSwitchCase.contemCasosNaoConstantes(no);
             simularBreakCaso = contemCasosNaoConstantes;
-            
+
             if (!contemCasosNaoConstantes)
             {
                 geradorSwitchCase.geraSwitchCase(no, saida, this, asa, nivelEscopo, gerandoCodigoParaTesteUnitario);
@@ -1044,7 +944,6 @@ public class GeradorCodigoJava
          * ou função
          * @return Um nome que não conflite com as palavras reservadas do java
          */
-        
     }
 
     private static final Map<Class, String> OPERADORES = new HashMap<>();

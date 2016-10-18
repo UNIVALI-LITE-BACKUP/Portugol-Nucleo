@@ -44,13 +44,47 @@ public class Utils
         }
     }
 
+    public static String getNomeTipoJava(TipoDado tipoPortugol)
+    {
+        switch (tipoPortugol)
+        {
+            case INTEIRO:
+                return "int";
+            case REAL:
+                return "double";
+            case CADEIA:
+                return "String";
+            case CARACTER:
+                return "char";
+            case LOGICO:
+                return "boolean";
+            case VAZIO:
+                return "void";
+        }
+
+        String mensagem = String.format("Não foi possível traduzir o tipo %s do Portugol para um tipo JAva.", tipoPortugol.getNome());
+        throw new IllegalStateException(mensagem);
+    }
+
+    public static void geraVerificacaoThreadInterrompida(PrintWriter saida, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario)
+    {
+        if (gerandoCodigoParaTesteUnitario)
+        {
+            return;
+        }
+        saida.append(Utils.geraIdentacao(nivelEscopo));
+        saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
+        saida.println();
+        saida.println();
+    }
+
     public static void geraParadaPassoAPasso(NoBloco no, PrintWriter saida, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario)
     {
         if (gerandoCodigoParaTesteUnitario)
         {
             return;
         }
-        
+
         if (no.ehParavel(Programa.Estado.STEP_OVER))
         {
             if (no instanceof NoSe || no instanceof NoEnquanto)
@@ -79,9 +113,9 @@ public class Utils
 
                     saida.println();
                     saida.append(Utils.geraIdentacao(nivelEscopo));
-                    
+
                     saida.append(String.format("realizarParada(%d, %d);", linha, coluna));
-                    
+
                     saida.println();
                     saida.println();
                 }
