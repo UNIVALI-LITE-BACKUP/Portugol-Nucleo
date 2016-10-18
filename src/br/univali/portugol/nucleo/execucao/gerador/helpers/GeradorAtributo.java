@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
-import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;

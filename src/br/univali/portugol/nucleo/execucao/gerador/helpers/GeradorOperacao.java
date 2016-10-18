@@ -13,7 +13,7 @@ public class GeradorOperacao
 {
     private static final Map<Class, String> OPERADORES = new HashMap<>();
 
-    public void gera(NoOperacao no, PrintWriter saida, VisitanteASA visitor, ASAPrograma asa) throws ExcecaoVisitaASA
+    public void gera(NoOperacao no, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
     {
         if (no.estaEntreParenteses())
         {

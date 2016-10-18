@@ -117,7 +117,6 @@ public class GeradorChamadaMetodo
                 {
                     TipoDado tipoDado = metaDadosParametros.obter(i).getTipoDado();
                     ModoAcesso modoAcesso = metaDadosParametros.obter(i).getModoAcesso();
-                    String nome = metaDadosParametros.obter(i).getNome();
                     metaDados.add(new ParametroEsperado(tipoDado, modoAcesso));
                 }
                 return metaDados;

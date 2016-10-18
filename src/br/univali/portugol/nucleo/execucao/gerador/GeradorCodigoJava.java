@@ -146,7 +146,7 @@ public class GeradorCodigoJava
             {
                 if (declaracao instanceof NoDeclaracaoFuncao)
                 {
-                    geradorDeclaracaoMetodo.gera((NoDeclaracaoFuncao) declaracao, saida, this, asa, nivelEscopo, gerandoCodigoParaTesteUnitario);
+                    geradorDeclaracaoMetodo.gera((NoDeclaracaoFuncao) declaracao, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
                 }
             }
             return this;
@@ -195,126 +195,126 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoOperacaoBitwiseLeftShift no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoBitwiseRightShift no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoBitwiseE no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoBitwiseXOR no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoBitwiseOu no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaOU no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaE no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaDiferenca no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaMenor no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
         @Override
         public Void visitar(NoOperacaoLogicaMenorIgual no) throws ExcecaoVisitaASA
         {
-            geradorOperacao.gera(no, saida, this, asa);
+            geradorOperacao.gera(no, saida, this);
             return null;
         }
 
@@ -651,7 +651,7 @@ public class GeradorCodigoJava
 
             if (!contemCasosNaoConstantes)
             {
-                geradorSwitchCase.geraSwitchCase(no, saida, this, asa, nivelEscopo, gerandoCodigoParaTesteUnitario);
+                geradorSwitchCase.geraSwitchCase(no, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
             }
             else
             {

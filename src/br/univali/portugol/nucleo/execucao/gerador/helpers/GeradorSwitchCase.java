@@ -12,7 +12,7 @@ public class GeradorSwitchCase
 {
     public static final String NOME_VARIAVEL_BREAK = "___sw_break___";
 
-    public void geraSwitchCase(NoEscolha no, PrintWriter saida, VisitanteASA visitor, ASAPrograma asa, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
+    public void geraSwitchCase(NoEscolha no, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
     {
         String identacao = Utils.geraIdentacao(nivelEscopo);
 

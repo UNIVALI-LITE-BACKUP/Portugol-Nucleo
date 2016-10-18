@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class GeradorDeclaracaoMetodo
 {
-    public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, ASAPrograma asa, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
+    public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
     {
         saida.println();
 
