@@ -72,18 +72,11 @@ public class GeradorCodigoJava
 
         private void geraVerificacaoThreadInterrompida()
         {
-            if (gerandoCodigoParaTesteUnitario)
-            {
-                return;
-            }
             nivelEscopo++;
-            saida.append(geraIdentacao());
-            saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
+            Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
             nivelEscopo--;
-            pulaLinha();
-            pulaLinha();
         }
-        
+
         public VisitorGeracaoCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
         {
             List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
