@@ -1,55 +1,52 @@
 package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.NoDeclaracao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
-import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
+import br.univali.portugol.nucleo.asa.NoExpressao;
+import br.univali.portugol.nucleo.asa.NoOperacao;
+import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
 import java.io.PrintWriter;
 
 /**
  * @author Elieser
  */
-public class GeradorAtributo
+public class GeradorAtribuicao
 {
-    public void gera(NoInclusaoBiblioteca biblioteca, PrintWriter saida, int nivelEscopo)
+    public void gera(NoOperacaoAtribuicao no, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
     {
-        String tipo = biblioteca.getNome();
-        String nome = tipo; // quando a biblioteca não tem alias o nome e o tipo são idênticos
-        if (biblioteca.getAlias() != null)
+
+        NoExpressao opEsquerdo = no.getOperandoEsquerdo();
+        NoExpressao opDireito = no.getOperandoDireito();
+
+        opEsquerdo.aceitar(visitor);
+
+        saida.append(" = ");
+
+        boolean precisaConverterTipo = precisaConverterTipo(opEsquerdo, opDireito);
+        if (precisaConverterTipo)
         {
-            nome = biblioteca.getAlias();
-        }
-        saida.append(Utils.geraIdentacao(nivelEscopo))
-                .format("private final %s %s = new %s();", tipo, Utils.geraNomeValido(nome), tipo)
-                .println();
-    }
-
-    public boolean gera(NoDeclaracao no, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
-    {
-        if (podeDeclararComoAtributo(no))
-        {
-            saida.append(Utils.geraIdentacao(nivelEscopo))
-                    .append("private ")
-                    .append(no.constante() ? "final " : "");
-
-            no.aceitar(visitor);
-
-            saida.append(";").println();
-
-            return true;
+            saida.append("(int)");
         }
 
-        return false;
-    }
+        boolean opDireitoEhOperacao = opDireito instanceof NoOperacao;
+        if (precisaConverterTipo && opDireitoEhOperacao) // coloca toda a operação dentro de parênteses para que o cast seja aplicado no resultado da operação
+        {
+            saida.append("(");
+        }
 
-    private static boolean podeDeclararComoAtributo(NoDeclaracao no)
+        no.getOperandoDireito().aceitar(visitor);
+
+        if (precisaConverterTipo && opDireitoEhOperacao) // coloca toda a operação dentro de parênteses para que o cast seja aplicado no resultado da operação
+        {
+            saida.append(")");
+        }
+    }
+    
+    private static boolean precisaConverterTipo(NoExpressao opEsquerdo, NoExpressao opDireito)
     {
-        return no instanceof NoDeclaracaoVariavel
-                || no instanceof NoDeclaracaoVetor
-                || no instanceof NoDeclaracaoMatriz;
+        TipoDado tipoOpEsquerdo = opEsquerdo.getTipoResultante();
+        TipoDado tipoOpDireito = opDireito.getTipoResultante();
+        return tipoOpEsquerdo == TipoDado.INTEIRO && tipoOpDireito == TipoDado.REAL;    
     }
-
 }

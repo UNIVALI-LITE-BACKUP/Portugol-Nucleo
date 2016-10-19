@@ -2,12 +2,14 @@ programa
 {                                                            
     funcao inicio()                                         
     {                                                       
-        inteiro a = 10                                      
-        teste(a)                                                            
+        inteiro a = 2
+        inteiro b = 4
+        inteiro c = teste(a) + teste(b) * a * b
     }                                                       
     
-    funcao teste(inteiro & x)                               
+    funcao inteiro teste(inteiro & x)                               
     {                                                      
-        x = 11                                                              
+        x = x * 2
+        retorne 1
     }                                                       
 }

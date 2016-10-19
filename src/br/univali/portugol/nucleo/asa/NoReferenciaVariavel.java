@@ -21,10 +21,13 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class NoReferenciaVariavel extends NoReferencia<NoDeclaracaoVariavel>
+public final class NoReferenciaVariavel extends NoReferencia<NoDeclaracao>
 {
     private boolean variavelDeBiblioteca = false;
     private TipoDado tipoBiblioteca = TipoDado.VAZIO;
+    
+    private int indiceReferencia = -1;
+    
     /**
      *
      * @param nome o nome da variável que está sendo referenciada.
@@ -100,6 +103,19 @@ public final class NoReferenciaVariavel extends NoReferencia<NoDeclaracaoVariave
     {
         this.variavelDeBiblioteca = variavelDeBiblioteca;
     }
-    
-    
+
+    public boolean ehPassadoPorReferencia()
+    {
+        return indiceReferencia >= 0;
+    }
+
+    public int getIndiceReferencia()
+    {
+        return indiceReferencia;
+    }
+
+    public void setIndiceReferencia(int indiceReferencia)
+    {
+        this.indiceReferencia = indiceReferencia;
+    }
 }

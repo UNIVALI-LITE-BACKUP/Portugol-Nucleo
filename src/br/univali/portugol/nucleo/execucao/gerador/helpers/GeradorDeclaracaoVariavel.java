@@ -7,6 +7,8 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoExpressaoLiteral;
 import br.univali.portugol.nucleo.asa.NoMatriz;
+import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.NoReferencia;
 import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
@@ -134,10 +136,17 @@ public class GeradorDeclaracaoVariavel
 
     public void gera(NoDeclaracaoVariavel variavel, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
-        String nome = variavel.getNome();
-        String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
+        if (variavel.ehPassadoPorReferencia())
+        {
+            saida.format("REFERENCIAS[INDICE_%s]", variavel.getNome().toUpperCase());
+        }
+        else
+        {
+            String nome = variavel.getNome();
+            String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
 
-        saida.format("%s %s", nomeTipo, Utils.geraNomeValido(nome));
+            saida.format("%s %s", nomeTipo, Utils.geraNomeValido(nome));
+        }
 
         if (variavel.possuiInicializacao())
         {
@@ -160,5 +169,4 @@ public class GeradorDeclaracaoVariavel
         }
 
     }
-
 }

@@ -100,8 +100,14 @@ public class IntegracaoGeradorCodigoJavacTest
                 String nomeClasse = "Exemplo" + (nomeExemplo.substring(0, 1).toUpperCase() + nomeExemplo.substring(1));
                 String arquivoJava = "../" + nomeClasse + ".java";
                 PrintWriter writer = new PrintWriter(new BufferedOutputStream(new FileOutputStream(arquivoJava)));
-                gerador.gera((ASAPrograma) aa.getASA(), writer, nomeClasse);
-                writer.close();
+                try
+                {
+                    gerador.gera((ASAPrograma) aa.getASA(), writer, nomeClasse);
+                }
+                finally
+                {
+                    writer.close();
+                }
                 
                 List<String> erros = check(arquivoJava);
                 if (!erros.isEmpty())

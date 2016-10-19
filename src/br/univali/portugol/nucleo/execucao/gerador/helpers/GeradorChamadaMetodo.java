@@ -25,8 +25,6 @@ public class GeradorChamadaMetodo
 
         List<ParametroEsperado> parametrosEsperados = getParametrosEsperados(no, asa);
 
-        criaValueHoldersParaParametrosPorReferencia(parametrosEsperados, no.getParametros(), saida);
-        
         saida.format("%s%s(", escopoFuncao, Utils.geraNomeValido(nomeFuncao));
         List<NoExpressao> parametrosPassados = no.getParametros();
 
@@ -77,7 +75,8 @@ public class GeradorChamadaMetodo
         }
         else
         {
-            saida.append( "holder_").append(parametroEsperado.nome);
+            String nome = ((NoReferencia)parametroRecebido).getOrigemDaReferencia().getNome();
+            saida.format("INDICE_%s", nome.toUpperCase());
         }
 
         if (precisaDeCast && parametroEhOperacao)
@@ -170,43 +169,4 @@ public class GeradorChamadaMetodo
             }
         }
     }
-
-    private void criaValueHoldersParaParametrosPorReferencia(List<ParametroEsperado> metaDadosDosParametros,
-            List<NoExpressao> parametrosPassados, PrintWriter saida)
-    {
-        //assert (metaDadosDosParametros.size() == parametrosPassados.size());
-
-        for (int i = 0; i < metaDadosDosParametros.size(); i++)
-        {
-            if (metaDadosDosParametros.get(i).modoAcesso == ModoAcesso.POR_REFERENCIA)
-            {
-                NoReferencia parametroPassado = (NoReferencia) parametrosPassados.get(i);
-                String nomeParametroPassado = parametroPassado.getNome();
-                String nomeTipoJava = getNomeTipoJava(parametroPassado);
-                String nomeHolder = "holder_" + nomeParametroPassado;
-                saida.append("ValueHolder<")
-                        .append(nomeTipoJava)
-                        .append("> ")
-                        .append(nomeHolder)
-                        .append(" = new ValueHolder(")
-                        .append(nomeParametroPassado)
-                        .append(");").println();
-            }
-        }
-    }
-    
-    private static String getNomeTipoJava(NoReferencia noReferencia)
-    {
-        switch (noReferencia.getTipoResultante())
-        {
-            case CADEIA: return "String";
-            case CARACTER: return "Character";
-            case INTEIRO: return "Integer";
-            case LOGICO: return "Boolean";
-            case REAL: return "Double";
-            case VAZIO: return "Void";
-        }
-        throw new IllegalArgumentException("Não existe tipo java equivalente!");
-    }
-
 }

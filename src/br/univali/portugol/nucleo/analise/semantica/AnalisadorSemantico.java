@@ -2210,6 +2210,10 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 simbolo.getOrigemDoSimbolo().adicionarReferencia(noReferenciaVariavel);
             }
+            else if (simbolo instanceof Matriz)
+            {
+                simbolo.getOrigemDoSimbolo().adicionarReferencia(noReferenciaVariavel);
+            }
             
             return simbolo.getTipoDado();
         }

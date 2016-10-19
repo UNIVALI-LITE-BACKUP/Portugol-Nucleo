@@ -7,6 +7,7 @@ import br.univali.portugol.nucleo.execucao.gerador.helpers.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ public class GeradorCodigoJava
     private final GeradorOperacao geradorOperacao = new GeradorOperacao();
     private final GeradorAtributo geradorAtributo = new GeradorAtributo();
     private final GeradorDeclaracaoVariavel geradorDeclaracaoVariavel = new GeradorDeclaracaoVariavel();
+    private final GeradorAtribuicao geradorAtribuicao = new GeradorAtribuicao();
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
@@ -30,8 +32,11 @@ public class GeradorCodigoJava
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA, IOException
     {
-        new VisitorGeracaoCodigo(asa, saida, gerandoCodigoParaTesteUnitario)
-                .geraPackage("programas")
+        BuscadorReferencias buscadorReferencias = new BuscadorReferencias();
+        asa.aceitar(buscadorReferencias);
+
+        VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida, gerandoCodigoParaTesteUnitario);
+        gerador.geraPackage("programas")
                 .pulaLinha()
                 .geraImportacaoPara(ErroExecucao.class)
                 .geraImportacaoPara(Programa.class)
@@ -43,6 +48,8 @@ public class GeradorCodigoJava
                 .geraAtributosParaAsBibliotecasIncluidas()
                 .pulaLinha()
                 .geraAtributosParaAsVariaveisGlobais()
+                .pulaLinha()
+                .geraAtributosParaAsVariaveisPassadasPorReferencia(buscadorReferencias.getVariaveisPassadasPorReferencia())
                 .pulaLinha()
                 .geraConstrutor(nomeClasseJava)
                 .pulaLinha()
@@ -414,7 +421,18 @@ public class GeradorCodigoJava
                 saida.append(no.getEscopo())
                         .append(".");
             }
-            saida.append(nome);
+            
+            NoDeclaracao declaracao = no.getOrigemDaReferencia();
+            boolean ehParametroPorReferencia = declaracao instanceof NoDeclaracaoParametro && (((NoDeclaracaoParametro)declaracao).getModoAcesso() == ModoAcesso.POR_REFERENCIA);
+            if(ehParametroPorReferencia || no.ehPassadoPorReferencia())
+            {
+                String stringIndice = ehParametroPorReferencia ? no.getNome() : ("INDICE_" + no.getNome().toUpperCase());
+                saida.format("REFERENCIAS[%s]", stringIndice);
+            }
+            else
+            {
+                saida.append(nome);
+            }
 
             return null;
         }
@@ -570,35 +588,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
         {
-            NoExpressao opEsquerdo = no.getOperandoEsquerdo();
-            NoExpressao opDireito = no.getOperandoDireito();
-
-            opEsquerdo.aceitar(this);
-
-            saida.append(" = ");
-
-            // verifica se é necessário fazer cast de um double para int
-            TipoDado tipoOpEsquerdo = opEsquerdo.getTipoResultante();
-            TipoDado tipoOpDireito = opDireito.getTipoResultante();
-            boolean castEhNecessario = tipoOpEsquerdo == TipoDado.INTEIRO && tipoOpDireito == TipoDado.REAL;
-            if (castEhNecessario)
-            {
-                saida.append("(int)");
-            }
-
-            boolean opDireitoEhOperacao = opDireito instanceof NoOperacao;
-            if (castEhNecessario && opDireitoEhOperacao) // coloca toda a operação dentro de parênteses para que o cast seja aplicado no resultado da operação
-            {
-                saida.append("(");
-            }
-
-            no.getOperandoDireito().aceitar(this);
-
-            if (castEhNecessario && opDireitoEhOperacao) // coloca toda a operação dentro de parênteses para que o cast seja aplicado no resultado da operação
-            {
-                saida.append(")");
-            }
-
+            geradorAtribuicao.gera(no, saida, this);
             return null;
         }
 
@@ -718,11 +708,33 @@ public class GeradorCodigoJava
             return this;
         }
 
-        /**
-         * @param nomeAtual O nome atual da variável, vetor, matriz, parâmetro
-         * ou função
-         * @return Um nome que não conflite com as palavras reservadas do java
-         */
+        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisPassadasPorReferencia(List<NoDeclaracaoVariavel> variaveis)
+        {
+            if (variaveis.isEmpty())
+            {
+                return this;
+            }
+
+            String identacao = Utils.geraIdentacao(nivelEscopo);
+
+            //declara o array que armazena todas as referências
+            saida.append(identacao)
+                    .format("private final int[] REFERENCIAS = new int[%d];", variaveis.size());
+            saida.println();
+
+            for (NoDeclaracaoVariavel variavel : variaveis)
+            {
+                saida.append(identacao)
+                        .append("private final int ")
+                        .append("INDICE_" + variavel.getNome().toUpperCase())
+                        .append(" = ")
+                        .append(String.valueOf(variavel.getIndiceReferencia()))
+                        .append(";")
+                        .println();
+            }
+            return this;
+        }
+
     }
 
 }

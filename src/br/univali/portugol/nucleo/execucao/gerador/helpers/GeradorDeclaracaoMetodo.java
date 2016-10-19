@@ -35,7 +35,7 @@ public class GeradorDeclaracaoMetodo
 
         if (!metodoPrincipal)
         {
-            geraStringDosParametros(noFuncao, saida);
+            geraParametros(noFuncao, saida);
         }
         else
         {
@@ -68,7 +68,7 @@ public class GeradorDeclaracaoMetodo
         return "";
     }
 
-    private static void geraStringDosParametros(NoDeclaracaoFuncao noFuncao, PrintWriter saida)
+    private static void geraParametros(NoDeclaracaoFuncao noFuncao, PrintWriter saida)
     {
         List<NoDeclaracaoParametro> parametros = noFuncao.getParametros();
 
@@ -77,11 +77,12 @@ public class GeradorDeclaracaoMetodo
         for (int i = 0; i < size; i++)
         {
             NoDeclaracaoParametro noParametro = parametros.get(i);
-
-            saida.append(Utils.getNomeTipoJava(noParametro.getTipoDado()))
-                    .append(" ") // espaço entre o tipo e o nome
-                    .append(Utils.geraNomeValido(noParametro.getNome()))
-                    .append(geraQuantificador(noParametro.getQuantificador()));
+            if (noParametro.getModoAcesso() == ModoAcesso.POR_VALOR) {
+                geraParametroPorValor(noParametro, saida);
+            }
+            else{
+                geraParametroPorReferencia(noParametro, saida);
+            }
 
             if (i < size - 1)
             {
@@ -89,6 +90,21 @@ public class GeradorDeclaracaoMetodo
             }
         }
         saida.append(")"); // parenteses de fim da lista de parâmetros
+    }
+    
+    private static void geraParametroPorReferencia(NoDeclaracaoParametro noParametro, PrintWriter saida)
+    {
+        // os parâmetros por referência são apenas índices para o array REFERENCIAS[]
+        saida.append("int ")
+            .append(noParametro.getNome());
+    }
+    
+    private static void geraParametroPorValor(NoDeclaracaoParametro noParametro, PrintWriter saida)
+    {
+        saida.append(Utils.getNomeTipoJava(noParametro.getTipoDado()))
+                    .append(" ") // espaço entre o tipo e o nome
+                    .append(Utils.geraNomeValido(noParametro.getNome()))
+                    .append(geraQuantificador(noParametro.getQuantificador()));
     }
 
 }
