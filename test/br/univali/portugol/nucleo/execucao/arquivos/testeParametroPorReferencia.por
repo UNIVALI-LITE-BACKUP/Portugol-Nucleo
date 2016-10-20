@@ -4,12 +4,14 @@ programa
     {                                                       
         inteiro a = 2
         inteiro b = 4
-        inteiro c = teste(a) + teste(b) * a * b
+        inteiro m[2][2]
+        inteiro c = teste(a, m) + teste(b, m) * a * b
     }                                                       
     
-    funcao inteiro teste(inteiro & x)                               
+    funcao inteiro teste(inteiro & x, inteiro matriz[][])                               
     {                                                      
         x = x * 2
+        matriz[0][0] = matriz[0][0]
         retorne 1
     }                                                       
 }
