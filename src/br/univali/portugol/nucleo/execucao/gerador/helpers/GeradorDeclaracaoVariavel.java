@@ -82,7 +82,7 @@ public class GeradorDeclaracaoVariavel
         String tipo = Utils.getNomeTipoJava(vetor.getTipoDado());
         saida.format("%s %s[]", tipo, Utils.geraNomeValido(nome));
 
-        if (vetor.possuiInicializacao())
+        if (vetor.temInicializacao())
         {
             saida.append(" = ");
             vetor.getInicializacao().aceitar(visitor);
@@ -107,7 +107,7 @@ public class GeradorDeclaracaoVariavel
 
         saida.append(" = ");
 
-        if (matriz.possuiInicializacao())
+        if (matriz.temInicializacao())
         {
             matriz.getInicializacao().aceitar(visitor);
         }
@@ -148,7 +148,7 @@ public class GeradorDeclaracaoVariavel
             saida.format("%s %s", nomeTipo, Utils.geraNomeValido(nome));
         }
 
-        if (variavel.possuiInicializacao())
+        if (variavel.temInicializacao())
         {
             saida.append(" = ");
 

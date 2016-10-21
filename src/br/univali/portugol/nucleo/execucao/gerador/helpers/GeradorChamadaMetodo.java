@@ -69,8 +69,10 @@ public class GeradorChamadaMetodo
         }
 
         // verifica se é um parametro por referência
-        NoDeclaracao noOrigem = ((NoReferencia)parametroRecebido).getOrigemDaReferencia();
-        if (!(passandoPorReferencia && noOrigem instanceof NoDeclaracaoVariavel))
+        boolean origemEhVariavel = (parametroRecebido instanceof NoReferencia) && 
+                (((NoReferencia)parametroRecebido).getOrigemDaReferencia() instanceof NoDeclaracaoVariavel);
+        
+        if (!(passandoPorReferencia && origemEhVariavel))
         {
             parametroRecebido.aceitar(visitor);
         }

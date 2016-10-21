@@ -1,26 +1,8 @@
 package br.univali.portugol.nucleo.execucao.gerador;
 
-import br.univali.portugol.nucleo.asa.ASAPrograma;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.ModoAcesso;
-import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoParametro;
-import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
-import br.univali.portugol.nucleo.asa.NoExpressao;
-import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
-import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
-import br.univali.portugol.nucleo.asa.NoOperacaoModulo;
-import br.univali.portugol.nucleo.asa.NoOperacaoMultiplicacao;
-import br.univali.portugol.nucleo.asa.NoOperacaoSoma;
-import br.univali.portugol.nucleo.asa.NoOperacaoSubtracao;
-import br.univali.portugol.nucleo.asa.NoReferencia;
-import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
-import br.univali.portugol.nucleo.asa.VisitanteASABasico;
-import br.univali.portugol.nucleo.asa.VisitanteNulo;
+import br.univali.portugol.nucleo.asa.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,7 +26,7 @@ class BuscadorReferencias extends VisitanteNulo
         {
             parametrosEsperados = declaracaoFuncao.getParametros();
         }
-        
+
         for (int i = 0; i < parametrosPassados.size(); i++)
         {
             NoExpressao parametroPassado = parametrosPassados.get(i);
@@ -54,17 +36,19 @@ class BuscadorReferencias extends VisitanteNulo
                 if (parametroEsperado != null && parametroEsperado.getModoAcesso() == ModoAcesso.POR_REFERENCIA && chamadaFuncao.getEscopo() == null)
                 {
                     NoReferenciaVariavel referencia = (NoReferenciaVariavel) parametroPassado;
-                
-                    referencia.setIndiceReferencia(indiceReferencia);
-                    NoDeclaracaoVariavel origemReferencia = (NoDeclaracaoVariavel)referencia.getOrigemDaReferencia();
-                    origemReferencia.setIndiceReferencia(indiceReferencia);
-                    declaracoes.add(origemReferencia);
-                    for (NoReferencia ref : origemReferencia.getReferencias())
+                    NoDeclaracaoVariavel origemReferencia = (NoDeclaracaoVariavel) referencia.getOrigemDaReferencia();
+                    if (!declaracoes.contains(origemReferencia))
                     {
-                        NoReferenciaVariavel origem = (NoReferenciaVariavel) ref;
-                        origem.setIndiceReferencia(indiceReferencia);
+                        referencia.setIndiceReferencia(indiceReferencia);
+                        origemReferencia.setIndiceReferencia(indiceReferencia);
+                        declaracoes.add(origemReferencia);
+                        for (NoReferencia ref : origemReferencia.getReferencias())
+                        {
+                            NoReferenciaVariavel origem = (NoReferenciaVariavel) ref;
+                            origem.setIndiceReferencia(indiceReferencia);
+                        }
+                        indiceReferencia++;
                     }
-                    indiceReferencia++;
                 }
             }
         }
@@ -88,13 +72,6 @@ class BuscadorReferencias extends VisitanteNulo
         no.getOperandoDireito().aceitar(this);
         return null;
     }
-
-//    @Override
-//    public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
-//    {
-//        NoDeclaracaoVariavel ref = no.getOrigemDaReferencia();
-//        return null; 
-//    }
 
     @Override
     public Object visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA
@@ -136,9 +113,9 @@ class BuscadorReferencias extends VisitanteNulo
         return null;
     }
 
-    public List<NoDeclaracaoVariavel> getVariaveisPassadasPorReferencia()
+    public Collection<NoDeclaracaoVariavel> getVariaveisPassadasPorReferencia()
     {
-        return declaracoes;
+        return new ArrayList<>(declaracoes);
     }
 
     @Override
@@ -160,5 +137,6 @@ class BuscadorReferencias extends VisitanteNulo
         }
         return null;
     }
+
 
 }

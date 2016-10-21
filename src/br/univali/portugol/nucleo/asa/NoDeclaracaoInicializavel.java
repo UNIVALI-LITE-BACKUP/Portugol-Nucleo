@@ -25,7 +25,7 @@ public abstract class NoDeclaracaoInicializavel extends NoDeclaracao
         return inicializacao;
     }
     
-    public boolean possuiInicializacao()
+    public boolean temInicializacao()
     {
         return inicializacao != null;
     }

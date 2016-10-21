@@ -7,7 +7,7 @@ import br.univali.portugol.nucleo.execucao.gerador.helpers.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -91,6 +91,10 @@ public class GeradorCodigoJava
             boolean existemVariaveisGlobais = false;
             for (NoDeclaracao no : variaveisGlobais)
             {
+                if (no instanceof NoDeclaracaoVariavel && ((NoDeclaracaoVariavel) no).ehPassadoPorReferencia())
+                {
+                    continue; // variáveis globais que são passadas como referência não são declaradas como atributo no código Java
+                }
                 boolean atributoGerado = geradorAtributo.gera(no, saida, this, nivelEscopo);
                 existemVariaveisGlobais |= atributoGerado;
             }
@@ -421,10 +425,10 @@ public class GeradorCodigoJava
                 saida.append(no.getEscopo())
                         .append(".");
             }
-            
+
             NoDeclaracao declaracao = no.getOrigemDaReferencia();
-            boolean ehParametroPorReferencia = declaracao instanceof NoDeclaracaoParametro && (((NoDeclaracaoParametro)declaracao).getModoAcesso() == ModoAcesso.POR_REFERENCIA);
-            if(ehParametroPorReferencia || no.ehPassadoPorReferencia())
+            boolean ehParametroPorReferencia = declaracao instanceof NoDeclaracaoParametro && (((NoDeclaracaoParametro) declaracao).getModoAcesso() == ModoAcesso.POR_REFERENCIA);
+            if (ehParametroPorReferencia || no.ehPassadoPorReferencia())
             {
                 String stringIndice = ehParametroPorReferencia ? no.getNome() : ("INDICE_" + no.getNome().toUpperCase());
                 saida.format("REFERENCIAS[%s]", stringIndice);
@@ -675,14 +679,40 @@ public class GeradorCodigoJava
             return this;
         }
 
-        private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava)
+        private void inicializaVariaveisGlobaisQueSaoPassadasPorReferencia() throws ExcecaoVisitaASA
         {
-            saida.append(Utils.geraIdentacao(nivelEscopo))
+            List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
+            for (NoDeclaracao declaracao : declaracoes)
+            {
+                if (declaracao instanceof NoDeclaracaoVariavel)
+                {
+                    NoDeclaracaoVariavel variavel = (NoDeclaracaoVariavel) declaracao;
+                    if (variavel.ehPassadoPorReferencia() && variavel.temInicializacao())
+                    {
+                        saida.append(Utils.geraIdentacao(nivelEscopo));
+                        saida.format("REFERENCIAS[INDICE_%s] = ", variavel.getNome().toUpperCase());
+                        variavel.getInicializacao().aceitar(this);
+                        saida.append(";").println(); // o ponto e vírgula depois da inicialização
+                    }
+                }
+            }
+        }
+
+        private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava) throws ExcecaoVisitaASA
+        {
+            String identacao = Utils.geraIdentacao(nivelEscopo);
+            saida.append(identacao)
                     .append("public ")
                     .append(nomeDaClasseJava)
-                    .append("() throws ErroExecucao, InterruptedException {");
+                    .append("() throws ErroExecucao, InterruptedException {")
+                    .println();
 
-            saida.append("}").println();
+            nivelEscopo++;
+            inicializaVariaveisGlobaisQueSaoPassadasPorReferencia();
+            nivelEscopo--;
+
+            saida.append(identacao)
+                .append("}").println();
 
             return this;
         }
@@ -708,7 +738,7 @@ public class GeradorCodigoJava
             return this;
         }
 
-        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisPassadasPorReferencia(List<NoDeclaracaoVariavel> variaveis)
+        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisPassadasPorReferencia(Collection<NoDeclaracaoVariavel> variaveis)
         {
             if (variaveis.isEmpty())
             {
