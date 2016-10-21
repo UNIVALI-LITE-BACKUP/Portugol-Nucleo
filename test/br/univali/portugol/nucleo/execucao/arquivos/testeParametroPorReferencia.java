@@ -2,9 +2,12 @@ package programas;
 
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.Programa;
+import br.univali.portugol.nucleo.bibliotecas.Util;
 
 public class testeParametroPorReferencia extends Programa
 {
+    private final Util u = new Util();
+    
     private final int[] REFERENCIAS = new int[2];
     private final int INDICE_A = 0;
     private final int INDICE_B = 1;
@@ -21,6 +24,7 @@ public class testeParametroPorReferencia extends Programa
         int m[][] = new int[2][2];
         
         int c = teste(INDICE_A, m) + teste(INDICE_B, m) * REFERENCIAS[INDICE_A] * REFERENCIAS[INDICE_B];
+        c = u.numero_colunas(m);
     }
     
     private int teste(int x, int matriz[][]) throws ErroExecucao, InterruptedException
