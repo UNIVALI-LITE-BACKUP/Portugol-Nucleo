@@ -22,15 +22,18 @@ public class testeParametroPorReferencia extends Programa
         REFERENCIAS[INDICE_A] = 2;
         REFERENCIAS[INDICE_B] = 4;
         int m[][] = new int[2][2];
+        int v[] = new int[3];
         
-        int c = teste(INDICE_A, m) + teste(INDICE_B, m) * REFERENCIAS[INDICE_A] * REFERENCIAS[INDICE_B];
-        c = u.numero_colunas(m);
+        int c = teste(INDICE_A, m, v) + teste(INDICE_B, m, v) * REFERENCIAS[INDICE_A] * REFERENCIAS[INDICE_B];
+        c = u.numero_linhas(m);
+        c = u.numero_elementos(v);
     }
     
-    private int teste(int x, int matriz[][]) throws ErroExecucao, InterruptedException
+    private int teste(int x, int matriz[][], int vetor[]) throws ErroExecucao, InterruptedException
     {
         REFERENCIAS[x] = REFERENCIAS[x] * 2;
         matriz[0][0] = matriz[0][0];
+        vetor[0] = vetor[0];
         return 1;
     }
 }
