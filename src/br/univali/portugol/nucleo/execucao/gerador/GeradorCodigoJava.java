@@ -7,8 +7,8 @@ import br.univali.portugol.nucleo.execucao.gerador.helpers.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Elieser
@@ -431,7 +431,8 @@ public class GeradorCodigoJava
             if (ehParametroPorReferencia || no.ehPassadoPorReferencia())
             {
                 String stringIndice = ehParametroPorReferencia ? no.getNome() : ("INDICE_" + no.getNome().toUpperCase());
-                saida.format("REFERENCIAS[%s]", stringIndice);
+                String nomeTipo = Utils.getNomeTipoJava(declaracao.getTipoDado()).toUpperCase();
+                saida.format("REFS_%s[%s]", nomeTipo, stringIndice);
             }
             else
             {
@@ -689,8 +690,9 @@ public class GeradorCodigoJava
                     NoDeclaracaoVariavel variavel = (NoDeclaracaoVariavel) declaracao;
                     if (variavel.ehPassadoPorReferencia() && variavel.temInicializacao())
                     {
+                        String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
                         saida.append(Utils.geraIdentacao(nivelEscopo));
-                        saida.format("REFERENCIAS[INDICE_%s] = ", variavel.getNome().toUpperCase());
+                        saida.format("REFS_%s[INDICE_%s] = ", nomeTipo.toUpperCase(), variavel.getNome().toUpperCase());
                         variavel.getInicializacao().aceitar(this);
                         saida.append(";").println(); // o ponto e vírgula depois da inicialização
                     }
@@ -712,7 +714,7 @@ public class GeradorCodigoJava
             nivelEscopo--;
 
             saida.append(identacao)
-                .append("}").println();
+                    .append("}").println();
 
             return this;
         }
@@ -738,7 +740,7 @@ public class GeradorCodigoJava
             return this;
         }
 
-        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisPassadasPorReferencia(Collection<NoDeclaracaoVariavel> variaveis)
+        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisPassadasPorReferencia(Map<TipoDado, List<NoDeclaracaoVariavel>> variaveis)
         {
             if (variaveis.isEmpty())
             {
@@ -747,21 +749,47 @@ public class GeradorCodigoJava
 
             String identacao = Utils.geraIdentacao(nivelEscopo);
 
-            //declara o array que armazena todas as referências
-            saida.append(identacao)
-                    .format("private final int[] REFERENCIAS = new int[%d];", variaveis.size());
-            saida.println();
-
-            for (NoDeclaracaoVariavel variavel : variaveis)
+            //declara os arrays (separados por tipo) que armazenam todas as referências
+            //gera os arrays nessa sequência de tipos
+            TipoDado tipos[] =
             {
-                saida.append(identacao)
-                        .append("private final int ")
-                        .append("INDICE_" + variavel.getNome().toUpperCase())
-                        .append(" = ")
-                        .append(String.valueOf(variavel.getIndiceReferencia()))
-                        .append(";")
-                        .println();
+                TipoDado.INTEIRO, TipoDado.REAL, TipoDado.LOGICO, TipoDado.CARACTER, TipoDado.CADEIA
+            };
+
+            for (TipoDado tipo : tipos)
+            {
+                if (variaveis.containsKey(tipo))
+                {
+                    String nomeTipo = Utils.getNomeTipoJava(tipo);
+                    int numeroVariaveis = variaveis.get(tipo).size();
+                    saida.append(identacao)
+                            .format("private final %s[] REFS_%s = new %s[%d];",
+                                    nomeTipo, nomeTipo.toUpperCase(), nomeTipo, numeroVariaveis)
+                            .println();
+                }
             }
+
+            saida.println(); // pula uma linha antes de declarar as variáveis de cada tipo
+
+            for (TipoDado tipo : tipos)
+            {
+                if (variaveis.containsKey(tipo))
+                {
+                    for (NoDeclaracaoVariavel variavel : variaveis.get(tipo))
+                    {
+                        saida.append(identacao)
+                                .append("private final int ")
+                                .append("INDICE_" + variavel.getNome().toUpperCase())
+                                .append(" = ")
+                                .append(String.valueOf(variavel.getIndiceReferencia()))
+                                .append(";")
+                                .println();
+                    }
+                    
+                    saida.println(); //separa as declarações para cada tipo
+                }
+            }
+
             return this;
         }
 

@@ -4,7 +4,9 @@ import br.univali.portugol.nucleo.asa.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -13,8 +15,7 @@ import java.util.List;
 class BuscadorReferencias extends VisitanteNulo
 {
 
-    private final List<NoDeclaracaoVariavel> declaracoes = new ArrayList<>();
-    private int indiceReferencia = 0;
+    private final Map<TipoDado, List<NoDeclaracaoVariavel>> declaracoes = new HashMap<>();
 
     @Override
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
@@ -37,17 +38,24 @@ class BuscadorReferencias extends VisitanteNulo
                 {
                     NoReferenciaVariavel referencia = (NoReferenciaVariavel) parametroPassado;
                     NoDeclaracaoVariavel origemReferencia = (NoDeclaracaoVariavel) referencia.getOrigemDaReferencia();
-                    if (!declaracoes.contains(origemReferencia))
+                    TipoDado tipoOrigem = origemReferencia.getTipoDado();
+                    if (!declaracoes.containsKey(tipoOrigem)) // verifica se é necessário criar uma lista para guardar as variáveis do tipo do nó de origem
                     {
-                        referencia.setIndiceReferencia(indiceReferencia);
-                        origemReferencia.setIndiceReferencia(indiceReferencia);
-                        declaracoes.add(origemReferencia);
+                        declaracoes.put(tipoOrigem, new ArrayList<NoDeclaracaoVariavel>());
+                    }
+                    
+                    List<NoDeclaracaoVariavel> variaveis = declaracoes.get(tipoOrigem);
+                    if (!variaveis.contains(origemReferencia))
+                    {
+                        int indice = variaveis.size();
+                        referencia.setIndiceReferencia(indice);
+                        origemReferencia.setIndiceReferencia(indice);
+                        variaveis.add(origemReferencia);
                         for (NoReferencia ref : origemReferencia.getReferencias())
                         {
                             NoReferenciaVariavel origem = (NoReferenciaVariavel) ref;
-                            origem.setIndiceReferencia(indiceReferencia);
+                            origem.setIndiceReferencia(indice);
                         }
-                        indiceReferencia++;
                     }
                 }
             }
@@ -113,9 +121,9 @@ class BuscadorReferencias extends VisitanteNulo
         return null;
     }
 
-    public Collection<NoDeclaracaoVariavel> getVariaveisPassadasPorReferencia()
+    public Map<TipoDado, List<NoDeclaracaoVariavel>> getVariaveisPassadasPorReferencia()
     {
-        return new ArrayList<>(declaracoes);
+        return declaracoes;
     }
 
     @Override

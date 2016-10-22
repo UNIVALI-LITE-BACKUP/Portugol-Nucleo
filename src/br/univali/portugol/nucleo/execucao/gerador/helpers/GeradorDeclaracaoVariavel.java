@@ -7,8 +7,6 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoExpressaoLiteral;
 import br.univali.portugol.nucleo.asa.NoMatriz;
-import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
-import br.univali.portugol.nucleo.asa.NoReferencia;
 import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
@@ -138,7 +136,9 @@ public class GeradorDeclaracaoVariavel
     {
         if (variavel.ehPassadoPorReferencia())
         {
-            saida.format("REFERENCIAS[INDICE_%s]", variavel.getNome().toUpperCase());
+            saida.format("REFS_%s[INDICE_%s]", 
+                    Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase(),
+                    variavel.getNome().toUpperCase());
         }
         else
         {
