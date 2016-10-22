@@ -14,7 +14,7 @@ public class testePalavrasReservadasJavaEmFuncoes extends Programa
     {
     }
 
-    private void _float(int _int, boolean _boolean[]) throws ErroExecucao, InterruptedException
+    private void float_1010(int int_1010, boolean boolean_1010[]) throws ErroExecucao, InterruptedException
     {
     }
 }

@@ -25,7 +25,14 @@ import java.util.List;
  */
 public class Utils
 {
+    
+    private static long seedNomes = System.currentTimeMillis();
 
+    public static void setSeedGeracaoNomesValidos(long seed)
+    {
+        seedNomes = seed;
+    }
+    
     public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
     {
         for (NoBloco bloco : blocos)
@@ -147,7 +154,7 @@ public class Utils
             return nomeAtual;
         }
 
-        return "_" + nomeAtual;
+        return nomeAtual + "_" + String.valueOf(seedNomes);
     }
 
     public static String preservaCaracteresEspeciais(String string)

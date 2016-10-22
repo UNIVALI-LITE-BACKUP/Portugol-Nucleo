@@ -4,6 +4,7 @@ import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
+import br.univali.portugol.nucleo.execucao.gerador.helpers.Utils;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -56,6 +57,7 @@ public class GeradorCodigoTest
     public void testePalavrasReservadasJavaEmFuncoes() throws Exception
     {
         // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
+        Utils.setSeedGeracaoNomesValidos(1010);
         comparaCodigos();
 
     }
@@ -64,6 +66,7 @@ public class GeradorCodigoTest
     public void testePalavrasReservadasJavaEmVariaveis() throws Exception
     {
         // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
+        Utils.setSeedGeracaoNomesValidos(1010);
         comparaCodigos();
     }
 
