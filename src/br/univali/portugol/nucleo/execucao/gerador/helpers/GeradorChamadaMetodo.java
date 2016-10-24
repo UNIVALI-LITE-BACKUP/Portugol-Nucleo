@@ -78,8 +78,8 @@ public class GeradorChamadaMetodo
         }
         else
         {
-            String nome = ((NoReferencia)parametroRecebido).getOrigemDaReferencia().getNome();
-            saida.format("INDICE_%s", nome.toUpperCase());
+            NoReferenciaVariavel referencia = ((NoReferenciaVariavel)parametroRecebido);
+            saida.append(Utils.geraStringIndice(referencia));
         }
 
         if (precisaDeCast && parametroEhOperacao)

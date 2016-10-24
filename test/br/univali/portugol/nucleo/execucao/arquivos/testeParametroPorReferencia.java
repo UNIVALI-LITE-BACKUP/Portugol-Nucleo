@@ -14,44 +14,44 @@ public class testeParametroPorReferencia extends Programa
     private final char[] REFS_CHAR = new char[1];
     private final String[] REFS_STRING = new String[1];
     
-    private final int INDICE_A = 0;
-    private final int INDICE_B = 1;
-    private final int INDICE_I = 2;
-    private final int INDICE_NUMERO_INTEIRO = 3;
-    private final int INDICE_TESTE = 4;
+    private final int INDICE_A_0 = 0;
+    private final int INDICE_B_1 = 1;
+    private final int INDICE_I_2 = 2;
+    private final int INDICE_NUMERO_INTEIRO_3 = 3;
+    private final int INDICE_TESTE_4 = 4;
     
-    private final int INDICE_R = 0;
+    private final int INDICE_R_0 = 0;
     
-    private final int INDICE_LOG = 0;    
+    private final int INDICE_LOG_0 = 0;    
     
-    private final int INDICE_CARAC = 0;
+    private final int INDICE_CARAC_0 = 0;
 
-    private final int INDICE_X = 0;    
+    private final int INDICE_X_0 = 0;    
     
     public testeParametroPorReferencia() throws ErroExecucao, InterruptedException
     {
-        REFS_INT[INDICE_I] = -1;
+        REFS_INT[INDICE_I_2] = -1;
     }
 
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {  
-        REFS_INT[INDICE_A] = 2;
-        REFS_INT[INDICE_B] = 4;
+        REFS_INT[INDICE_A_0] = 2;
+        REFS_INT[INDICE_B_1] = 4;
         int m[][] = new int[2][2];
         int v[] = new int[3];
         
-        int c = teste(INDICE_A, m, v) + teste(INDICE_B, m, v) * REFS_INT[INDICE_A] * REFS_INT[INDICE_B];
-        c = teste(INDICE_I, m, v);
+        int c = teste(INDICE_A_0, m, v) + teste(INDICE_B_1, m, v) * REFS_INT[INDICE_A_0] * REFS_INT[INDICE_B_1];
+        c = teste(INDICE_I_2, m, v);
         c = u.numero_linhas(m);
         c = u.numero_elementos(v);
         
-        REFS_STRING[INDICE_X] = "asd";
-        REFS_INT[INDICE_NUMERO_INTEIRO] = 0;
-        REFS_DOUBLE[INDICE_R] = 1.0;
-        REFS_CHAR[INDICE_CARAC] = 'b';
-        REFS_BOOLEAN[INDICE_LOG] = false;
-        teste_tipos(INDICE_X, INDICE_NUMERO_INTEIRO, INDICE_R, INDICE_CARAC, INDICE_LOG);        
+        REFS_STRING[INDICE_X_0] = "asd";
+        REFS_INT[INDICE_NUMERO_INTEIRO_3] = 0;
+        REFS_DOUBLE[INDICE_R_0] = 1.0;
+        REFS_CHAR[INDICE_CARAC_0] = 'b';
+        REFS_BOOLEAN[INDICE_LOG_0] = false;
+        teste_tipos(INDICE_X_0, INDICE_NUMERO_INTEIRO_3, INDICE_R_0, INDICE_CARAC_0, INDICE_LOG_0);        
     }
     
     private int teste(int x, int matriz[][], int vetor[]) throws ErroExecucao, InterruptedException
@@ -59,8 +59,8 @@ public class testeParametroPorReferencia extends Programa
         REFS_INT[x] = REFS_INT[x] * 2;
         matriz[0][0] = matriz[0][0];
         vetor[0] = vetor[0];
-        REFS_INT[INDICE_TESTE] = -1;
-        outro_teste(matriz, vetor, INDICE_TESTE);
+        REFS_INT[INDICE_TESTE_4] = -1;
+        outro_teste(matriz, vetor, INDICE_TESTE_4);
         return 1;
     }
     

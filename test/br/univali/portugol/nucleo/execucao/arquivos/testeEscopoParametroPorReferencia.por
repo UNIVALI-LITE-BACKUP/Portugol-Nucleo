@@ -1,5 +1,5 @@
 programa                                             
-{                                                            
+{   
     inteiro i = -1
 
     funcao inicio()                                         
@@ -10,9 +10,19 @@ programa
     }                                                       
     
     funcao teste(inteiro &a)                               
-    {                                                      
-        inteiro m = 1
+    {
+        se(verdadeiro){
+            inteiro m =2
+            teste_escopo(m)
+        }
+
+        se(verdadeiro){
+            inteiro m =9
+            teste_escopo(m)
+        }
+
         teste_escopo(m)
+        teste_escopo(a)
     }
 
     funcao teste_escopo(inteiro &a)

@@ -1,21 +1,7 @@
 package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.asa.ASAPrograma;
-import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
-import br.univali.portugol.nucleo.asa.NoBloco;
-import br.univali.portugol.nucleo.asa.NoEnquanto;
-import br.univali.portugol.nucleo.asa.NoEscolha;
-import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
-import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
-import br.univali.portugol.nucleo.asa.NoPara;
-import br.univali.portugol.nucleo.asa.NoReferencia;
-import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
-import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
-import br.univali.portugol.nucleo.asa.NoSe;
-import br.univali.portugol.nucleo.asa.TipoDado;
-import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
-import br.univali.portugol.nucleo.asa.VisitanteASA;
+import br.univali.portugol.nucleo.asa.*;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +17,23 @@ public class Utils
     public static void setSeedGeracaoNomesValidos(long seed)
     {
         seedNomes = seed;
+    }
+    
+    public static String geraStringIndice(NoReferenciaVariavel variavel)
+    {
+        assert(variavel.ehPassadoPorReferencia());
+        return geraStringIndice(variavel.getIndiceReferencia(), variavel.getNome());
+    }
+    
+    public static String geraStringIndice(NoDeclaracaoVariavel variavel)
+    {
+        assert(variavel.ehPassadoPorReferencia());
+        return geraStringIndice(variavel.getIndiceReferencia(), variavel.getNome());
+    }
+    
+    private static String geraStringIndice(int indice, String nome)
+    {
+        return String.format("INDICE_%s_%d", nome.toUpperCase(), indice);
     }
     
     public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA

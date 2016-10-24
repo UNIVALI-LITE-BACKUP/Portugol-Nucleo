@@ -430,7 +430,7 @@ public class GeradorCodigoJava
             boolean ehParametroPorReferencia = declaracao instanceof NoDeclaracaoParametro && (((NoDeclaracaoParametro) declaracao).getModoAcesso() == ModoAcesso.POR_REFERENCIA);
             if (ehParametroPorReferencia || no.ehPassadoPorReferencia())
             {
-                String stringIndice = ehParametroPorReferencia ? no.getNome() : ("INDICE_" + no.getNome().toUpperCase());
+                String stringIndice = ehParametroPorReferencia ? no.getNome() : Utils.geraStringIndice(no);
                 String nomeTipo = Utils.getNomeTipoJava(declaracao.getTipoDado()).toUpperCase();
                 saida.format("REFS_%s[%s]", nomeTipo, stringIndice);
             }
@@ -692,7 +692,7 @@ public class GeradorCodigoJava
                     {
                         String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
                         saida.append(Utils.geraIdentacao(nivelEscopo));
-                        saida.format("REFS_%s[INDICE_%s] = ", nomeTipo.toUpperCase(), variavel.getNome().toUpperCase());
+                        saida.format("REFS_%s[%s] = ", nomeTipo.toUpperCase(), Utils.geraStringIndice(variavel));
                         variavel.getInicializacao().aceitar(this);
                         saida.append(";").println(); // o ponto e vírgula depois da inicialização
                     }
@@ -779,7 +779,7 @@ public class GeradorCodigoJava
                     {
                         saida.append(identacao)
                                 .append("private final int ")
-                                .append("INDICE_" + variavel.getNome().toUpperCase())
+                                .append(Utils.geraStringIndice(variavel))
                                 .append(" = ")
                                 .append(String.valueOf(variavel.getIndiceReferencia()))
                                 .append(";")

@@ -136,9 +136,9 @@ public class GeradorDeclaracaoVariavel
     {
         if (variavel.ehPassadoPorReferencia())
         {
-            saida.format("REFS_%s[INDICE_%s]", 
+            saida.format("REFS_%s[%s]", 
                     Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase(),
-                    variavel.getNome().toUpperCase());
+                    Utils.geraStringIndice(variavel));
         }
         else
         {
