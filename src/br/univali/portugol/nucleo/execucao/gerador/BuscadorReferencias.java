@@ -37,24 +37,28 @@ class BuscadorReferencias extends VisitanteNulo
                 if (parametroEsperado != null && parametroEsperado.getModoAcesso() == ModoAcesso.POR_REFERENCIA && chamadaFuncao.getEscopo() == null)
                 {
                     NoReferenciaVariavel referencia = (NoReferenciaVariavel) parametroPassado;
-                    NoDeclaracaoVariavel origemReferencia = (NoDeclaracaoVariavel) referencia.getOrigemDaReferencia();
-                    TipoDado tipoOrigem = origemReferencia.getTipoDado();
-                    if (!declaracoes.containsKey(tipoOrigem)) // verifica se é necessário criar uma lista para guardar as variáveis do tipo do nó de origem
+                    if (referencia.getOrigemDaReferencia() instanceof NoDeclaracaoVariavel)
                     {
-                        declaracoes.put(tipoOrigem, new ArrayList<NoDeclaracaoVariavel>());
-                    }
+                        NoDeclaracaoVariavel origemReferencia = (NoDeclaracaoVariavel)referencia.getOrigemDaReferencia();
                     
-                    List<NoDeclaracaoVariavel> variaveis = declaracoes.get(tipoOrigem);
-                    if (!variaveis.contains(origemReferencia))
-                    {
-                        int indice = variaveis.size();
-                        referencia.setIndiceReferencia(indice);
-                        origemReferencia.setIndiceReferencia(indice);
-                        variaveis.add(origemReferencia);
-                        for (NoReferencia ref : origemReferencia.getReferencias())
+                        TipoDado tipoOrigem = origemReferencia.getTipoDado();
+                        if (!declaracoes.containsKey(tipoOrigem)) // verifica se é necessário criar uma lista para guardar as variáveis do tipo do nó de origem
                         {
-                            NoReferenciaVariavel origem = (NoReferenciaVariavel) ref;
-                            origem.setIndiceReferencia(indice);
+                            declaracoes.put(tipoOrigem, new ArrayList<NoDeclaracaoVariavel>());
+                        }
+                    
+                        List<NoDeclaracaoVariavel> variaveis = declaracoes.get(tipoOrigem);
+                        if (!variaveis.contains(origemReferencia))
+                        {
+                            int indice = variaveis.size();
+                            referencia.setIndiceReferencia(indice);
+                            origemReferencia.setIndiceReferencia(indice);
+                            variaveis.add(origemReferencia);
+                            for (NoReferencia ref : origemReferencia.getReferencias())
+                            {
+                                NoReferenciaVariavel origem = (NoReferenciaVariavel) ref;
+                                origem.setIndiceReferencia(indice);
+                            }
                         }
                     }
                 }

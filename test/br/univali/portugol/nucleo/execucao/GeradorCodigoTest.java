@@ -30,6 +30,12 @@ public class GeradorCodigoTest
     public TestName nomeTeste = new TestName();
 
     @Test
+    public void testeEscopoParametroPorReferencia() throws Exception
+    {
+        comparaCodigos();
+    }
+    
+    @Test
     public void testeParametroPorReferencia() throws Exception
     {
         comparaCodigos();
