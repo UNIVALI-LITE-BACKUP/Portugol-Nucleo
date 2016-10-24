@@ -69,17 +69,21 @@ public class GeradorChamadaMetodo
         }
 
         // verifica se é um parametro por referência
-        boolean origemEhVariavel = (parametroRecebido instanceof NoReferencia) && 
-                (((NoReferencia)parametroRecebido).getOrigemDaReferencia() instanceof NoDeclaracaoVariavel);
-        
-        if (!(passandoPorReferencia && origemEhVariavel))
+        if (!passandoPorReferencia)
         {
             parametroRecebido.aceitar(visitor);
         }
         else
         {
             NoReferenciaVariavel referencia = ((NoReferenciaVariavel)parametroRecebido);
-            saida.append(Utils.geraStringIndice(referencia));
+            if (referencia.getOrigemDaReferencia() instanceof NoDeclaracaoVariavel)
+            {
+                saida.append(Utils.geraStringIndice(referencia));
+            }
+            else // origem é um NoDeclaracaoParametro
+            {
+                saida.append(referencia.getNome());
+            }
         }
 
         if (precisaDeCast && parametroEhOperacao)

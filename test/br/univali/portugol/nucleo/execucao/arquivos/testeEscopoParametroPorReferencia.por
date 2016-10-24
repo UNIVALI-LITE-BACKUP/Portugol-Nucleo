@@ -21,7 +21,6 @@ programa
             teste_escopo(m)
         }
 
-        teste_escopo(m)
         teste_escopo(a)
     }
 
