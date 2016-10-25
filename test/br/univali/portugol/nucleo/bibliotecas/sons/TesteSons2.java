@@ -17,6 +17,7 @@ public class TesteSons2
         Integer hihat = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/musica/bateria/sons/chimbal.mp3");
         Integer caixa = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/musica/bateria/sons/caixa.mp3");
 
+        Runtime runtime = Runtime.getRuntime();
         for (int compasso = 1; compasso < 8; compasso++)
         {
             for (int tempo = 1; tempo <= 4; tempo++) // 4 tempos em um compasso
@@ -29,6 +30,8 @@ public class TesteSons2
                 
                 Thread.sleep(300);
             }
+            long memoriaUsada = runtime.totalMemory() - runtime.freeMemory();
+            System.out.println("Memória: " + (memoriaUsada/1024/1024) + " MB");
         }
         
     }

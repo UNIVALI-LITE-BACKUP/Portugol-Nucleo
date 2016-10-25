@@ -368,9 +368,9 @@ public final class Sons extends Biblioteca
                 }
             }
             controleDeVolume.setValue(valorEmDecibeis);
-            LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
-            LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
-            LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
+            //LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
+            //LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
+            //LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
         }
 
         void setVolumeGeral(float volumeGeral) //esse 'workaround' no volume geral foi usado porque o Java não permite manipular o volume geral
@@ -438,8 +438,7 @@ public final class Sons extends Biblioteca
             throws UnsupportedAudioFileException, IOException
     {
 
-        InputStream fluxoPreCarregado = new ByteArrayInputStream(som.getDados());
-        AudioInputStream fluxoCodificado = AudioSystem.getAudioInputStream(fluxoPreCarregado);
+        AudioInputStream fluxoCodificado = AudioSystem.getAudioInputStream(som.getArquivo());
         AudioFormat formatoCodificado = fluxoCodificado.getFormat();
 
         boolean precisaConverterTaxaDeAmostragem = formatoCodificado.getSampleRate() != formatoDoAudio.getSampleRate();
@@ -480,20 +479,13 @@ public final class Sons extends Biblioteca
 
     private final class Som
     {
-        private final byte[] dados;
         private final File arquivo;
         private final int endereco;
 
         public Som(File arquivo, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
         {
-            this.dados = carregarDados(arquivo);
             this.arquivo = arquivo;
             this.endereco = endereco;
-        }
-
-        public byte[] getDados()
-        {
-            return dados;
         }
 
         public File getArquivo()
@@ -506,32 +498,6 @@ public final class Sons extends Biblioteca
             return endereco;
         }
 
-        private byte[] carregarDados(File arquivo) throws ErroExecucaoBiblioteca, InterruptedException
-        {
-            try
-            {
-                int bytesLidos;
-                int tamanhoBuffer = 1048576; // 1 MB
-
-                byte[] buffer = new byte[tamanhoBuffer];
-
-                InputStream fluxoArquivo = new BufferedInputStream(new FileInputStream(arquivo));
-                ByteArrayOutputStream fluxoSaida = new ByteArrayOutputStream(buffer.length);
-
-                while ((bytesLidos = fluxoArquivo.read(buffer, 0, buffer.length)) > 0)
-                {
-                    fluxoSaida.write(buffer, 0, bytesLidos);
-                }
-
-                fluxoSaida.flush();
-
-                return fluxoSaida.toByteArray();
-            }
-            catch (IOException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(String.format("Erro ao carregar o som '%s'", arquivo.getAbsolutePath()));
-            }
-        }
     }
 
     private static AudioFormat criaFormatoDeAudioPadrao()
