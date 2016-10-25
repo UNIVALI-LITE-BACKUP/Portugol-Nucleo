@@ -14,7 +14,6 @@ import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOper
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 /**
@@ -23,7 +22,7 @@ import java.awt.image.BufferedImage;
  */
 public final class PoolOperacoesGraficas
 {
-    private static final int QUANTIDADE_MAXIMA_OPERACOES = 128;
+    private static final int QUANTIDADE_MAXIMA_OPERACOES = 2048;
     private static final int QUANTIDADE_INICIAL_OPERACOES = 8;
 
     private final CacheOperacoesDesenhoElipse CACHE_OPERACOES_DESENHO_ELIPSE;
