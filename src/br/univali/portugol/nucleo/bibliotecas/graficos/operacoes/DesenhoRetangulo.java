@@ -2,43 +2,46 @@ package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
 import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoRetangulo extends OperacaoGrafica
+public final class DesenhoRetangulo extends OperacaoDesenho
 {
-    public int x;
-    public int y;
-    public int largura;
-    public int altura;
-    public boolean preencher;
-    public boolean arredondarCantos;
-    public double rotacao;
+    private boolean preencher;
+    private boolean arredondarCantos;
+    private int canto;
+    private int largura;
+    private int altura;
 
     public DesenhoRetangulo(CacheOperacoesGraficas cache)
     {
         super(cache);
     }
-
-    @Override
-    public void executar(Graphics2D graficos)
+    
+    void setParametros(int x, int y, int largura, int altura, boolean preencher, boolean arredondarCantos, double rotacao, int opacidade)
     {
-        AffineTransform transformacao = graficos.getTransform();
-
-        if (rotacao != 0.0)
-        {
-            graficos.rotate(rotacao, x + (largura / 2), y + (altura / 2));
-        }
-
+        this.x = x;
+        this.y = y;
+        this.largura = largura;
+        this.altura = altura;
+        this.preencher = preencher;
+        this.arredondarCantos = arredondarCantos;
+        this.rotacao = rotacao;
+        this.opacidade = opacidade;
+        this.centroX = x + (largura >> 1);
+        this.centroY = y + (altura >> 1);
+        this.canto = (int) (Math.min(largura, altura) * 0.2);
+    }
+    
+    @Override
+    public void desenhar(Graphics2D graficos)
+    {
         if (preencher)
         {
             if (arredondarCantos)
             {
-                int canto = (int) (Math.min(largura, altura) * 0.2);
                 graficos.fillRoundRect(x, y, largura, altura, canto, canto);
             }
             else
@@ -50,18 +53,12 @@ public final class DesenhoRetangulo extends OperacaoGrafica
         {
             if (arredondarCantos)
             {
-                int canto = (int) (Math.min(largura, altura) * 0.2);
                 graficos.drawRoundRect(x, y, largura, altura, canto, canto);
             }
             else
             {
                 graficos.drawRect(x, y, largura, altura);
             }
-        }
-
-        if (rotacao != 0.0)
-        {
-            graficos.setTransform(transformacao);
         }
     }
 }

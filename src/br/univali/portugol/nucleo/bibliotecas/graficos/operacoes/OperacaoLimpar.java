@@ -2,7 +2,6 @@ package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
 import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 /**
  *
@@ -10,16 +9,23 @@ import java.awt.Rectangle;
  */
 public final class OperacaoLimpar extends OperacaoGrafica
 {
-    public Rectangle areaGraficos;
+    private int largura;
+    private int altura;
     
     public OperacaoLimpar(CacheOperacoesGraficas<OperacaoLimpar> cache)
     {
         super(cache);
     }
+    
+    void setParametros(int largura, int altura)
+    {
+        this.largura = largura;
+        this.altura = altura;
+    }
 
     @Override
-    public void executar(Graphics2D graficos)
+    public void desenhar(Graphics2D graficos)
     {
-        graficos.fillRect(0, 0, areaGraficos.width, areaGraficos.height);
+        graficos.fillRect(0, 0, largura, altura);
     }
 }

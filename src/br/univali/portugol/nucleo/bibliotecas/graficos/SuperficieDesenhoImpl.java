@@ -122,7 +122,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void limpar()
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoLimpar(areaGrafica);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoLimpar(areaGrafica.width, areaGrafica.height);
         indiceOperacao++;
     }
 
@@ -148,28 +148,28 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharRetangulo(int x, int y, int largura, int altura, boolean arredondarCantos, boolean preencher)
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoRetangulo(x, y, largura, altura, arredondarCantos, preencher, rotacao);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoRetangulo(x, y, largura, altura, arredondarCantos, preencher, rotacao, opacidade);
         indiceOperacao++;
     }
 
     @Override
     public void desenharElipse(int x, int y, int largura, int altura, boolean preencher)
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoElipse(x, y, largura, altura, preencher, rotacao);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoElipse(x, y, largura, altura, preencher, rotacao, opacidade);
         indiceOperacao++;
     }
 
     @Override
     public void desenharLinha(int x1, int y1, int x2, int y2)
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoLinha(x1, y1, x2, y2, rotacao);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoLinha(x1, y1, x2, y2, rotacao, opacidade);
         indiceOperacao++;
     }
 
     @Override
     public void desenharTexto(String texto, int x, int y)
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoTexto(x, y, texto, rotacao);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoTexto(x, y, texto, dimensoesFonte, rotacao, opacidade);
         indiceOperacao++;
     }
 
@@ -279,7 +279,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharPonto(int x, int y)
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPonto(x, y);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPonto(x, y, opacidade);
         indiceOperacao++;
     }
 
@@ -307,7 +307,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharPoligono(int[][] pontos, boolean preencher)
     {
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPoligono(pontos, preencher, rotacao);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPoligono(pontos, preencher, rotacao, opacidade);
         indiceOperacao++;
     }
 

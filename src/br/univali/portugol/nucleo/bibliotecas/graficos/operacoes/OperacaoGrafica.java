@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
 public abstract class OperacaoGrafica
 {
     private final CacheOperacoesGraficas cache;
-
+    
     public OperacaoGrafica(CacheOperacoesGraficas cache)
     {
         this.cache = cache;
@@ -21,5 +21,10 @@ public abstract class OperacaoGrafica
         cache.devolver(this);
     }
     
-    public abstract void executar(Graphics2D graficos);
+    public void executar(Graphics2D graficos)
+    {
+        desenhar(graficos);
+    }
+    
+    protected abstract void desenhar(Graphics2D graficos);
 }

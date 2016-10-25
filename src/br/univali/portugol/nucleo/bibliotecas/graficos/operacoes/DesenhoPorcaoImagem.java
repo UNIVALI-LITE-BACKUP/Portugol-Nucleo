@@ -4,60 +4,64 @@ import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOper
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoPorcaoImagem extends OperacaoGrafica
+public final class DesenhoPorcaoImagem extends OperacaoDesenho
 {
-    public int x;
-    public int y;
-    public int xi;
-    public int yi;
-    public int largura;
-    public int altura;
-    public BufferedImage imagem;
-    public int opacidade;
-    public double rotacao;
+    private int xi;
+    private int yi;
+    private BufferedImage imagem;
+    private int direitaOrigem;
+    private int baseOrigem;
+    private int direitaDestino;
+    private int baseDestino;
+    private float nivelTransparencia = 1.0f;
 
     public DesenhoPorcaoImagem(CacheOperacoesGraficas<DesenhoPorcaoImagem> cache)
     {
         super(cache);
     }
 
-    @Override
-    public void executar(Graphics2D graficos)
+    void setParametros(int x, int y, BufferedImage imagem, int xi, int yi, int largura, int altura, double rotacao, int opacidade)
     {
-        AffineTransform transformacao = graficos.getTransform();
+        this.x = x;
+        this.y = y;
+        this.imagem = imagem;
+        this.xi = xi;
+        this.yi = yi;
+        this.rotacao = rotacao;
+        this.opacidade = opacidade;
+        this.centroX = x + (largura >> 1);
+        this.centroY = y + (altura >> 1);
 
-        if (rotacao != 0.0)
-        {
-            graficos.rotate(rotacao, x + (largura / 2), y + (altura / 2));
-        }
+        this.direitaDestino = x + largura;
+        this.baseDestino = y + altura;
+        this.direitaOrigem = xi + largura;
+        this.baseOrigem = yi + altura;
 
+        nivelTransparencia = opacidade / 255.0f;
+    }
+
+    @Override
+    public void desenhar(Graphics2D graficos)
+    {
         if (opacidade == 255)
         {
-            graficos.drawImage(imagem, x, y, x + largura, y + altura, xi, yi, xi + largura, yi + altura, null);
+            graficos.drawImage(imagem, x, y, direitaDestino, baseDestino, xi, yi, direitaOrigem, baseOrigem, null);
         }
         else
         {
-            float a = (1.0f * opacidade) / 255.f;
 
             Composite original = graficos.getComposite();
-            Composite alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a);
+            Composite alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, nivelTransparencia);
 
             graficos.setComposite(alpha);
-            graficos.drawImage(imagem, x, y, x + largura, y + altura, xi, yi, xi + largura, yi + altura, null);
+            graficos.drawImage(imagem, x, y, direitaDestino, baseDestino, xi, yi, direitaOrigem, baseOrigem, null);
             graficos.setComposite(original);
-        }
-
-        if (rotacao != 0.0)
-        {
-            graficos.setTransform(transformacao);
         }
     }
 }

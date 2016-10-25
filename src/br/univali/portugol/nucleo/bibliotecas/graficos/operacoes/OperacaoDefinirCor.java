@@ -11,15 +11,20 @@ import java.awt.Rectangle;
  */
 public final class OperacaoDefinirCor extends OperacaoGrafica
 {
-    public Color cor;
+    private Color cor;
 
     public OperacaoDefinirCor(CacheOperacoesGraficas<OperacaoDefinirCor> cache)
     {
         super(cache);
     }
+    
+    void setParametros(Color cor)
+    {
+        this.cor = cor;
+    }
 
     @Override
-    public void executar(Graphics2D graficos)
+    public void desenhar(Graphics2D graficos)
     {
         graficos.setColor(cor);
     }

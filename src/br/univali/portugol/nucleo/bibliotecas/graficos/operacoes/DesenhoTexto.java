@@ -3,45 +3,36 @@ package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoTexto extends OperacaoGrafica
-{
-    public int x;
-    public int y;
-    public String texto;
-    public double rotacao;
+public final class DesenhoTexto extends OperacaoDesenho
+{    
+    private String texto;    
+    private int altura;
 
     public DesenhoTexto(CacheOperacoesGraficas<DesenhoTexto> cache)
     {
         super(cache);
     }
+    
+    void setParametros(int x, int y, String texto, FontMetrics dimensoesFonte, double rotacao, int opacidade)
+    {
+        this.x = x;
+        this.y = y;
+        this.texto = texto;
+        this.rotacao = rotacao;
+        this.opacidade = opacidade;
+        this.altura = dimensoesFonte.getAscent() - dimensoesFonte.getDescent() + dimensoesFonte.getLeading() + 1;
+        this.centroX = x + (dimensoesFonte.stringWidth(texto) >> 1);
+        this.centroY = y + (altura >> 1);
+    }
 
     @Override
-    public void executar(Graphics2D graficos)
+    public void desenhar(Graphics2D graficos)
     {
-        FontMetrics dimensoesFonte = graficos.getFontMetrics();
-
-        int largura = dimensoesFonte.stringWidth(texto);
-        int altura = dimensoesFonte.getAscent() - dimensoesFonte.getDescent() + dimensoesFonte.getLeading() + 1;
-
-        AffineTransform transformacao = graficos.getTransform();
-
-        if (rotacao != 0.0)
-        {
-            graficos.rotate(rotacao, x + (largura / 2), y + (altura / 2));
-        }
-
         graficos.drawString(texto, x, y + altura);
-
-        if (rotacao != 0.0)
-        {
-            graficos.setTransform(transformacao);
-        }
     }
 }

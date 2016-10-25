@@ -13,6 +13,7 @@ import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOper
 import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesLimpar;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
@@ -56,11 +57,7 @@ public final class PoolOperacoesGraficas
     {
         DesenhoImagem desenhoImagem = CACHE_OPERACOES_DESENHO_IMAGEM.obter();
 
-        desenhoImagem.x = x;
-        desenhoImagem.y = y;
-        desenhoImagem.imagem = imagem;
-        desenhoImagem.opacidade = opacidade;
-        desenhoImagem.rotacao = rotacao;
+        desenhoImagem.setParametros(x, y, imagem, rotacao, opacidade);
 
         return desenhoImagem;
     }
@@ -69,70 +66,52 @@ public final class PoolOperacoesGraficas
     {
         OperacaoDefinirCor operacaoDefinirCor = CACHE_OPERACOES_DEFINIR_COR.obter();
 
-        operacaoDefinirCor.cor = cor;
+        operacaoDefinirCor.setParametros(cor);
 
         return operacaoDefinirCor;
     }
 
-    public DesenhoRetangulo obterOperacaoDesenhoRetangulo(int x, int y, int largura, int altura, boolean arredondarCantos, boolean preencher, double rotacao)
+    public DesenhoRetangulo obterOperacaoDesenhoRetangulo(int x, int y, int largura, int altura, boolean arredondarCantos, boolean preencher, double rotacao, int opacidade)
     {
         DesenhoRetangulo desenhoRetangulo = CACHE_OPERACOES_DESENHO_RETANGULO.obter();
 
-        desenhoRetangulo.x = x;
-        desenhoRetangulo.y = y;
-        desenhoRetangulo.largura = largura;
-        desenhoRetangulo.altura = altura;
-        desenhoRetangulo.arredondarCantos = arredondarCantos;
-        desenhoRetangulo.preencher = preencher;
-        desenhoRetangulo.rotacao = rotacao;
+        desenhoRetangulo.setParametros(x, y, largura, altura, preencher, arredondarCantos, rotacao, opacidade);
 
         return desenhoRetangulo;
     }
 
-    public DesenhoElipse obterOperacaoDesenhoElipse(int x, int y, int largura, int altura, boolean preencher, double rotacao)
+    public DesenhoElipse obterOperacaoDesenhoElipse(int x, int y, int largura, int altura, boolean preencher, double rotacao, int opacidade)
     {
         DesenhoElipse desenhoElipse = CACHE_OPERACOES_DESENHO_ELIPSE.obter();
 
-        desenhoElipse.x = x;
-        desenhoElipse.y = y;
-        desenhoElipse.largura = largura;
-        desenhoElipse.altura = altura;
-        desenhoElipse.preencher = preencher;
-        desenhoElipse.rotacao = rotacao;
+        desenhoElipse.setParametros(x, y, largura, altura, preencher, rotacao, opacidade);
 
         return desenhoElipse;
     }
 
-    public DesenhoLinha obterOperacaoDesenhoLinha(int x1, int y1, int x2, int y2, double rotacao)
+    public DesenhoLinha obterOperacaoDesenhoLinha(int x1, int y1, int x2, int y2, double rotacao, int opacidade)
     {
         DesenhoLinha operacaoDesenhoLinha = CACHE_OPERACOES_DESENHO_LINHA.obter();
 
-        operacaoDesenhoLinha.x1 = x1;
-        operacaoDesenhoLinha.y1 = y1;
-        operacaoDesenhoLinha.x2 = x2;
-        operacaoDesenhoLinha.y2 = y2;
-        operacaoDesenhoLinha.rotacao = rotacao;
+        operacaoDesenhoLinha.setParametros(x1, y1, x2, y2, rotacao, opacidade);
 
         return operacaoDesenhoLinha;
     }
 
-    public DesenhoPoligono obterOperacaoDesenhoPoligono(int[][] pontos, boolean preencher, double rotacao)
+    public DesenhoPoligono obterOperacaoDesenhoPoligono(int[][] pontos, boolean preencher, double rotacao, int opacidade)
     {
         DesenhoPoligono operacaoDesenhoPoligono = CACHE_OPERACOES_DESENHO_POLIGONO.obter();
 
-        operacaoDesenhoPoligono.pontos = pontos;
-        operacaoDesenhoPoligono.preencher = preencher;
-        operacaoDesenhoPoligono.rotacao = rotacao;
+        operacaoDesenhoPoligono.setParametros(pontos, preencher, rotacao, opacidade);
 
         return operacaoDesenhoPoligono;
     }
 
-    public DesenhoPonto obterOperacaoDesenhoPonto(int x, int y)
+    public DesenhoPonto obterOperacaoDesenhoPonto(int x, int y, int opacidade)
     {
         DesenhoPonto operacaoDesenhoPonto = CACHE_OPERACOES_DESENHO_PONTO.obter();
 
-        operacaoDesenhoPonto.x = x;
-        operacaoDesenhoPonto.y = y;
+        operacaoDesenhoPonto.setParametros(x, y, opacidade);
 
         return operacaoDesenhoPonto;
     }
@@ -141,45 +120,34 @@ public final class PoolOperacoesGraficas
     {
         DesenhoPorcaoImagem operacaoDesenhoPorcaoImagem = CACHE_OPERACOES_DESENHO_PORCAO_IMAGEM.obter();
 
-        operacaoDesenhoPorcaoImagem.x = x;
-        operacaoDesenhoPorcaoImagem.y = y;
-        operacaoDesenhoPorcaoImagem.xi = xi;
-        operacaoDesenhoPorcaoImagem.yi = yi;
-        operacaoDesenhoPorcaoImagem.largura = largura;
-        operacaoDesenhoPorcaoImagem.altura = altura;
-        operacaoDesenhoPorcaoImagem.imagem = imagem;
-        operacaoDesenhoPorcaoImagem.opacidade = opacidade;
-        operacaoDesenhoPorcaoImagem.rotacao = rotacao;
+        operacaoDesenhoPorcaoImagem.setParametros(x, y, imagem, xi, yi, largura, altura, rotacao, opacidade);
 
         return operacaoDesenhoPorcaoImagem;
     }
 
-    public DesenhoTexto obterOperacaoDesenhoTexto(int x, int y, String texto, double rotacao)
+    public OperacaoGrafica obterOperacaoDesenhoTexto(int x, int y, String texto, FontMetrics dimensoesFonte, double rotacao, int opacidade)
     {
         DesenhoTexto operacaoDesenhoTexto = CACHE_OPERACOES_DESENHO_TEXTO.obter();
 
-        operacaoDesenhoTexto.x = x;
-        operacaoDesenhoTexto.y = y;
-        operacaoDesenhoTexto.texto = texto;
-        operacaoDesenhoTexto.rotacao = rotacao;
+        operacaoDesenhoTexto.setParametros(x, y, texto, dimensoesFonte, rotacao, opacidade);
 
         return operacaoDesenhoTexto;
     }
-
+    
     public OperacaoDefinirFonte obterOperacaoDefinirFonte(Font fonte)
     {
         OperacaoDefinirFonte operacaoDefinirFonte = CACHE_OPERACOES_DEFINIR_FONTE.obter();
 
-        operacaoDefinirFonte.fonte = fonte;
+        operacaoDefinirFonte.setParametros(fonte);
 
         return operacaoDefinirFonte;
     }
 
-    public OperacaoLimpar obterOperacaoLimpar(Rectangle areaGraficos)
+    public OperacaoLimpar obterOperacaoLimpar(int largura, int altura)
     {
         OperacaoLimpar operacaoLimpar = CACHE_OPERACOES_LIMPAR.obter();
 
-        operacaoLimpar.areaGraficos = areaGraficos;
+        operacaoLimpar.setParametros(largura, altura);
 
         return operacaoLimpar;
     }

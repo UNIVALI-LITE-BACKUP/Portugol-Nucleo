@@ -3,78 +3,99 @@ package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoPoligono extends OperacaoGrafica
+public final class DesenhoPoligono extends OperacaoDesenho
 {
-    public int[][] pontos;
-    public boolean preencher;
-    public double rotacao;
+    private boolean preencher;
+    private Polygon poligono;
 
     public DesenhoPoligono(CacheOperacoesGraficas<DesenhoPoligono> cache)
     {
         super(cache);
     }
 
-    @Override
-    public void executar(Graphics2D graficos)
+    void setParametros(int[][] pontos, boolean preencher, double rotacao, int opacidade)
     {
-        Polygon poligono = new Polygon();
+        this.rotacao = rotacao;
+        this.opacidade = opacidade;
+        this.preencher = preencher;
 
-        int x, y, xCentro, yCentro;
+        this.centroX = calculaCentroX(pontos);
+        this.centroY = calculaCentroY(pontos);
+        this.poligono = criarPoligono(pontos);
+    }
 
+    private Polygon criarPoligono(int[][] pontos)
+    {
+        Polygon novoPoligono = new Polygon();
+
+        for (int i = 0; i < pontos.length; i++)
+        {
+            novoPoligono.addPoint(pontos[i][0], pontos[i][1]);
+        }
+
+        return novoPoligono;
+    }
+
+    private int calculaCentroX(int[][] pontos)
+    {
+        int lx;
         int xMaximo = Integer.MIN_VALUE;
         int xMinimo = Integer.MAX_VALUE;
 
-        int yMaximo = Integer.MIN_VALUE;
-        int yMinimo = Integer.MAX_VALUE;
-
-        for (int[] ponto : pontos)
+        for (int i = 0; i < pontos.length; i++)
         {
-            x = ponto[0];
-            y = ponto[1];
-
-            poligono.addPoint(x, y);
+            lx = pontos[i][0];
 
             if (rotacao != 0.0)
             {
-                if (x > xMaximo)
+                if (lx > xMaximo)
                 {
-                    xMaximo = x;
+                    xMaximo = lx;
                 }
-
-                if (x < xMinimo)
+                else if (lx < xMinimo)
                 {
-                    xMinimo = x;
-                }
-
-                if (y > yMaximo)
-                {
-                    yMaximo = y;
-                }
-
-                if (y < yMinimo)
-                {
-                    yMinimo = y;
+                    xMinimo = lx;
                 }
             }
         }
 
-        AffineTransform transformacao = graficos.getTransform();
+        return xMinimo + (Math.abs(xMaximo - xMinimo) >> 1);
+    }
 
-        if (rotacao != 0.0)
+    private int calculaCentroY(int[][] pontos)
+    {
+        int ly;
+        int yMaximo = Integer.MIN_VALUE;
+        int yMinimo = Integer.MAX_VALUE;
+
+        for (int i = 0; i < pontos.length; i++)
         {
-            xCentro = xMinimo + (Math.abs(xMaximo - xMinimo) / 2);
-            yCentro = yMinimo + (Math.abs(yMaximo - yMinimo) / 2);
+            ly = pontos[i][1];
 
-            graficos.rotate(rotacao, xCentro, yCentro);
+            if (rotacao != 0.0)
+            {
+                if (ly > yMaximo)
+                {
+                    yMaximo = ly;
+                }
+                else if (ly < yMinimo)
+                {
+                    yMinimo = ly;
+                }
+            }
         }
 
+        return yMinimo + (Math.abs(yMaximo - yMinimo) >> 1);
+    }
+
+    @Override
+    public void desenhar(Graphics2D graficos)
+    {
         if (preencher)
         {
             graficos.fill(poligono);
@@ -82,11 +103,6 @@ public final class DesenhoPoligono extends OperacaoGrafica
         else
         {
             graficos.draw(poligono);
-        }
-
-        if (rotacao != 0.0)
-        {
-            graficos.setTransform(transformacao);
         }
     }
 }
