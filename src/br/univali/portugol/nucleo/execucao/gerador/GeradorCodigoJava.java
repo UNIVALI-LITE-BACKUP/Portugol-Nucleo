@@ -319,10 +319,9 @@ public class GeradorCodigoJava
         }
 
         @Override
-        public Void visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
+        public Boolean visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
         {
-            geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo);
-            return null;
+            return geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo);
         }
 
         @Override

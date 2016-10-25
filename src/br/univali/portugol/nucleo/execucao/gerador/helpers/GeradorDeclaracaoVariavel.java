@@ -132,8 +132,13 @@ public class GeradorDeclaracaoVariavel
 
     }
 
-    public void gera(NoDeclaracaoVariavel variavel, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    public boolean gera(NoDeclaracaoVariavel variavel, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
+        if (variavel.ehPassadoPorReferencia() && !variavel.temInicializacao())
+        {
+            return false; //variáveis passadas por referências e não inicializadas (casos raros) não aparecem no código java, caso contrário o código java gerado terá um erro Not a stament para códigos como este: REFS_STRINGS[INDICE];
+        }
+        
         if (variavel.ehPassadoPorReferencia())
         {
             saida.format("REFS_%s[%s]", 
@@ -167,6 +172,6 @@ public class GeradorDeclaracaoVariavel
                 saida.append(")");
             }
         }
-
+        return true; // 'avisa' que o código de declaração foi gerado
     }
 }

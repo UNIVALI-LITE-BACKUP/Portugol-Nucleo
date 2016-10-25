@@ -10,8 +10,13 @@ programa
         inteiro b = 4
         inteiro m[2][2]
         inteiro v[3] 
-        inteiro c = teste(a, m, v) + teste(b, m, v) * a * b
-        c = teste(i, m, v)
+        cadeia texto
+        se(verdadeiro) //testando inicialização condicional da string 'texto'
+        {
+            texto = ""
+        }
+        inteiro c = teste(a, m, v, texto) + teste(b, m, v, texto) * a * b
+        c = teste(i, m, v, texto)
         c = u.numero_linhas(m)
         c = u.numero_elementos(v)
 
@@ -23,7 +28,7 @@ programa
         teste_tipos(x, numero_inteiro, r, carac, log)
     }                                                       
     
-    funcao inteiro teste(inteiro & x, inteiro matriz[][], inteiro vetor[])                               
+    funcao inteiro teste(inteiro & x, inteiro matriz[][], inteiro vetor[], cadeia &texto)                               
     {                                                      
         x = x * 2
         matriz[0][0] = matriz[0][0]

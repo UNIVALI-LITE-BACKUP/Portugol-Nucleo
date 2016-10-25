@@ -218,15 +218,15 @@ public class GeradorCodigoTest
         assertNotNull(resultado);
         assertNotNull(resultado.getErros());
         List<ErroAnalise> erros = resultado.getErros();
-        assertEquals(0, resultado.getErros().size());
-
         if (!erros.isEmpty())
         {
             for (ErroAnalise erro : erros)
             {
-                System.out.println(erro);
+                System.out.println("Linha: " + erro.getLinha() + " " + erro);
             }
         }
+        assertEquals(0, resultado.getErros().size());
+        
         ASAPrograma asa = (ASAPrograma) analisador.getASA();
 
         // gera o código e escreve em um ByteArrayOutputStream

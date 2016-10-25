@@ -44,9 +44,14 @@ public class Utils
 
             saida.append(Utils.geraIdentacao(nivelEscopo));
 
-            bloco.aceitar(visitor);
+            boolean adicionaPonEtoVirgula = blocoFinalizaComPontoEVirgula(bloco);
+            Object resultado = bloco.aceitar(visitor);
+            if (resultado instanceof Boolean )
+            {
+                adicionaPonEtoVirgula &= ((Boolean)resultado);
+            }
 
-            if (blocoFinalizaComPontoEVirgula(bloco))
+            if (adicionaPonEtoVirgula)
             {
                 saida.append(";");
             }
