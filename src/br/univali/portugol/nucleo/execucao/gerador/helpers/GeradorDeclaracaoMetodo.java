@@ -77,7 +77,10 @@ public class GeradorDeclaracaoMetodo
         for (int i = 0; i < size; i++)
         {
             NoDeclaracaoParametro noParametro = parametros.get(i);
-            if (noParametro.getModoAcesso() == ModoAcesso.POR_VALOR) {
+            
+            // o código gerado para matrizes e vetores passados por referência é o mesmo código usado para passagem de parâmetro por valor (apenas o nome da variável)
+            if (noParametro.getModoAcesso() == ModoAcesso.POR_VALOR || noParametro.getQuantificador() != Quantificador.VALOR) 
+            {
                 geraParametroPorValor(noParametro, saida);
             }
             else{
