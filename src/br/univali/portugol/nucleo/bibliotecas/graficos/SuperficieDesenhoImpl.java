@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +35,11 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 
     private Font fonteTexto = null;
     private FontMetrics dimensoesFonte = null;
+    
+    //      Map<nomeFonte, Map<estilo, Map<sublinhado, Map<tamanho, Font>>> 
+    private Map<String, Map<Integer, Map<Boolean, Map<Float, Font>>>> fontes = new HashMap<>(); // cache de fontes
+
+    boolean usandoSublinhado = false;
 
     private double rotacao = 0.0;
     private int opacidade = 255;
@@ -176,25 +182,81 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirFonteTexto(String nome)
     {
-        //int underline = (Integer) fonteTexto.getAttributes().get(TextAttribute.UNDERLINE);
-        Font fonte = new Font(nome, Font.PLAIN, 12);
+        fonteTexto = getFonte(nome, fonteTexto.getStyle(), usandoSublinhado, fonteTexto.getSize2D());
 
-        fonte = fonte.deriveFont(fonteTexto.getStyle(), fonteTexto.getSize2D());
-
-        //Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonte.getAttributes();
-        //atributos.put(TextAttribute.UNDERLINE, underline);
-        //fonte = fonte.deriveFont(atributos);
-        fonteTexto = fonte;
-        dimensoesFonte = getFontMetrics(fonte);
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonte);
+        dimensoesFonte = getFontMetrics(fonteTexto);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonteTexto);
         indiceOperacao++;
     }
 
     @Override
     public void definirEstiloTexto(boolean italico, boolean negrito, boolean sublinhado)
     {
-        int estilo = Font.PLAIN;
+        this.usandoSublinhado = sublinhado;
+        String nomeFonte = fonteTexto.getName();
+        int estilo = getEstilo(negrito, italico);
+        float tamanho = fonteTexto.getSize2D();
 
+        fonteTexto = getFonte(nomeFonte, estilo, sublinhado, tamanho);
+
+        dimensoesFonte = getFontMetrics(fonteTexto);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonteTexto);
+
+        indiceOperacao++;
+    }
+
+    @Override
+    public void registrarFonteCarregada(Font fonte)
+    {
+        fontes.putIfAbsent(fonte.getName(), new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
+        Map<Integer, Map<Boolean, Map<Float, Font>>> fonteName = fontes.get(fonte.getName());
+        fonteName.putIfAbsent(fonte.getStyle(), new HashMap<Boolean, Map<Float, Font>>());
+        Map<Boolean, Map<Float, Font>> style = fonteName.get(fonte.getStyle());
+        style.putIfAbsent(Boolean.FALSE, new HashMap<Float, Font>());
+        style.get(Boolean.FALSE).putIfAbsent(fonte.getSize2D(), fonte);
+    }
+
+    private Font getFonte(String nomeFonte, int estilo, boolean sublinhado, float tamanho)
+    {
+        if (!fontes.containsKey(nomeFonte))
+        {
+            fontes.put(nomeFonte, new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
+        }
+        Map<Integer, Map<Boolean, Map<Float, Font>>> fontesNome = fontes.get(nomeFonte);
+
+        if (!fontesNome.containsKey(estilo))
+        {
+            fontesNome.put(estilo, new HashMap<Boolean, Map<Float, Font>>());
+        }
+        Map<Boolean, Map<Float, Font>> fontesEstilo = fontesNome.get(estilo);
+
+        if (!fontesEstilo.containsKey(sublinhado))
+        {
+            fontesEstilo.put(sublinhado, new HashMap<Float, Font>());
+        }
+
+        Map<Float, Font> fontesTamanho = fontesEstilo.get(sublinhado);
+        if (!fontesTamanho.containsKey(tamanho))
+        {
+            Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonteTexto.getAttributes();
+            if (sublinhado)
+            {
+                atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+            }
+            else
+            {
+                atributos.put(TextAttribute.UNDERLINE, -1);
+            }
+            Font novaFonte = fonteTexto.deriveFont(atributos).deriveFont(estilo, tamanho);
+            fontes.get(nomeFonte).get(estilo).get(sublinhado).put(tamanho, novaFonte);
+        }
+
+        return fontes.get(nomeFonte).get(estilo).get(sublinhado).get(tamanho);
+    }
+
+    private int getEstilo(boolean negrito, boolean italico)
+    {
+        int estilo = Font.PLAIN;
         if (italico)
         {
             estilo = estilo | Font.ITALIC;
@@ -204,25 +266,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         {
             estilo = estilo | Font.BOLD;
         }
-
-        Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonteTexto.getAttributes();
-
-        if (sublinhado)
-        {
-            atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        }
-        else
-        {
-            atributos.put(TextAttribute.UNDERLINE, -1);
-        }
-
-        fonteTexto = fonteTexto.deriveFont(atributos);
-        fonteTexto = fonteTexto.deriveFont(estilo);
-
-        dimensoesFonte = getFontMetrics(fonteTexto);
-        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonteTexto);
-
-        indiceOperacao++;
+        return estilo;
     }
 
     @Override
@@ -317,4 +361,5 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         addMouseListener(observadorMouse);
         addMouseMotionListener(observadorMouse);
     }
+
 }

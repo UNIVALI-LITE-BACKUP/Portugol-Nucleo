@@ -918,6 +918,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             {
                 Font fonte = Font.createFont(Font.TRUETYPE_FONT, arquivo);
                 GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(fonte);
+                janela.getSuperficieDesenho().registrarFonteCarregada(fonte);
             }
             catch (IOException | FontFormatException excecao)
             {

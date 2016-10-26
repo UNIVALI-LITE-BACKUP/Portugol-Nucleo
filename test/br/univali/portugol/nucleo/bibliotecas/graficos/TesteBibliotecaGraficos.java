@@ -74,6 +74,7 @@ public class TesteBibliotecaGraficos
             
             String nomeFonte = "Verdana";
             g.definir_fonte_texto(nomeFonte);
+            g.definir_estilo_texto(false, true, true);
             int larguraTexto = g.largura_texto(nomeFonte);
             int textoY = ALTURA_TELA / 2 + tamanhoMira * 2;
             g.desenhar_texto(LARGURA_TELA / 2 - larguraTexto / 2, textoY, nomeFonte);
@@ -81,6 +82,9 @@ public class TesteBibliotecaGraficos
             int alturaTexto = g.altura_texto(nomeFonte);
             nomeFonte = "Times new Roman";
             g.definir_fonte_texto(nomeFonte);
+            g.definir_tamanho_texto(60);
+            g.definir_cor(0xFF0000);
+            g.definir_estilo_texto(false, true, false);
             larguraTexto = g.largura_texto(nomeFonte);
             g.desenhar_texto(LARGURA_TELA / 2 - larguraTexto / 2, textoY + alturaTexto, nomeFonte);
 
