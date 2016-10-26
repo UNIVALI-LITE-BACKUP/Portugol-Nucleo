@@ -280,11 +280,11 @@ public final class Sons extends Biblioteca
         sons.clear();
     }
 
-    private class ListenerDeInterrupcaoDeAudio implements LineListener
+    private class ListenerInterrupcaoDeAudio implements LineListener
     {
         private final int endereco;
 
-        public ListenerDeInterrupcaoDeAudio(int endereco)
+        public ListenerInterrupcaoDeAudio(int endereco)
         {
             this.endereco = endereco;
         }
@@ -319,15 +319,20 @@ public final class Sons extends Biblioteca
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
         private FloatControl controleDeVolume = null;
+        private final LineListener listener; 
 
         public Reproducao(Som som, AudioFormat formatoDeAudio, int endereco) throws IOException, UnsupportedAudioFileException
         {
             this.endereco = endereco;
+            listener = new ListenerInterrupcaoDeAudio(endereco);
             try
             {
                 reprodutor = AudioSystem.getClip();
-                reprodutor.open(criaStream(som, formatoDeAudio));
-                reprodutor.addLineListener(new ListenerDeInterrupcaoDeAudio(endereco));
+                AudioInputStream stream = criaStream(som, formatoDeAudio);
+                reprodutor.open(stream);
+                stream.close();
+                
+                reprodutor.addLineListener(listener);
 
                 if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
                 {
@@ -412,7 +417,7 @@ public final class Sons extends Biblioteca
             {
                 return;
             }
-
+            reprodutor.removeLineListener(listener);
             reprodutor.stop();
             reprodutor.close();
         }
