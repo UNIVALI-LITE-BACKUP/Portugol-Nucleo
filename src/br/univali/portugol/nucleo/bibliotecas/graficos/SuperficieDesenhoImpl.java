@@ -37,9 +37,11 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     private FontMetrics dimensoesFonte = null;
     
     //      Map<nomeFonte, Map<estilo, Map<sublinhado, Map<tamanho, Font>>> 
-    private Map<String, Map<Integer, Map<Boolean, Map<Float, Font>>>> fontes = new HashMap<>(); // cache de fontes
+    private Map<String, Map<Integer, Map<Boolean, Map<Float, Font>>>> cacheFontes = new HashMap<>(); // cache de fontes
 
     boolean usandoSublinhado = false;
+    
+    private Map<Integer, Color> cacheCores = new HashMap<>();
 
     private double rotacao = 0.0;
     private int opacidade = 255;
@@ -107,14 +109,14 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 
     private Color obterCorTransparente(int cor, int opacidade)
     {
-        Color aux = new Color(cor);
-
-        int a = opacidade;
-        int r = aux.getRed();
-        int g = aux.getGreen();
-        int b = aux.getBlue();
-
-        return new Color(r, g, b, a);
+        int chave = (cor << 8) | opacidade; // geram um inteiro com RGBA
+        if (!cacheCores.containsKey(chave))
+        {
+            Color aux = new Color(cor);
+            cacheCores.put(chave, new Color(aux.getRed(), aux.getGreen(), aux.getBlue(), opacidade));
+        }
+        
+        return cacheCores.get(chave);
     }
 
     @Override
@@ -208,8 +210,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void registrarFonteCarregada(Font fonte)
     {
-        fontes.putIfAbsent(fonte.getName(), new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
-        Map<Integer, Map<Boolean, Map<Float, Font>>> fonteName = fontes.get(fonte.getName());
+        cacheFontes.putIfAbsent(fonte.getName(), new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
+        Map<Integer, Map<Boolean, Map<Float, Font>>> fonteName = cacheFontes.get(fonte.getName());
         fonteName.putIfAbsent(fonte.getStyle(), new HashMap<Boolean, Map<Float, Font>>());
         Map<Boolean, Map<Float, Font>> style = fonteName.get(fonte.getStyle());
         style.putIfAbsent(Boolean.FALSE, new HashMap<Float, Font>());
@@ -218,11 +220,11 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 
     private Font getFonte(String nomeFonte, int estilo, boolean sublinhado, float tamanho)
     {
-        if (!fontes.containsKey(nomeFonte))
+        if (!cacheFontes.containsKey(nomeFonte))
         {
-            fontes.put(nomeFonte, new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
+            cacheFontes.put(nomeFonte, new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
         }
-        Map<Integer, Map<Boolean, Map<Float, Font>>> fontesNome = fontes.get(nomeFonte);
+        Map<Integer, Map<Boolean, Map<Float, Font>>> fontesNome = cacheFontes.get(nomeFonte);
 
         if (!fontesNome.containsKey(estilo))
         {
@@ -248,10 +250,10 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
                 atributos.put(TextAttribute.UNDERLINE, -1);
             }
             Font novaFonte = fonteTexto.deriveFont(atributos).deriveFont(estilo, tamanho);
-            fontes.get(nomeFonte).get(estilo).get(sublinhado).put(tamanho, novaFonte);
+            cacheFontes.get(nomeFonte).get(estilo).get(sublinhado).put(tamanho, novaFonte);
         }
 
-        return fontes.get(nomeFonte).get(estilo).get(sublinhado).get(tamanho);
+        return cacheFontes.get(nomeFonte).get(estilo).get(sublinhado).get(tamanho);
     }
 
     private int getEstilo(boolean negrito, boolean italico)
