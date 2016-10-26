@@ -17,6 +17,10 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBibliot
 @DocumentacaoBiblioteca(descricao = "Esta biblioteca contém funções para manipulação de texto (dados do tipo <tipo>cadeia</tipo>)", versao = "1.1")
 public final class Texto extends Biblioteca
 {
+    
+    private StringBuilder stringBuilder = new StringBuilder(1024);
+    
+    
     @DocumentacaoFuncao
     (
         descricao = "Conta o número de caracteres existentes em uma <tipo>cadeia</tipo>",
@@ -114,20 +118,19 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )    
+    
     public String preencher_a_esquerda(char car, int tamanho, String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (cad.length() < tamanho)
         {
-            StringBuilder sb = new StringBuilder();
-            
+            stringBuilder.setLength(0); // limpa o buffer antes de usar
             int diferenca = tamanho - cad.length();
-            
             for (int i = 1; i <= diferenca; i++)
             {
-                sb.append(car);
+                stringBuilder.append(car);
             }
             
-            cad = sb.append(cad).toString();
+            cad = stringBuilder.append(cad).toString();
         }
         
         return cad;
