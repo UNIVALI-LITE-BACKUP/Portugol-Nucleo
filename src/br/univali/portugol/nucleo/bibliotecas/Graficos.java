@@ -207,7 +207,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         janela().definirDimensoes(largura, altura);
     }
-   
+
     @DocumentacaoFuncao(
             descricao = "define o texto da janela do ambiente gráfico",
             parametros =
@@ -404,8 +404,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             try
             {
                 BufferedImage imagem = ImageIO.read(arquivo);
-
-                return cacheImagens.adicionarImagem(imagem);
+                return cacheImagens.adicionarImagem(criaImagemCompativel(imagem));
             }
             catch (IOException excecao)
             {
@@ -416,6 +415,25 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
         }
+    }
+
+    private BufferedImage criaImagemCompativel(BufferedImage original)
+    {
+        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDefaultConfiguration();
+
+        BufferedImage imagemCompativel
+                = graphicsConfiguration.createCompatibleImage(
+                        original.getWidth(null),
+                        original.getHeight(null), Transparency.TRANSLUCENT);
+
+        Graphics g = imagemCompativel.getGraphics();
+        g.drawImage(original, 0, 0, null);
+        g.dispose();
+
+        return imagemCompativel;
     }
 
     @DocumentacaoFuncao(
@@ -997,7 +1015,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             throw new ErroExecucaoBiblioteca("O modo gráfico não foi inicializado");
         }
     }
-    
+
     @DocumentacaoFuncao(
             descricao = "obtém a largura atual da janela do ambiente gráfico",
             autores =
@@ -1009,7 +1027,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         return janela().getLargura();
     }
-    
+
     @DocumentacaoFuncao(
             descricao = "obtém a altura atual da janela do ambiente gráfico",
             autores =
@@ -1021,8 +1039,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         return janela().getAltura();
     }
-    
-    
+
     @DocumentacaoFuncao(
             descricao = "obtém a largura da tela do computador",
             autores =
@@ -1033,11 +1050,10 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public int largura_tela() throws ErroExecucaoBiblioteca, InterruptedException
     {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        
-        return gd.getDisplayMode().getWidth();        
+
+        return gd.getDisplayMode().getWidth();
     }
-        
-    
+
     @DocumentacaoFuncao(
             descricao = "obtém a altura da tela do computador",
             autores =
@@ -1048,7 +1064,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public int altura_tela() throws ErroExecucaoBiblioteca, InterruptedException
     {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        
+
         return gd.getDisplayMode().getHeight();
     }
 
@@ -1063,9 +1079,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         janela().entrarModoTelaCheia();
     }
-    
-    
-     @DocumentacaoFuncao(
+
+    @DocumentacaoFuncao(
             descricao = "Faz com que a janela gráfica seja redimensionada para o tamanho que possuía antes de entrar no modo de tela cheia",
             autores =
             {
