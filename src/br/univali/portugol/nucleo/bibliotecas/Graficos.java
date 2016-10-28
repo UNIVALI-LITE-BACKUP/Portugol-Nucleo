@@ -427,7 +427,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         BufferedImage imagemCompativel
                 = graphicsConfiguration.createCompatibleImage(
                         original.getWidth(null),
-                        original.getHeight(null), Transparency.TRANSLUCENT);
+                        original.getHeight(null), original.getTransparency());
 
         Graphics g = imagemCompativel.getGraphics();
         g.drawImage(original, 0, 0, null);
