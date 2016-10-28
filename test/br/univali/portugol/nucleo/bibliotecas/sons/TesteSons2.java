@@ -37,5 +37,7 @@ public class TesteSons2
             System.out.println("Memória: " + (memoriaUsada/1024/1024) + " MB");
         }
         System.out.println("Média memória usada: " + ((totalMemoriaUsada/1024/1024)/iteracoes));
+        sons.finalizar();
+        
     }
 }

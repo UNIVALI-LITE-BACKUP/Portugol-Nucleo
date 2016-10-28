@@ -8,6 +8,7 @@ import br.univali.portugol.nucleo.bibliotecas.Sons;
  * você ouvirá sons, se não ouvir nada (e seu sistema de som estiver funcionando) então
  * o teste falhou. Você deverá ouvir um com de fundo e um som de sino tocando repetidamente, e
  * o volume do som do sino ficará aumentando e diminuindo.
+ * Depois de alguns segundos o som de fundo é interrompido.
  */
 public class TesteSons
 {
@@ -15,7 +16,7 @@ public class TesteSons
     {
         final Sons sons = new Sons();
         final Integer somDeFundo = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/jogos/corrida/sons/musica_jogo.mp3");
-        final Integer somDoSino = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/jogos/corrida/sons/som_largada.mp3");
+        final Integer somDoSino = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/jogos/corrida/sons/som_freio.mp3");
         final Integer somDoTrafego = sons.carregar_som("../Portugol-Studio-Recursos/exemplos/jogos/corrida/sons/som_trafego.mp3");
         
         sons.reproduzir_som(somDoTrafego, true);
@@ -34,6 +35,11 @@ public class TesteSons
             volume -= 3;
             if (volume <= 10)
                 volume = 100;
+            
+            if (i == 5)
+            {
+                sons.interromper_som(reproducaoSomDeFundo);
+            }
         }
     }
 }
