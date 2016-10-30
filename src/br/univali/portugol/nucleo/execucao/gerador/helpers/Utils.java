@@ -36,11 +36,16 @@ public class Utils
         return String.format("INDICE_%s_%d", nome.toUpperCase(), indice);
     }
     
-    public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
+    public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, 
+            VisitanteASA visitor, int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
+                    boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
     {
         for (NoBloco bloco : blocos)
         {
-            geraParadaPassoAPasso(bloco, saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
+            if (geraCodigoParaPontosDeParada)
+            {
+                geraParadaPassoAPasso(bloco, saida, nivelEscopo);
+            }
 
             saida.append(Utils.geraIdentacao(nivelEscopo));
 
@@ -81,25 +86,16 @@ public class Utils
         throw new IllegalStateException(mensagem);
     }
 
-    public static void geraVerificacaoThreadInterrompida(PrintWriter saida, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario)
+    public static void geraVerificacaoThreadInterrompida(PrintWriter saida, int nivelEscopo)
     {
-        if (gerandoCodigoParaTesteUnitario)
-        {
-            return;
-        }
         saida.append(Utils.geraIdentacao(nivelEscopo));
         saida.append("if (Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
         saida.println();
         saida.println();
     }
 
-    public static void geraParadaPassoAPasso(NoBloco no, PrintWriter saida, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario)
+    public static void geraParadaPassoAPasso(NoBloco no, PrintWriter saida, int nivelEscopo)
     {
-        if (gerandoCodigoParaTesteUnitario)
-        {
-            return;
-        }
-
         if (no.ehParavel(Programa.Estado.STEP_OVER))
         {
             if (no instanceof NoSe || no instanceof NoEnquanto)

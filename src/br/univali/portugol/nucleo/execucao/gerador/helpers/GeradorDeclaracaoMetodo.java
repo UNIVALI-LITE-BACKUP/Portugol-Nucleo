@@ -10,7 +10,9 @@ import java.util.List;
  */
 public class GeradorDeclaracaoMetodo
 {
-    public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
+    public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, 
+            int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
+                    boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
     {
         saida.println();
 
@@ -45,11 +47,18 @@ public class GeradorDeclaracaoMetodo
         saida.println(); // pula uma linha depois da declaração da assinatura do método
         saida.append(identacao).append("{").println(); // inicia o escopo do método
 
-        Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
+        if (geraCodigoParaInterrupcaoDeThread)
+        {
+            Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo);
+        }
 
-        Utils.geraParadaPassoAPasso(noFuncao, saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
+        if (geraCodigoParaPontosDeParada)
+        {
+            Utils.geraParadaPassoAPasso(noFuncao, saida, nivelEscopo);
+        }
 
-        Utils.visitarBlocos(noFuncao.getBlocos(), saida, visitor, nivelEscopo, gerandoCodigoParaTesteUnitario); // gera o código dentro do método
+        Utils.visitarBlocos(noFuncao.getBlocos(), saida, visitor, nivelEscopo, 
+                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada); // gera o código dentro do método
 
         saida.println();
         saida.append(identacao).append("}").println(); // finaliza o escopo do método

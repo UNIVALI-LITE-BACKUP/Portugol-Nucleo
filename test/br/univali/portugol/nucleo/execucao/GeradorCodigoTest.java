@@ -215,6 +215,12 @@ public class GeradorCodigoTest
 
     private void comparaCodigos() throws Exception
     {
+        comparaCodigos(false, false);
+    }
+    
+    private void comparaCodigos(boolean geraCodigoParaInterrupcaoDeThread,
+                          boolean geraCodigoParaPontosDeParada) throws Exception
+    {
         String nome = "/arquivos/" + nomeTeste.getMethodName();
 
         String codigoPortugol = getConteudoArquivo(nome + ".por");
@@ -237,8 +243,11 @@ public class GeradorCodigoTest
 
         // gera o código e escreve em um ByteArrayOutputStream
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(bos);//(System.out, true);
-        gerador.gera(asa, writer, nomeTeste.getMethodName(), true);
+        PrintWriter writer = new PrintWriter(bos);
+        String nomeClasseJava = nomeTeste.getMethodName();
+        
+        gerador.gera(asa, writer, nomeClasseJava, geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada);
+        
         writer.flush();
         String codigoGerado = bos.toString();
         System.out.println(codigoGerado); // escreve o código gerado antes de remover a formatação        

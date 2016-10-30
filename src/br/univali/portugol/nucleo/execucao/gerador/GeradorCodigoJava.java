@@ -27,15 +27,17 @@ public class GeradorCodigoJava
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
-        gera(asa, saida, nomeClasseJava, false);
+        gera(asa, saida, nomeClasseJava, false, false); // não gera código para interrupção de thread e pontos de 
     }
 
-    public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA, IOException
+    public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, 
+            boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA, IOException
     {
         BuscadorReferencias buscadorReferencias = new BuscadorReferencias();
         asa.aceitar(buscadorReferencias);
 
-        VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida, gerandoCodigoParaTesteUnitario);
+        VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida, 
+                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada);
         gerador.geraPackage("programas")
                 .pulaLinha()
                 .geraImportacaoPara(ErroExecucao.class)
@@ -62,27 +64,33 @@ public class GeradorCodigoJava
         private final PrintWriter saida;
         private final ASAPrograma asa;
         private int nivelEscopo = 1;
-        private final boolean gerandoCodigoParaTesteUnitario; // O código gerado para rodar os testes unitários não inclui alguns detalhes relacionados com execução passo a passo e verificação de thread interrompida durante a execução do programa.
+        private final boolean gerandoCodigoParaInterrupcaoDeThread;
+        private final boolean gerandoCodigoParaPontosDeParada;
 
-        public VisitorGeracaoCodigo(ASAPrograma asa, PrintWriter saida, boolean geraCodigoParaTesteUnitario)
+        public VisitorGeracaoCodigo(ASAPrograma asa, PrintWriter saida, boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada)
         {
             this.saida = saida;
             this.asa = asa;
-            this.gerandoCodigoParaTesteUnitario = geraCodigoParaTesteUnitario;
+            this.gerandoCodigoParaInterrupcaoDeThread = geraCodigoParaInterrupcaoDeThread;
+            this.gerandoCodigoParaPontosDeParada = geraCodigoParaPontosDeParada;
         }
 
         private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
         {
             nivelEscopo++;
-            Utils.visitarBlocos(blocos, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
+            Utils.visitarBlocos(blocos, saida, this, nivelEscopo, 
+                    gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
             nivelEscopo--;
         }
 
         private void geraVerificacaoThreadInterrompida()
         {
-            nivelEscopo++;
-            Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
-            nivelEscopo--;
+            if (gerandoCodigoParaInterrupcaoDeThread)
+            {
+                nivelEscopo++;
+                Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo);
+                nivelEscopo--;
+            }
         }
 
         public VisitorGeracaoCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
@@ -146,7 +154,9 @@ public class GeradorCodigoJava
             {
                 if (declaracao instanceof NoDeclaracaoFuncao)
                 {
-                    geradorDeclaracaoMetodo.gera((NoDeclaracaoFuncao) declaracao, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
+                    geradorDeclaracaoMetodo.gera((NoDeclaracaoFuncao) declaracao, 
+                            saida, this, nivelEscopo, 
+                                gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
                 }
             }
             return this;
@@ -551,11 +561,13 @@ public class GeradorCodigoJava
 
             if (!contemCasosNaoConstantes)
             {
-                geradorSwitchCase.geraSwitchCase(no, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
+                geradorSwitchCase.geraSwitchCase(no, saida, this, nivelEscopo, 
+                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
             }
             else
             {
-                geradorSwitchCase.geraSeSenao(no, saida, this, nivelEscopo, gerandoCodigoParaTesteUnitario);
+                geradorSwitchCase.geraSeSenao(no, saida, this, nivelEscopo, 
+                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
             }
 
             return null;

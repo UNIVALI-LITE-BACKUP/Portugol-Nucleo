@@ -12,7 +12,9 @@ public class GeradorSwitchCase
 {
     public static final String NOME_VARIAVEL_BREAK = "___sw_break___";
 
-    public void geraSwitchCase(NoEscolha no, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
+    public void geraSwitchCase(NoEscolha no, PrintWriter saida, VisitanteASA visitor, 
+            int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
+                boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
     {
         String identacao = Utils.geraIdentacao(nivelEscopo);
 
@@ -42,7 +44,8 @@ public class GeradorSwitchCase
                     saida.append(identacao).append("default:");
                 }
 
-                Utils.visitarBlocos(caso.getBlocos(), saida, visitor, nivelEscopo, gerandoCodigoParaTesteUnitario);
+                Utils.visitarBlocos(caso.getBlocos(), saida, visitor, nivelEscopo, 
+                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada);
 
                 saida.println();
             }
@@ -52,10 +55,15 @@ public class GeradorSwitchCase
 
     }
 
-    public void geraSeSenao(NoEscolha noEscolha, PrintWriter saida, VisitanteASA visitor, int nivelEscopo, boolean gerandoCodigoParaTesteUnitario) throws ExcecaoVisitaASA
+    public void geraSeSenao(NoEscolha noEscolha, PrintWriter saida, VisitanteASA visitor, 
+            int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
+                    boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
     {
 
-        Utils.geraParadaPassoAPasso(noEscolha.getExpressao(), saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
+        if (geraCodigoParaPontosDeParada)
+        {
+            Utils.geraParadaPassoAPasso(noEscolha.getExpressao(), saida, nivelEscopo);
+        }
 
         saida.append("{").println();
         
@@ -94,7 +102,10 @@ public class GeradorSwitchCase
             NoSe se = new NoSe(condicao);
             se.setBlocosVerdadeiros(noCaso.getBlocos());
 
-            Utils.geraParadaPassoAPasso(se, saida, nivelEscopo, gerandoCodigoParaTesteUnitario);
+            if (geraCodigoParaPontosDeParada)
+            {
+                Utils.geraParadaPassoAPasso(se, saida, nivelEscopo);
+            }
 
             saida.append(identacao);
             
