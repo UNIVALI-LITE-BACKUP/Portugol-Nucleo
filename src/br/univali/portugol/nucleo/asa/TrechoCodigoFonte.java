@@ -37,9 +37,9 @@ package br.univali.portugol.nucleo.asa;
  */
 public final class TrechoCodigoFonte
 {
-    private int linha;
-    private int coluna;
-    private int tamanhoTexto;
+    private final int linha;
+    private final int coluna;
+    private final int tamanhoTexto;
 
     /**
      * 
@@ -85,5 +85,10 @@ public final class TrechoCodigoFonte
     public int getTamanhoTexto()
     {
         return tamanhoTexto;
+    }
+    
+    public boolean ehValido()
+    {
+        return linha >= 0 && coluna >= 0;
     }
 }

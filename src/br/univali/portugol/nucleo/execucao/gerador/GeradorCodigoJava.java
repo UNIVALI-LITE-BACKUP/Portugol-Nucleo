@@ -99,7 +99,7 @@ public class GeradorCodigoJava
             boolean existemVariaveisGlobais = false;
             for (NoDeclaracao no : variaveisGlobais)
             {
-                if (no instanceof NoDeclaracaoVariavel && ((NoDeclaracaoVariavel) no).ehPassadoPorReferencia())
+                if (no instanceof NoDeclaracaoVariavel && ((NoDeclaracaoVariavel) no).ehPassadaPorReferencia())
                 {
                     continue; // variáveis globais que são passadas como referência não são declaradas como atributo no código Java
                 }
@@ -604,7 +604,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
         {
-            geradorAtribuicao.gera(no, saida, this);
+            geradorAtribuicao.gera(no, saida, this, nivelEscopo);
             return null;
         }
 
@@ -699,7 +699,7 @@ public class GeradorCodigoJava
                 if (declaracao instanceof NoDeclaracaoVariavel)
                 {
                     NoDeclaracaoVariavel variavel = (NoDeclaracaoVariavel) declaracao;
-                    if (variavel.ehPassadoPorReferencia() && variavel.temInicializacao())
+                    if (variavel.ehPassadaPorReferencia() && variavel.temInicializacao())
                     {
                         String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
                         saida.append(Utils.geraIdentacao(nivelEscopo));

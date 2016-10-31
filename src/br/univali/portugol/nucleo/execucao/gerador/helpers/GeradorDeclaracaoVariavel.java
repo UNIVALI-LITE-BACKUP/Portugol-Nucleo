@@ -50,6 +50,7 @@ public class GeradorDeclaracaoVariavel
 
     public void gera(NoVetor vetor, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
+
         saida.append("{");
 
         List<Object> valores = vetor.getValores();
@@ -74,8 +75,10 @@ public class GeradorDeclaracaoVariavel
         saida.append("}");
     }
 
-    public void gera(NoDeclaracaoVetor vetor, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    public void gera(NoDeclaracaoVetor vetor, PrintWriter saida, VisitanteASA visitor, 
+                int nivelEscopo) throws ExcecaoVisitaASA
     {
+        
         String nome = vetor.getNome();
         String tipo = Utils.getNomeTipoJava(vetor.getTipoDado());
         saida.format("%s %s[]", tipo, Utils.geraNomeValido(nome));
@@ -97,8 +100,10 @@ public class GeradorDeclaracaoVariavel
 
     }
 
-    public void gera(NoDeclaracaoMatriz matriz, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    public void gera(NoDeclaracaoMatriz matriz, PrintWriter saida, VisitanteASA visitor, 
+            int nivelEscopo) throws ExcecaoVisitaASA
     {
+        
         String nome = matriz.getNome();
         String tipo = Utils.getNomeTipoJava(matriz.getTipoDado());
         saida.format("%s %s[][]", tipo, Utils.geraNomeValido(nome));
@@ -132,14 +137,16 @@ public class GeradorDeclaracaoVariavel
 
     }
 
-    public boolean gera(NoDeclaracaoVariavel variavel, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    public boolean gera(NoDeclaracaoVariavel variavel, PrintWriter saida, 
+                VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
-        if (variavel.ehPassadoPorReferencia() && !variavel.temInicializacao())
+
+        if (variavel.ehPassadaPorReferencia() && !variavel.temInicializacao())
         {
-            return false; //variáveis passadas por referências e não inicializadas (casos raros) não aparecem no código java, caso contrário o código java gerado terá um erro Not a stament para códigos como este: REFS_STRINGS[INDICE];
+            return false; //variáveis passadas por referência e não inicializadas (casos raros) não aparecem no código java, caso contrário o código java gerado terá um erro Not a stament para códigos como este: REFS_STRINGS[INDICE];
         }
         
-        if (variavel.ehPassadoPorReferencia())
+        if (variavel.ehPassadaPorReferencia())
         {
             saida.format("REFS_%s[%s]", 
                     Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase(),

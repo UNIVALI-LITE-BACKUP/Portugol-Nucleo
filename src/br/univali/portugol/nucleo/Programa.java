@@ -153,7 +153,8 @@ public abstract class Programa
     {
         if (!isExecutando())
         {
-            tarefaExecucao = new TarefaExecucao(parametros, estado);
+            this.estado = estado;
+            tarefaExecucao = new TarefaExecucao(parametros);
             controleTarefaExecucao = POOL_DE_THREADS.submit(tarefaExecucao);
         }
     }
@@ -195,13 +196,13 @@ public abstract class Programa
     {
         private final String[] parametros;
         private final ResultadoExecucao resultadoExecucao;
-        private final Programa.Estado estado;
+        //private final Programa.Estado estado;
 
-        public TarefaExecucao(String[] parametros, Programa.Estado estado)
+        public TarefaExecucao(String[] parametros)
         {
             this.parametros = parametros;
             this.resultadoExecucao = new ResultadoExecucao();
-            this.estado = estado;
+            //this.estado = estado;
         }
 
         public ResultadoExecucao getResultadoExecucao()
@@ -299,7 +300,6 @@ public abstract class Programa
 
     protected void realizarParada(int linha, int coluna) throws ErroExecucao, InterruptedException
     {
-        
         ultimaLinha = linha;
         ultimaColuna = coluna;
         

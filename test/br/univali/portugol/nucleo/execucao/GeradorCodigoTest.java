@@ -30,6 +30,12 @@ public class GeradorCodigoTest
     public TestName nomeTeste = new TestName();
 
     @Test
+    public void testeGeracaoPontosDeParada() throws Exception
+    {
+        comparaCodigos(false, true); // ativa a geração de código para pontos de parada
+    }
+    
+    @Test
     public void testeMatrizPorReferencia() throws Exception
     {
         comparaCodigos();

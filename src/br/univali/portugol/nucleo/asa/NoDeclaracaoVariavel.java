@@ -60,7 +60,7 @@ public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel
         return TRECHO_NULO;
     }
     
-     public boolean ehPassadoPorReferencia()
+     public boolean ehPassadaPorReferencia()
     {
         return indiceReferencia >= 0;
     }

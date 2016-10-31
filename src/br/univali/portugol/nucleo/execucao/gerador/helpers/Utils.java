@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
-import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.asa.*;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -27,7 +26,7 @@ public class Utils
     
     public static String geraStringIndice(NoDeclaracaoVariavel variavel)
     {
-        assert(variavel.ehPassadoPorReferencia());
+        assert(variavel.ehPassadaPorReferencia());
         return geraStringIndice(variavel.getIndiceReferencia(), variavel.getNome());
     }
     
@@ -94,43 +93,52 @@ public class Utils
         saida.println();
     }
 
+    private static TrechoCodigoFonte getTrechoCodigoFonte(NoBloco no)
+    {
+        TrechoCodigoFonte trechoCodigoFonte = no.getTrechoCodigoFonte();
+        
+        if (no instanceof NoSe)
+        {
+            trechoCodigoFonte = ((NoSe) no).getCondicao().getTrechoCodigoFonte();
+        }
+        else if (no instanceof NoEnquanto)
+        {
+            trechoCodigoFonte = ((NoEnquanto) no).getCondicao().getTrechoCodigoFonte();
+        }
+        else if (no instanceof NoPara)
+        {
+            trechoCodigoFonte = ((NoPara) no).getCondicao().getTrechoCodigoFonte();
+        }
+        else if (no instanceof NoFacaEnquanto)
+        {
+            trechoCodigoFonte = ((NoFacaEnquanto) no).getCondicao().getTrechoCodigoFonte();
+        }
+        else if (no instanceof NoEscolha)
+        {
+            trechoCodigoFonte = ((NoEscolha) no).getExpressao().getTrechoCodigoFonte();
+        }
+        else if (no instanceof NoDeclaracaoMatriz || no instanceof NoDeclaracaoVetor)
+        {
+            trechoCodigoFonte = ((NoDeclaracao) no).getTrechoCodigoFonteNome();
+        }
+        
+        return trechoCodigoFonte;
+    }
+    
     public static void geraParadaPassoAPasso(NoBloco no, PrintWriter saida, int nivelEscopo)
     {
-        if (no.ehParavel(Programa.Estado.STEP_OVER))
+        TrechoCodigoFonte trechoCodigoFonte = getTrechoCodigoFonte(no);
+        if (trechoCodigoFonte != null && trechoCodigoFonte.ehValido()) 
         {
-            if (no instanceof NoSe || no instanceof NoEnquanto)
-            {
-                int linha;
-                int coluna;
-                TrechoCodigoFonte trechoCodigoFonte;
+            int linha;
+            int coluna;
 
-                if (no instanceof NoSe)
-                {
-                    trechoCodigoFonte = ((NoSe) no).getCondicao().getTrechoCodigoFonte();
-                }
-                else if (no instanceof NoEnquanto)
-                {
-                    trechoCodigoFonte = ((NoEnquanto) no).getCondicao().getTrechoCodigoFonte();
-                }
-                else
-                {
-                    trechoCodigoFonte = no.getTrechoCodigoFonte();
-                }
+            linha = trechoCodigoFonte.getLinha();
+            coluna = trechoCodigoFonte.getColuna();
 
-                if (trechoCodigoFonte != null)
-                {
-                    linha = trechoCodigoFonte.getLinha();
-                    coluna = trechoCodigoFonte.getColuna();
-
-                    saida.println();
-                    saida.append(Utils.geraIdentacao(nivelEscopo));
-
-                    saida.append(String.format("realizarParada(%d, %d);", linha, coluna));
-
-                    saida.println();
-                    saida.println();
-                }
-            }
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                .append(String.format("realizarParada(%d, %d);", linha, coluna))
+                .println();
         }
     }
 

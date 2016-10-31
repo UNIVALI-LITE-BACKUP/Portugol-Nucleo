@@ -13,9 +13,9 @@ import java.io.PrintWriter;
  */
 public class GeradorAtribuicao
 {
-    public void gera(NoOperacaoAtribuicao no, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
+    public void gera(NoOperacaoAtribuicao no, PrintWriter saida, VisitanteASA visitor, 
+            int nivelEscopo) throws ExcecaoVisitaASA
     {
-
         NoExpressao opEsquerdo = no.getOperandoEsquerdo();
         NoExpressao opDireito = no.getOperandoDireito();
 
