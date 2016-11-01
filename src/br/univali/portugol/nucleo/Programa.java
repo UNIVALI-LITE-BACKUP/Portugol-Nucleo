@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -80,12 +81,15 @@ public abstract class Programa
 
     private final ArrayList<ObservadorExecucao> observadores;
 
-    private final AtivadorDePontosDeParada ativadorDePontoDesParada = new AtivadorDePontosDeParada();
+    private Set<Integer> linhasComPontoDeParada = new HashSet<>();
 
     private volatile boolean lendo = false;
     private volatile boolean leituraIgnorada = false;
 
     private final Object LOCK = new Object();
+    
+    private int ultimaLinha = 0;
+    private int ultimaColuna = 0;
 
     public static enum Estado
     {
@@ -182,7 +186,8 @@ public abstract class Programa
 
     public void ativaPontosDeParada(Set<Integer> linhasComPontosDeParadaAtivados)
     {
-        ativadorDePontoDesParada.ativaPontosDeParada(linhasComPontosDeParadaAtivados, arvoreSintaticaAbstrataPrograma);
+        linhasComPontoDeParada.clear();
+        linhasComPontoDeParada.addAll(linhasComPontosDeParadaAtivados);
     }
 
     protected abstract void executar(String[] parametros) throws ErroExecucao, InterruptedException;
@@ -220,7 +225,6 @@ public abstract class Programa
                 notificarInicioExecucao();
                 inicializaBibliotecasIncluidas();
                 executar(parametros);
-                //depurador.executar(Programa.this, parametros);
             }
             catch (ErroExecucao erroExecucao)
             {
@@ -295,15 +299,24 @@ public abstract class Programa
         }
     }
     
-    private int ultimaLinha = 0;
-    private int ultimaColuna = 0;
-
+    private boolean podeParar(int linha)
+    {
+        // pode parar quando está no modo STEP_OVER ou quando está no modo BREAK_POINT e tem um ponto de parada ativo na linha em execução
+        
+        if (estado == Estado.STEP_OVER)
+        {
+            return true;
+        }
+        
+        return estado == Estado.BREAK_POINT && linhasComPontoDeParada.contains(linha);
+    }
+    
     protected void realizarParada(int linha, int coluna) throws ErroExecucao, InterruptedException
     {
         ultimaLinha = linha;
         ultimaColuna = coluna;
         
-        if (this.estado == Estado.STEP_OVER)
+        if (podeParar(linha))
         {
             disparaDestacar(linha);
             synchronized (LOCK)
