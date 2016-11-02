@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -81,7 +81,7 @@ public abstract class Programa
 
     private final ArrayList<ObservadorExecucao> observadores;
 
-    private Set<Integer> linhasComPontoDeParada = new HashSet<>();
+    private boolean[] pontosDeParadaAtivados = new boolean[0];
 
     private volatile boolean lendo = false;
     private volatile boolean leituraIgnorada = false;
@@ -109,6 +109,11 @@ public abstract class Programa
         saida = es;
         funcoes = new ArrayList<>();
         observadores = new ArrayList<>();
+    }
+    
+    void setNumeroLinhas(int numeroLinhas)
+    {
+        pontosDeParadaAtivados = new boolean[numeroLinhas];
     }
 
     /**
@@ -186,8 +191,11 @@ public abstract class Programa
 
     public void ativaPontosDeParada(Set<Integer> linhasComPontosDeParadaAtivados)
     {
-        linhasComPontoDeParada.clear();
-        linhasComPontoDeParada.addAll(linhasComPontosDeParadaAtivados);
+        Arrays.fill(pontosDeParadaAtivados, false);
+        for (Integer linha : linhasComPontosDeParadaAtivados)
+        {
+            pontosDeParadaAtivados[linha] = true;
+        }
     }
 
     protected abstract void executar(String[] parametros) throws ErroExecucao, InterruptedException;
@@ -308,7 +316,12 @@ public abstract class Programa
             return true;
         }
         
-        return estado == Estado.BREAK_POINT && linhasComPontoDeParada.contains(linha);
+        if (linha >= 0 && linha < pontosDeParadaAtivados.length)
+        {
+            return estado == Estado.BREAK_POINT && pontosDeParadaAtivados[linha];
+        }
+        
+        return false;
     }
     
     protected void realizarParada(int linha, int coluna) throws ErroExecucao, InterruptedException

@@ -17,7 +17,9 @@ import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -40,6 +44,8 @@ import javax.tools.ToolProvider;
  */
 final class Compilador
 {
+    private static final Logger LOGGER = Logger.getLogger(Compilador.class.getName());
+    
     private static final File DIRETORIO_TEMPORARIO = new File(System.getProperty("java.io.tmpdir"));
     private static final File DIRETORIO_COMPILACAO = new File(DIRETORIO_TEMPORARIO, "portugol");
 
@@ -87,6 +93,7 @@ final class Compilador
             
             programa.setArvoreSintaticaAbstrata(asa);
             programa.setResultadoAnalise(resultadoAnalise);
+            programa.setNumeroLinhas(getNumeroDeLinhas(codigo));
 
             return programa;
         }
@@ -95,7 +102,23 @@ final class Compilador
             throw new ErroCompilacao(resultadoAnalise);
         }
     }
+    
+    private int getNumeroDeLinhas(String codigo) 
+    {
+        try
+        {
+            LineNumberReader lineNumberReader = new LineNumberReader(new StringReader(codigo));
+            lineNumberReader.skip(Long.MAX_VALUE);
+            return lineNumberReader.getLineNumber() + 1;
+        }
+        catch(IOException excecao)
+        {
+            LOGGER.log(Level.SEVERE, null, excecao);
+        }
+        return 0;
+    }
 
+    
     private Programa geraPrograma(ASAPrograma asa) throws ErroCompilacao
     {
         ResultadoAnalise resultadoAnalise = new ResultadoAnalise();
