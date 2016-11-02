@@ -20,6 +20,8 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -35,6 +37,9 @@ import javax.imageio.ImageIO;
 )
 public final class Graficos extends Biblioteca implements Teclado.InstaladorTeclado, Mouse.InstaladorMouse
 {
+    
+    private static final Logger LOGGER = Logger.getLogger(Graficos.class.getName());
+    
     @DocumentacaoConstante(descricao = "constante que representa a cor 'preto'")
     public static final int COR_PRETO = Color.BLACK.getRGB();
 
@@ -917,8 +922,15 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             try
             {
                 Font fonte = Font.createFont(Font.TRUETYPE_FONT, arquivo);
-                GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(fonte);
-                janela.getSuperficieDesenho().registrarFonteCarregada(fonte);
+                boolean fonteRegistrada = GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(fonte);
+                if (fonteRegistrada)
+                {
+                    janela.getSuperficieDesenho().registrarFonteCarregada(fonte);
+                }
+                else
+                {
+                    LOGGER.log(Level.SEVERE, "A fonte {0} não foi carregada!", caminho_fonte);
+                }
             }
             catch (IOException | FontFormatException excecao)
             {

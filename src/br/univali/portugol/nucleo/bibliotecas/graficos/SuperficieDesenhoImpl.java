@@ -36,8 +36,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     private Font fonteTexto = null;
     private FontMetrics dimensoesFonte = null;
     
-    //      Map<nomeFonte, Map<estilo, Map<sublinhado, Map<tamanho, Font>>> 
-    private Map<String, Map<Integer, Map<Boolean, Map<Float, Font>>>> cacheFontes = new HashMap<>(); // cache de fontes
+    //             Map<nomeFonte, Map<estilo, Map<sublinhado, Map<tamanho, Font>>> 
+    private  final Map<String, Map<Integer, Map<Boolean, Map<Float, Font>>>> cacheFontes = new HashMap<>(); // cache de fontes
 
     boolean usandoSublinhado = false;
     
@@ -240,16 +240,14 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         Map<Float, Font> fontesTamanho = fontesEstilo.get(sublinhado);
         if (!fontesTamanho.containsKey(tamanho))
         {
-            Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonteTexto.getAttributes();
+            //System.out.println("Criando fonte");
+            Font novaFonte = new Font(nomeFonte, estilo, (int)tamanho); 
             if (sublinhado)
             {
+                Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonteTexto.getAttributes();
                 atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+                novaFonte = novaFonte.deriveFont(atributos);
             }
-            else
-            {
-                atributos.put(TextAttribute.UNDERLINE, -1);
-            }
-            Font novaFonte = fonteTexto.deriveFont(atributos).deriveFont(estilo, tamanho);
             cacheFontes.get(nomeFonte).get(estilo).get(sublinhado).put(tamanho, novaFonte);
         }
 

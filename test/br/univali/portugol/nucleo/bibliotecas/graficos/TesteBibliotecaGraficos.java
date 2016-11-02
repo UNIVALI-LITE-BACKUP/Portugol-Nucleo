@@ -48,6 +48,9 @@ public class TesteBibliotecaGraficos
         
         int larguraFrame = 43; // cada imagem dos carros tem 43 pixels de largura
         
+        String caminhoFonte = "../Portugol-Studio-Recursos/exemplos/jogos/fontes/Starjhol.ttf";
+        g.carregar_fonte(caminhoFonte);
+        
         while (tempoExecucao < tempoTeste)
         {
             long inicio = System.currentTimeMillis();
@@ -86,8 +89,16 @@ public class TesteBibliotecaGraficos
             g.definir_cor(0xFF0000);
             g.definir_estilo_texto(false, true, false);
             larguraTexto = g.largura_texto(nomeFonte);
-            g.desenhar_texto(LARGURA_TELA / 2 - larguraTexto / 2, textoY + alturaTexto, nomeFonte);
-
+            textoY += alturaTexto;
+            g.desenhar_texto(LARGURA_TELA / 2 - larguraTexto / 2, textoY, nomeFonte);
+            
+            nomeFonte = "Star Jedi Hollow";
+            g.definir_cor(Graficos.COR_BRANCO);
+            g.definir_fonte_texto(nomeFonte);
+            larguraTexto = g.largura_texto(nomeFonte);
+            textoY += alturaTexto;
+            g.desenhar_texto(LARGURA_TELA / 2 - larguraTexto / 2, textoY, nomeFonte);
+            
             long memoriaUsada = runtime.totalMemory() - runtime.freeMemory();
             g.definir_cor(Graficos.COR_BRANCO);
             g.definir_tamanho_texto(14);
