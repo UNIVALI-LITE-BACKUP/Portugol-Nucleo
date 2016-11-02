@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.execucao.es;
 
 import br.univali.portugol.nucleo.asa.TipoDado;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Interface para permitir a saída de dados nos programas através da
@@ -27,53 +28,53 @@ public interface Saida
     /**
      * Limpa a saída de dados deixando-a como no início da execução do programa.
      * 
-     * @throws Exception     erro ocorrido durante a limpeza da saída.
+     * @throws InterruptedException     erro ocorrido durante a limpeza da saída.
      * @since 1.0
      */
-    public void limpar() throws Exception;
+    public void limpar() throws InterruptedException;
 
     /**
      * Escreve um dado do tipo {@link TipoDado#CADEIA} na saída de dados.
      * 
      * @param valor           o dado que será escrito na saída.
-     * @throws Exception      erro ocorrido durante a escrita do dado na saída.
+     * @throws InterruptedException      erro ocorrido durante a escrita do dado na saída.
      * @since 1.0
      */
-    public void escrever(String valor) throws Exception;
+    public void escrever(String valor) throws InterruptedException;
 
     /**
      * Escreve um dado do tipo {@link TipoDado#LOGICO} na saída de dados.
      * 
      * @param valor           o dado que será escrito na saída.
-     * @throws Exception      erro ocorrido durante a escrita do dado na saída.
+     * @throws InterruptedException      erro ocorrido durante a escrita do dado na saída.
      * @since 1.0
      */
-    public void escrever(boolean valor) throws Exception;
+    public void escrever(boolean valor) throws InterruptedException;
 
     /**
      * Escreve um dado do tipo {@link TipoDado#INTEIRO} na saída de dados.
      * 
      * @param valor           o dado que será escrito na saída.
-     * @throws Exception      erro ocorrido durante a escrita do dado na saída.
+     * @throws InterruptedException      erro ocorrido durante a escrita do dado na saída.
      * @since 1.0
      */
-    public void escrever(int valor) throws Exception;
+    public void escrever(int valor) throws InterruptedException;
 
     /**
      * Escreve um dado do tipo {@link TipoDado#REAL} na saída de dados.
      * 
      * @param valor           o dado que será escrito na saída.
-     * @throws Exception      erro ocorrido durante a escrita do dado na saída.
+     * @throws InterruptedException      erro ocorrido durante a escrita do dado na saída.
      * @since 1.0
      */
-    public void escrever(double valor) throws Exception;
+    public void escrever(double valor) throws InterruptedException;
 
     /**
      * Escreve um dado do tipo {@link TipoDado#CARACTER} na saída de dados.
      * 
      * @param valor           o dado que será escrito na saída.
-     * @throws Exception      erro ocorrido durante a escrita do dado na saída.
+     * @throws InterruptedException      erro ocorrido durante a escrita do dado na saída.
      * @since 1.0
      */
-    public void escrever(char valor) throws Exception;
+    public void escrever(char valor) throws InterruptedException;
 }

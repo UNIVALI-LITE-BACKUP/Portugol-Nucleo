@@ -611,7 +611,7 @@ public abstract class Programa
         }
     }
 
-    protected void escreva(Object... listaParametrosPassados) throws ErroExecucao
+    protected void escreva(Object... listaParametrosPassados) throws InterruptedException
     {
         if (saida == null)
         {
@@ -628,59 +628,23 @@ public abstract class Programa
                     valor = "\n\nDesenvolvedores:\n\nFillipi Domingos Pelz\nLuiz Fernando Noschang\n\n";
                 }
 
-                try
-                {
-                    saida.escrever((String) valor);
-                }
-                catch (Exception ex)
-                {
-                    throw new ErroExecucaoNaoTratado(ex);
-                }
+                saida.escrever((String) valor);
             }
             else if (valor instanceof Boolean)
             {
-                try
-                {
-                    saida.escrever((Boolean) valor);
-                }
-                catch (Exception ex)
-                {
-                    throw new ErroExecucaoNaoTratado(ex);
-                }
+                saida.escrever((Boolean) valor);
             }
             else if (valor instanceof Character)
             {
-                try
-                {
-
-                    saida.escrever((Character) valor);
-                }
-                catch (Exception ex)
-                {
-                    throw new ErroExecucaoNaoTratado(ex);
-                }
+                saida.escrever((Character) valor);
             }
             else if (valor instanceof Double)
             {
-                try
-                {
-                    saida.escrever((Double) valor);
-                }
-                catch (Exception ex)
-                {
-                    throw new ErroExecucaoNaoTratado(ex);
-                }
+                saida.escrever((Double) valor);
             }
             else if (valor instanceof Integer)
             {
-                try
-                {
-                    saida.escrever((Integer) valor);
-                }
-                catch (Exception ex)
-                {
-                    throw new ErroExecucaoNaoTratado(ex);
-                }
+                saida.escrever((Integer) valor);
             }
         }
     }
@@ -717,32 +681,32 @@ public abstract class Programa
         }
     }
 
-    protected double leiaReal() throws ErroExecucao
+    protected double leiaReal() throws ErroExecucao, InterruptedException
     {
         return (Double) leia(TipoDado.REAL);
     }
 
-    protected int leiaInteiro() throws ErroExecucao
+    protected int leiaInteiro() throws ErroExecucao, InterruptedException
     {
         return (Integer) leia(TipoDado.INTEIRO);
     }
 
-    protected boolean leiaLogico() throws ErroExecucao
+    protected boolean leiaLogico() throws ErroExecucao, InterruptedException
     {
         return (Boolean) leia(TipoDado.LOGICO);
     }
 
-    protected char leiaCaracter() throws ErroExecucao
+    protected char leiaCaracter() throws ErroExecucao, InterruptedException
     {
         return (Character) leia(TipoDado.CARACTER);
     }
 
-    protected String leiaCadeia() throws ErroExecucao
+    protected String leiaCadeia() throws ErroExecucao, InterruptedException
     {
         return (String) leia(TipoDado.CADEIA);
     }
 
-    private Object leia(TipoDado tipoDado) throws ErroExecucao
+    private Object leia(TipoDado tipoDado) throws ErroExecucao, InterruptedException
     {
         assert (entrada != null);
 
@@ -779,10 +743,6 @@ public abstract class Programa
             {
                 throw new ErroValorEntradaInvalido(tipoDado, 0, 0);
             }
-        }
-        catch (Exception ex)
-        {
-            throw new ErroExecucaoNaoTratado(ex);
         }
         finally
         {
