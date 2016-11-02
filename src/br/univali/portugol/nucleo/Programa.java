@@ -519,6 +519,22 @@ public abstract class Programa
             observador.execucaoIniciada(this);
         }
     }
+    
+    private void notificarExecucaoPausada()
+    {
+        for (ObservadorExecucao observador : observadores)
+        {
+            observador.execucaoPausada();
+        }
+    }
+    
+    private void notificarExecucaoResumida()
+    {
+        for (ObservadorExecucao observador : observadores)
+        {
+            observador.execucaoResumida();
+        }
+    }
 
     /**
      * Notifica todos os observadores registrados sobre o término da execução
@@ -724,6 +740,7 @@ public abstract class Programa
             {
                 synchronized (LOCK)
                 {
+                    notificarExecucaoPausada();
                     LOCK.wait();
                 }
             }
@@ -747,6 +764,7 @@ public abstract class Programa
         finally
         {
             setLendo(false);
+            notificarExecucaoResumida();
         }
 
     }

@@ -23,6 +23,18 @@ public abstract class ObservadorExecucaoBasico implements ObservadorExecucao
     }
 
     @Override
+    public void execucaoPausada()
+    {
+
+    }
+
+    @Override
+    public void execucaoResumida()
+    {
+        
+    }
+    
+    @Override
     public void highlightLinha(int linha)
     {
         
