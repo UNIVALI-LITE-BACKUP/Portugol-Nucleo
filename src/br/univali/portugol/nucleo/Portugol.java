@@ -3,6 +3,8 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -14,10 +16,20 @@ public final class Portugol
 {    
     public static final String QUEBRA_DE_LINHA = "\n";
     
+    private static final Logger LOGGER = Logger.getLogger(Portugol.class.getName());
+    
     private static Programa compilar(String codigo, boolean paraExecucao) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();
+        
+        long start = System.currentTimeMillis();
         Programa programa = compilador.compilar(codigo, paraExecucao);
+        long tempoCompilacao = System.currentTimeMillis() - start;
+        System.out.println(String.format("compilação para %s em %d ms - tamanho código: %d", 
+                (paraExecucao ? "execução": "análise"), 
+                tempoCompilacao, 
+                codigo.length())
+        );
         
         return programa;
     }
