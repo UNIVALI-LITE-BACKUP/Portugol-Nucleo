@@ -151,7 +151,7 @@ public final class Sons extends Biblioteca
     )
     public void interromper_som(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        Reproducao reproducao = reproducoes.remove(endereco);
+        Reproducao reproducao = reproducoes.get(endereco);
         if (reproducao != null)
         {
             reproducao.interrompe(false); // não feche o clip de áudio para reutilizá-lo
