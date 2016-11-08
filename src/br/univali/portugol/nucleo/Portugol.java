@@ -3,6 +3,10 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,18 +22,22 @@ public final class Portugol
     
     private static final Logger LOGGER = Logger.getLogger(Portugol.class.getName());
     
+    private static final ExecutorService servico = Executors.newCachedThreadPool();
+    
     private static Programa compilar(String codigo, boolean paraExecucao) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();
         
         long start = System.currentTimeMillis();
+        
         Programa programa = compilador.compilar(codigo, paraExecucao);
+        
         long tempoCompilacao = System.currentTimeMillis() - start;
-        System.out.println(String.format("compilação para %s em %d ms - tamanho código: %d", 
-                (paraExecucao ? "execução": "análise"), 
-                tempoCompilacao, 
-                codigo.length())
-        );
+        
+        String mensagem = String.format("compilação para %s em %d ms - tamanho código: %d", 
+                (paraExecucao ? "execução": "análise"), tempoCompilacao, codigo.length());
+        
+        LOGGER.log(Level.INFO, mensagem);
         
         return programa;
     }
@@ -39,9 +47,18 @@ public final class Portugol
         return compilar(codigo, false);
     }
     
-    public static Programa compilarParaExecucao(String codigo) throws ErroCompilacao
+    public static Future<Programa> compilarParaExecucao(final String codigo) throws ErroCompilacao
     {
-        return compilar(codigo, true);
+        Callable<Programa> tarefa = new Callable<Programa>()
+        {
+            @Override
+            public Programa call() throws Exception
+            {
+                LOGGER.log(Level.INFO, "Invocando compilação para execução na thread {0}", Thread.currentThread().getName());
+                return compilar(codigo, true);
+            }
+        };
+        return servico.submit(tarefa);
     }
     
     public static String renomearSimbolo(String programa, int linha, int coluna, String novoNome) throws ErroAoRenomearSimbolo
