@@ -20,7 +20,7 @@ public class Utils
     
     public static String geraStringIndice(NoReferenciaVariavel variavel)
     {
-        assert(variavel.ehPassadoPorReferencia());
+        //assert(variavel.ehPassadoPorReferencia());
         return geraStringIndice(variavel.getIndiceReferencia(), variavel.getNome());
     }
     

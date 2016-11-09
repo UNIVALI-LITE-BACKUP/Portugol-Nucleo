@@ -19,7 +19,7 @@ public class GeradorChamadaMetodo
         String nomeFuncao = no.getNome();
         if (escopoFuncao.isEmpty() && "leia".equals(nomeFuncao)) //a função 'leia' tem um tratamento especial
         {
-            geraCodigoParaFuncaoLeia(no, saida, visitor);
+            geraCodigoParaFuncaoLeia(no, saida, visitor, asa);
             return;
         }
 
@@ -115,7 +115,8 @@ public class GeradorChamadaMetodo
             String nomeBiblioteca = Utils.getNomeBiblioteca(no.getEscopo(), asa);
             try
             {
-                MetaDadosBiblioteca metadadosBiblioteca = GerenciadorBibliotecas.getInstance().obterMetaDadosBiblioteca(nomeBiblioteca);
+                GerenciadorBibliotecas gerenciador = GerenciadorBibliotecas.getInstance();
+                MetaDadosBiblioteca metadadosBiblioteca = gerenciador.obterMetaDadosBiblioteca(nomeBiblioteca);
                 assert (metadadosBiblioteca != null);
                 MetaDadosFuncao metaDadosFuncao = metadadosBiblioteca.obterMetaDadosFuncoes().obter(no.getNome());
                 assert (metaDadosFuncao != null);
@@ -136,7 +137,7 @@ public class GeradorChamadaMetodo
             }
         }
 
-        // é uma função comum
+        // é uma função comum e é possível obter a declaração da função?
         if (no.getOrigemDaReferencia() != null)
         {
             List<NoDeclaracaoParametro> parametros = no.getOrigemDaReferencia().getParametros();
@@ -153,16 +154,33 @@ public class GeradorChamadaMetodo
         return Collections.EMPTY_LIST;
     }
 
-    private void geraCodigoParaFuncaoLeia(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
+    private void visitaParametroPassado(NoReferencia parametroPassado, VisitanteASA visitor) throws ExcecaoVisitaASA
     {
-        List<NoExpressao> parametros = no.getParametros();
-        for (int i = 0; i < parametros.size(); i++)
+        if (parametroPassado instanceof NoReferenciaVariavel)
         {
-            NoReferencia noRef = (NoReferencia) parametros.get(i);
+            visitor.visitar((NoReferenciaVariavel) parametroPassado);
+        }
+        else if (parametroPassado instanceof NoReferenciaVetor)
+        {
+            visitor.visitar((NoReferenciaVetor) parametroPassado);
+        }
+        else if (parametroPassado instanceof NoReferenciaMatriz)
+        {
+            visitor.visitar((NoReferenciaMatriz) parametroPassado);
+        }
+    }
+    
+    private void geraCodigoParaFuncaoLeia(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, ASAPrograma asa) throws ExcecaoVisitaASA
+    {
+        List<NoExpressao> parametrosPassados = no.getParametros();
 
-            Utils.geraNomeDaReferencia(noRef, saida, visitor); // gera nome da variável + colchetes de vetores ou matrizes incluíndo as expressões dos índices
-
-            NoDeclaracao origem = noRef.getOrigemDaReferencia();
+        for (int i = 0; i < parametrosPassados.size(); i++)
+        {
+            NoReferencia parametroPassado = (NoReferencia) parametrosPassados.get(i);
+            
+            visitaParametroPassado(parametroPassado, visitor);
+            
+            NoDeclaracao origem = parametroPassado.getOrigemDaReferencia();
             TipoDado tipo = TipoDado.CADEIA;
             if (origem != null) // parece que tem um bug no leia passando 'cadeia' como parametro, a origem do 'leia' é nula
             {
@@ -170,7 +188,7 @@ public class GeradorChamadaMetodo
             }
             String nomeFuncao = "leia" + Utils.getNomeTipoEmCamelCase(tipo);
             saida.format(" = %s()", nomeFuncao);
-            if (i < parametros.size() - 1) // adiciona um ponto e vírgula depois de cada atribuição gerada, exceto para a última
+            if (i < parametrosPassados.size() - 1) // adiciona um ponto e vírgula depois de cada atribuição gerada, exceto para a última
             {
                 saida.append(";").println();
             }
