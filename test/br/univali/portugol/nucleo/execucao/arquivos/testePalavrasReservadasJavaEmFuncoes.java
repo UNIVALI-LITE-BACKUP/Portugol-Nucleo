@@ -12,6 +12,8 @@ public class testePalavrasReservadasJavaEmFuncoes extends Programa
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
+        boolean teste[] = new boolean[1];
+        float_1010(1, teste);
     }
 
     private void float_1010(int int_1010, boolean boolean_1010[]) throws ErroExecucao, InterruptedException

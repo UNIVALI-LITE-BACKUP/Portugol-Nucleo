@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Elieser
@@ -33,8 +34,8 @@ public class GeradorCodigoJava
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, 
             boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA, IOException
     {
-        BuscadorReferencias buscadorReferencias = new BuscadorReferencias();
-        asa.aceitar(buscadorReferencias);
+        PreAnalisador preAnalisador = new PreAnalisador();
+        asa.aceitar(preAnalisador);
 
         VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida, 
                         geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada);
@@ -51,11 +52,11 @@ public class GeradorCodigoJava
                 .pulaLinha()
                 .geraAtributosParaAsVariaveisGlobais()
                 .pulaLinha()
-                .geraAtributosParaAsVariaveisPassadasPorReferencia(buscadorReferencias.getVariaveisPassadasPorReferencia())
+                .geraAtributosParaAsVariaveisPassadasPorReferencia(preAnalisador.getVariaveisPassadasPorReferencia())
                 .pulaLinha()
                 .geraConstrutor(nomeClasseJava)
                 .pulaLinha()
-                .geraMetodos()
+                .geraMetodos(preAnalisador.getFuncoesQuerForamInvocadas())
                 .geraChaveDeFechamentoDaClasse();
     }
 
@@ -147,16 +148,19 @@ public class GeradorCodigoJava
             return this;
         }
 
-        public VisitorGeracaoCodigo geraMetodos() throws ExcecaoVisitaASA
+        public VisitorGeracaoCodigo geraMetodos(Set<NoDeclaracaoFuncao> funcoesQueForamInvocadas) throws ExcecaoVisitaASA
         {
             List<NoDeclaracao> declaracoes = asa.getListaDeclaracoesGlobais();
             for (NoDeclaracao declaracao : declaracoes)
             {
                 if (declaracao instanceof NoDeclaracaoFuncao)
                 {
-                    geradorDeclaracaoMetodo.gera((NoDeclaracaoFuncao) declaracao, 
-                            saida, this, nivelEscopo, 
+                    NoDeclaracaoFuncao declaracaoFuncao = (NoDeclaracaoFuncao)declaracao;
+                    if (declaracaoFuncao.getNome().equals("inicio") || funcoesQueForamInvocadas.contains(declaracaoFuncao)) //só gera código para funções que foram invocadas
+                    {
+                        geradorDeclaracaoMetodo.gera(declaracaoFuncao,  saida, this, nivelEscopo, 
                                 gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
+                    }
                 }
             }
             return this;

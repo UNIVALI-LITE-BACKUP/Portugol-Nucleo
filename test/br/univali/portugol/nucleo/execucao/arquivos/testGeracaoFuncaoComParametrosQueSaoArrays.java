@@ -13,6 +13,9 @@ public class testGeracaoFuncaoComParametrosQueSaoArrays extends Programa
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
+        int x[] = new int[2];
+        double c[][] = new double[2][2];
+        teste(x, c);
     }
 
     private void teste(int x[], double c[][]) throws ErroExecucao, InterruptedException

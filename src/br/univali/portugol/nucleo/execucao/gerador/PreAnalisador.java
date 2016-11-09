@@ -4,22 +4,30 @@ import br.univali.portugol.nucleo.asa.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
  * @author Elieser
  */
-class BuscadorReferencias extends VisitanteNulo
+class PreAnalisador extends VisitanteNulo
 {
 
     private final Map<TipoDado, List<NoDeclaracaoVariavel>> declaracoes = new HashMap<>();
+    private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
 
     @Override
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         NoDeclaracaoFuncao declaracaoFuncao = chamadaFuncao.getOrigemDaReferencia();
+        if (!funcoesInvocadas.contains(declaracaoFuncao))
+        {
+            funcoesInvocadas.add(declaracaoFuncao);
+        }
+        
         List<NoExpressao> parametrosPassados = chamadaFuncao.getParametros();
         List<NoDeclaracaoParametro> parametrosEsperados = Collections.EMPTY_LIST;
         if (declaracaoFuncao != null)
@@ -129,6 +137,11 @@ class BuscadorReferencias extends VisitanteNulo
         return declaracoes;
     }
 
+    public Set<NoDeclaracaoFuncao> getFuncoesQuerForamInvocadas()
+    {
+        return funcoesInvocadas;
+    }
+    
     @Override
     public Object visitar(ASAPrograma asa) throws ExcecaoVisitaASA
     {

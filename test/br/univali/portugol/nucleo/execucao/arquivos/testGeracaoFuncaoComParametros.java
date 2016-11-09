@@ -13,6 +13,7 @@ public class testGeracaoFuncaoComParametros extends Programa
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
+        testando(0, 0.0);
     }
 
     private void testando(int x, double y) throws ErroExecucao, InterruptedException

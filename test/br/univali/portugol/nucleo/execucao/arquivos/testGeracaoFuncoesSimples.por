@@ -1,6 +1,8 @@
 programa 
 {                                     
-    funcao inicio() {                                       
+    funcao inicio() {    
+        testando()
+        maisUma()
     }                                                       
     funcao testando() {                                     
     }                                                       

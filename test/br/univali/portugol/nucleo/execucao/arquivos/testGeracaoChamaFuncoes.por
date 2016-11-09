@@ -5,7 +5,9 @@ programa
         faca{                                               
             teste(x)                                        
         }                                                   
-        enquanto(x < 10)                                    
+        enquanto(x < 10)      
+        
+        testeRetorno(1)
     }                                                       
     
     funcao teste(inteiro a) {                               

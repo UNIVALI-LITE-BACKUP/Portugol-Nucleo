@@ -13,6 +13,8 @@ public class testGeracaoFuncoesSimples extends Programa
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
+        testando();
+        maisUma();
     }
 
     private void testando() throws ErroExecucao, InterruptedException

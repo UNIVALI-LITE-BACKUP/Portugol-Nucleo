@@ -19,6 +19,8 @@ public class testGeracaoChamaFuncoes extends Programa
             teste(x);
         }
         while (x < 10);
+        
+        testeRetorno(1);
     }
 
     private void teste(int a) throws ErroExecucao, InterruptedException

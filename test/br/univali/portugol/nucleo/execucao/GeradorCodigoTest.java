@@ -52,6 +52,12 @@ public class GeradorCodigoTest
     {
         comparaCodigos();
     }
+    
+    @Test
+    public void testeFuncaoNaoInvocada() throws Exception
+    {
+        comparaCodigos();
+    }
 
     @Test
     public void testeNegacao() throws Exception
