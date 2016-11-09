@@ -57,8 +57,6 @@ public interface ObservadorExecucao
 
     void highlightDetalhadoAtual(int linha, int coluna, int tamanho);
 
-    void simbolosAlterados(List<Simbolo> simbolos);
-
     void simboloDeclarado(Simbolo simbolo);
 
     void simboloRemovido(Simbolo simbolo);
