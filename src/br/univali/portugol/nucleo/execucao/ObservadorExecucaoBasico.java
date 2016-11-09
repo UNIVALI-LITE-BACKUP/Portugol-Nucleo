@@ -1,8 +1,6 @@
 package br.univali.portugol.nucleo.execucao;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.simbolos.Simbolo;
-import java.util.List;
 
 /**
  *
@@ -40,13 +38,4 @@ public abstract class ObservadorExecucaoBasico implements ObservadorExecucao
     {
     }
 
-    @Override
-    public void simboloDeclarado(Simbolo simbolo)
-    {
-    }
-
-    @Override
-    public void simboloRemovido(Simbolo simbolo)
-    {
-    }    
 }

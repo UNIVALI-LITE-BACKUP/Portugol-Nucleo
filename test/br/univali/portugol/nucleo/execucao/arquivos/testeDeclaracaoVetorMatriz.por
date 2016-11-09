@@ -5,8 +5,14 @@ programa
                                                                        
     funcao inicio()                                 
     {                                               
-        inteiro vetor[3]                        
+        inteiro vetor[1] = {teste()}                        
         logico matriz[2][2]                     
-        caracter letras[TAM][TAM]               
-    }                                               
+        caracter letras[TAM][TAM]        
+
+    }                       
+
+    funcao inteiro teste()
+    {
+        retorne 1
+    }
 }

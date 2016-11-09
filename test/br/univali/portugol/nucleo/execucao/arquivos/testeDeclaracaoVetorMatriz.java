@@ -15,8 +15,13 @@ public class testeDeclaracaoVetorMatriz extends Programa
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
-        int vetor[] = new int[3];
+        int vetor[] = {teste()};
         boolean matriz[][] = new boolean[2][2];
         char letras[][] = new char[TAM][TAM];
+    }
+    
+    private int teste() throws ErroExecucao, InterruptedException
+    {
+        return 1;
     }
 }

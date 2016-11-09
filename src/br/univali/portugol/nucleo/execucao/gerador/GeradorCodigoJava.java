@@ -28,17 +28,21 @@ public class GeradorCodigoJava
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
-        gera(asa, saida, nomeClasseJava, false, false); // não gera código para interrupção de thread e pontos de 
+        gera(asa, saida, nomeClasseJava, false, false, false); // não gera código para interrupção de thread, pontos de parada e inspeção de símbolos
     }
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, 
-            boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA, IOException
+            boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada,
+                    boolean geraCodigoParaInspecaoDeSimbolos) throws ExcecaoVisitaASA, IOException
     {
         PreAnalisador preAnalisador = new PreAnalisador();
         asa.aceitar(preAnalisador);
 
-        VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida, 
-                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada);
+        VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida 
+                        ,geraCodigoParaInterrupcaoDeThread
+                        ,geraCodigoParaPontosDeParada
+                        ,geraCodigoParaInspecaoDeSimbolos);
+        
         gerador.geraPackage("programas")
                 .pulaLinha()
                 .geraImportacaoPara(ErroExecucao.class)
@@ -67,20 +71,26 @@ public class GeradorCodigoJava
         private int nivelEscopo = 1;
         private final boolean gerandoCodigoParaInterrupcaoDeThread;
         private final boolean gerandoCodigoParaPontosDeParada;
+        private final boolean gerandoCodigoParaInspecaoDeSimbolos;
 
-        public VisitorGeracaoCodigo(ASAPrograma asa, PrintWriter saida, boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada)
+        public VisitorGeracaoCodigo(ASAPrograma asa, PrintWriter saida, 
+                boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada,
+                            boolean geraCodigoParaInspecaoDeSimbolos)
         {
             this.saida = saida;
             this.asa = asa;
             this.gerandoCodigoParaInterrupcaoDeThread = geraCodigoParaInterrupcaoDeThread;
             this.gerandoCodigoParaPontosDeParada = geraCodigoParaPontosDeParada;
+            this.gerandoCodigoParaInspecaoDeSimbolos = geraCodigoParaInspecaoDeSimbolos;
         }
 
         private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
         {
             nivelEscopo++;
+            
             Utils.visitarBlocos(blocos, saida, this, nivelEscopo, 
-                    gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
+                    gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, gerandoCodigoParaInspecaoDeSimbolos);
+            
             nivelEscopo--;
         }
 
@@ -159,7 +169,7 @@ public class GeradorCodigoJava
                     if (declaracaoFuncao.getNome().equals("inicio") || funcoesQueForamInvocadas.contains(declaracaoFuncao)) //só gera código para funções que foram invocadas
                     {
                         geradorDeclaracaoMetodo.gera(declaracaoFuncao,  saida, this, nivelEscopo, 
-                                gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
+                                gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, gerandoCodigoParaInspecaoDeSimbolos);
                     }
                 }
             }
@@ -566,7 +576,7 @@ public class GeradorCodigoJava
             if (!contemCasosNaoConstantes)
             {
                 geradorSwitchCase.geraSwitchCase(no, saida, this, nivelEscopo, 
-                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
+                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, gerandoCodigoParaInspecaoDeSimbolos);
             }
             else
             {

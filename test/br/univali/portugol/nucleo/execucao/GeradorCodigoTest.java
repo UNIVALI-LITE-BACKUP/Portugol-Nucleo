@@ -30,6 +30,12 @@ public class GeradorCodigoTest
     public TestName nomeTeste = new TestName();
 
     @Test
+    public void testeCodigoParaVariaveisInspecionadas() throws Exception
+    {
+        comparaCodigos(false, false, true); 
+    }
+    
+    @Test
     public void testeLeiaComParametroPorReferencia() throws Exception
     {
         comparaCodigos(); 
@@ -38,7 +44,7 @@ public class GeradorCodigoTest
     @Test
     public void testeGeracaoPontosDeParada() throws Exception
     {
-        comparaCodigos(false, true); // ativa a geração de código para pontos de parada
+        comparaCodigos(false, true, false); // ativa a geração de código para pontos de parada
     }
     
     @Test
@@ -233,11 +239,12 @@ public class GeradorCodigoTest
 
     private void comparaCodigos() throws Exception
     {
-        comparaCodigos(false, false);
+        comparaCodigos(false, false, false);
     }
     
     private void comparaCodigos(boolean geraCodigoParaInterrupcaoDeThread,
-                          boolean geraCodigoParaPontosDeParada) throws Exception
+                                    boolean geraCodigoParaPontosDeParada,
+                                        boolean geraCodigoParaInspecaoDeSimbolos) throws Exception
     {
         String nome = "/arquivos/" + nomeTeste.getMethodName();
 
@@ -264,7 +271,8 @@ public class GeradorCodigoTest
         PrintWriter writer = new PrintWriter(bos);
         String nomeClasseJava = nomeTeste.getMethodName();
         
-        gerador.gera(asa, writer, nomeClasseJava, geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada);
+        gerador.gera(asa, writer, nomeClasseJava, geraCodigoParaInterrupcaoDeThread, 
+                    geraCodigoParaPontosDeParada, geraCodigoParaInspecaoDeSimbolos);
         
         writer.flush();
         String codigoGerado = bos.toString();

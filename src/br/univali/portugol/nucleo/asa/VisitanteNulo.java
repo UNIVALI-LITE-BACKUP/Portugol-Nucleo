@@ -1,7 +1,5 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.asa.*;
-
 /**
  *
  * @author elieser
@@ -55,22 +53,35 @@ public class VisitanteNulo extends VisitanteASABasico {
     }
 
     @Override
-    public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA {
+    public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA {
+        if (no.temInicializacao())
+        {
+            no.getInicializacao().aceitar(this);
+        }
         return null;
     }
 
     @Override
-    public Object visitar(NoDeclaracaoVariavel noDeclaracaoVariavel) throws ExcecaoVisitaASA {
+    public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA {
+        if (no.temInicializacao())
+        {
+            no.getInicializacao().aceitar(this);
+        }
         return null;
     }
 
     @Override
-    public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA {
+    public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA {
+        if (no.temInicializacao())
+        {
+            no.getInicializacao().aceitar(this);
+        }
         return null;
     }
 
     @Override
     public Object visitar(NoEnquanto noEnquanto) throws ExcecaoVisitaASA {
+        noEnquanto.getCondicao().aceitar(this);
         for (NoBloco bloco : noEnquanto.getBlocos()) {
             bloco.aceitar(this);
         }
@@ -79,6 +90,7 @@ public class VisitanteNulo extends VisitanteASABasico {
 
     @Override
     public Object visitar(NoEscolha noEscolha) throws ExcecaoVisitaASA {
+        noEscolha.getExpressao().aceitar(this);
         for (NoCaso caso : noEscolha.getCasos()) {
             caso.aceitar(this);
         }
@@ -87,6 +99,7 @@ public class VisitanteNulo extends VisitanteASABasico {
 
     @Override
     public Object visitar(NoFacaEnquanto noFacaEnquanto) throws ExcecaoVisitaASA {
+        noFacaEnquanto.getCondicao().aceitar(this);
         for (NoBloco no : noFacaEnquanto.getBlocos()) {
             no.aceitar(this);
         }
@@ -119,107 +132,146 @@ public class VisitanteNulo extends VisitanteASABasico {
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaIgualdade noOperacaoLogicaIgualdade) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaIgualdade no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaDiferenca noOperacaoLogicaDiferenca) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaDiferenca no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoAtribuicao noOperacaoAtribuicao) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaE noOperacaoLogicaE) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaE no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaOU noOperacaoLogicaOU) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaOU no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaMaior noOperacaoLogicaMaior) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaMaior no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaMaiorIgual noOperacaoLogicaMaiorIgual) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaMaiorIgual no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaMenor noOperacaoLogicaMenor) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaMenor no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoLogicaMenorIgual noOperacaoLogicaMenorIgual) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoLogicaMenorIgual no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoSoma noOperacaoSoma) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoSubtracao noOperacaoSubtracao) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoDivisao noOperacaoDivisao) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoMultiplicacao noOperacaoMultiplicacao) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoModulo noOperacaoModulo) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoBitwiseLeftShift no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoBitwiseRightShift no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseE noOperacaoBitwiseE) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoBitwiseE no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseOu noOperacaoBitwiseOu) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoBitwiseOu no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoOperacaoBitwiseXOR noOperacaoBitwiseXOR) throws ExcecaoVisitaASA {
+    public Object visitar(NoOperacaoBitwiseXOR no) throws ExcecaoVisitaASA {
+        no.getOperandoEsquerdo().aceitar(this);
+        no.getOperandoDireito().aceitar(this);
         return null;
     }
 
     @Override
-    public Object visitar(NoBitwiseNao noOperacaoBitwiseNao) throws ExcecaoVisitaASA {
+    public Object visitar(NoBitwiseNao no) throws ExcecaoVisitaASA {
         return null;
     }
 
     @Override
     public Object visitar(NoPara noPara) throws ExcecaoVisitaASA {
+        noPara.getCondicao().aceitar(this);
         for (NoBloco no : noPara.getBlocos()) {
             no.aceitar(this);
         }
@@ -253,7 +305,7 @@ public class VisitanteNulo extends VisitanteASABasico {
 
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA {
-        return null;
+        return noRetorne.getExpressao().aceitar(this);
     }
 
     @Override

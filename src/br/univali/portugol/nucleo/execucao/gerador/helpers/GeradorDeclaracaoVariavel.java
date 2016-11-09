@@ -179,6 +179,7 @@ public class GeradorDeclaracaoVariavel
                 saida.append(")");
             }
         }
+        
         return true; // 'avisa' que o código de declaração foi gerado
     }
 }

@@ -14,7 +14,7 @@ public class GeradorSwitchCase
 
     public void geraSwitchCase(NoEscolha no, PrintWriter saida, VisitanteASA visitor, 
             int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
+                boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos) throws ExcecaoVisitaASA
     {
         String identacao = Utils.geraIdentacao(nivelEscopo);
 
@@ -45,7 +45,7 @@ public class GeradorSwitchCase
                 }
 
                 Utils.visitarBlocos(caso.getBlocos(), saida, visitor, nivelEscopo, 
-                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada);
+                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada, geraCodigoParaInspecaoDeSimbolos);
 
                 saida.println();
             }

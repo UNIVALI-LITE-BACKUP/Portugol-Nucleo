@@ -38,6 +38,9 @@ class PreAnalisador extends VisitanteNulo
         for (int i = 0; i < parametrosPassados.size(); i++)
         {
             NoExpressao parametroPassado = parametrosPassados.get(i);
+            
+            parametroPassado.aceitar(this);
+            
             NoDeclaracaoParametro parametroEsperado = (i < parametrosEsperados.size()) ? parametrosEsperados.get(i) : null;
             if (parametroPassado instanceof NoReferenciaVariavel)
             {
@@ -75,60 +78,15 @@ class PreAnalisador extends VisitanteNulo
     }
 
     @Override
-    public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
+    public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA
     {
-        if (no.getInicializacao() != null)
+        for (Object valor : noVetor.getValores())
         {
-            no.getInicializacao().aceitar(this);
+            if (valor instanceof NoExpressao)
+            {
+                ((NoExpressao)valor).aceitar(this);
+            }
         }
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoAtribuicao no) throws ExcecaoVisitaASA
-    {
-        no.getOperandoEsquerdo().aceitar(this);
-        no.getOperandoDireito().aceitar(this);
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoSoma no) throws ExcecaoVisitaASA
-    {
-        no.getOperandoEsquerdo().aceitar(this);
-        no.getOperandoDireito().aceitar(this);
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoSubtracao no) throws ExcecaoVisitaASA
-    {
-        no.getOperandoEsquerdo().aceitar(this);
-        no.getOperandoDireito().aceitar(this);
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoModulo no) throws ExcecaoVisitaASA
-    {
-        no.getOperandoEsquerdo().aceitar(this);
-        no.getOperandoDireito().aceitar(this);
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoMultiplicacao no) throws ExcecaoVisitaASA
-    {
-        no.getOperandoEsquerdo().aceitar(this);
-        no.getOperandoDireito().aceitar(this);
-        return null;
-    }
-
-    @Override
-    public Object visitar(NoOperacaoDivisao no) throws ExcecaoVisitaASA
-    {
-        no.getOperandoEsquerdo().aceitar(this);
-        no.getOperandoDireito().aceitar(this);
         return null;
     }
 

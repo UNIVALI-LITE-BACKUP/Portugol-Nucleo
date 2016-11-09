@@ -13,6 +13,22 @@ public class Utils
     
     private static long seedNomes = System.currentTimeMillis();
 
+    public static void geraCodigoParaInspecao(NoDeclaracaoVariavel variavel, PrintWriter saida, int nivelEscopo)
+    {
+        if (variavel.temInicializacao())
+        {
+            int linhaDeclaracao = variavel.getInicializacao().getTrechoCodigoFonte().getLinha();
+        
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                .format("if (variaveisInspecionadas.containsKey(%d)) {", linhaDeclaracao).println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                .format("variaveisInspecionadas.replace(%d, %s);", linhaDeclaracao, variavel.getNome())
+                .println();
+            saida.append(Utils.geraIdentacao(nivelEscopo)).append("}");
+        }
+    }
+    
     public static void setSeedGeracaoNomesValidos(long seed)
     {
         seedNomes = seed;
@@ -20,7 +36,7 @@ public class Utils
     
     public static String geraStringIndice(NoReferenciaVariavel variavel)
     {
-        //assert(variavel.ehPassadoPorReferencia());
+        assert(variavel.ehPassadoPorReferencia());
         return geraStringIndice(variavel.getIndiceReferencia(), variavel.getNome());
     }
     
@@ -37,7 +53,7 @@ public class Utils
     
     public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, 
             VisitanteASA visitor, int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
+                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolo) throws ExcecaoVisitaASA
     {
         for (NoBloco bloco : blocos)
         {
@@ -60,7 +76,17 @@ public class Utils
                 saida.append(";");
             }
             saida.println();
+            
+            if (geraCodigoParaInspecaoDeSimbolo)
+            {
+                if (bloco instanceof NoDeclaracaoVariavel)
+                {
+                    //Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)bloco, saida, nivelEscopo);
+                    //saida.println();
+                }
+            }
         }
+
     }
 
     public static String getNomeTipoJava(TipoDado tipoPortugol)

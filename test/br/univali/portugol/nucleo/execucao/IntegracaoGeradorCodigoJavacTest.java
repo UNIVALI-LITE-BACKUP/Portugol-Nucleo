@@ -102,7 +102,7 @@ public class IntegracaoGeradorCodigoJavacTest
                 PrintWriter writer = new PrintWriter(new BufferedOutputStream(new FileOutputStream(arquivoJava)));
                 try
                 {
-                    gerador.gera((ASAPrograma) aa.getASA(), writer, nomeClasse, true, true);
+                    gerador.gera((ASAPrograma) aa.getASA(), writer, nomeClasse, true, true, true);
                 }
                 finally
                 {

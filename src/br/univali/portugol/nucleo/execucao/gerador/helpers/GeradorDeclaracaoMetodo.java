@@ -12,7 +12,7 @@ public class GeradorDeclaracaoMetodo
 {
     public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, 
             int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
+                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos) throws ExcecaoVisitaASA
     {
         saida.println();
 
@@ -58,7 +58,7 @@ public class GeradorDeclaracaoMetodo
         }
 
         Utils.visitarBlocos(noFuncao.getBlocos(), saida, visitor, nivelEscopo, 
-                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada); // gera o código dentro do método
+                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada, geraCodigoParaInspecaoDeSimbolos); // gera o código dentro do método
 
         saida.println();
         saida.append(identacao).append("}").println(); // finaliza o escopo do método

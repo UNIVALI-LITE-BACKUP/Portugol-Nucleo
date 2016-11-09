@@ -137,7 +137,7 @@ final class Compilador
         try (PrintWriter writerArquivoJava = new PrintWriter(new FileOutputStream(arquivoJava)))
         {
             GeradorCodigoJava gerador = new GeradorCodigoJava();
-            gerador.gera(asa, writerArquivoJava, nomeClasse, true, true);
+            gerador.gera(asa, writerArquivoJava, nomeClasse, true, true, true);
             writerArquivoJava.flush();
 
             return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO);

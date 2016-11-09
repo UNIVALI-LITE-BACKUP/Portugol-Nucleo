@@ -24,7 +24,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
@@ -101,6 +103,9 @@ public abstract class Programa
 
     private Estado estado = Estado.PARADO;
 
+    // mapa usado pelas subclasses (geradas no código Java) para guardar os valores das variáveis que estão sendo inspecionadas
+    protected final Map<Integer, Object> variaveisInspecionadas = new ConcurrentHashMap<>();
+    
     public Programa()
     {
         EntradaSaidaPadrao es = new EntradaSaidaPadrao();
