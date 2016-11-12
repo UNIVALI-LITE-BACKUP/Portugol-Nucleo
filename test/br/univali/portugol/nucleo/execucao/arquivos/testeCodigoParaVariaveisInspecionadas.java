@@ -17,13 +17,13 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         int x = 1;
         if (variaveisInspecionadas.containsKey(4)) 
         {
-            variaveisInspecionadas.replace(4, x); 
+            variaveisInspecionadas.put(4, x); 
         }
         
         x = 2;
         if (variaveisInspecionadas.containsKey(4))
         {
-            variaveisInspecionadas.replace(4, x);
+            variaveisInspecionadas.put(4, x);
         }
     }
 }

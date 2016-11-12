@@ -88,9 +88,26 @@ public class Utils
             
             if (geraCodigoParaInspecaoDeSimbolo)
             {
-                if (bloco instanceof NoDeclaracaoVariavel)
+                if (bloco instanceof NoDeclaracaoVariavel || bloco instanceof NoOperacaoAtribuicao)
                 {
-                    Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)bloco, saida, nivelEscopo);
+                    if (bloco instanceof NoDeclaracaoVariavel)
+                    {
+                        Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)bloco, saida, nivelEscopo);
+                    }
+                    else
+                    {
+                        NoOperacaoAtribuicao atribuicao = (NoOperacaoAtribuicao)bloco;
+                        NoExpressao operandoEsquerdo = atribuicao.getOperandoEsquerdo();
+                        if (operandoEsquerdo instanceof NoReferenciaVariavel)
+                        {
+                            NoReferenciaVariavel referenciaVariavel = (NoReferenciaVariavel)operandoEsquerdo;
+                            if (referenciaVariavel.getOrigemDaReferencia() instanceof NoDeclaracaoVariavel)
+                            {
+                                NoDeclaracaoVariavel declaracaoVariavel = (NoDeclaracaoVariavel)referenciaVariavel.getOrigemDaReferencia();
+                                Utils.geraCodigoParaInspecao(declaracaoVariavel, saida, nivelEscopo);
+                            }
+                        }
+                    }
                     saida.println();
                 }
             }
