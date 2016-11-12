@@ -18,6 +18,7 @@ package br.univali.portugol.nucleo.asa;
 public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel
 {
     private int indiceReferencia = -1;
+    private long ID = -1;
     
     /**
      *
@@ -59,8 +60,18 @@ public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel
         }
         return TRECHO_NULO;
     }
+
+    public long getID()
+    {
+        return ID;
+    }
+
+    public void setID(long ID)
+    {
+        this.ID = ID;
+    }
     
-     public boolean ehPassadaPorReferencia()
+    public boolean ehPassadaPorReferencia()
     {
         return indiceReferencia >= 0;
     }
