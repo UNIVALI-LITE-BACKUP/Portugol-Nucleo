@@ -58,7 +58,7 @@ public class GeradorCodigoJava
                 .pulaLinha()
                 .geraAtributosParaAsVariaveisPassadasPorReferencia(preAnalisador.getVariaveisPassadasPorReferencia())
                 .pulaLinha()
-                .geraConstrutor(nomeClasseJava)
+                .geraConstrutor(nomeClasseJava, preAnalisador.getTotalVariaveisDeclaradas())
                 .pulaLinha()
                 .geraMetodos(preAnalisador.getFuncoesQuerForamInvocadas())
                 .geraChaveDeFechamentoDaClasse();
@@ -725,7 +725,7 @@ public class GeradorCodigoJava
             }
         }
 
-        private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava) throws ExcecaoVisitaASA
+        private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava, int totalVariaveisDeclaradas) throws ExcecaoVisitaASA
         {
             String identacao = Utils.geraIdentacao(nivelEscopo);
             saida.append(identacao)
@@ -735,7 +735,15 @@ public class GeradorCodigoJava
                     .println();
 
             nivelEscopo++;
+            
+            if (gerandoCodigoParaInspecaoDeSimbolos)
+            {
+                saida.format("variaveisInspecionadas = new Object[%d];", totalVariaveisDeclaradas);
+                saida.println();
+            }
+            
             inicializaVariaveisGlobaisQueSaoPassadasPorReferencia();
+            
             nivelEscopo--;
 
             saida.append(identacao)

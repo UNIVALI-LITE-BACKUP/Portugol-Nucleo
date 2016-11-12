@@ -15,25 +15,24 @@ public class Utils
 
     public static void geraCodigoParaInspecao(NoDeclaracaoVariavel variavel, PrintWriter saida, int nivelEscopo)
     {
-        if (variavel.temInicializacao())
+        if (variavel.getID() >= 0)
         {
-            int linhaDeclaracao = variavel.getInicializacao().getTrechoCodigoFonte().getLinha();
+            int ID = variavel.getID();
         
-            if (linhaDeclaracao < 0)
-            {
-                throw new RuntimeException("linha declaração inválida : " + linhaDeclaracao);
-            }
+            saida.append(Utils.geraIdentacao(nivelEscopo));
             
-            saida.append(Utils.geraIdentacao(nivelEscopo))
-                .format("if (variaveisInspecionadas.containsKey(%d)) {", linhaDeclaracao).println();
+            saida.format("if (variaveisInspecionadas[%d] != null) {", ID).println();
+            
             saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+            
             String nomeVariavel = variavel.getNome();
             if (variavel.ehPassadaPorReferencia())
             {
                 String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase();
                 nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, Utils.geraStringIndice(variavel));
             }
-            saida.format("variaveisInspecionadas.put(%d, %s);", linhaDeclaracao, nomeVariavel).println();
+            saida.format("variaveisInspecionadas[%d] = %s;", ID, nomeVariavel).println();
+            
             saida.append(Utils.geraIdentacao(nivelEscopo)).append("}");
         }
     }

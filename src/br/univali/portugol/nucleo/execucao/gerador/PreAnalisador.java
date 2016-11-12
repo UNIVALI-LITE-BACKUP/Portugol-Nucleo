@@ -18,7 +18,7 @@ class PreAnalisador extends VisitanteNulo
 
     private final Map<TipoDado, List<NoDeclaracaoVariavel>> declaracoes = new HashMap<>();
     private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
-    private long totalVariaveisDeclaradas = 0;
+    private int totalVariaveisDeclaradas = 0;
 
     @Override
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
@@ -104,7 +104,7 @@ class PreAnalisador extends VisitanteNulo
         return declaracoes;
     }
 
-    public long getTotalVariaveisDeclaradas()
+    public int getTotalVariaveisDeclaradas()
     {
         return totalVariaveisDeclaradas;
     }

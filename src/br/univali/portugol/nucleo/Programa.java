@@ -105,7 +105,7 @@ public abstract class Programa
     private Estado estado = Estado.PARADO;
 
     // mapa usado pelas subclasses (geradas no código Java) para guardar os valores das variáveis que estão sendo inspecionadas
-    protected final Map<Integer, Object> variaveisInspecionadas = new ConcurrentHashMap<>();
+    protected Object variaveisInspecionadas[] = new Object[0];
     
     public Programa()
     {
@@ -117,22 +117,34 @@ public abstract class Programa
         observadores = new ArrayList<>();
     }
 
-    protected void atualizaVariavelInspecionada(Integer linhaDeclaracao, Object valor)
-    {
-        variaveisInspecionadas.put(linhaDeclaracao, valor);
-    }
+//    protected void atualizaVariavelInspecionada(Integer linhaDeclaracao, Object valor)
+//    {
+//        variaveisInspecionadas.put(linhaDeclaracao, valor);
+//    }
     
-    public void inspecionaVariavel(int linhaDeclaracao)
+    public void inspecionaVariavel(Integer idVariavel)
     {
-        if (!variaveisInspecionadas.containsKey(linhaDeclaracao))
+        if (idVariavel >= 0 && idVariavel < variaveisInspecionadas.length)
         {
-            variaveisInspecionadas.put(linhaDeclaracao, OBJETO_NULO);
+            variaveisInspecionadas[idVariavel] = OBJETO_NULO;
+        }
+        else
+        {
+            System.out.println(String.format("ID de variável inválido: %d", idVariavel));
         }
     }
     
-    public Object getValorVariavelInspecionada(int linhaDeclaracao)
+    public Object getValorVariavelInspecionada(Integer idVariavel)
     {
-        return variaveisInspecionadas.get(linhaDeclaracao);
+        if (idVariavel >= 0 && idVariavel < variaveisInspecionadas.length)
+        {
+            return variaveisInspecionadas[idVariavel];
+        }
+        else
+        {
+            System.out.println(String.format("ID de variável inválido: %d", idVariavel));
+        }
+        return OBJETO_NULO;
     }
     
     void setNumeroLinhas(int numeroLinhas)
