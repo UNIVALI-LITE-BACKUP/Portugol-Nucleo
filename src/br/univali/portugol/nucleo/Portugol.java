@@ -3,10 +3,8 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +20,7 @@ public final class Portugol
     
     private static final Logger LOGGER = Logger.getLogger(Portugol.class.getName());
     
-    private static final ExecutorService servico = Executors.newCachedThreadPool();
+    private static final ExecutorService servico = Executors.newSingleThreadExecutor(); // usa uma thread só para enfileirar compilações consecutivas, isso evita ter que tratar compilações simultâneas
     
     private static Programa compilar(String codigo, boolean paraExecucao) throws ErroCompilacao
     {
@@ -47,18 +45,25 @@ public final class Portugol
         return compilar(codigo, false);
     }
     
-    public static Future<Programa> compilarParaExecucao(final String codigo) throws ErroCompilacao
+    public static void compilarParaExecucao(final String codigo, final ListenerCompilacao listener)
     {
-        Callable<Programa> tarefa = new Callable<Programa>()
+        Runnable tarefa = new Runnable()
         {
             @Override
-            public Programa call() throws Exception
+            public void run()
             {
-                LOGGER.log(Level.INFO, "Invocando compilação para execução na thread {0}", Thread.currentThread().getName());
-                return compilar(codigo, true);
+                try
+                {
+                    Programa programa = compilar(codigo, true);
+                    listener.compilacaoParaExecucaoFinalizada(programa);
+                }
+                catch(ErroCompilacao erro)
+                {
+                    listener.errosDeCompilacaoDetectados(erro);
+                }
             }
         };
-        return servico.submit(tarefa);
+        servico.submit(tarefa);
     }
     
     public static String renomearSimbolo(String programa, int linha, int coluna, String novoNome) throws ErroAoRenomearSimbolo

@@ -73,28 +73,26 @@ final class Compilador
     {
         AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
         ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
+        
+        ASAPrograma asa = (ASAPrograma) analisadorAlgoritmo.getASA();
 
+        Programa programa = new ProgramaVazio();
+        programa.setResultadoAnalise(resultadoAnalise);
+        programa.setNumeroLinhas(getNumeroDeLinhas(codigo));
+        
         if (!resultadoAnalise.contemErros())
         {
-            ASAPrograma asa = (ASAPrograma) analisadorAlgoritmo.getASA();
 
-            Programa programa;
-            
             if (compilarParaExecucao)
             {
                 programa = geraPrograma(asa);
                 programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
                 programa.setFuncaoInicial(localizadorFuncoes.getFuncaoInicial());
-            }
-            else
-            {
-                programa = new ProgramaVazio();
+                programa.setResultadoAnalise(resultadoAnalise);
+                programa.setNumeroLinhas(getNumeroDeLinhas(codigo));
             }
             
             programa.setArvoreSintaticaAbstrata(asa);
-            programa.setResultadoAnalise(resultadoAnalise);
-            programa.setNumeroLinhas(getNumeroDeLinhas(codigo));
-
             return programa;
         }
         else

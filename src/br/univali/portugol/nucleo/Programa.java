@@ -11,7 +11,6 @@ import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.execucao.TradutorErrosExecucao;
-import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.execucao.erros.ErroValorEntradaInvalido;
 import br.univali.portugol.nucleo.execucao.es.Armazenador;
 import br.univali.portugol.nucleo.execucao.es.InputMediator;
@@ -92,6 +91,8 @@ public abstract class Programa
     
     private int ultimaLinha = 0;
     private int ultimaColuna = 0;
+    
+    public static final Object OBJETO_NULO = new Object(); // usando como valor inicial para as variáveis inspecionadas
 
     public static enum Estado
     {
@@ -114,6 +115,24 @@ public abstract class Programa
         saida = es;
         funcoes = new ArrayList<>();
         observadores = new ArrayList<>();
+    }
+
+    protected void atualizaVariavelInspecionada(Integer linhaDeclaracao, Object valor)
+    {
+        variaveisInspecionadas.put(linhaDeclaracao, valor);
+    }
+    
+    public void inspecionaVariavel(int linhaDeclaracao)
+    {
+        if (!variaveisInspecionadas.containsKey(linhaDeclaracao))
+        {
+            variaveisInspecionadas.put(linhaDeclaracao, OBJETO_NULO);
+        }
+    }
+    
+    public Object getValorVariavelInspecionada(int linhaDeclaracao)
+    {
+        return variaveisInspecionadas.get(linhaDeclaracao);
     }
     
     void setNumeroLinhas(int numeroLinhas)
@@ -494,6 +513,7 @@ public abstract class Programa
     public void setResultadoAnalise(ResultadoAnalise resultadoAnalise)
     {
         this.resultadoAnalise = resultadoAnalise;
+        this.resultadoAnalise.setPrograma(this);
     }
 
     public ResultadoAnalise getResultadoAnalise()

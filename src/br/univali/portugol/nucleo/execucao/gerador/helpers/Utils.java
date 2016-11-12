@@ -19,13 +19,19 @@ public class Utils
         {
             int linhaDeclaracao = variavel.getInicializacao().getTrechoCodigoFonte().getLinha();
         
-            saida.append(Utils.geraIdentacao(nivelEscopo))
-                .format("if (variaveisInspecionadas.containsKey(%d)) {", linhaDeclaracao).println();
+            if (linhaDeclaracao < 0)
+            {
+                throw new RuntimeException("linha declaração inválida : " + linhaDeclaracao);
+            }
             
-            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
-                .format("variaveisInspecionadas.replace(%d, %s);", linhaDeclaracao, variavel.getNome())
-                .println();
-            saida.append(Utils.geraIdentacao(nivelEscopo)).append("}");
+            //saida.append(Utils.geraIdentacao(nivelEscopo))
+              //  .format("if (variaveisInspecionadas.containsKey(%d)) {", linhaDeclaracao).println();
+            
+            //saida.format("System.out.println(\"guardando \" + %s);", variavel.getNome()).println();
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+            saida.format("atualizaVariavelInspecionada(%d, %s);", linhaDeclaracao, variavel.getNome());
+            //saida.append(Utils.geraIdentacao(nivelEscopo)).append("}");
+            //saida.append("else{ System.out.println(\" não armazenou\");  }");
         }
     }
     
@@ -81,8 +87,8 @@ public class Utils
             {
                 if (bloco instanceof NoDeclaracaoVariavel)
                 {
-                    //Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)bloco, saida, nivelEscopo);
-                    //saida.println();
+                    Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)bloco, saida, nivelEscopo);
+                    saida.println();
                 }
             }
         }
