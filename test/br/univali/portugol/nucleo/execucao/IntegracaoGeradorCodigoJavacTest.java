@@ -44,9 +44,9 @@ public class IntegracaoGeradorCodigoJavacTest
         File[] dirs = dirExemplos.listFiles();
         for (File dir : dirs)
         {
-            geraCodigo(dir);
+            //geraCodigo(dir);
         }
-        //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/jogos/corrida.por"));
+        geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/jogos/corrida.por"));
         //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bateria.por"));
     }
     

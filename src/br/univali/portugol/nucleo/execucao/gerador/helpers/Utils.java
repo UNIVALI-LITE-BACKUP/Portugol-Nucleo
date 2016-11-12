@@ -24,14 +24,17 @@ public class Utils
                 throw new RuntimeException("linha declaração inválida : " + linhaDeclaracao);
             }
             
-            //saida.append(Utils.geraIdentacao(nivelEscopo))
-              //  .format("if (variaveisInspecionadas.containsKey(%d)) {", linhaDeclaracao).println();
-            
-            //saida.format("System.out.println(\"guardando \" + %s);", variavel.getNome()).println();
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                .format("if (variaveisInspecionadas.containsKey(%d)) {", linhaDeclaracao).println();
             saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-            saida.format("atualizaVariavelInspecionada(%d, %s);", linhaDeclaracao, variavel.getNome());
-            //saida.append(Utils.geraIdentacao(nivelEscopo)).append("}");
-            //saida.append("else{ System.out.println(\" não armazenou\");  }");
+            String nomeVariavel = variavel.getNome();
+            if (variavel.ehPassadaPorReferencia())
+            {
+                String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase();
+                nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, Utils.geraStringIndice(variavel));
+            }
+            saida.format("variaveisInspecionadas.put(%d, %s);", linhaDeclaracao, nomeVariavel).println();
+            saida.append(Utils.geraIdentacao(nivelEscopo)).append("}");
         }
     }
     
