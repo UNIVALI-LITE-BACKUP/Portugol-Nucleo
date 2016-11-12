@@ -6,6 +6,8 @@ package br.univali.portugol.nucleo;
  */
 public interface ListenerCompilacao
 {
+    void compilacaoParaExecucaoIniciada();
+    
     void compilacaoParaExecucaoFinalizada(Programa programaCompilado);
     
     void errosDeCompilacaoDetectados(ErroCompilacao erro);

@@ -85,7 +85,7 @@ final class Compilador
 
             if (compilarParaExecucao)
             {
-                programa = geraPrograma(asa);
+                programa = geraPrograma(asa, resultadoAnalise);
                 programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
                 programa.setFuncaoInicial(localizadorFuncoes.getFuncaoInicial());
                 programa.setResultadoAnalise(resultadoAnalise);
@@ -117,10 +117,8 @@ final class Compilador
     }
 
     
-    private Programa geraPrograma(ASAPrograma asa) throws ErroCompilacao
+    private Programa geraPrograma(ASAPrograma asa, ResultadoAnalise resultadoAnalise) throws ErroCompilacao
     {
-        ResultadoAnalise resultadoAnalise = new ResultadoAnalise();
-
         long idPrograma = System.currentTimeMillis();
         
         String nomeClasse = "Programa".concat(String.valueOf(idPrograma));
@@ -138,7 +136,7 @@ final class Compilador
             gerador.gera(asa, writerArquivoJava, nomeClasse, true, true, true);
             writerArquivoJava.flush();
 
-            return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO);
+            return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise);
         }
         catch (final IOException | ExcecaoVisitaASA ex)
         {
@@ -160,7 +158,8 @@ final class Compilador
         }
     }
 
-    private Programa compilarJava(String nomeClasse, File arquivoJava, File diretorioCompilacao) throws ErroCompilacao
+    private Programa compilarJava(String nomeClasse, File arquivoJava, File diretorioCompilacao,
+                        ResultadoAnalise resultadoAnalise) throws ErroCompilacao
     {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
@@ -170,7 +169,7 @@ final class Compilador
 
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
-        ResultadoAnalise resultadoAnalise = new ResultadoAnalise();
+        //ResultadoAnalise resultadoAnalise = new ResultadoAnalise();
 
         if (task.call())
         {

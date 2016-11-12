@@ -52,6 +52,7 @@ public final class Portugol
             @Override
             public void run()
             {
+                listener.compilacaoParaExecucaoIniciada();
                 try
                 {
                     Programa programa = compilar(codigo, true);
