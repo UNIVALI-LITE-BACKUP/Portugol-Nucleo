@@ -1,12 +1,10 @@
 package br.univali.portugol.nucleo.asa;
 
-import com.sun.webkit.InspectorClient;
-
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public abstract class NoDeclaracaoInicializavel extends NoDeclaracao implements NoInspecionavel
+public abstract class NoDeclaracaoInicializavel extends NoDeclaracao implements NoDeclaracaoInspecionavel
 {
     private NoExpressao inicializacao;
     

@@ -97,6 +97,76 @@ public class Utils
         }
     }
     
+    public static void geraCodigoParaInspecao(NoReferenciaMatriz referenciaMatriz, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    {
+        int ID = referenciaMatriz.getOrigemDaReferencia().getIdParaInspecao();
+        if (ID >= 0)
+        {
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+            
+            saida.format("if (matrizesInspecionadas[%d] != null) {", ID)
+                    .println();
+            
+            String nomeVariavel = referenciaMatriz.getNome();
+
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                    .format("matrizesInspecionadas[%d].setValor(", ID);
+                    
+            saida.format("%s[", nomeVariavel); 
+            referenciaMatriz.getLinha().aceitar(visitor); //escreve o índice da linha na saída (PrintWriter)
+            saida.append("][");
+            referenciaMatriz.getColuna().aceitar(visitor); //escreve o índice da coluna na saída (PrintWriter)
+            saida.append("], ");
+
+            referenciaMatriz.getLinha().aceitar(visitor); // escreve o índice da linha novamente na saída
+            saida.append(", ");
+            referenciaMatriz.getColuna().aceitar(visitor); // escreve o índice da linha novamente na saída
+            
+            saida.append(");") // fecha o parenteses do setValor( );
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                    .append("}"); // fechando IF
+        }
+    }
+    
+    public static void geraCodigoParaInspecao(NoDeclaracaoMatriz matriz, PrintWriter saida, int nivelEscopo)
+    {
+        int ID = matriz.getIdParaInspecao();
+        if (ID >= 0 && matriz.temInicializacao())
+        {
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+            
+            saida.format("if (matrizesInspecionadas[%d] != null) {", ID)
+                    .println();
+            
+            String nomeVariavel = matriz.getNome();
+
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                    .format("for (int i = 0; i < matrizesInspecionadas[%d].linhas; i++) {", ID) // loop das linhas
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 2))
+                    .format("for (int j = 0; j < matrizesInspecionadas[%d].colunas; j++) {", ID) // loop das colunas
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 3))
+                    .format("matrizesInspecionadas[%d].setValor(%s[i][j], i, j);", ID, nomeVariavel)
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 2))
+                    .append("}")// fechando loop interno
+                    .println(); 
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                    .append("}")// fechando loop externo
+                    .println(); 
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                    .append("}"); // fechando IF
+        }
+    }
+    
     public static void setSeedGeracaoNomesValidos(long seed)
     {
         seedNomes = seed;
@@ -136,13 +206,18 @@ public class Utils
             NoReferenciaVetor referenciaVetor = (NoReferenciaVetor) operandoEsquerdo;
             Utils.geraCodigoParaInspecao(referenciaVetor, saida, visitor, nivelEscopo);
         }
+        else if (operandoEsquerdo instanceof NoReferenciaMatriz)
+        {
+            NoReferenciaMatriz referenciaMatriz = (NoReferenciaMatriz) operandoEsquerdo;
+            Utils.geraCodigoParaInspecao(referenciaMatriz, saida, visitor, nivelEscopo);
+        }
     }
     
     private static void geraCodigoParaInspecaoDeBloco(NoBloco bloco, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
-        if (bloco instanceof NoDeclaracaoInicializavel || bloco instanceof NoOperacaoAtribuicao)
+        if (bloco instanceof NoDeclaracaoInspecionavel || bloco instanceof NoOperacaoAtribuicao)
         {
-            if (bloco instanceof NoDeclaracaoInicializavel)
+            if (bloco instanceof NoDeclaracaoInspecionavel)
             {
                 if (bloco instanceof NoDeclaracaoVariavel)
                 {
@@ -151,6 +226,10 @@ public class Utils
                 else if (bloco instanceof NoDeclaracaoVetor)
                 {
                     Utils.geraCodigoParaInspecao((NoDeclaracaoVetor) bloco, saida, nivelEscopo);
+                }
+                else if (bloco instanceof NoDeclaracaoMatriz)
+                {
+                    Utils.geraCodigoParaInspecao((NoDeclaracaoMatriz)bloco, saida, nivelEscopo);
                 }
             }
             else

@@ -18,8 +18,10 @@ class PreAnalisador extends VisitanteNulo
 
     private final Map<TipoDado, List<NoDeclaracaoVariavel>> declaracoes = new HashMap<>();
     private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
+    
     private int totalVariaveisDeclaradas = 0;
     private int totalVetoresDeclarados = 0;
+    private int totalMatrizesDeclaradas = 0;
 
     @Override
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
@@ -88,6 +90,14 @@ class PreAnalisador extends VisitanteNulo
     }
     
     @Override
+    public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA
+    {
+        no.setIdParaInspecao(totalMatrizesDeclaradas);
+        totalMatrizesDeclaradas++;
+        return super.visitar(no);
+    }
+    
+    @Override
     public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
     {
         no.setIdParaInspecao(totalVetoresDeclarados);
@@ -121,6 +131,11 @@ class PreAnalisador extends VisitanteNulo
     public int getTotalVetoresDeclarados()
     {
         return totalVetoresDeclarados;
+    }
+    
+    public int getTotalMatrizesDeclaradas()
+    {
+        return totalMatrizesDeclaradas;
     }
     
     public Set<NoDeclaracaoFuncao> getFuncoesQuerForamInvocadas()

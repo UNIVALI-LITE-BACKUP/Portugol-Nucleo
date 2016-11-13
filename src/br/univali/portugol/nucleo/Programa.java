@@ -104,6 +104,7 @@ public abstract class Programa
 
     private Estado estado = Estado.PARADO;
 
+    /*** Classe usada apenas internamente para armazenar os dados dos vetores que são inspecionados durante a execução */
     protected class Vetor
     {
         private final Object dados[];
@@ -131,9 +132,52 @@ public abstract class Programa
         }
     }
     
+    protected class Matriz
+    {
+        private final Vetor dados[];
+        private int ultimaLinhaAlterada = -1;
+        public final int linhas;
+        public final int colunas;
+        
+        Matriz(int totalLinhas, int totalColunas)
+        {
+            this.dados = new Vetor[totalLinhas];
+            this.linhas = totalLinhas;
+            this.colunas = totalColunas;
+        }
+        
+        public void setValor(Object valor, int linha, int coluna)
+        {
+            if (linha >= 0 && linha < linhas)
+            {
+                if (dados[linha] == null)
+                {
+                    dados[linha] = new Vetor(colunas);
+                }
+                dados[linha].setValor(valor, coluna);
+                ultimaLinhaAlterada = linha;
+            }
+        }
+        
+        public int getUltimaColunaAlterada()
+        {
+            if (ultimaLinhaAlterada >= 0)
+            {
+                return dados[ultimaLinhaAlterada].getUltimaColunaAlterada();
+            }
+            return -1;
+        }
+        
+        public int getUltimaLinhaAlterada()
+        {
+            return ultimaLinhaAlterada;
+        }
+    }
+    
     // mapa usado pelas subclasses (geradas no código Java) para guardar os valores das variáveis que estão sendo inspecionadas
     protected Object variaveisInspecionadas[] = new Object[0];
     protected Vetor vetoresInspecionados[] = new Vetor[0];
+    protected Matriz matrizesInspecionadas[] = new Matriz[0];
     
     public Programa()
     {
@@ -169,6 +213,18 @@ public abstract class Programa
         }
     }
     
+    public void inspecionaMatriz(int idMatriz, int linhas, int colunas)
+    {
+        if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
+        {
+            matrizesInspecionadas[idMatriz] = new Matriz(linhas, colunas);
+        }
+        else
+        {
+            System.out.println(String.format("ID de matriz inválido: %d", idMatriz));
+        }
+    }
+    
     public Object getValorVariavelInspecionada(int idVariavel)
     {
         if (idVariavel >= 0 && idVariavel < variaveisInspecionadas.length)
@@ -182,7 +238,7 @@ public abstract class Programa
         return OBJETO_NULO;
     }
     
-    public int getUltimaColunaAlterada(int idVetor)
+    public int getUltimaColunaAlteradaNoVetor(int idVetor)
     {
         if (idVetor >= 0 && idVetor < vetoresInspecionados.length)
         {
@@ -195,7 +251,33 @@ public abstract class Programa
         return -1;
     }
     
-    public Object getValorVetorInspecionado(int idVetor)
+    public int getUltimaColunaAlteradaNaMatriz(int idMatriz)
+    {
+        if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
+        {
+            Matriz matriz = matrizesInspecionadas[idMatriz];
+            if (matriz != null)
+            {
+                return matriz.getUltimaColunaAlterada();
+            }
+        }
+        return -1;
+    }
+    
+    public int getUltimaLinhaAlteradaNaMatriz(int idMatriz)
+    {
+        if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
+        {
+            Matriz matriz = matrizesInspecionadas[idMatriz];
+            if (matriz != null)
+            {
+                return matriz.getUltimaLinhaAlterada();
+            }
+        }
+        return -1;
+    }
+    
+    public Object getValorNoVetorInspecionado(int idVetor)
     {
         if (idVetor >= 0 && idVetor < vetoresInspecionados.length)
         {
@@ -220,6 +302,44 @@ public abstract class Programa
         else
         {
             System.out.println(String.format("ID de vetor inválido: %d", idVetor));
+        }
+        return OBJETO_NULO;
+    }
+    
+    //retorna o último valor alterado
+    public Object getValorNaMatrizInspecionada(int idMatriz)
+    {
+        if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
+        {
+            Matriz matriz = matrizesInspecionadas[idMatriz];
+            if (matriz != null)
+            {
+                int linha = matriz.getUltimaLinhaAlterada();
+                if (linha >= 0 && linha < matriz.dados.length)
+                {
+                    int coluna = matriz.getUltimaColunaAlterada();
+                    if (coluna >= 0 && coluna < matriz.colunas)
+                    {
+                        return matriz.dados[linha].dados[coluna];
+                    }
+                    else
+                    {
+                        System.out.println(String.format("indice de coluna inválido acessando a matriz %d (índice: %d)", idMatriz, coluna));
+                    }
+                }
+                else
+                {
+                    System.out.println(String.format("indice de linha inválido acessando a matriz %d (índice: %d)", idMatriz, linha));
+                }
+            }
+            else
+            {
+                System.out.println(String.format("Matriz no índice %d está nula!", idMatriz));
+            }
+        }
+        else
+        {
+            System.out.println(String.format("ID de vetor inválido: %d", idMatriz));
         }
         return OBJETO_NULO;
     }

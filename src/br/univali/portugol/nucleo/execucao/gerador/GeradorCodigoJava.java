@@ -45,6 +45,7 @@ public class GeradorCodigoJava
         
         int totalVariaveis = preAnalisador.getTotalVariaveisDeclaradas();
         int totalVetores = preAnalisador.getTotalVetoresDeclarados();
+        int totalMatrizes = preAnalisador.getTotalMatrizesDeclaradas();
         
         gerador.geraPackage("programas")
                 .pulaLinha()
@@ -61,7 +62,7 @@ public class GeradorCodigoJava
                 .pulaLinha()
                 .geraAtributosParaAsVariaveisPassadasPorReferencia(preAnalisador.getVariaveisPassadasPorReferencia())
                 .pulaLinha()
-                .geraConstrutor(nomeClasseJava, totalVariaveis, totalVetores)
+                .geraConstrutor(nomeClasseJava, totalVariaveis, totalVetores, totalMatrizes)
                 .pulaLinha()
                 .geraMetodos(preAnalisador.getFuncoesQuerForamInvocadas())
                 .geraChaveDeFechamentoDaClasse();
@@ -728,7 +729,8 @@ public class GeradorCodigoJava
             }
         }
 
-        private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava, int variaveisDeclaradas, int vetoresDeclarados) throws ExcecaoVisitaASA
+        private VisitorGeracaoCodigo geraConstrutor(String nomeDaClasseJava, 
+                int variaveisDeclaradas, int vetoresDeclarados, int matrizesDeclaradas) throws ExcecaoVisitaASA
         {
             String identacao = Utils.geraIdentacao(nivelEscopo);
             saida.append(identacao)
@@ -743,10 +745,16 @@ public class GeradorCodigoJava
             {
                 String identacaoInterna = Utils.geraIdentacao(nivelEscopo);
                 saida.append(identacaoInterna)
-                        .format("variaveisInspecionadas = new Object[%d];", variaveisDeclaradas).println();
+                        .format("variaveisInspecionadas = new Object[%d];", variaveisDeclaradas)
+                        .println();
                 
                 saida.append(identacaoInterna)
-                        .format("vetoresInspecionados = new Vetor[%d];", vetoresDeclarados).println();
+                        .format("vetoresInspecionados = new Vetor[%d];", vetoresDeclarados)
+                        .println();
+                
+                saida.append(identacaoInterna)
+                        .format("matrizesInspecionadas = new Matriz[%d];", matrizesDeclaradas)
+                        .println();
             }
             
             inicializaVariaveisGlobaisQueSaoPassadasPorReferencia();

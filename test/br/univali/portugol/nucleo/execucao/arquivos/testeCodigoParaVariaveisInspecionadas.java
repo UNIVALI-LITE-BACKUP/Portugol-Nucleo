@@ -11,6 +11,7 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
     {
         variaveisInspecionadas = new Object[2];
         vetoresInspecionados = new Vetor[1];
+        matrizesInspecionadas = new Matriz[1];
     }
 
     @Override
@@ -47,6 +48,24 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         if (vetoresInspecionados[0] != null)
         {
             vetoresInspecionados[0].setValor(vetor[1], 1);
+        }
+        
+        int matriz[][] = {{1, 2}, {3, 4}};
+        if (matrizesInspecionadas[0] != null)
+        {
+            for (int i = 0; i < matrizesInspecionadas[0].linhas; i++)
+            {
+                for (int j = 0; j < matrizesInspecionadas[0].colunas; j++)
+                {
+                    matrizesInspecionadas[0].setValor(matriz[i][j], i, j);
+                }
+            }
+        }
+        
+        matriz[0][1] = 100;
+        if (matrizesInspecionadas[0] != null)
+        {
+            matrizesInspecionadas[0].setValor(matriz[0][1], 0, 1);
         }
     }
 }
