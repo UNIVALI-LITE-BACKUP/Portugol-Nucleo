@@ -82,7 +82,7 @@ class PreAnalisador extends VisitanteNulo
     @Override
     public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
     {
-        no.setID(totalVariaveisDeclaradas);
+        no.setIdParaInspecao(totalVariaveisDeclaradas);
         totalVariaveisDeclaradas++;
         return super.visitar(no);
     }
@@ -90,7 +90,7 @@ class PreAnalisador extends VisitanteNulo
     @Override
     public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
     {
-        no.setID(totalVetoresDeclarados);
+        no.setIdParaInspecao(totalVetoresDeclarados);
         totalVetoresDeclarados++;
         return super.visitar(no);
     }

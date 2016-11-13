@@ -1,31 +1,33 @@
 package br.univali.portugol.nucleo.asa;
 
+import com.sun.webkit.InspectorClient;
+
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public abstract class NoDeclaracaoInicializavel extends NoDeclaracao
+public abstract class NoDeclaracaoInicializavel extends NoDeclaracao implements NoInspecionavel
 {
     private NoExpressao inicializacao;
     
-    private Integer ID = -1; // usado para implementar a inspeção de símbolos
+    private int idParaInspecao = -1; // usado para implementar a inspeção de símbolos
 
     public NoDeclaracaoInicializavel(String nome, TipoDado tipoDado, boolean constante)
     {
         super(nome, tipoDado, constante);
     }
 
-    public void setID(Integer ID)
+    public void setIdParaInspecao(int idParaInspecao)
     {
-        this.ID = ID;
+        this.idParaInspecao = idParaInspecao;
     }
 
-    public Integer getID()
+    @Override
+    public int getIdParaInspecao()
     {
-        return ID;
+        return idParaInspecao;
     }
- 
-    
+
     /**
      * Obtém a expressão utilizada para inicializar o símbolo declarado.
      *

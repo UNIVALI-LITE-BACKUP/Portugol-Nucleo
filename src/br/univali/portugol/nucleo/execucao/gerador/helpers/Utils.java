@@ -15,10 +15,9 @@ public class Utils
 
     public static void geraCodigoParaInspecao(NoDeclaracaoVariavel variavel, PrintWriter saida, int nivelEscopo)
     {
-        if (variavel.getID() >= 0 && variavel.temInicializacao())
+        int ID = variavel.getIdParaInspecao();
+        if (ID >= 0 && variavel.temInicializacao())
         {
-            int ID = variavel.getID();
-        
             saida.append(Utils.geraIdentacao(nivelEscopo));
             
             saida.format("if (variaveisInspecionadas[%d] != null) {", ID)
@@ -42,7 +41,7 @@ public class Utils
     
     public static void geraCodigoParaInspecao(NoReferenciaVetor referenciaVetor, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
-        int ID = referenciaVetor.getOrigemDaReferencia().getID();
+        int ID = referenciaVetor.getOrigemDaReferencia().getIdParaInspecao();
         if (ID >= 0)
         {
             saida.append(Utils.geraIdentacao(nivelEscopo));
@@ -71,10 +70,9 @@ public class Utils
     
     public static void geraCodigoParaInspecao(NoDeclaracaoVetor vetor, PrintWriter saida, int nivelEscopo)
     {
-        if (vetor.getID() >= 0 && vetor.temInicializacao())
+        int ID = vetor.getIdParaInspecao();
+        if (ID >= 0 && vetor.temInicializacao())
         {
-            int ID = vetor.getID();
-        
             saida.append(Utils.geraIdentacao(nivelEscopo));
             
             saida.format("if (vetoresInspecionados[%d] != null) {", ID)
