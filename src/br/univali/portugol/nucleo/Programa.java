@@ -104,8 +104,36 @@ public abstract class Programa
 
     private Estado estado = Estado.PARADO;
 
+    protected class Vetor
+    {
+        private final Object dados[];
+        private int ultimaColunaAlterada = -1;
+        public final int tamanho;
+        
+        Vetor(int tamanho)
+        {
+            dados = new Object[tamanho];
+            this.tamanho = tamanho;
+        }
+
+        public void setValor(Object valor, int coluna)
+        {
+            if (coluna >= 0 && coluna < dados.length)
+            {
+                dados[coluna] = valor;
+                ultimaColunaAlterada = coluna;
+            }
+        }
+        
+        public int getUltimaColunaAlterada()
+        {
+            return ultimaColunaAlterada;
+        }
+    }
+    
     // mapa usado pelas subclasses (geradas no código Java) para guardar os valores das variáveis que estão sendo inspecionadas
     protected Object variaveisInspecionadas[] = new Object[0];
+    protected Vetor vetoresInspecionados[] = new Vetor[0];
     
     public Programa()
     {
@@ -117,12 +145,7 @@ public abstract class Programa
         observadores = new ArrayList<>();
     }
 
-//    protected void atualizaVariavelInspecionada(Integer linhaDeclaracao, Object valor)
-//    {
-//        variaveisInspecionadas.put(linhaDeclaracao, valor);
-//    }
-    
-    public void inspecionaVariavel(Integer idVariavel)
+    public void inspecionaVariavel(int idVariavel)
     {
         if (idVariavel >= 0 && idVariavel < variaveisInspecionadas.length)
         {
@@ -134,7 +157,19 @@ public abstract class Programa
         }
     }
     
-    public Object getValorVariavelInspecionada(Integer idVariavel)
+    public void inspecionaVetor(int idVetor, int tamanhoVetor)
+    {
+        if (idVetor >= 0 && idVetor < vetoresInspecionados.length)
+        {
+            vetoresInspecionados[idVetor] = new Vetor(tamanhoVetor);
+        }
+        else
+        {
+            System.out.println(String.format("ID de vetor inválido: %d", idVetor));
+        }
+    }
+    
+    public Object getValorVariavelInspecionada(int idVariavel)
     {
         if (idVariavel >= 0 && idVariavel < variaveisInspecionadas.length)
         {
@@ -143,6 +178,48 @@ public abstract class Programa
         else
         {
             System.out.println(String.format("ID de variável inválido: %d", idVariavel));
+        }
+        return OBJETO_NULO;
+    }
+    
+    public int getUltimaColunaAlterada(int idVetor)
+    {
+        if (idVetor >= 0 && idVetor < vetoresInspecionados.length)
+        {
+            Vetor vetor = vetoresInspecionados[idVetor];
+            if (vetor != null)
+            {
+                return vetor.getUltimaColunaAlterada();
+            }
+        }
+        return -1;
+    }
+    
+    public Object getValorVetorInspecionado(int idVetor)
+    {
+        if (idVetor >= 0 && idVetor < vetoresInspecionados.length)
+        {
+            Vetor vetor = vetoresInspecionados[idVetor];
+            if (vetor != null)
+            {
+                int indice = vetor.ultimaColunaAlterada;
+                if (indice >= 0 && indice < vetor.dados.length)
+                {
+                    return vetor.dados[indice];
+                }
+                else
+                {
+                    System.out.println(String.format("indice inválido acessando o vetor %d (índice: %d)", idVetor, indice));
+                }
+            }
+            else
+            {
+                System.out.println(String.format("Vetor no índice %d está nulo!", idVetor));
+            }
+        }
+        else
+        {
+            System.out.println(String.format("ID de vetor inválido: %d", idVetor));
         }
         return OBJETO_NULO;
     }

@@ -7,12 +7,25 @@ package br.univali.portugol.nucleo.asa;
 public abstract class NoDeclaracaoInicializavel extends NoDeclaracao
 {
     private NoExpressao inicializacao;
+    
+    private Integer ID = -1; // usado para implementar a inspeção de símbolos
 
     public NoDeclaracaoInicializavel(String nome, TipoDado tipoDado, boolean constante)
     {
         super(nome, tipoDado, constante);
     }
 
+    public void setID(Integer ID)
+    {
+        this.ID = ID;
+    }
+
+    public Integer getID()
+    {
+        return ID;
+    }
+ 
+    
     /**
      * Obtém a expressão utilizada para inicializar o símbolo declarado.
      *

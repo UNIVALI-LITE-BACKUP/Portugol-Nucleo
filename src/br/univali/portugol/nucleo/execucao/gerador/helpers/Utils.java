@@ -15,13 +15,14 @@ public class Utils
 
     public static void geraCodigoParaInspecao(NoDeclaracaoVariavel variavel, PrintWriter saida, int nivelEscopo)
     {
-        if (variavel.getID() >= 0)
+        if (variavel.getID() >= 0 && variavel.temInicializacao())
         {
             int ID = variavel.getID();
         
             saida.append(Utils.geraIdentacao(nivelEscopo));
             
-            saida.format("if (variaveisInspecionadas[%d] != null) {", ID).println();
+            saida.format("if (variaveisInspecionadas[%d] != null) {", ID)
+                    .println();
             
             saida.append(Utils.geraIdentacao(nivelEscopo + 1));
             
@@ -31,9 +32,70 @@ public class Utils
                 String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase();
                 nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, Utils.geraStringIndice(variavel));
             }
-            saida.format("variaveisInspecionadas[%d] = %s;", ID, nomeVariavel).println();
+            saida.format("variaveisInspecionadas[%d] = %s;", ID, nomeVariavel)
+                    .println();
             
-            saida.append(Utils.geraIdentacao(nivelEscopo)).append("}");
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                    .append("}");
+        }
+    }
+    
+    public static void geraCodigoParaInspecao(NoReferenciaVetor referenciaVetor, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    {
+        int ID = referenciaVetor.getOrigemDaReferencia().getID();
+        if (ID >= 0)
+        {
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+            
+            saida.format("if (vetoresInspecionados[%d] != null) {", ID)
+                    .println();
+            
+            String nomeVariavel = referenciaVetor.getNome();
+
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                    .format("vetoresInspecionados[%d].setValor(", ID);
+                    
+            saida.format("%s[", nomeVariavel); 
+            referenciaVetor.getIndice().aceitar(visitor); //escreve o índice de acesso ao vetor na saída (PrintWriter)
+            saida.append("], ");
+
+            referenciaVetor.getIndice().aceitar(visitor); // escreve o índice novamente na saída
+            
+            saida.append(");") // fecha o parenteses do setValor( );
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                    .append("}"); // fechando IF
+        }
+    }
+    
+    public static void geraCodigoParaInspecao(NoDeclaracaoVetor vetor, PrintWriter saida, int nivelEscopo)
+    {
+        if (vetor.getID() >= 0 && vetor.temInicializacao())
+        {
+            int ID = vetor.getID();
+        
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+            
+            saida.format("if (vetoresInspecionados[%d] != null) {", ID)
+                    .println();
+            
+            String nomeVariavel = vetor.getNome();
+
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                    .format("for (int i = 0; i < vetoresInspecionados[%d].tamanho; i++) {", ID)
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                    .format("vetoresInspecionados[%d].setValor(%s[i], i);", ID, nomeVariavel)
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1))
+                    .append("}")// fechando loop
+                    .println(); 
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                    .append("}"); // fechando IF
         }
     }
     
@@ -57,6 +119,48 @@ public class Utils
     private static String geraStringIndice(int indice, String nome)
     {
         return String.format("INDICE_%s_%d", nome.toUpperCase(), indice);
+    }
+    
+    private static void geraCodigoParaInspecaoDeAtribuicao(NoOperacaoAtribuicao atribuicao, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    {
+        NoExpressao operandoEsquerdo = atribuicao.getOperandoEsquerdo();
+        if (operandoEsquerdo instanceof NoReferenciaVariavel)
+        {
+            NoReferenciaVariavel referenciaVariavel = (NoReferenciaVariavel) operandoEsquerdo;
+            if (referenciaVariavel.getOrigemDaReferencia() instanceof NoDeclaracaoVariavel)
+            {
+                NoDeclaracaoVariavel declaracaoVariavel = (NoDeclaracaoVariavel) referenciaVariavel.getOrigemDaReferencia();
+                Utils.geraCodigoParaInspecao(declaracaoVariavel, saida, nivelEscopo);
+            }
+        }
+        else if (operandoEsquerdo instanceof NoReferenciaVetor)
+        {
+            NoReferenciaVetor referenciaVetor = (NoReferenciaVetor) operandoEsquerdo;
+            Utils.geraCodigoParaInspecao(referenciaVetor, saida, visitor, nivelEscopo);
+        }
+    }
+    
+    private static void geraCodigoParaInspecaoDeBloco(NoBloco bloco, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    {
+        if (bloco instanceof NoDeclaracaoInicializavel || bloco instanceof NoOperacaoAtribuicao)
+        {
+            if (bloco instanceof NoDeclaracaoInicializavel)
+            {
+                if (bloco instanceof NoDeclaracaoVariavel)
+                {
+                    Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel) bloco, saida, nivelEscopo);
+                }
+                else if (bloco instanceof NoDeclaracaoVetor)
+                {
+                    Utils.geraCodigoParaInspecao((NoDeclaracaoVetor) bloco, saida, nivelEscopo);
+                }
+            }
+            else
+            {
+                geraCodigoParaInspecaoDeAtribuicao((NoOperacaoAtribuicao) bloco, saida, visitor, nivelEscopo);
+            }
+            saida.println();
+        }
     }
     
     public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, 
@@ -87,28 +191,7 @@ public class Utils
             
             if (geraCodigoParaInspecaoDeSimbolo)
             {
-                if (bloco instanceof NoDeclaracaoVariavel || bloco instanceof NoOperacaoAtribuicao)
-                {
-                    if (bloco instanceof NoDeclaracaoVariavel)
-                    {
-                        Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)bloco, saida, nivelEscopo);
-                    }
-                    else
-                    {
-                        NoOperacaoAtribuicao atribuicao = (NoOperacaoAtribuicao)bloco;
-                        NoExpressao operandoEsquerdo = atribuicao.getOperandoEsquerdo();
-                        if (operandoEsquerdo instanceof NoReferenciaVariavel)
-                        {
-                            NoReferenciaVariavel referenciaVariavel = (NoReferenciaVariavel)operandoEsquerdo;
-                            if (referenciaVariavel.getOrigemDaReferencia() instanceof NoDeclaracaoVariavel)
-                            {
-                                NoDeclaracaoVariavel declaracaoVariavel = (NoDeclaracaoVariavel)referenciaVariavel.getOrigemDaReferencia();
-                                Utils.geraCodigoParaInspecao(declaracaoVariavel, saida, nivelEscopo);
-                            }
-                        }
-                    }
-                    saida.println();
-                }
+                geraCodigoParaInspecaoDeBloco(bloco, saida, visitor, nivelEscopo);
             }
         }
 
