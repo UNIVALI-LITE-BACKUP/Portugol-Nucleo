@@ -80,11 +80,12 @@ class PreAnalisador extends VisitanteNulo
         }
         return null;
     }
-
+    
     @Override
     public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
     {
         no.setIdParaInspecao(totalVariaveisDeclaradas);
+        //System.out.println(no.getNome() + " => " + totalVariaveisDeclaradas);
         totalVariaveisDeclaradas++;
         return super.visitar(no);
     }
@@ -96,6 +97,7 @@ class PreAnalisador extends VisitanteNulo
         {
             case VALOR:
                 no.setIdParaInspecao(totalVariaveisDeclaradas);
+                //System.out.println(no.getNome() + " (param) => " + totalVariaveisDeclaradas);
                 totalVariaveisDeclaradas++;
                 break;
             case VETOR:

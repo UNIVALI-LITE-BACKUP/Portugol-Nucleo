@@ -521,6 +521,11 @@ public class GeradorCodigoJava
             saida.append(identacao).append("{").println();
 
             geraVerificacaoThreadInterrompida();
+            
+            if (gerandoCodigoParaInspecaoDeSimbolos)
+            {
+                geraCodigoInspecao(no);
+            }
 
             visitarBlocos(no.getBlocos());
 
@@ -531,6 +536,28 @@ public class GeradorCodigoJava
             return null;
         }
 
+        private void geraCodigoInspecao(NoPara noPara) throws ExcecaoVisitaASA
+        {
+            NoExpressao incremento = noPara.getIncremento();
+            if (incremento != null)
+            {
+                NoOperacaoAtribuicao atribuicao = (NoOperacaoAtribuicao)incremento;
+                if (atribuicao.getOperandoEsquerdo() instanceof NoReferenciaVariavel) 
+                {
+                    NoReferenciaVariavel referencia = (NoReferenciaVariavel) atribuicao.getOperandoEsquerdo();
+                    NoDeclaracao origem = referencia.getOrigemDaReferencia();
+                    if (origem instanceof NoDeclaracaoVariavel)
+                    {
+                        Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)origem, saida, nivelEscopo, false);
+                    }
+                    else if (origem instanceof NoDeclaracaoParametro)
+                    {
+                        Utils.geraCodigoParaInspecao((NoDeclaracaoParametro)origem, saida, nivelEscopo);
+                    }
+                }
+            }
+        }
+        
         @Override
         public Void visitar(NoSe no) throws ExcecaoVisitaASA
         {

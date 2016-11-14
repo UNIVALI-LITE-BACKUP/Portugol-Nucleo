@@ -14,6 +14,11 @@ programa
         matriz[0][1] = 100
 
         teste(x, vetor, matriz)
+
+        para(inteiro i=0; i < 10; i++)
+        {
+        }        
+        
     }
 
     funcao teste(inteiro a, inteiro v[], inteiro m[][])
