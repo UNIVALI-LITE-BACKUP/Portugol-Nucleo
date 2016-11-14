@@ -11,7 +11,7 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
     {
         variaveisInspecionadas = new Object[3];
         vetoresInspecionados = new Vetor[2];
-        matrizesInspecionadas = new Matriz[1];
+        matrizesInspecionadas = new Matriz[2];
     }
 
     @Override
@@ -72,6 +72,7 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         {
             variaveisInspecionadas[2] = x;
         }
+        
         if (vetoresInspecionados[1] != null)
         {
             if (vetoresInspecionados[1].tamanho != vetor.length)
@@ -83,10 +84,26 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
                 vetoresInspecionados[1].setValor(vetor[i], i);
             }
         }
-        teste(x, vetor);
+        
+        if (matrizesInspecionadas[1] != null)
+        {
+            if (matrizesInspecionadas[1].linhas != matriz.length)
+            {
+                inspecionaMatriz(1, matriz.length, matriz[0].length);
+            }
+            for (int i = 0; i < matrizesInspecionadas[1].linhas; i++)
+            {
+                for (int j = 0; j < matrizesInspecionadas[1].colunas; j++)
+                {
+                    matrizesInspecionadas[1].setValor(matriz[i][j], i, j);
+                }
+            }
+        }
+        
+        teste(x, vetor, matriz);
     }
     
-    private void teste(int a, int v[]) throws ErroExecucao, InterruptedException
+    private void teste(int a, int v[], int m[][]) throws ErroExecucao, InterruptedException
     {
         a = a + 1;
         if (variaveisInspecionadas[2] != null)
@@ -98,6 +115,12 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         if (vetoresInspecionados[1] != null)
         {
             vetoresInspecionados[1].setValor(v[0], 0);
+        }
+        
+        m[0][0] = 1;
+        if (matrizesInspecionadas[1] != null)
+        {
+            matrizesInspecionadas[1].setValor(m[0][0], 0, 0);
         }
     }
 }
