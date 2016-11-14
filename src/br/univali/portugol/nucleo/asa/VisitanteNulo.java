@@ -1,5 +1,7 @@
 package br.univali.portugol.nucleo.asa;
 
+import java.util.List;
+
 /**
  *
  * @author elieser
@@ -46,7 +48,14 @@ public class VisitanteNulo extends VisitanteASABasico {
 
     @Override
     public Object visitar(NoDeclaracaoFuncao declaracaoFuncao) throws ExcecaoVisitaASA {
-        for (NoBloco filho : declaracaoFuncao.getBlocos()) {
+        List<NoDeclaracaoParametro> parametros = declaracaoFuncao.getParametros();
+        for (NoDeclaracaoParametro parametro : parametros)
+        {
+            parametro.aceitar(this);
+        }
+        
+        for (NoBloco filho : declaracaoFuncao.getBlocos()) 
+        {
             filho.aceitar(this);
         }
         return null;

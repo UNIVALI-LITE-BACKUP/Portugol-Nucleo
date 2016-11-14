@@ -42,6 +42,12 @@ public final class NoChamadaFuncao extends NoReferencia<NoDeclaracaoFuncao>
         super(escopo, nome);
     }
 
+    @Override  // sobrescrevendo para retornar tipo mais específico (tipo de retorno covariante)
+    public NoDeclaracaoFuncao getOrigemDaReferencia()
+    {
+        return origemDaReferencia;
+    }
+
     /**
      * Obtém a lista dos parâmetros que estão sendo passados para a função. Os
      * prâmetros podem ser qualquer tipo de expressão, inclusive outras chamadas

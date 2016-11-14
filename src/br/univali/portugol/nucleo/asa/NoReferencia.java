@@ -24,7 +24,7 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
     private final String nome;
     private final String escopo;
     private TrechoCodigoFonte trechoCodigoFonteNome;
-    private T origemDaReferencia;
+    protected T origemDaReferencia;
 
     /**
      * @param nome o nome do símbolo referenciado.
@@ -106,8 +106,8 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
     {
         this.origemDaReferencia = origemDaReferencia;
     }
-
-    public final T getOrigemDaReferencia()
+    
+    public NoDeclaracao getOrigemDaReferencia()
     {
         return origemDaReferencia;
     }

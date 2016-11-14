@@ -11,5 +11,13 @@ programa
 
         inteiro matriz[][] = {{1, 2}, {3, 4}}
         matriz[0][1] = 100
-    }                                                       
+
+        teste(x, vetor)
+    }
+
+    funcao teste(inteiro a, inteiro v[])
+    {
+        a++
+        v[0] = 1
+    }
 }

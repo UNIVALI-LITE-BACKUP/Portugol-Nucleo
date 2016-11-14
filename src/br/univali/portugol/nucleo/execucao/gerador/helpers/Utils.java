@@ -13,6 +13,32 @@ public class Utils
     
     private static long seedNomes = System.currentTimeMillis();
 
+    public static void geraCodigoParaInspecao(NoDeclaracaoParametro parametro, PrintWriter saida, int nivelEscopo)
+    {
+        int ID = parametro.getIdParaInspecao();
+        if (ID >= 0)
+        {
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+            
+            saida.format("if (variaveisInspecionadas[%d] != null) {", ID)
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+            
+            String nomeVariavel = parametro.getNome();
+//            if (parametro.getModoAcesso() == ModoAcesso.POR_REFERENCIA)
+//            {
+//                String nomeTipo = Utils.getNomeTipoJava(parametro.getTipoDado()).toUpperCase();
+//                nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, Utils.geraStringIndice(parametro));
+//            }
+            saida.format("variaveisInspecionadas[%d] = %s;", ID, nomeVariavel)
+                    .println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                    .append("}");
+        }
+    }
+    
     public static void geraCodigoParaInspecao(NoDeclaracaoVariavel variavel, PrintWriter saida, int nivelEscopo)
     {
         int ID = variavel.getIdParaInspecao();
@@ -41,7 +67,8 @@ public class Utils
     
     public static void geraCodigoParaInspecao(NoReferenciaVetor referenciaVetor, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
-        int ID = referenciaVetor.getOrigemDaReferencia().getIdParaInspecao();
+        
+        int ID = ((NoDeclaracaoInspecionavel)referenciaVetor.getOrigemDaReferencia()).getIdParaInspecao();
         if (ID >= 0)
         {
             saida.append(Utils.geraIdentacao(nivelEscopo));
@@ -99,7 +126,7 @@ public class Utils
     
     public static void geraCodigoParaInspecao(NoReferenciaMatriz referenciaMatriz, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
-        int ID = referenciaMatriz.getOrigemDaReferencia().getIdParaInspecao();
+        int ID = ((NoDeclaracaoInspecionavel)referenciaMatriz.getOrigemDaReferencia()).getIdParaInspecao();
         if (ID >= 0)
         {
             saida.append(Utils.geraIdentacao(nivelEscopo));
@@ -195,10 +222,14 @@ public class Utils
         if (operandoEsquerdo instanceof NoReferenciaVariavel)
         {
             NoReferenciaVariavel referenciaVariavel = (NoReferenciaVariavel) operandoEsquerdo;
-            if (referenciaVariavel.getOrigemDaReferencia() instanceof NoDeclaracaoVariavel)
+            NoDeclaracao origem = referenciaVariavel.getOrigemDaReferencia();
+            if (origem instanceof NoDeclaracaoVariavel)
             {
-                NoDeclaracaoVariavel declaracaoVariavel = (NoDeclaracaoVariavel) referenciaVariavel.getOrigemDaReferencia();
-                Utils.geraCodigoParaInspecao(declaracaoVariavel, saida, nivelEscopo);
+                Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)origem, saida, nivelEscopo);
+            }
+            else
+            {
+                Utils.geraCodigoParaInspecao((NoDeclaracaoParametro)origem, saida, nivelEscopo);
             }
         }
         else if (operandoEsquerdo instanceof NoReferenciaVetor)

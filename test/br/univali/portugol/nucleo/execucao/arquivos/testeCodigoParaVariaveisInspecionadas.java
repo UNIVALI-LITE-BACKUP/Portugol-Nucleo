@@ -9,8 +9,8 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
     
     public testeCodigoParaVariaveisInspecionadas() throws ErroExecucao, InterruptedException
     {
-        variaveisInspecionadas = new Object[2];
-        vetoresInspecionados = new Vetor[1];
+        variaveisInspecionadas = new Object[3];
+        vetoresInspecionados = new Vetor[2];
         matrizesInspecionadas = new Matriz[1];
     }
 
@@ -66,6 +66,23 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         if (matrizesInspecionadas[0] != null)
         {
             matrizesInspecionadas[0].setValor(matriz[0][1], 0, 1);
+        }
+        
+        teste(x, vetor);
+    }
+    
+    private void teste(int a, int v[]) throws ErroExecucao, InterruptedException
+    {
+        a = a + 1;
+        if (variaveisInspecionadas[2] != null)
+        {
+            variaveisInspecionadas[2] = a;
+        }
+        
+        v[0] = 1;
+        if (vetoresInspecionados[1] != null)
+        {
+            vetoresInspecionados[1].setValor(v[0], 0);
         }
     }
 }

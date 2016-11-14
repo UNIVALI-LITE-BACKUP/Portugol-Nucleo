@@ -19,7 +19,7 @@ class PreAnalisador extends VisitanteNulo
     private final Map<TipoDado, List<NoDeclaracaoVariavel>> declaracoes = new HashMap<>();
     private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
     
-    private int totalVariaveisDeclaradas = 0;
+    private int totalVariaveisDeclaradas = 0; // conta variáveis e parâmetros declarados
     private int totalVetoresDeclarados = 0;
     private int totalMatrizesDeclaradas = 0;
 
@@ -90,6 +90,28 @@ class PreAnalisador extends VisitanteNulo
     }
     
     @Override
+    public Object visitar(NoDeclaracaoParametro no) throws ExcecaoVisitaASA
+    {
+        switch (no.getQuantificador())
+        {
+            case VALOR:
+                no.setIdParaInspecao(totalVariaveisDeclaradas);
+                totalVariaveisDeclaradas++;
+                break;
+            case VETOR:
+                no.setIdParaInspecao(totalVetoresDeclarados);
+                totalVetoresDeclarados++;
+                break;
+            case MATRIZ:
+                no.setIdParaInspecao(totalMatrizesDeclaradas);
+                totalMatrizesDeclaradas++;
+                break;
+        }
+        
+        return null;
+    }
+    
+    @Override
     public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA
     {
         no.setIdParaInspecao(totalMatrizesDeclaradas);
@@ -152,16 +174,5 @@ class PreAnalisador extends VisitanteNulo
         }
         return null;
     }
-
-    @Override
-    public Object visitar(NoDeclaracaoFuncao no) throws ExcecaoVisitaASA
-    {
-        for (NoBloco bloco : no.getBlocos())
-        {
-            bloco.aceitar(this);
-        }
-        return null;
-    }
-
 
 }
