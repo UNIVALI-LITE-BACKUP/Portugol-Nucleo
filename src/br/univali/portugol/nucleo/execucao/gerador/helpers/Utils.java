@@ -39,29 +39,33 @@ public class Utils
         }
     }
     
-    public static void geraCodigoParaInspecao(NoDeclaracaoVariavel variavel, PrintWriter saida, int nivelEscopo)
+    public static void geraCodigoParaInspecao(NoDeclaracaoVariavel variavel, PrintWriter saida, 
+                            int nivelEscopo, boolean gerandoCodigoParaAtribuicao)
     {
         int ID = variavel.getIdParaInspecao();
-        if (ID >= 0 && variavel.temInicializacao())
+        if (ID >= 0)
         {
-            saida.append(Utils.geraIdentacao(nivelEscopo));
-            
-            saida.format("if (variaveisInspecionadas[%d] != null) {", ID)
-                    .println();
-            
-            saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-            
-            String nomeVariavel = variavel.getNome();
-            if (variavel.ehPassadaPorReferencia())
+            if(gerandoCodigoParaAtribuicao || (!gerandoCodigoParaAtribuicao && variavel.temInicializacao()))
             {
-                String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase();
-                nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, Utils.geraStringIndice(variavel));
-            }
-            saida.format("variaveisInspecionadas[%d] = %s;", ID, nomeVariavel)
-                    .println();
+                saida.append(Utils.geraIdentacao(nivelEscopo));
             
-            saida.append(Utils.geraIdentacao(nivelEscopo))
-                    .append("}");
+                saida.format("if (variaveisInspecionadas[%d] != null) {", ID)
+                        .println();
+            
+                saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+                
+                String nomeVariavel = variavel.getNome();
+                if (variavel.ehPassadaPorReferencia())
+                {
+                    String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado()).toUpperCase();
+                    nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, Utils.geraStringIndice(variavel));
+                }
+                saida.format("variaveisInspecionadas[%d] = %s;", ID, nomeVariavel)
+                        .println();
+                
+                saida.append(Utils.geraIdentacao(nivelEscopo))
+                        .append("}");
+            }
         }
     }
     
@@ -225,7 +229,7 @@ public class Utils
             NoDeclaracao origem = referenciaVariavel.getOrigemDaReferencia();
             if (origem instanceof NoDeclaracaoVariavel)
             {
-                Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)origem, saida, nivelEscopo);
+                Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel)origem, saida, nivelEscopo, true);
             }
             else
             {
@@ -252,7 +256,7 @@ public class Utils
             {
                 if (bloco instanceof NoDeclaracaoVariavel)
                 {
-                    Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel) bloco, saida, nivelEscopo);
+                    Utils.geraCodigoParaInspecao((NoDeclaracaoVariavel) bloco, saida, nivelEscopo, false);
                 }
                 else if (bloco instanceof NoDeclaracaoVetor)
                 {

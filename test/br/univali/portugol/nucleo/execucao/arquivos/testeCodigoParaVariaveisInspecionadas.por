@@ -5,6 +5,7 @@ programa
         x = 2
 
         inteiro y
+        y = 10
 
         inteiro vetor[] = {1, 2, 3}
         vetor[1] = 45

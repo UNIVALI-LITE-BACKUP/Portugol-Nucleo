@@ -31,6 +31,11 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         
         
         int y;
+        y = 10;
+        if (variaveisInspecionadas[1] != null)
+        {
+            variaveisInspecionadas[1] = y;
+        }
         
         int vetor[] = {1, 2, 3};
         
