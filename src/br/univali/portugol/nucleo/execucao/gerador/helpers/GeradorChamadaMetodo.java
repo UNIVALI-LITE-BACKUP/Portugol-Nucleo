@@ -13,7 +13,8 @@ import java.util.List;
  */
 public class GeradorChamadaMetodo
 {
-    public void gera(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, ASAPrograma asa) throws ExcecaoVisitaASA
+    public void gera(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, 
+            ASAPrograma asa, boolean gerandoCodigoParaInspecao, int nivelEscopo) throws ExcecaoVisitaASA
     {
         String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
         String nomeFuncao = no.getNome();
@@ -24,10 +25,16 @@ public class GeradorChamadaMetodo
         }
 
         List<ParametroEsperado> parametrosEsperados = getParametrosEsperados(no, asa);
-
-        saida.format("%s%s(", escopoFuncao, Utils.geraNomeValido(nomeFuncao));
         List<NoExpressao> parametrosPassados = no.getParametros();
 
+        if (gerandoCodigoParaInspecao)
+        {
+            geraCodigoInicializacaoParametrosInspecionados(parametrosEsperados, 
+                    parametrosPassados, saida, visitor, nivelEscopo);
+        }
+        
+        saida.format("%s%s(", escopoFuncao, Utils.geraNomeValido(nomeFuncao));
+        
         int totalParametros = parametrosPassados.size();
         for (int i = 0; i < totalParametros; i++)
         {
@@ -41,6 +48,90 @@ public class GeradorChamadaMetodo
             }
         }
         saida.append(")");
+    }
+    
+    private void geraCodigoInicializacaoParametrosInspecionados(List<ParametroEsperado> parametrosEsperados,
+                                                                            List<NoExpressao> parametrosPassados, 
+                                                                                PrintWriter saida, VisitanteASA visitor, 
+                                                                                int nivelEscopo) throws ExcecaoVisitaASA
+    {
+        if (parametrosEsperados.size() != parametrosEsperados.size())
+        {
+            return;
+        }
+        
+        for (int i = 0; i < parametrosEsperados.size(); i++)
+        {
+            ParametroEsperado parametroEsperado = parametrosEsperados.get(i);
+            NoExpressao parametroPassado = parametrosPassados.get(i);
+        
+            if (parametroEsperado.idInspecao >= 0)
+            {
+                String nomeArrayInspecao = getNomeArrayInspecionavel(parametroEsperado.quantificador);
+                saida.append(Utils.geraIdentacao(nivelEscopo));
+                saida.format("if (%s[%d] != null) {", nomeArrayInspecao, parametroEsperado.idInspecao).println();
+                switch (parametroEsperado.quantificador)
+                {
+                    case VALOR:
+                        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+                        saida.format("  %s[%d] = ", nomeArrayInspecao, parametroEsperado.idInspecao);
+                        parametroPassado.aceitar(visitor);
+                        saida.append(";").println();
+                        break;
+                    case VETOR:
+                        //gera um if verificando se é necessário redimencionar o vetor interno
+//                        if (vetoresInspecionados[1].tamanho != vetor.length)
+//                        {
+//                            inspecionaVetor(1, vetor.length);
+//                        }
+                        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+                        saida.format("if (%s[%d].tamanho != ", nomeArrayInspecao, parametroEsperado.idInspecao);
+                        parametroPassado.aceitar(visitor);
+                        saida.append(".length) {").println();
+                        
+                        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
+                        saida.format("inspecionaVetor(%d, ", parametroEsperado.idInspecao);
+                        parametroPassado.aceitar(visitor);
+                        saida.append(".length);").println();
+                        
+                        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+                        saida.append("}").println(); //fecha IF verificando se é necessário redimencionar array interno
+                        
+                        //gera loop coletando todas as posições do vetor
+                        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+                        saida.format("for(int i=0; i < %s[%d].tamanho; i++){", nomeArrayInspecao, parametroEsperado.idInspecao).println(); // loop percorrendo todo o array
+                        
+                            saida.append(Utils.geraIdentacao(nivelEscopo + 2));
+                            saida.format("  %s[%d].setValor(", nomeArrayInspecao, parametroEsperado.idInspecao);
+                            parametroPassado.aceitar(visitor);
+                            saida.append("[i], i);").println(); //fecha setValor(v[i], i);
+                        
+                        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+                        saida.append("}").println(); //fecha loop
+                        
+                        break;
+                
+                    case MATRIZ:
+                        break;
+                }
+                    
+                
+                saida.append(Utils.geraIdentacao(nivelEscopo))
+                        .append("}") // fecha o IF inicial
+                        .println();
+            }
+        }
+    }
+    
+    private String getNomeArrayInspecionavel(Quantificador quantificador)
+    {
+        switch(quantificador)
+        {
+            case VALOR: return "variaveisInspecionadas";
+            case VETOR: return "vetoresInspecionados";
+            case MATRIZ: return "matrizesInspecionadas";
+        }
+        return "variaveisInspecionadas";
     }
 
     private void geraParametro(NoExpressao parametroRecebido, ParametroEsperado parametroEsperado, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
@@ -97,12 +188,21 @@ public class GeradorChamadaMetodo
         public final TipoDado tipoDado;
         public final ModoAcesso modoAcesso;
         public final String nome;
+        public final int idInspecao;
+        public final Quantificador quantificador;
 
-        public ParametroEsperado(TipoDado tipoDado, ModoAcesso modoAcesso, String nome)
+        public ParametroEsperado(TipoDado tipoDado, ModoAcesso modoAcesso, String nome, Quantificador quantificador)
+        {
+            this(tipoDado, modoAcesso, nome, quantificador, -1);
+        }
+        
+        public ParametroEsperado(TipoDado tipoDado, ModoAcesso modoAcesso, String nome, Quantificador quantificador, int idInspecao)
         {
             this.tipoDado = tipoDado;
             this.modoAcesso = modoAcesso;
             this.nome = nome;
+            this.idInspecao = idInspecao;
+            this.quantificador = quantificador;
         }
     }
 
@@ -127,7 +227,8 @@ public class GeradorChamadaMetodo
                     TipoDado tipoDado = metaDadosParametros.obter(i).getTipoDado();
                     ModoAcesso modoAcesso = metaDadosParametros.obter(i).getModoAcesso();
                     String nome = metaDadosParametros.obter(i).getNome();
-                    metaDados.add(new ParametroEsperado(tipoDado, modoAcesso, nome));
+                    Quantificador quantificador = metaDadosParametros.obter(i).getQuantificador();
+                    metaDados.add(new ParametroEsperado(tipoDado, modoAcesso, nome, quantificador));
                 }
                 return metaDados;
             }
@@ -146,7 +247,9 @@ public class GeradorChamadaMetodo
                 TipoDado tipo = parametro.getTipoDado();
                 ModoAcesso modoAcesso = parametro.getModoAcesso();
                 String nome = parametro.getNome();
-                metaDados.add(new ParametroEsperado(tipo, modoAcesso, nome));
+                int idInspecao = parametro.getIdParaInspecao();
+                Quantificador quantificador = parametro.getQuantificador();
+                metaDados.add(new ParametroEsperado(tipo, modoAcesso, nome, quantificador, idInspecao));
             }
             return metaDados;
         }

@@ -68,6 +68,21 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
             matrizesInspecionadas[0].setValor(matriz[0][1], 0, 1);
         }
         
+        if (variaveisInspecionadas[2] != null)
+        {
+            variaveisInspecionadas[2] = x;
+        }
+        if (vetoresInspecionados[1] != null)
+        {
+            if (vetoresInspecionados[1].tamanho != vetor.length)
+            {
+                inspecionaVetor(1, vetor.length);
+            }
+            for (int i = 0; i < vetoresInspecionados[1].tamanho; i++)
+            {
+                vetoresInspecionados[1].setValor(vetor[i], i);
+            }
+        }
         teste(x, vetor);
     }
     

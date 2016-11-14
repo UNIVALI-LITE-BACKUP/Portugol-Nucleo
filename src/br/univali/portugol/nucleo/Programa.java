@@ -111,7 +111,7 @@ public abstract class Programa
         private int ultimaColunaAlterada = -1;
         public final int tamanho;
         
-        Vetor(int tamanho)
+        protected Vetor(int tamanho)
         {
             dados = new Object[tamanho];
             this.tamanho = tamanho;

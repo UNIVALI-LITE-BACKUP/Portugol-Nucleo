@@ -647,7 +647,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
-            geradorChamadaMetodo.gera(no, saida, this, asa);
+            geradorChamadaMetodo.gera(no, saida, this, asa, gerandoCodigoParaInspecaoDeSimbolos, nivelEscopo);
             return null;
         }
 
