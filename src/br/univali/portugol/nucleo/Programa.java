@@ -279,19 +279,28 @@ public abstract class Programa
     
     public Object getValorNoVetorInspecionado(int idVetor)
     {
+        int coluna = getUltimaColunaAlteradaNoVetor(idVetor);
+        return getValorNoVetorInspecionado(idVetor, coluna);
+    }
+    
+    public Object getValorNoVetorInspecionado(int idVetor, int coluna)
+    {
         if (idVetor >= 0 && idVetor < vetoresInspecionados.length)
         {
             Vetor vetor = vetoresInspecionados[idVetor];
             if (vetor != null)
             {
-                int indice = vetor.ultimaColunaAlterada;
-                if (indice >= 0 && indice < vetor.dados.length)
+                if (coluna >= 0 && coluna < vetor.dados.length)
                 {
-                    return vetor.dados[indice];
+                    Object valor = vetor.dados[coluna];
+                    if (valor != null)
+                    {
+                        return valor;
+                    }
                 }
                 else
                 {
-                    System.out.println(String.format("indice inválido acessando o vetor %d (índice: %d)", idVetor, indice));
+                    System.out.println(String.format("indice inválido acessando o vetor %d (índice: %d)", idVetor, coluna));
                 }
             }
             else
@@ -327,6 +336,19 @@ public abstract class Programa
             if (matriz != null)
             {
                 return matriz.colunas;
+            }
+        }
+        return 0;
+    }
+    
+    public int getTamanhoVetor(int idVetor)
+    {
+        if (idVetor >= 0 && idVetor < vetoresInspecionados.length)
+        {
+            Vetor vetor = vetoresInspecionados[idVetor];
+            if (vetor != null)
+            {
+                return vetor.tamanho;
             }
         }
         return 0;
