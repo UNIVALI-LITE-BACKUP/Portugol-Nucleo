@@ -306,21 +306,48 @@ public abstract class Programa
         return OBJETO_NULO;
     }
     
-    //retorna o último valor alterado
-    public Object getValorNaMatrizInspecionada(int idMatriz)
+    public int getLinhasDaMatriz(int idMatriz)
     {
         if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
         {
             Matriz matriz = matrizesInspecionadas[idMatriz];
             if (matriz != null)
             {
-                int linha = matriz.getUltimaLinhaAlterada();
+                return matriz.linhas;
+            }
+        }
+        return 0;
+    }
+    
+    public int getColunasDaMatriz(int idMatriz)
+    {
+        if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
+        {
+            Matriz matriz = matrizesInspecionadas[idMatriz];
+            if (matriz != null)
+            {
+                return matriz.colunas;
+            }
+        }
+        return 0;
+    }
+    
+    public Object getValorNaMatrizInspecionada(int idMatriz, int linha, int coluna)
+    {
+        if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
+        {
+            Matriz matriz = matrizesInspecionadas[idMatriz];
+            if (matriz != null)
+            {
                 if (linha >= 0 && linha < matriz.dados.length)
                 {
-                    int coluna = matriz.getUltimaColunaAlterada();
                     if (coluna >= 0 && coluna < matriz.colunas)
                     {
-                        return matriz.dados[linha].dados[coluna];
+                        Vetor vetorLinha = matriz.dados[linha];
+                        if (vetorLinha != null)
+                        {
+                            return vetorLinha.dados[coluna];
+                        }
                     }
                     else
                     {
@@ -341,6 +368,23 @@ public abstract class Programa
         {
             System.out.println(String.format("ID de vetor inválido: %d", idMatriz));
         }
+        return OBJETO_NULO;
+    }
+    
+    //retorna o último valor alterado
+    public Object getValorNaMatrizInspecionada(int idMatriz)
+    {
+        if (idMatriz >= 0 && idMatriz < matrizesInspecionadas.length)
+        {
+            Matriz matriz = matrizesInspecionadas[idMatriz];
+            if (matriz != null)
+            {
+                int linha = matriz.getUltimaLinhaAlterada();
+                int coluna = matriz.getUltimaColunaAlterada();
+                return getValorNaMatrizInspecionada(idMatriz, linha, coluna);
+            }
+        }
+        
         return OBJETO_NULO;
     }
     
