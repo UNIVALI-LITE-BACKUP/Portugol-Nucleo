@@ -52,6 +52,11 @@ public class GeradorDeclaracaoMetodo
             Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo);
         }
 
+        if (geraCodigoParaInspecaoDeSimbolos)
+        {
+            geraCodigoInicializacaoParametrosInspecionados(noFuncao.getParametros(), saida, visitor, nivelEscopo);
+        }
+        
         if (geraCodigoParaPontosDeParada)
         {
             Utils.geraParadaPassoAPasso(noFuncao, saida, nivelEscopo);
@@ -65,6 +70,132 @@ public class GeradorDeclaracaoMetodo
         saida.println(); // linha em branco depois de cada método
     }
 
+    private void geraCodigoInicializacaoParametrosInspecionados(List<NoDeclaracaoParametro> parametros,
+                     PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    {
+        for (NoDeclaracaoParametro parametro : parametros)
+        {
+            int idInspecao = parametro.getIdParaInspecao();
+            if (idInspecao >= 0)
+            {
+                Quantificador quantificador = parametro.getQuantificador();
+                String nomeArrayInspecao = getNomeArrayInspecionavel(quantificador);
+                saida.append(Utils.geraIdentacao(nivelEscopo));
+                saida.format("if (%s[%d] != null) {", nomeArrayInspecao, idInspecao).println();
+                switch (quantificador)
+                {
+                    case VALOR:
+                        geraCodigoInicializacaoVariavel(parametro, saida, nomeArrayInspecao, nivelEscopo);
+                        break;
+                    case VETOR:
+                        geraCodigoInicializacaoVetor(parametro, saida, nomeArrayInspecao, nivelEscopo);
+                        break;
+                
+                    case MATRIZ:
+                        geraCodigoInicializacaoMatriz(parametro, saida, nomeArrayInspecao, nivelEscopo);
+                        break;
+                }
+                
+                saida.append(Utils.geraIdentacao(nivelEscopo))
+                        .append("}") // fecha o IF inicial
+                        .println();
+            }
+        }
+    }
+    
+    private void geraCodigoInicializacaoVetor(NoDeclaracaoParametro parametro,
+            PrintWriter saida, String nomeArrayInspecao, int nivelEscopo) 
+    {
+        //gera um if verificando se é necessário redimensionar o vetor interno
+        
+        int idInspecao = parametro.getIdParaInspecao();
+        String nomeParametro = parametro.getNome();
+        
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.format("if (%s[%d].tamanho != %s.length) {", nomeArrayInspecao, idInspecao, nomeParametro);
+        saida.println();
+
+        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
+        saida.format("inspecionaVetor(%d, %s.length);", idInspecao, nomeParametro);
+        saida.println();
+
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.append("}").println(); //fecha IF verificando se é necessário redimencionar array interno
+
+        //gera loop coletando todas as posições do vetor
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.format("for(int i=0; i < %s[%d].tamanho; i++){", nomeArrayInspecao, idInspecao); // loop percorrendo todo o array
+        saida.println();
+
+        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
+        saida.format("%s[%d].setValor(%s[i], i);", nomeArrayInspecao, idInspecao, nomeParametro);
+        saida.println(); //fecha setValor(v[i], i);
+
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.append("}").println(); //fecha loop
+        
+    }
+    
+    private void geraCodigoInicializacaoVariavel(NoDeclaracaoParametro parametro,
+                     PrintWriter saida, String nomeArrayInspecao, int nivelEscopo)
+    {
+        int idInspecao = parametro.getIdParaInspecao();
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.format("%s[%d] = %s;", nomeArrayInspecao, idInspecao, parametro.getNome());
+        saida.println();
+    }
+    
+    private void geraCodigoInicializacaoMatriz(NoDeclaracaoParametro parametro,
+                    PrintWriter saida, String nomeArrayInspecao, int nivelEscopo)
+    {
+        //gera um if verificando se é necessário redimensionar a matriz interna
+        
+        int idInspecao = parametro.getIdParaInspecao();
+        String nomeParametro = parametro.getNome();
+        
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.format("if (%s[%d].linhas != %s.length) {", nomeArrayInspecao, idInspecao, nomeParametro);
+        saida.println();
+
+        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
+        saida.format("inspecionaMatriz(%d, %s.length, %s[0].length);", idInspecao, nomeParametro, nomeParametro);
+        saida.println();
+        
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.append("}").println(); //fecha IF verificando se é necessário redimencionar array interno
+
+        //gera loop coletando todas as posições da matriz
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.format("for(int i=0; i < %s[%d].linhas; i++){", nomeArrayInspecao, idInspecao).println(); 
+        
+        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
+        saida.format("for(int j=0; j < %s[%d].colunas; j++){", nomeArrayInspecao, idInspecao).println(); 
+
+        saida.append(Utils.geraIdentacao(nivelEscopo + 3));
+        saida.format("%s[%d].setValor(%s[i][j], i, j);", nomeArrayInspecao, idInspecao, nomeParametro);
+        saida.println(); 
+
+        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
+        saida.append("}").println(); //fecha loop interno
+        
+        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+        saida.append("}").println(); //fecha loop externo
+        
+    }
+    
+   
+    
+    private String getNomeArrayInspecionavel(Quantificador quantificador)
+    {
+        switch(quantificador)
+        {
+            case VALOR: return "variaveisInspecionadas";
+            case VETOR: return "vetoresInspecionados";
+            case MATRIZ: return "matrizesInspecionadas";
+        }
+        return "variaveisInspecionadas";
+    }
+    
     private static String geraQuantificador(Quantificador quantificador)
     {
         switch (quantificador)

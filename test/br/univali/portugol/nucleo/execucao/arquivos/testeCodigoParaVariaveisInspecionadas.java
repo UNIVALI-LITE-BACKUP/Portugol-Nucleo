@@ -73,38 +73,6 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
             matrizesInspecionadas[0].setValor(matriz[0][1], 0, 1);
         }
         
-        if (variaveisInspecionadas[3] != null)
-        {
-            variaveisInspecionadas[3] = x;
-        }
-        
-        if (vetoresInspecionados[1] != null)
-        {
-            if (vetoresInspecionados[1].tamanho != vetor.length)
-            {
-                inspecionaVetor(1, vetor.length);
-            }
-            for (int i = 0; i < vetoresInspecionados[1].tamanho; i++)
-            {
-                vetoresInspecionados[1].setValor(vetor[i], i);
-            }
-        }
-        
-        if (matrizesInspecionadas[1] != null)
-        {
-            if (matrizesInspecionadas[1].linhas != matriz.length)
-            {
-                inspecionaMatriz(1, matriz.length, matriz[0].length);
-            }
-            for (int i = 0; i < matrizesInspecionadas[1].linhas; i++)
-            {
-                for (int j = 0; j < matrizesInspecionadas[1].colunas; j++)
-                {
-                    matrizesInspecionadas[1].setValor(matriz[i][j], i, j);
-                }
-            }
-        }
-
         teste(x, vetor, matriz);
         
         for(int i=0; i < 10; i=i+1)
@@ -119,6 +87,39 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
     
     private void teste(int a, int v[], int m[][]) throws ErroExecucao, InterruptedException
     {
+        
+        if (variaveisInspecionadas[3] != null)
+        {
+            variaveisInspecionadas[3] = a;
+        }
+        
+        if (vetoresInspecionados[1] != null)
+        {
+            if (vetoresInspecionados[1].tamanho != v.length)
+            {
+                inspecionaVetor(1, v.length);
+            }
+            for (int i = 0; i < vetoresInspecionados[1].tamanho; i++)
+            {
+                vetoresInspecionados[1].setValor(v[i], i);
+            }
+        }
+        
+        if (matrizesInspecionadas[1] != null)
+        {
+            if (matrizesInspecionadas[1].linhas != m.length)
+            {
+                inspecionaMatriz(1, m.length, m[0].length);
+            }
+            for (int i = 0; i < matrizesInspecionadas[1].linhas; i++)
+            {
+                for (int j = 0; j < matrizesInspecionadas[1].colunas; j++)
+                {
+                    matrizesInspecionadas[1].setValor(m[i][j], i, j);
+                }
+            }
+        }
+        
         a = a + 1;
         if (variaveisInspecionadas[3] != null)
         {

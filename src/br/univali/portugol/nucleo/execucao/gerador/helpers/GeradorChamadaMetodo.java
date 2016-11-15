@@ -14,7 +14,7 @@ import java.util.List;
 public class GeradorChamadaMetodo
 {
     public void gera(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, 
-            ASAPrograma asa, boolean gerandoCodigoParaInspecao, int nivelEscopo) throws ExcecaoVisitaASA
+                            ASAPrograma asa, int nivelEscopo) throws ExcecaoVisitaASA
     {
         String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
         String nomeFuncao = no.getNome();
@@ -27,12 +27,6 @@ public class GeradorChamadaMetodo
         List<ParametroEsperado> parametrosEsperados = getParametrosEsperados(no, asa);
         List<NoExpressao> parametrosPassados = no.getParametros();
 
-        if (gerandoCodigoParaInspecao)
-        {
-            geraCodigoInicializacaoParametrosInspecionados(parametrosEsperados, 
-                    parametrosPassados, saida, visitor, nivelEscopo);
-        }
-        
         saida.format("%s%s(", escopoFuncao, Utils.geraNomeValido(nomeFuncao));
         
         int totalParametros = parametrosPassados.size();
@@ -50,146 +44,6 @@ public class GeradorChamadaMetodo
         saida.append(")");
     }
     
-    private void geraCodigoInicializacaoVetor(ParametroEsperado parametroEsperado,
-            NoExpressao parametroPassado, PrintWriter saida, VisitanteASA visitor, 
-                int nivelEscopo) throws ExcecaoVisitaASA
-    {
-        String nomeArrayInspecao = "vetoresInspecionados";
-        
-        //gera um if verificando se é necessário redimensionar o vetor interno
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("if (%s[%d].tamanho != ", nomeArrayInspecao, parametroEsperado.idInspecao);
-        parametroPassado.aceitar(visitor);
-        saida.append(".length) {").println();
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
-        saida.format("inspecionaVetor(%d, ", parametroEsperado.idInspecao);
-        parametroPassado.aceitar(visitor);
-        saida.append(".length);").println();
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.append("}").println(); //fecha IF verificando se é necessário redimencionar array interno
-
-        //gera loop coletando todas as posições do vetor
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("for(int i=0; i < %s[%d].tamanho; i++){", nomeArrayInspecao, parametroEsperado.idInspecao).println(); // loop percorrendo todo o array
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
-        saida.format("  %s[%d].setValor(", nomeArrayInspecao, parametroEsperado.idInspecao);
-        parametroPassado.aceitar(visitor);
-        saida.append("[i], i);").println(); //fecha setValor(v[i], i);
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.append("}").println(); //fecha loop
-        
-    }
-    
-    private void geraCodigoInicializacaoVariavel(ParametroEsperado parametroEsperado,
-            NoExpressao parametroPassado, PrintWriter saida, VisitanteASA visitor, 
-                int nivelEscopo) throws ExcecaoVisitaASA
-    {
-        String nomeArrayInspecao = "variaveisInspecionadas";
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("  %s[%d] = ", nomeArrayInspecao, parametroEsperado.idInspecao);
-        parametroPassado.aceitar(visitor);
-        saida.append(";").println();
-    }
-    
-    private void geraCodigoInicializacaoMatriz(ParametroEsperado parametroEsperado,
-            NoExpressao parametroPassado, PrintWriter saida, VisitanteASA visitor, 
-                int nivelEscopo) throws ExcecaoVisitaASA
-    {
-        String nomeArrayInspecao = "matrizesInspecionadas";
-        
-        //gera um if verificando se é necessário redimensionar a matriz interna
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("if (%s[%d].linhas != ", nomeArrayInspecao, parametroEsperado.idInspecao);
-        parametroPassado.aceitar(visitor);
-        saida.append(".length) {").println();
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
-        saida.format("inspecionaMatriz(%d, ", parametroEsperado.idInspecao);
-        
-        parametroPassado.aceitar(visitor);
-        saida.append(".length, "); // linhas
-        
-        parametroPassado.aceitar(visitor);
-        saida.append("[0].length);").println(); // usa o tamanho da primeira para obter o número de colunas
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.append("}").println(); //fecha IF verificando se é necessário redimencionar array interno
-
-        //gera loop coletando todas as posições da matriz
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("for(int i=0; i < %s[%d].linhas; i++){", nomeArrayInspecao, parametroEsperado.idInspecao).println(); 
-        
-        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
-        saida.format("for(int j=0; j < %s[%d].colunas; j++){", nomeArrayInspecao, parametroEsperado.idInspecao).println(); 
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 3));
-        saida.format("  %s[%d].setValor(", nomeArrayInspecao, parametroEsperado.idInspecao);
-        parametroPassado.aceitar(visitor);
-        saida.append("[i][j], i, j);").println(); //fecha setValor(v[i][j], i, j);
-
-        saida.append(Utils.geraIdentacao(nivelEscopo + 2));
-        saida.append("}").println(); //fecha loop interno
-        
-        saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.append("}").println(); //fecha loop externo
-        
-    }
-    
-    private void geraCodigoInicializacaoParametrosInspecionados(List<ParametroEsperado> parametrosEsperados,
-            List<NoExpressao> parametrosPassados, PrintWriter saida, VisitanteASA visitor, 
-                            int nivelEscopo) throws ExcecaoVisitaASA
-    {
-        if (parametrosEsperados.size() != parametrosEsperados.size())
-        {
-            return;
-        }
-        
-        for (int i = 0; i < parametrosEsperados.size(); i++)
-        {
-            ParametroEsperado parametroEsperado = parametrosEsperados.get(i);
-            NoExpressao parametroPassado = parametrosPassados.get(i);
-        
-            if (parametroEsperado.idInspecao >= 0)
-            {
-                String nomeArrayInspecao = getNomeArrayInspecionavel(parametroEsperado.quantificador);
-                saida.append(Utils.geraIdentacao(nivelEscopo));
-                saida.format("if (%s[%d] != null) {", nomeArrayInspecao, parametroEsperado.idInspecao).println();
-                switch (parametroEsperado.quantificador)
-                {
-                    case VALOR:
-                        geraCodigoInicializacaoVariavel(parametroEsperado, parametroPassado, saida, visitor, nivelEscopo);
-                        break;
-                    case VETOR:
-                        geraCodigoInicializacaoVetor(parametroEsperado, parametroPassado, saida, visitor, nivelEscopo);
-                        break;
-                
-                    case MATRIZ:
-                        geraCodigoInicializacaoMatriz(parametroEsperado, parametroPassado, saida, visitor, nivelEscopo);
-                        break;
-                }
-                
-                saida.append(Utils.geraIdentacao(nivelEscopo))
-                        .append("}") // fecha o IF inicial
-                        .println();
-            }
-        }
-    }
-    
-    private String getNomeArrayInspecionavel(Quantificador quantificador)
-    {
-        switch(quantificador)
-        {
-            case VALOR: return "variaveisInspecionadas";
-            case VETOR: return "vetoresInspecionados";
-            case MATRIZ: return "matrizesInspecionadas";
-        }
-        return "variaveisInspecionadas";
-    }
-
     private void geraParametro(NoExpressao parametroRecebido, ParametroEsperado parametroEsperado, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
     {
         boolean precisaDeCast = false;
