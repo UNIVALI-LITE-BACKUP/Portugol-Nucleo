@@ -25,7 +25,18 @@ public class GeradorCodigoJava
     private final GeradorAtributo geradorAtributo = new GeradorAtributo();
     private final GeradorDeclaracaoVariavel geradorDeclaracaoVariavel = new GeradorDeclaracaoVariavel();
     private final GeradorAtribuicao geradorAtribuicao = new GeradorAtribuicao();
+    private final int seed;
 
+    public GeradorCodigoJava(int seed)
+    {
+        this.seed = seed;
+    }
+
+    public GeradorCodigoJava()
+    {
+        this.seed = (int)PreCompilador.getSeedGeracaoNomesValidos();
+    }
+    
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
         gera(asa, saida, nomeClasseJava, false, false, false); // não gera código para interrupção de thread, pontos de parada e inspeção de símbolos
@@ -35,8 +46,9 @@ public class GeradorCodigoJava
             boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada,
                     boolean geraCodigoParaInspecaoDeSimbolos) throws ExcecaoVisitaASA, IOException
     {
-        PreAnalisador preAnalisador = new PreAnalisador();
-        asa.aceitar(preAnalisador);
+
+        PreCompilador preCompilador = new PreCompilador();
+        asa.aceitar(preCompilador);
 
         VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida 
                         ,geraCodigoParaInterrupcaoDeThread
@@ -60,11 +72,11 @@ public class GeradorCodigoJava
                 .pulaLinha()
                 .geraAtributosParaAsVariaveisGlobais()
                 .pulaLinha()
-                .geraAtributosParaAsVariaveisPassadasPorReferencia(preAnalisador.getVariaveisPassadasPorReferencia())
+                .geraAtributosParaAsVariaveisPassadasPorReferencia(preCompilador.getVariaveisPassadasPorReferencia())
                 .pulaLinha()
                 .geraConstrutor(nomeClasseJava, totalVariaveis, totalVetores, totalMatrizes)
                 .pulaLinha()
-                .geraMetodos(preAnalisador.getFuncoesQuerForamInvocadas())
+                .geraMetodos(preCompilador.getFuncoesQuerForamInvocadas())
                 .geraChaveDeFechamentoDaClasse();
     }
 
@@ -93,7 +105,8 @@ public class GeradorCodigoJava
             nivelEscopo++;
             
             Utils.visitarBlocos(blocos, saida, this, nivelEscopo, 
-                    gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, gerandoCodigoParaInspecaoDeSimbolos);
+                    gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, 
+                        gerandoCodigoParaInspecaoDeSimbolos, seed);
             
             nivelEscopo--;
         }
@@ -172,8 +185,9 @@ public class GeradorCodigoJava
                     NoDeclaracaoFuncao declaracaoFuncao = (NoDeclaracaoFuncao)declaracao;
                     if (declaracaoFuncao.getNome().equals("inicio") || funcoesQueForamInvocadas.contains(declaracaoFuncao)) //só gera código para funções que foram invocadas
                     {
-                        geradorDeclaracaoMetodo.gera(declaracaoFuncao,  saida, this, nivelEscopo, 
-                                gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, gerandoCodigoParaInspecaoDeSimbolos);
+                        geradorDeclaracaoMetodo.gera(declaracaoFuncao, saida, this, nivelEscopo, 
+                                gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, 
+                                    gerandoCodigoParaInspecaoDeSimbolos, seed);
                     }
                 }
             }
@@ -417,7 +431,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
         {
-            saida.append(Utils.geraNomeValido(no.getNome()));
+            saida.append(no.getNome());
 
             saida.append("[");
             no.getIndice().aceitar(this);
@@ -429,7 +443,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
         {
-            saida.append(Utils.geraNomeValido(no.getNome()))
+            saida.append(no.getNome())
                     .append("[");
 
             no.getLinha().aceitar(this);
@@ -446,7 +460,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
         {
-            String nome = Utils.geraNomeValido(no.getNome());
+            String nome = no.getNome();
             if (no.getEscopo() != null)
             {
                 saida.append(no.getEscopo())
@@ -607,7 +621,8 @@ public class GeradorCodigoJava
             if (!contemCasosNaoConstantes)
             {
                 geradorSwitchCase.geraSwitchCase(no, saida, this, nivelEscopo, 
-                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, gerandoCodigoParaInspecaoDeSimbolos);
+                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, 
+                        gerandoCodigoParaInspecaoDeSimbolos, seed);
             }
             else
             {

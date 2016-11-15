@@ -81,7 +81,7 @@ public class GeradorDeclaracaoVariavel
         
         String nome = vetor.getNome();
         String tipo = Utils.getNomeTipoJava(vetor.getTipoDado());
-        saida.format("%s %s[]", tipo, Utils.geraNomeValido(nome));
+        saida.format("%s %s[]", tipo, nome);
 
         if (vetor.temInicializacao())
         {
@@ -106,7 +106,7 @@ public class GeradorDeclaracaoVariavel
         
         String nome = matriz.getNome();
         String tipo = Utils.getNomeTipoJava(matriz.getTipoDado());
-        saida.format("%s %s[][]", tipo, Utils.geraNomeValido(nome));
+        saida.format("%s %s[][]", tipo, nome);
 
         saida.append(" = ");
 
@@ -157,7 +157,7 @@ public class GeradorDeclaracaoVariavel
             String nome = variavel.getNome();
             String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
 
-            saida.format("%s %s", nomeTipo, Utils.geraNomeValido(nome));
+            saida.format("%s %s", nomeTipo, nome);
         }
 
         if (variavel.temInicializacao())

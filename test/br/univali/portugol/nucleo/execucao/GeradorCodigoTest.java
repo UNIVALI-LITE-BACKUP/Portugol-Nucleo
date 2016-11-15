@@ -4,7 +4,7 @@ import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
-import br.univali.portugol.nucleo.execucao.gerador.helpers.Utils;
+import br.univali.portugol.nucleo.execucao.gerador.PreCompilador;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -24,10 +24,17 @@ import org.junit.rules.TestName;
 public class GeradorCodigoTest
 {
     private final AnalisadorAlgoritmo analisador = new AnalisadorAlgoritmo();
-    private final GeradorCodigoJava gerador = new GeradorCodigoJava();
+    private final GeradorCodigoJava gerador;
 
     @Rule
     public TestName nomeTeste = new TestName();
+
+    public GeradorCodigoTest()
+    {
+        int seed = 1010;
+        PreCompilador.setSeedGeracaoNomesValidos(seed);
+        gerador = new GeradorCodigoJava(seed);
+    }
 
     @Test
     public void testeCodigoParaParametrosPorReferenciaInspecionados() throws Exception
@@ -99,7 +106,6 @@ public class GeradorCodigoTest
     public void testePalavrasReservadasJavaEmFuncoes() throws Exception
     {
         // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
-        Utils.setSeedGeracaoNomesValidos(1010);
         comparaCodigos();
 
     }
@@ -108,7 +114,6 @@ public class GeradorCodigoTest
     public void testePalavrasReservadasJavaEmVariaveis() throws Exception
     {
         // Testa se as palavras reservadas do Java são substituídas corretamente pelo gerador de código.
-        Utils.setSeedGeracaoNomesValidos(1010);
         comparaCodigos();
     }
 

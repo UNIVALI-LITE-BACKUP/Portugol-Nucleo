@@ -41,9 +41,9 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         
         if (vetoresInspecionados[0] != null)
         {
-            for (int i = 0; i < vetoresInspecionados[0].tamanho; i++)
+            for (int i_1010 = 0; i_1010 < vetoresInspecionados[0].tamanho; i_1010++)
             {
-                vetoresInspecionados[0].setValor(vetor[i], i);
+                vetoresInspecionados[0].setValor(vetor[i_1010], i_1010);
             }
         }
 
@@ -58,11 +58,11 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
         int matriz[][] = {{1, 2}, {3, 4}};
         if (matrizesInspecionadas[0] != null)
         {
-            for (int i = 0; i < matrizesInspecionadas[0].linhas; i++)
+            for (int i_1010 = 0; i_1010 < matrizesInspecionadas[0].linhas; i_1010++)
             {
-                for (int j = 0; j < matrizesInspecionadas[0].colunas; j++)
+                for (int j_1010 = 0; j_1010 < matrizesInspecionadas[0].colunas; j_1010++)
                 {
-                    matrizesInspecionadas[0].setValor(matriz[i][j], i, j);
+                    matrizesInspecionadas[0].setValor(matriz[i_1010][j_1010], i_1010, j_1010);
                 }
             }
         }
@@ -99,9 +99,9 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
             {
                 inspecionaVetor(1, v.length);
             }
-            for (int i = 0; i < vetoresInspecionados[1].tamanho; i++)
+            for (int i_1010 = 0; i_1010 < vetoresInspecionados[1].tamanho; i_1010++)
             {
-                vetoresInspecionados[1].setValor(v[i], i);
+                vetoresInspecionados[1].setValor(v[i_1010], i_1010);
             }
         }
         
@@ -111,11 +111,11 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
             {
                 inspecionaMatriz(1, m.length, m[0].length);
             }
-            for (int i = 0; i < matrizesInspecionadas[1].linhas; i++)
+            for (int i_1010 = 0; i_1010 < matrizesInspecionadas[1].linhas; i_1010++)
             {
-                for (int j = 0; j < matrizesInspecionadas[1].colunas; j++)
+                for (int j_1010 = 0; j_1010 < matrizesInspecionadas[1].colunas; j_1010++)
                 {
-                    matrizesInspecionadas[1].setValor(m[i][j], i, j);
+                    matrizesInspecionadas[1].setValor(m[i_1010][j_1010], i_1010, j_1010);
                 }
             }
         }

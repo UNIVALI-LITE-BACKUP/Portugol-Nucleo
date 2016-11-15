@@ -1,8 +1,8 @@
 package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.execucao.gerador.PreCompilador;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,8 +11,6 @@ import java.util.List;
 public class Utils
 {
     
-    private static long seedNomes = System.currentTimeMillis();
-
     public static void geraCodigoParaInspecao(NoDeclaracaoParametro parametro, PrintWriter saida, int nivelEscopo)
     {
         int ID = parametro.getIdParaInspecao();
@@ -99,7 +97,7 @@ public class Utils
         }
     }
     
-    public static void geraCodigoParaInspecao(NoDeclaracaoVetor vetor, PrintWriter saida, int nivelEscopo)
+    public static void geraCodigoParaInspecao(NoDeclaracaoVetor vetor, PrintWriter saida, int nivelEscopo, int seed)
     {
         int ID = vetor.getIdParaInspecao();
         if (ID >= 0 && vetor.temInicializacao())
@@ -112,11 +110,11 @@ public class Utils
             String nomeVariavel = vetor.getNome();
 
             saida.append(Utils.geraIdentacao(nivelEscopo + 1))
-                    .format("for (int i = 0; i < vetoresInspecionados[%d].tamanho; i++) {", ID)
+                    .format("for (int i_%2$d = 0; i_%2$d  < vetoresInspecionados[%d].tamanho; i_%2$d++) {", ID, seed)
                     .println();
             
             saida.append(Utils.geraIdentacao(nivelEscopo + 1))
-                    .format("vetoresInspecionados[%d].setValor(%s[i], i);", ID, nomeVariavel)
+                    .format("vetoresInspecionados[%d].setValor(%s[i_%3$d], i_%3$d);", ID, nomeVariavel, seed)
                     .println();
             
             saida.append(Utils.geraIdentacao(nivelEscopo + 1))
@@ -161,7 +159,7 @@ public class Utils
         }
     }
     
-    public static void geraCodigoParaInspecao(NoDeclaracaoMatriz matriz, PrintWriter saida, int nivelEscopo)
+    public static void geraCodigoParaInspecao(NoDeclaracaoMatriz matriz, PrintWriter saida, int nivelEscopo, int seed)
     {
         int ID = matriz.getIdParaInspecao();
         if (ID >= 0 && matriz.temInicializacao())
@@ -174,15 +172,15 @@ public class Utils
             String nomeVariavel = matriz.getNome();
 
             saida.append(Utils.geraIdentacao(nivelEscopo + 1))
-                    .format("for (int i = 0; i < matrizesInspecionadas[%d].linhas; i++) {", ID) // loop das linhas
+                    .format("for (int i_%2$d = 0; i_%2$d < matrizesInspecionadas[%d].linhas; i_%2$d++) {", ID, seed) // loop das linhas
                     .println();
             
             saida.append(Utils.geraIdentacao(nivelEscopo + 2))
-                    .format("for (int j = 0; j < matrizesInspecionadas[%d].colunas; j++) {", ID) // loop das colunas
+                    .format("for (int j_%2$d = 0; j_%2$d < matrizesInspecionadas[%d].colunas; j_%2$d++) {", ID, seed) // loop das colunas
                     .println();
             
             saida.append(Utils.geraIdentacao(nivelEscopo + 3))
-                    .format("matrizesInspecionadas[%d].setValor(%s[i][j], i, j);", ID, nomeVariavel)
+                    .format("matrizesInspecionadas[%d].setValor(%s[i_%3$d][j_%3$d], i_%3$d, j_%3$d);", ID, nomeVariavel, seed)
                     .println();
             
             saida.append(Utils.geraIdentacao(nivelEscopo + 2))
@@ -196,11 +194,6 @@ public class Utils
             saida.append(Utils.geraIdentacao(nivelEscopo))
                     .append("}"); // fechando IF
         }
-    }
-    
-    public static void setSeedGeracaoNomesValidos(long seed)
-    {
-        seedNomes = seed;
     }
     
     public static String geraStringIndice(NoReferenciaVariavel variavel)
@@ -248,7 +241,8 @@ public class Utils
         }
     }
     
-    private static void geraCodigoParaInspecaoDeBloco(NoBloco bloco, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+    private static void geraCodigoParaInspecaoDeBloco(NoBloco bloco, PrintWriter saida, 
+            VisitanteASA visitor, int nivelEscopo, int seed) throws ExcecaoVisitaASA
     {
         if (bloco instanceof NoDeclaracaoInspecionavel || bloco instanceof NoOperacaoAtribuicao)
         {
@@ -260,11 +254,11 @@ public class Utils
                 }
                 else if (bloco instanceof NoDeclaracaoVetor)
                 {
-                    Utils.geraCodigoParaInspecao((NoDeclaracaoVetor) bloco, saida, nivelEscopo);
+                    Utils.geraCodigoParaInspecao((NoDeclaracaoVetor) bloco, saida, nivelEscopo, seed);
                 }
                 else if (bloco instanceof NoDeclaracaoMatriz)
                 {
-                    Utils.geraCodigoParaInspecao((NoDeclaracaoMatriz)bloco, saida, nivelEscopo);
+                    Utils.geraCodigoParaInspecao((NoDeclaracaoMatriz)bloco, saida, nivelEscopo, seed);
                 }
             }
             else
@@ -277,7 +271,7 @@ public class Utils
     
     public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, 
             VisitanteASA visitor, int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolo) throws ExcecaoVisitaASA
+                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolo, int seed) throws ExcecaoVisitaASA
     {
         for (NoBloco bloco : blocos)
         {
@@ -303,7 +297,7 @@ public class Utils
             
             if (geraCodigoParaInspecaoDeSimbolo)
             {
-                geraCodigoParaInspecaoDeBloco(bloco, saida, visitor, nivelEscopo);
+                geraCodigoParaInspecaoDeBloco(bloco, saida, visitor, nivelEscopo, seed);
             }
         }
 
@@ -405,16 +399,6 @@ public class Utils
         return String.format("%" + (nivelEscopo * 4) + "s", " ");
     }
 
-    public static String geraNomeValido(String nomeAtual)
-    {
-        if (!ehUmaPalavraReservadaNoJava(nomeAtual))
-        {
-            return nomeAtual;
-        }
-
-        return nomeAtual + "_" + String.valueOf(seedNomes);
-    }
-
     public static String preservaCaracteresEspeciais(String string)
     {
         return string
@@ -429,7 +413,7 @@ public class Utils
 
     public static void geraNomeDaReferencia(NoReferencia no, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
     {
-        String nome = Utils.geraNomeValido(no.getNome());
+        String nome = no.getNome();
         saida.append(nome);
         if (no instanceof NoReferenciaVetor)
         {
@@ -471,63 +455,5 @@ public class Utils
         throw new IllegalArgumentException("Não foi possível encontrar a biblioteca para o escopo " + escopo);
     }
 
-    private static boolean ehUmaPalavraReservadaNoJava(String nome)
-    {
-        return (Arrays.binarySearch(PALAVRAS_RESERVADAS_JAVA, nome) >= 0);
-    }
-
-    // lista de palavras reservadas java 'roubadas' da wikipedia e ordenadasalfabéticamente para possibilitar uma busca binária
-    private static final String[] PALAVRAS_RESERVADAS_JAVA =
-    {
-        "assert",
-        "boolean",
-        "break",
-        "byte",
-        "case",
-        "catch",
-        "char",
-        "class",
-        "const",
-        "continue",
-        "default",
-        "do",
-        "double",
-        "else",
-        "enum",
-        "final",
-        "finally",
-        "float",
-        "for",
-        "goto",
-        "if",
-        "import",
-        "instanceof",
-        "interface",
-        "int",
-        "long",
-        "native",
-        "new",
-        "package",
-        "private",
-        "protected",
-        "public",
-        "return",
-        "short",
-        "static",
-        "strictfp",
-        "super",
-        "switch",
-        "synchronized",
-        "this",
-        "throw",
-        "throws",
-        "transient",
-        "try",
-        "void",
-        "volatile",
-        "while",
-        "false",
-        "null",
-        "true"
-    };
+    
 }

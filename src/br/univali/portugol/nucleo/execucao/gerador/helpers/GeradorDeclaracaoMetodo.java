@@ -12,7 +12,7 @@ public class GeradorDeclaracaoMetodo
 {
     public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, 
             int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos) throws ExcecaoVisitaASA
+                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos, int seed) throws ExcecaoVisitaASA
     {
         saida.println();
 
@@ -33,7 +33,7 @@ public class GeradorDeclaracaoMetodo
                 .append(Utils.getNomeTipoJava(noFuncao.getTipoDado()))
                 .append(geraQuantificador(noFuncao.getQuantificador()))
                 .append(" ")
-                .append(Utils.geraNomeValido(nome));
+                .append(nome);
 
         if (!metodoPrincipal)
         {
@@ -54,7 +54,7 @@ public class GeradorDeclaracaoMetodo
 
         if (geraCodigoParaInspecaoDeSimbolos)
         {
-            geraCodigoInicializacaoParametrosInspecionados(noFuncao.getParametros(), saida, visitor, nivelEscopo);
+            geraCodigoInicializacaoParametrosInspecionados(noFuncao.getParametros(), saida, nivelEscopo, seed);
         }
         
         if (geraCodigoParaPontosDeParada)
@@ -63,7 +63,8 @@ public class GeradorDeclaracaoMetodo
         }
 
         Utils.visitarBlocos(noFuncao.getBlocos(), saida, visitor, nivelEscopo, 
-                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada, geraCodigoParaInspecaoDeSimbolos); // gera o código dentro do método
+                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada, 
+                            geraCodigoParaInspecaoDeSimbolos, seed); // gera o código dentro do método
 
         saida.println();
         saida.append(identacao).append("}").println(); // finaliza o escopo do método
@@ -71,7 +72,7 @@ public class GeradorDeclaracaoMetodo
     }
 
     private void geraCodigoInicializacaoParametrosInspecionados(List<NoDeclaracaoParametro> parametros,
-                     PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+                     PrintWriter saida, int nivelEscopo, int seed)
     {
         for (NoDeclaracaoParametro parametro : parametros)
         {
@@ -85,14 +86,14 @@ public class GeradorDeclaracaoMetodo
                 switch (quantificador)
                 {
                     case VALOR:
-                        geraCodigoInicializacaoVariavel(parametro, saida, nomeArrayInspecao, nivelEscopo);
+                        geraCodigoInicializacaoVariavel(parametro, saida, nomeArrayInspecao, nivelEscopo, seed);
                         break;
                     case VETOR:
-                        geraCodigoInicializacaoVetor(parametro, saida, nomeArrayInspecao, nivelEscopo);
+                        geraCodigoInicializacaoVetor(parametro, saida, nomeArrayInspecao, nivelEscopo, seed);
                         break;
                 
                     case MATRIZ:
-                        geraCodigoInicializacaoMatriz(parametro, saida, nomeArrayInspecao, nivelEscopo);
+                        geraCodigoInicializacaoMatriz(parametro, saida, nomeArrayInspecao, nivelEscopo, seed);
                         break;
                 }
                 
@@ -104,7 +105,7 @@ public class GeradorDeclaracaoMetodo
     }
     
     private void geraCodigoInicializacaoVetor(NoDeclaracaoParametro parametro,
-            PrintWriter saida, String nomeArrayInspecao, int nivelEscopo) 
+            PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, int seed) 
     {
         //gera um if verificando se é necessário redimensionar o vetor interno
         
@@ -124,11 +125,11 @@ public class GeradorDeclaracaoMetodo
 
         //gera loop coletando todas as posições do vetor
         saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("for(int i=0; i < %s[%d].tamanho; i++){", nomeArrayInspecao, idInspecao); // loop percorrendo todo o array
+        saida.format("for(int i_%3$d=0; i_%3$d < %s[%d].tamanho; i_%3$d++){", nomeArrayInspecao, idInspecao, seed); // loop percorrendo todo o array
         saida.println();
 
         saida.append(Utils.geraIdentacao(nivelEscopo + 2));
-        saida.format("%s[%d].setValor(%s[i], i);", nomeArrayInspecao, idInspecao, nomeParametro);
+        saida.format("%s[%d].setValor(%s[i_%4$d], i_%4$d);", nomeArrayInspecao, idInspecao, nomeParametro, seed);
         saida.println(); //fecha setValor(v[i], i);
 
         saida.append(Utils.geraIdentacao(nivelEscopo + 1));
@@ -137,7 +138,7 @@ public class GeradorDeclaracaoMetodo
     }
     
     private void geraCodigoInicializacaoVariavel(NoDeclaracaoParametro parametro,
-                     PrintWriter saida, String nomeArrayInspecao, int nivelEscopo)
+                     PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, int seed)
     {
         int idInspecao = parametro.getIdParaInspecao();
         saida.append(Utils.geraIdentacao(nivelEscopo + 1));
@@ -152,7 +153,7 @@ public class GeradorDeclaracaoMetodo
     }
     
     private void geraCodigoInicializacaoMatriz(NoDeclaracaoParametro parametro,
-                    PrintWriter saida, String nomeArrayInspecao, int nivelEscopo)
+                    PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, int seed)
     {
         //gera um if verificando se é necessário redimensionar a matriz interna
         
@@ -172,13 +173,14 @@ public class GeradorDeclaracaoMetodo
 
         //gera loop coletando todas as posições da matriz
         saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("for(int i=0; i < %s[%d].linhas; i++){", nomeArrayInspecao, idInspecao).println(); 
+        saida.format("for(int i_%3$d=0; i_%3$d < %s[%d].linhas; i_%3$d++){", nomeArrayInspecao, idInspecao, seed);
+        saida.println(); 
         
         saida.append(Utils.geraIdentacao(nivelEscopo + 2));
-        saida.format("for(int j=0; j < %s[%d].colunas; j++){", nomeArrayInspecao, idInspecao).println(); 
+        saida.format("for(int j_%3$d=0; j_%3$d < %s[%d].colunas; j_%3$d++){", nomeArrayInspecao, idInspecao, seed).println(); 
 
         saida.append(Utils.geraIdentacao(nivelEscopo + 3));
-        saida.format("%s[%d].setValor(%s[i][j], i, j);", nomeArrayInspecao, idInspecao, nomeParametro);
+        saida.format("%s[%d].setValor(%s[i_%4$d][j_%4$d], i_%4$d, j_%4$d);", nomeArrayInspecao, idInspecao, nomeParametro, seed);
         saida.println(); 
 
         saida.append(Utils.geraIdentacao(nivelEscopo + 2));
@@ -252,7 +254,7 @@ public class GeradorDeclaracaoMetodo
     {
         saida.append(Utils.getNomeTipoJava(noParametro.getTipoDado()))
                     .append(" ") // espaço entre o tipo e o nome
-                    .append(Utils.geraNomeValido(noParametro.getNome()))
+                    .append(noParametro.getNome())
                     .append(geraQuantificador(noParametro.getQuantificador()));
     }
 

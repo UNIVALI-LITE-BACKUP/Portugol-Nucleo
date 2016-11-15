@@ -15,7 +15,7 @@ import java.util.List;
  */
 public abstract class NoDeclaracao extends NoBloco
 {
-    private final String nome;
+    private String nome;
     private final boolean constante;
     private final TipoDado tipoDado;
     private TrechoCodigoFonte trechoCodigoFonteNome;
@@ -38,6 +38,11 @@ public abstract class NoDeclaracao extends NoBloco
         this.nome = nome;
         this.tipoDado = tipoDado;
         this.constante = constante;
+    }
+
+    public void setNome(String nome)
+    {
+        this.nome = nome;
     }
 
     /**

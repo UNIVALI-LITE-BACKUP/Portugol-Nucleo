@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.execucao.gerador;
 
 import br.univali.portugol.nucleo.asa.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,15 +14,19 @@ import java.util.Set;
  *
  * @author Elieser
  */
-class PreAnalisador extends VisitanteNulo
+public class PreCompilador extends VisitanteNulo
 {
 
     private final Map<TipoDado, List<NoDeclaracaoVariavel>> declaracoes = new HashMap<>();
     private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
     
+    private static long seedNomes = System.currentTimeMillis();
+    
     @Override
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
+        chamadaFuncao.setNome(geraNomeValido(chamadaFuncao.getNome()));
+        
         NoDeclaracaoFuncao declaracaoFuncao = chamadaFuncao.getOrigemDaReferencia();
         if (!funcoesInvocadas.contains(declaracaoFuncao))
         {
@@ -78,6 +83,62 @@ class PreAnalisador extends VisitanteNulo
     }
     
     @Override
+    public Object visitar(NoDeclaracaoFuncao no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
+    public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
+    public Object visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
+    public Object visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
+    public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
+    public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
+    public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
+    public Object visitar(NoDeclaracaoParametro no) throws ExcecaoVisitaASA
+    {
+        no.setNome(geraNomeValido(no.getNome()));
+        return super.visitar(no);
+    }
+    
+    @Override
     public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA
     {
         for (Object valor : noVetor.getValores())
@@ -109,5 +170,84 @@ class PreAnalisador extends VisitanteNulo
         }
         return null;
     }
+    
+    public static String geraNomeValido(String nomeAtual)
+    {
+        if (!ehUmaPalavraReservadaNoJava(nomeAtual))
+        {
+            return nomeAtual;
+        }
 
+        return nomeAtual + "_" + String.valueOf(seedNomes);
+    }
+
+    public static void setSeedGeracaoNomesValidos(long seed) // usado para poder setar um seed conhecido e escrever testes unitários onde é possível prever o nome das variáveis
+    {
+        seedNomes = seed;
+    }
+    
+    public static long getSeedGeracaoNomesValidos()
+    {
+        return seedNomes;
+    }
+    
+    private static boolean ehUmaPalavraReservadaNoJava(String nome)
+    {
+        return (Arrays.binarySearch(PALAVRAS_RESERVADAS_JAVA, nome) >= 0);
+    }
+
+    // lista de palavras reservadas java 'roubadas' da wikipedia e ordenadasalfabéticamente para possibilitar uma busca binária
+    private static final String[] PALAVRAS_RESERVADAS_JAVA =
+    {
+        "assert",
+        "boolean",
+        "break",
+        "byte",
+        "case",
+        "catch",
+        "char",
+        "class",
+        "const",
+        "continue",
+        "default",
+        "do",
+        "double",
+        "else",
+        "enum",
+        "final",
+        "finally",
+        "float",
+        "for",
+        "goto",
+        "if",
+        "import",
+        "instanceof",
+        "interface",
+        "int",
+        "long",
+        "native",
+        "new",
+        "package",
+        "private",
+        "protected",
+        "public",
+        "return",
+        "short",
+        "static",
+        "strictfp",
+        "super",
+        "switch",
+        "synchronized",
+        "this",
+        "throw",
+        "throws",
+        "transient",
+        "try",
+        "void",
+        "volatile",
+        "while",
+        "false",
+        "null",
+        "true"
+    };
 }

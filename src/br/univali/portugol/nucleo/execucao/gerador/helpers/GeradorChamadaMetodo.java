@@ -27,7 +27,7 @@ public class GeradorChamadaMetodo
         List<ParametroEsperado> parametrosEsperados = getParametrosEsperados(no, asa);
         List<NoExpressao> parametrosPassados = no.getParametros();
 
-        saida.format("%s%s(", escopoFuncao, Utils.geraNomeValido(nomeFuncao));
+        saida.format("%s%s(", escopoFuncao, nomeFuncao);
         
         int totalParametros = parametrosPassados.size();
         for (int i = 0; i < totalParametros; i++)

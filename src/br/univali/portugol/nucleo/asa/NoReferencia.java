@@ -21,7 +21,7 @@ package br.univali.portugol.nucleo.asa;
  */
 public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
 {
-    private final String nome;
+    private String nome;
     private final String escopo;
     private TrechoCodigoFonte trechoCodigoFonteNome;
     protected T origemDaReferencia;
@@ -38,6 +38,11 @@ public abstract class NoReferencia<T extends NoDeclaracao> extends NoExpressao
     public NoReferencia(String escopo, String nome)
     {
         this.escopo = escopo;
+        this.nome = nome;
+    }
+
+    public void setNome(String nome)
+    {
         this.nome = nome;
     }
 

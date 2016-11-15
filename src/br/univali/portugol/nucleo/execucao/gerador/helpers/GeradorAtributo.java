@@ -23,7 +23,7 @@ public class GeradorAtributo
             nome = biblioteca.getAlias();
         }
         saida.append(Utils.geraIdentacao(nivelEscopo))
-                .format("private final %s %s = new %s();", tipo, Utils.geraNomeValido(nome), tipo)
+                .format("private final %s %s = new %s();", tipo, nome, tipo)
                 .println();
     }
 

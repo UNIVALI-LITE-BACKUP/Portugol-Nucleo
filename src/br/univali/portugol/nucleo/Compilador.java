@@ -12,6 +12,7 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
+import br.univali.portugol.nucleo.execucao.gerador.PreCompilador;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.File;
@@ -26,7 +27,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.tools.Diagnostic;
@@ -132,7 +132,8 @@ final class Compilador
 
         try (PrintWriter writerArquivoJava = new PrintWriter(new FileOutputStream(arquivoJava)))
         {
-            GeradorCodigoJava gerador = new GeradorCodigoJava();
+            int seed = (int) PreCompilador.getSeedGeracaoNomesValidos();
+            GeradorCodigoJava gerador = new GeradorCodigoJava(seed);
             gerador.gera(asa, writerArquivoJava, nomeClasse, true, true, true);
             writerArquivoJava.flush();
 
