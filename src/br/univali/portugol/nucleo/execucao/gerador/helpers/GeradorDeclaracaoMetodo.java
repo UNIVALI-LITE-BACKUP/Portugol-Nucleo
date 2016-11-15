@@ -141,7 +141,13 @@ public class GeradorDeclaracaoMetodo
     {
         int idInspecao = parametro.getIdParaInspecao();
         saida.append(Utils.geraIdentacao(nivelEscopo + 1));
-        saida.format("%s[%d] = %s;", nomeArrayInspecao, idInspecao, parametro.getNome());
+        String stringNome = parametro.getNome();
+        if (parametro.getModoAcesso() == ModoAcesso.POR_REFERENCIA)
+        {
+            String nomeTipo = Utils.getNomeTipoJava(parametro.getTipoDado()).toUpperCase();
+            stringNome = String.format("REFS_%s[%s]", nomeTipo, parametro.getNome());
+        }
+        saida.format("%s[%d] = %s;", nomeArrayInspecao, idInspecao, stringNome);
         saida.println();
     }
     

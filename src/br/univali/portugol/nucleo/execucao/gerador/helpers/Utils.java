@@ -26,11 +26,11 @@ public class Utils
             saida.append(Utils.geraIdentacao(nivelEscopo + 1));
             
             String nomeVariavel = parametro.getNome();
-//            if (parametro.getModoAcesso() == ModoAcesso.POR_REFERENCIA)
-//            {
-//                String nomeTipo = Utils.getNomeTipoJava(parametro.getTipoDado()).toUpperCase();
-//                nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, Utils.geraStringIndice(parametro));
-//            }
+            if (parametro.getModoAcesso() == ModoAcesso.POR_REFERENCIA)
+            {
+                String nomeTipo = Utils.getNomeTipoJava(parametro.getTipoDado()).toUpperCase();
+                nomeVariavel = String.format("REFS_%s[%s]", nomeTipo, parametro.getNome());
+            }
             saida.format("variaveisInspecionadas[%d] = %s;", ID, nomeVariavel)
                     .println();
             
