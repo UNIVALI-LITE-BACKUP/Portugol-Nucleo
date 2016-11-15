@@ -43,9 +43,9 @@ public class GeradorCodigoJava
                         ,geraCodigoParaPontosDeParada
                         ,geraCodigoParaInspecaoDeSimbolos);
         
-        int totalVariaveis = preAnalisador.getTotalVariaveisDeclaradas();
-        int totalVetores = preAnalisador.getTotalVetoresDeclarados();
-        int totalMatrizes = preAnalisador.getTotalMatrizesDeclaradas();
+        int totalVariaveis = asa.getTotalVariaveisDeclaradas();
+        int totalVetores = asa.getTotalVetoresDeclarados();
+        int totalMatrizes = asa.getTotalMatrizesDeclaradas();
         
         gerador.geraPackage("programas")
                 .pulaLinha()

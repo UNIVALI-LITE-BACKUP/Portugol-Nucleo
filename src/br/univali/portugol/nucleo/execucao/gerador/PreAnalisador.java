@@ -19,10 +19,6 @@ class PreAnalisador extends VisitanteNulo
     private final Map<TipoDado, List<NoDeclaracaoVariavel>> declaracoes = new HashMap<>();
     private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
     
-    private int totalVariaveisDeclaradas = 0; // conta variáveis e parâmetros declarados
-    private int totalVetoresDeclarados = 0;
-    private int totalMatrizesDeclaradas = 0;
-
     @Override
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
@@ -82,54 +78,6 @@ class PreAnalisador extends VisitanteNulo
     }
     
     @Override
-    public Object visitar(NoDeclaracaoVariavel no) throws ExcecaoVisitaASA
-    {
-        no.setIdParaInspecao(totalVariaveisDeclaradas);
-        //System.out.println(no.getNome() + " => " + totalVariaveisDeclaradas);
-        totalVariaveisDeclaradas++;
-        return super.visitar(no);
-    }
-    
-    @Override
-    public Object visitar(NoDeclaracaoParametro no) throws ExcecaoVisitaASA
-    {
-        switch (no.getQuantificador())
-        {
-            case VALOR:
-                no.setIdParaInspecao(totalVariaveisDeclaradas);
-                //System.out.println(no.getNome() + " (param) => " + totalVariaveisDeclaradas);
-                totalVariaveisDeclaradas++;
-                break;
-            case VETOR:
-                no.setIdParaInspecao(totalVetoresDeclarados);
-                totalVetoresDeclarados++;
-                break;
-            case MATRIZ:
-                no.setIdParaInspecao(totalMatrizesDeclaradas);
-                totalMatrizesDeclaradas++;
-                break;
-        }
-        
-        return null;
-    }
-    
-    @Override
-    public Object visitar(NoDeclaracaoMatriz no) throws ExcecaoVisitaASA
-    {
-        no.setIdParaInspecao(totalMatrizesDeclaradas);
-        totalMatrizesDeclaradas++;
-        return super.visitar(no);
-    }
-    
-    @Override
-    public Object visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
-    {
-        no.setIdParaInspecao(totalVetoresDeclarados);
-        totalVetoresDeclarados++;
-        return super.visitar(no);
-    }
-    
-    @Override
     public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA
     {
         for (Object valor : noVetor.getValores())
@@ -147,21 +95,6 @@ class PreAnalisador extends VisitanteNulo
         return declaracoes;
     }
 
-    public int getTotalVariaveisDeclaradas()
-    {
-        return totalVariaveisDeclaradas;
-    }
-    
-    public int getTotalVetoresDeclarados()
-    {
-        return totalVetoresDeclarados;
-    }
-    
-    public int getTotalMatrizesDeclaradas()
-    {
-        return totalMatrizesDeclaradas;
-    }
-    
     public Set<NoDeclaracaoFuncao> getFuncoesQuerForamInvocadas()
     {
         return funcoesInvocadas;

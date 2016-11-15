@@ -13,11 +13,45 @@ public final class ASAPrograma extends ASA
 {
     private List<NoInclusaoBiblioteca> listaInclusoesBibliotecas;
     
+    private int totalVariaveisDeclaradas = 0; 
+    private int totalVetoresDeclarados = 0;
+    private int totalMatrizesDeclaradas = 0;
+    
     public ASAPrograma()
     {
         
     }
 
+    public void setTotalMatrizesDeclaradas(int totalMatrizesDeclaradas)
+    {
+        this.totalMatrizesDeclaradas = totalMatrizesDeclaradas;
+    }
+
+    public void setTotalVariaveisDeclaradas(int totalVariaveisDeclaradas)
+    {
+        this.totalVariaveisDeclaradas = totalVariaveisDeclaradas;
+    }
+
+    public void setTotalVetoresDeclarados(int totalVetoresDeclarados)
+    {
+        this.totalVetoresDeclarados = totalVetoresDeclarados;
+    }
+    
+    public int getTotalVariaveisDeclaradas()
+    {
+        return totalVariaveisDeclaradas;
+    }
+    
+    public int getTotalVetoresDeclarados()
+    {
+        return totalVetoresDeclarados;
+    }
+    
+    public int getTotalMatrizesDeclaradas()
+    {
+        return totalMatrizesDeclaradas;
+    }
+    
     public List<NoInclusaoBiblioteca> getListaInclusoesBibliotecas()
     {
         return listaInclusoesBibliotecas;

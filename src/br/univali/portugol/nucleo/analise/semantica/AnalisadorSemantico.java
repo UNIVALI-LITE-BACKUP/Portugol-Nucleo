@@ -49,6 +49,10 @@ public final class AnalisadorSemantico implements VisitanteASA
     public final static String FUNCAO_ESCREVA = "escreva";
     public static final String FUNCAO_LIMPA = "limpa";
 
+    private int totalVariaveisDeclaradas = 0; // conta variáveis e parâmetros declarados
+    private int totalVetoresDeclarados = 0;
+    private int totalMatrizesDeclaradas = 0;
+    
     public AnalisadorSemantico()
     {
         memoria = new Memoria();
@@ -155,6 +159,10 @@ public final class AnalisadorSemantico implements VisitanteASA
             declaracao.aceitar(this);
         }
 
+        asap.setTotalVariaveisDeclaradas(totalVariaveisDeclaradas);
+        asap.setTotalVetoresDeclarados(totalVetoresDeclarados);
+        asap.setTotalMatrizesDeclaradas(totalMatrizesDeclaradas);
+        
         return null;
     }
 
@@ -853,6 +861,9 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
     {
+        noDeclaracaoMatriz.setIdParaInspecao(totalMatrizesDeclaradas);
+        totalMatrizesDeclaradas++;
+        
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = noDeclaracaoMatriz.getNome();
@@ -1013,6 +1024,10 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoVariavel declaracaoVariavel) throws ExcecaoVisitaASA
     {
+        declaracaoVariavel.setIdParaInspecao(totalVariaveisDeclaradas);
+        //System.out.println(declaracaoVariavel.getNome() + " => " + totalVariaveisDeclaradas);
+        totalVariaveisDeclaradas++;
+        
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = declaracaoVariavel.getNome();
@@ -1127,6 +1142,9 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
     {
+        noDeclaracaoVetor.setIdParaInspecao(totalVetoresDeclarados);
+        totalVetoresDeclarados++;
+        
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = noDeclaracaoVetor.getNome();
@@ -1953,6 +1971,22 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
+        switch (noDeclaracaoParametro.getQuantificador())
+        {
+            case VALOR:
+                noDeclaracaoParametro.setIdParaInspecao(totalVariaveisDeclaradas);
+                totalVariaveisDeclaradas++;
+                break;
+            case VETOR:
+                noDeclaracaoParametro.setIdParaInspecao(totalVetoresDeclarados);
+                totalVetoresDeclarados++;
+                break;
+            case MATRIZ:
+                noDeclaracaoParametro.setIdParaInspecao(totalMatrizesDeclaradas);
+                totalMatrizesDeclaradas++;
+                break;
+        }
+        
         String nome = noDeclaracaoParametro.getNome();
         TipoDado tipoDado = noDeclaracaoParametro.getTipoDado();
         Quantificador quantificador = noDeclaracaoParametro.getQuantificador();
