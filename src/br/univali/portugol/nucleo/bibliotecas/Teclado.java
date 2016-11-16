@@ -13,6 +13,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBibliot
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -552,6 +553,7 @@ public final class Teclado extends Biblioteca
         {
             instalarTeclado(biblioteca);
         }
+        Arrays.fill(buffer, false);
     }
     
     @Override
