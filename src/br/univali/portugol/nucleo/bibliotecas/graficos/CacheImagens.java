@@ -61,9 +61,9 @@ public final class CacheImagens
         }
     }
 
-    public void liberarImagem(int endereco) throws ErroExecucaoBiblioteca
+    public void liberarImagem(int endereco) 
     {
-        if (obterImagem(endereco) != null)
+        if (endereco >=0 && endereco < NUMERO_MAXIMO_IMAGENS)
         {
             imagens[endereco] = null;
         }
