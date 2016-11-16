@@ -7,13 +7,18 @@ import br.univali.portugol.nucleo.bibliotecas.Graficos;
 public class testeConversaoAutomaticaDeTipos extends Programa
 {
     private final Graficos g = new Graficos();
-    private double a = 0.0;
+    private double a;
     private int b;
 
     public testeConversaoAutomaticaDeTipos() throws ErroExecucao, InterruptedException
     {
     }
 
+    @Override
+    protected void inicializar () throws ErroExecucao, InterruptedException {
+        a = 0.0;
+    }
+    
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {

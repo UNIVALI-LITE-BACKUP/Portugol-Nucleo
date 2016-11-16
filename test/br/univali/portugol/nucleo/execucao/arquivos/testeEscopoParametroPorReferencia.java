@@ -14,8 +14,16 @@ public class testeEscopoParametroPorReferencia extends Programa
    
     public testeEscopoParametroPorReferencia() throws ErroExecucao, InterruptedException
     {
+        
+    }
+
+    @Override
+    protected void inicializar() throws ErroExecucao, InterruptedException
+    {
         REFS_INT[INDICE_I_0] = -1;
     }
+    
+    
 
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException

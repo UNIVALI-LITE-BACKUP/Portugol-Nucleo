@@ -27,10 +27,10 @@ public class testeGeracaoPontosDeParada extends Programa
         int v[] = new int[3];
         
         realizarParada(10, 15);
-        String c[] = {"a", "b"};
+        String c[] = new String[]{"a", "b"};
         
         realizarParada(11, 15);
-        String matriz[][] =   {{"a", "b"}};
+        String matriz[][] = new String[][]{{"a", "b"}};
         
         realizarParada(13, 26);
         for(int x = 0; x < 10; x = x + 1)

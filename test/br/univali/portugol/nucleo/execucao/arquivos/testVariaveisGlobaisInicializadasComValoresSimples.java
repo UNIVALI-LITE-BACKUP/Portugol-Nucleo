@@ -5,14 +5,25 @@ import br.univali.portugol.nucleo.Programa;
 
 public class testVariaveisGlobaisInicializadasComValoresSimples extends Programa
 {
-    private int i = 10;
-    private String c = "teste";
-    private boolean l = true;
-    private char ch = 'a';
-    private double r = 53.23;
+    private int i;
+    private String c;
+    private boolean l;
+    private char ch;
+    private double r;
 
     public testVariaveisGlobaisInicializadasComValoresSimples() throws ErroExecucao, InterruptedException
     {
+        
+    }
+
+    @Override
+    protected void inicializar() throws ErroExecucao, InterruptedException
+    {
+        i = 10;
+        c = "teste";
+        l = true;
+        ch = 'a';
+        r = 53.23;
     }
 
     @Override

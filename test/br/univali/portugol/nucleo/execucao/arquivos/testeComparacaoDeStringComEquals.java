@@ -5,13 +5,22 @@ import br.univali.portugol.nucleo.Programa;
 
 public class testeComparacaoDeStringComEquals extends Programa
 {
-    private String umaFrase = "a";
-    private String outraFrase = "a";
-    private int a = 0;
-    private int b = 0;
+    private String umaFrase;
+    private String outraFrase;
+    private int a;
+    private int b;
 
     public testeComparacaoDeStringComEquals() throws ErroExecucao, InterruptedException
     {
+    }
+
+    @Override
+    protected void inicializar() throws ErroExecucao, InterruptedException
+    {
+        umaFrase = "a";
+        outraFrase = "a";
+        a = 0;
+        b = 0;
     }
 
     @Override

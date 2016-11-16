@@ -5,11 +5,18 @@ import br.univali.portugol.nucleo.Programa;
 
 public class testeNegacao extends Programa
 {
-    private String a = "teste";
-    private String b = "teste";
+    private String a;
+    private String b;
 
     public testeNegacao() throws ErroExecucao, InterruptedException
     {
+    }
+
+    @Override
+    protected void inicializar() throws ErroExecucao, InterruptedException
+    {
+        a = "teste";
+        b = "teste";
     }
 
     @Override

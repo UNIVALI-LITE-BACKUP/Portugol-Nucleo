@@ -10,8 +10,8 @@ public class testePalavrasReservadasJavaEmVariaveis extends Programa
     private int if_1010;
     private String else_1010;
     private int while_1010;
-    private String do_1010[] = new String[3];
-    private int return_1010[][] = new int[2][2];
+    private String do_1010[];
+    private int return_1010[][];
     private String for_1010;
     private int import_1010;
     private String package_1010;
@@ -25,6 +25,12 @@ public class testePalavrasReservadasJavaEmVariaveis extends Programa
 
     public testePalavrasReservadasJavaEmVariaveis() throws ErroExecucao, InterruptedException
     {
+    }
+    
+    @Override
+    protected void inicializar () throws ErroExecucao, InterruptedException {
+        do_1010 = new String[3];
+        return_1010 = new int[2][2];
     }
 
     @Override

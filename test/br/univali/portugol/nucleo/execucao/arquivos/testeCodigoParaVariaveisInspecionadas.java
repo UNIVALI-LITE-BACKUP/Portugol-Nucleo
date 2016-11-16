@@ -37,7 +37,7 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
             variaveisInspecionadas[1] = y;
         }
         
-        int vetor[] = {1, 2, 3};
+        int vetor[] = new int[]{1, 2, 3};
         
         if (vetoresInspecionados[0] != null)
         {
@@ -55,7 +55,7 @@ public class testeCodigoParaVariaveisInspecionadas extends Programa
             vetoresInspecionados[0].setValor(vetor[1], 1);
         }
         
-        int matriz[][] = {{1, 2}, {3, 4}};
+        int matriz[][] = new int[][]{{1, 2}, {3, 4}};
         if (matrizesInspecionadas[0] != null)
         {
             for (int i_1010 = 0; i_1010 < matrizesInspecionadas[0].linhas; i_1010++)

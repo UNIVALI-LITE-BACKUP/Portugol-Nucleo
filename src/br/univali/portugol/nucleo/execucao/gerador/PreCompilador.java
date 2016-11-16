@@ -171,9 +171,13 @@ public class PreCompilador extends VisitanteNulo
         return null;
     }
     
+    private static final String[] nomesProibidos = {"inicializar", "executar"};
+    
     public static String geraNomeValido(String nomeAtual)
     {
-        if (!ehUmaPalavraReservadaNoJava(nomeAtual))
+        Set<String> termosProibidos = new HashSet<>(Arrays.asList(PreCompilador.nomesProibidos));
+        
+        if (!ehUmaPalavraReservadaNoJava(nomeAtual) && !termosProibidos.contains(nomeAtual))
         {
             return nomeAtual;
         }

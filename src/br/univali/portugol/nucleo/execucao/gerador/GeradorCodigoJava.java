@@ -7,6 +7,7 @@ import br.univali.portugol.nucleo.execucao.gerador.helpers.*;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,7 @@ public class GeradorCodigoJava
     private final GeradorDeclaracaoVariavel geradorDeclaracaoVariavel = new GeradorDeclaracaoVariavel();
     private final GeradorAtribuicao geradorAtribuicao = new GeradorAtribuicao();
     private final int seed;
+    private boolean processandoVariaveisGlobais = false; // não inicializa as variáveis quando está processando as variáveis globais
 
     public GeradorCodigoJava(int seed)
     {
@@ -76,6 +78,8 @@ public class GeradorCodigoJava
                 .pulaLinha()
                 .geraConstrutor(nomeClasseJava, totalVariaveis, totalVetores, totalMatrizes)
                 .pulaLinha()
+                .geraInicializacaoVariaveisGlobais()
+                .pulaLinha()
                 .geraMetodos(preCompilador.getFuncoesQuerForamInvocadas())
                 .geraChaveDeFechamentoDaClasse();
     }
@@ -121,15 +125,120 @@ public class GeradorCodigoJava
             }
         }
 
+        private List<NoDeclaracaoInicializavel> getVariaveisGlobaisDeclaradas(ASAPrograma asa, boolean excluiConstantes)
+        {
+            List<NoDeclaracao> declaracoesGlobais = asa.getListaDeclaracoesGlobais();
+            List<NoDeclaracaoInicializavel> variaveisGlobais = new ArrayList<>();
+            for (NoDeclaracao global : declaracoesGlobais)
+            {
+                if (global instanceof NoDeclaracaoInicializavel)
+                {
+                    NoDeclaracaoInicializavel variavel = (NoDeclaracaoInicializavel)global;
+                    if (!(excluiConstantes && variavel.constante()))
+                    {
+                        variaveisGlobais.add(variavel);
+                    }
+                }
+            }
+            return variaveisGlobais;
+        }
+        
+        private void inicializaVariaveisGlobaisNaoPassadasPorReferencia(List<NoDeclaracaoInicializavel> variaveisGlobais) throws ExcecaoVisitaASA
+        {
+            for (NoDeclaracaoInicializavel variavel : variaveisGlobais)
+            {
+                if (variavel instanceof NoDeclaracaoVariavel)
+                {
+                    if (((NoDeclaracaoVariavel) variavel).ehPassadaPorReferencia())
+                    {
+                        continue; // variáveis globais que são passadas como referência não são declaradas como atributo no código Java
+                    }
+                }
+                
+                boolean ehVetor = variavel instanceof NoDeclaracaoVetor;
+                boolean ehMatriz = variavel instanceof NoDeclaracaoMatriz;
+                boolean variavelInicializada = variavel.temInicializacao();
+                
+                if (ehVetor || ehMatriz || variavelInicializada)
+                {
+                    saida.append(Utils.geraIdentacao(nivelEscopo + 1));
+                    saida.format("%s = ", variavel.getNome());
+                    if (variavelInicializada)
+                    {
+                        variavel.getInicializacao().aceitar(this);
+                    }
+                    else //vetores e matrizes não inicializados precisam ser instanciados
+                    {
+                        if (ehVetor)
+                        {
+                            NoExpressao tamanho = ((NoDeclaracaoVetor)variavel).getTamanho();
+                            if (tamanho != null)
+                            {
+                                String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
+                                saida.format("new %s[", nomeTipo);
+                                tamanho.aceitar(this);
+                                saida.append("]");
+                            }
+                        }
+                        else // é uma matriz
+                        {
+                            NoExpressao linhas = ((NoDeclaracaoMatriz)variavel).getNumeroLinhas();
+                            NoExpressao colunas = ((NoDeclaracaoMatriz)variavel).getNumeroColunas();
+                            if (linhas != null && colunas != null)
+                            {
+                                String nomeTipo = Utils.getNomeTipoJava(variavel.getTipoDado());
+                                saida.format("new %s[", nomeTipo);
+                                linhas.aceitar(this);
+                                saida.append("][");
+                                colunas.aceitar(this);
+                                saida.append("]");
+                            }
+                        }
+                    }
+                    saida.append(";").println();
+                }
+            }
+        }
+        
+        private VisitorGeracaoCodigo geraInicializacaoVariaveisGlobais() throws ExcecaoVisitaASA
+        {
+            boolean excluiConstantes = true;
+            List<NoDeclaracaoInicializavel> variaveisGlobais = getVariaveisGlobaisDeclaradas(asa, excluiConstantes);
+            
+            if (variaveisGlobais.isEmpty()) // não sobrescreve o método de inicialização se não houverem variáveis globais que não são constantes
+            {
+                return this;
+            }
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo))
+                    .append("@Override").println();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+            saida.format("protected void inicializar() throws ErroExecucao, InterruptedException {").println();
+            
+            
+            inicializaVariaveisGlobaisNaoPassadasPorReferencia(variaveisGlobais);
+            
+            inicializaVariaveisGlobaisQueSaoPassadasPorReferencia();
+            
+            saida.append(Utils.geraIdentacao(nivelEscopo));
+            saida.append("}").println();
+            return this;
+        }
+
         public VisitorGeracaoCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
         {
-            List<NoDeclaracao> variaveisGlobais = asa.getListaDeclaracoesGlobais();
+            processandoVariaveisGlobais = true;
             boolean existemVariaveisGlobais = false;
-            for (NoDeclaracao no : variaveisGlobais)
+            List<NoDeclaracaoInicializavel> variaveisGlobais = getVariaveisGlobaisDeclaradas(asa, false); // não exclui as constantes
+            for (NoDeclaracaoInicializavel no : variaveisGlobais)
             {
-                if (no instanceof NoDeclaracaoVariavel && ((NoDeclaracaoVariavel) no).ehPassadaPorReferencia())
+                if (no instanceof NoDeclaracaoVariavel)
                 {
-                    continue; // variáveis globais que são passadas como referência não são declaradas como atributo no código Java
+                    if (((NoDeclaracaoVariavel)no).ehPassadaPorReferencia())
+                    {
+                        continue; // variáveis globais que são passadas como referência não são declaradas como atributo no código Java
+                    }
                 }
                 boolean atributoGerado = geradorAtributo.gera(no, saida, this, nivelEscopo);
                 existemVariaveisGlobais |= atributoGerado;
@@ -140,6 +249,8 @@ public class GeradorCodigoJava
                 saida.println(); // deixa uma linha em branco depois dos atributos globais
             }
 
+            processandoVariaveisGlobais = false;
+            
             return this;
         }
 
@@ -363,13 +474,15 @@ public class GeradorCodigoJava
         @Override
         public Boolean visitar(NoDeclaracaoVariavel noDeclaracao) throws ExcecaoVisitaASA
         {
-            return geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo);
+            boolean podeInicializar = !processandoVariaveisGlobais;
+            return geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo, podeInicializar);
         }
 
         @Override
         public Void visitar(NoDeclaracaoVetor no) throws ExcecaoVisitaASA
         {
-            geradorDeclaracaoVariavel.gera(no, saida, this, nivelEscopo);
+            boolean podeInicializar = !processandoVariaveisGlobais;
+            geradorDeclaracaoVariavel.gera(no, saida, this, nivelEscopo, podeInicializar);
             return null;
         }
 
@@ -383,7 +496,8 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoDeclaracaoMatriz noDeclaracao) throws ExcecaoVisitaASA
         {
-            geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo);
+            boolean podeInicializar = !processandoVariaveisGlobais;
+            geradorDeclaracaoVariavel.gera(noDeclaracao, saida, this, nivelEscopo, podeInicializar);
             return null;
         }
 
@@ -799,8 +913,6 @@ public class GeradorCodigoJava
                         .println();
             }
             
-            inicializaVariaveisGlobaisQueSaoPassadasPorReferencia();
-            
             nivelEscopo--;
 
             saida.append(identacao)
@@ -883,6 +995,7 @@ public class GeradorCodigoJava
             return this;
         }
 
+        
     }
 
 }

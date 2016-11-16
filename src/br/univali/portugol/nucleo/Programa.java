@@ -467,6 +467,8 @@ public abstract class Programa
         }
     }
 
+    protected void inicializar() throws ErroExecucao, InterruptedException {}; // usado para reinicializar todas as variáveis globais, assim o programa pode ser re-executado
+    
     public void continuar(Programa.Estado estado)
     {
         synchronized (LOCK)
@@ -508,13 +510,11 @@ public abstract class Programa
     {
         private final String[] parametros;
         private final ResultadoExecucao resultadoExecucao;
-        //private final Programa.Estado estado;
 
         public TarefaExecucao(String[] parametros)
         {
             this.parametros = parametros;
             this.resultadoExecucao = new ResultadoExecucao();
-            //this.estado = estado;
         }
 
         public ResultadoExecucao getResultadoExecucao()
@@ -531,6 +531,7 @@ public abstract class Programa
             {
                 notificarInicioExecucao();
                 inicializaBibliotecasIncluidas();
+                inicializar(); // reinicializa todas as variaveis antes de executar
                 executar(parametros);
             }
             catch (ErroExecucao erroExecucao)

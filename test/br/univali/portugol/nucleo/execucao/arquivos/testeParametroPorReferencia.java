@@ -31,6 +31,11 @@ public class testeParametroPorReferencia extends Programa
     
     public testeParametroPorReferencia() throws ErroExecucao, InterruptedException
     {
+        
+    }
+    
+    @Override
+    protected void inicializar () throws ErroExecucao, InterruptedException {
         REFS_INT[INDICE_I_2] = -1;
     }
 

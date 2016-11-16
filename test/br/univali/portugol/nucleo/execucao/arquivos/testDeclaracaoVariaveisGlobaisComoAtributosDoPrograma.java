@@ -17,6 +17,10 @@ public class testDeclaracaoVariaveisGlobaisComoAtributosDoPrograma extends Progr
     }
 
     @Override
+    protected void inicializar () throws ErroExecucao, InterruptedException {
+    }
+    
+    @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
     }

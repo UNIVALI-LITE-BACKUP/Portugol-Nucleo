@@ -5,15 +5,24 @@ import br.univali.portugol.nucleo.Programa;
 
 public class testVariaveisGlobaisInicializadasComExpressoes extends Programa
 {
-    private String c = "teste" + " concatenacao";
-    private int i = ((10 + 2 * 4 / 1) << 1);
-    private boolean l = true && true || false;
-    private double r = 53.23 + 0.01;
+    private String c;
+    private int i;
+    private boolean l;
+    private double r;
 
     public testVariaveisGlobaisInicializadasComExpressoes() throws ErroExecucao, InterruptedException
     {
     }
 
+    @Override
+    protected void inicializar() throws ErroExecucao, InterruptedException
+    {
+        c = "teste" + " concatenacao";
+        i = ((10 + 2 * 4 / 1) << 1);
+        l = true && true || false;
+        r = 53.23 + 0.01;
+    }
+    
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {

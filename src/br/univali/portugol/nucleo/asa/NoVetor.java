@@ -78,6 +78,14 @@ public final class NoVetor extends NoExpressao
     @Override
     public TipoDado getTipoResultante()
     {
+        if (!valores.isEmpty())
+        {
+            Object valor = valores.get(0);
+            if (valor instanceof NoExpressao)
+            {
+                return ((NoExpressao)valor).getTipoResultante();
+            }
+        }
         return TipoDado.VAZIO;
     }
 }

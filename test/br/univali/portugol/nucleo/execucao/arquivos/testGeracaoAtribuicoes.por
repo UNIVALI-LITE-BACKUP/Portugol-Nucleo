@@ -4,7 +4,12 @@ programa
         /* bumbo   */{verdadeiro, falso},                           
         /* caixa   */{falso, falso},                                
         /* chimbal */{verdadeiro, falso}                            
-    }                                                   
+    }                 
+
+    inteiro cores[4] = {-14364777,-4046236,-4867209,-15193197}
+                  
+    const inteiro vetor[] = {1, 2}
+    const inteiro matriz[][] = {{1}, {2}}
     
     funcao inicio() {                                       
         inteiro x = (10 / 2)                                

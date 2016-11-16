@@ -21,6 +21,8 @@ public class GeradorDeclaracaoVariavel
 
     public void gera(NoMatriz matriz, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
+        
+        saida.format("new %s[][]", Utils.getNomeTipoJava(matriz.getTipoResultante()));
         saida.append("{");
 
         List<List<Object>> valores = matriz.getValores();
@@ -51,6 +53,7 @@ public class GeradorDeclaracaoVariavel
     public void gera(NoVetor vetor, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
 
+        saida.format("new %s[]", Utils.getNomeTipoJava(vetor.getTipoResultante()));
         saida.append("{");
 
         List<Object> valores = vetor.getValores();
@@ -76,69 +79,71 @@ public class GeradorDeclaracaoVariavel
     }
 
     public void gera(NoDeclaracaoVetor vetor, PrintWriter saida, VisitanteASA visitor, 
-                int nivelEscopo) throws ExcecaoVisitaASA
+                int nivelEscopo, boolean podeInicializar) throws ExcecaoVisitaASA
     {
         
         String nome = vetor.getNome();
         String tipo = Utils.getNomeTipoJava(vetor.getTipoDado());
         saida.format("%s %s[]", tipo, nome);
 
-        if (vetor.temInicializacao())
+        if (podeInicializar || vetor.constante())
         {
-            saida.append(" = ");
-            vetor.getInicializacao().aceitar(visitor);
-        }
-        else
-        {
-            saida.format(" = new %s[", tipo);
-            if (vetor.getTamanho() != null)
+            if (vetor.temInicializacao())
             {
-                vetor.getTamanho().aceitar(visitor);
+                saida.append(" = ");
+                vetor.getInicializacao().aceitar(visitor);
             }
-            saida.append("]");
+            else
+            {
+                NoExpressao tamanho = vetor.getTamanho();
+                if (tamanho != null)
+                {
+                    saida.format(" = new %s[", tipo);
+                    tamanho.aceitar(visitor);
+                    saida.append("]");
+                }
+            }
         }
-
     }
 
     public void gera(NoDeclaracaoMatriz matriz, PrintWriter saida, VisitanteASA visitor, 
-            int nivelEscopo) throws ExcecaoVisitaASA
+            int nivelEscopo, boolean podeInicializar) throws ExcecaoVisitaASA
     {
         
         String nome = matriz.getNome();
         String tipo = Utils.getNomeTipoJava(matriz.getTipoDado());
         saida.format("%s %s[][]", tipo, nome);
 
-        saida.append(" = ");
-
-        if (matriz.temInicializacao())
+        if (podeInicializar || matriz.constante())
         {
-            matriz.getInicializacao().aceitar(visitor);
-        }
-        else
-        {
-            saida.append(" new ")
-                    .append(tipo)
-                    .append("[");
-
-            if (matriz.getNumeroLinhas() != null)
+            if (matriz.temInicializacao())
             {
-                matriz.getNumeroLinhas().aceitar(visitor);
+                saida.append(" = ");
+                matriz.getInicializacao().aceitar(visitor);
             }
-
-            saida.append("][");
-
-            if (matriz.getNumeroColunas() != null)
+            else
             {
-                matriz.getNumeroColunas().aceitar(visitor);
+                NoExpressao numeroLinhas = matriz.getNumeroLinhas();
+                NoExpressao numeroColunas = matriz.getNumeroColunas();
+                
+                if (numeroLinhas != null && numeroColunas != null)
+                {
+                    saida.append(" = new ").
+                            append(tipo)
+                            .append("[");
+                    
+                    matriz.getNumeroLinhas().aceitar(visitor);
+                    saida.append("][");
+                    matriz.getNumeroColunas().aceitar(visitor);
+                    saida.append("]");
+                }
             }
-
-            saida.append("]");
         }
 
     }
 
     public boolean gera(NoDeclaracaoVariavel variavel, PrintWriter saida, 
-                VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
+                VisitanteASA visitor, int nivelEscopo, boolean podeInicializar) throws ExcecaoVisitaASA
     {
 
         if (variavel.ehPassadaPorReferencia() && !variavel.temInicializacao())
@@ -160,7 +165,7 @@ public class GeradorDeclaracaoVariavel
             saida.format("%s %s", nomeTipo, nome);
         }
 
-        if (variavel.temInicializacao())
+        if ((podeInicializar || variavel.constante()) && variavel.temInicializacao()) //constantes sempre devem ser inicializadas
         {
             saida.append(" = ");
 

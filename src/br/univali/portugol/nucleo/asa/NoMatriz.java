@@ -86,6 +86,15 @@ public final class NoMatriz extends NoExpressao
     @Override
     public TipoDado getTipoResultante()
     {
+        if (!valores.isEmpty() && !valores.get(0).isEmpty())
+        {
+            Object valor = valores.get(0).get(0);
+            if (valor instanceof NoExpressaoLiteral)
+            {
+                return ((NoExpressaoLiteral)valor).getTipoResultante();
+            }
+            
+        }
         return TipoDado.VAZIO;
     }
 }
