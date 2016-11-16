@@ -9,7 +9,6 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstan
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import java.math.BigDecimal;
 
 /**
  *
@@ -31,7 +30,7 @@ public final class Matematica extends Biblioteca
             descricao = "Constante matemática que representa a relação entre o perímetro de uma circunferência e seu diâmetro, em outras palavras: perimetro/diâmetro",
             referencia = "http://pt.wikipedia.org/wiki/Pi"
     )
-    public static final Double PI = Math.PI;
+    public static final double PI = Math.PI;
 
     @DocumentacaoFuncao(
             descricao = "Realiza uma exponenciação através da multiplicação da base por ela mesma tantas vezes quanto indicar o expoente",
@@ -47,7 +46,7 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Double potencia(Double base, Double expoente) throws ErroExecucaoBiblioteca
+    public double potencia(double base, double expoente) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.pow(base, expoente);
     }
@@ -66,7 +65,7 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Double raiz(Double radicando, Double indice) throws ErroExecucaoBiblioteca
+    public double raiz(double radicando, double indice) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.pow(radicando, 1.0 / indice);
     }
@@ -88,12 +87,14 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Double arredondar(Double numero, Integer casas) throws ErroExecucaoBiblioteca
+    public double arredondar(double numero, int casas) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BigDecimal decimal = new BigDecimal(numero);
-        decimal = decimal.setScale(casas, BigDecimal.ROUND_HALF_UP);
-
-        return decimal.doubleValue();
+        double factor = 1.0;
+        
+        for (int i = 1; i <= casas; i++)
+            factor *= 10;
+        
+        return Math.round(numero * factor) / factor;
     }
 
     @DocumentacaoFuncao(
@@ -111,7 +112,7 @@ public final class Matematica extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Double logaritmo(Double numero, Double base) throws ErroExecucaoBiblioteca
+    public double logaritmo(double numero, double base) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.log(numero) / Math.log(base);
     }
@@ -129,7 +130,7 @@ public final class Matematica extends Biblioteca
             retorno = "o seno do <param>ângulo</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Seno"
     )
-    public Double seno(Double angulo) throws ErroExecucaoBiblioteca
+    public double seno(double angulo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.sin(angulo);
     }
@@ -147,7 +148,7 @@ public final class Matematica extends Biblioteca
             retorno = "o cosseno do <param>ângulo</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Cosseno"
     )
-    public Double cosseno(Double angulo) throws ErroExecucaoBiblioteca
+    public double cosseno(double angulo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.cos(angulo);
     }
@@ -165,7 +166,7 @@ public final class Matematica extends Biblioteca
             retorno = "a tagente do <param>ângulo</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Tangente"
     )
-    public Double tangente(Double angulo) throws ErroExecucaoBiblioteca
+    public double tangente(double angulo) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.tan(angulo);
     }
@@ -183,7 +184,7 @@ public final class Matematica extends Biblioteca
             retorno = "o valor absoluto do <param>número</param> informado",
             referencia = "http://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_modular"
     )
-    public Double valor_absoluto(Double numero) throws ErroExecucaoBiblioteca
+    public double valor_absoluto(double numero) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.abs(numero);
     }
@@ -201,7 +202,7 @@ public final class Matematica extends Biblioteca
             },
             retorno = "o maior número"
     )
-    public Double maior_numero(Double numeroA, Double numeroB) throws ErroExecucaoBiblioteca
+    public double maior_numero(double numeroA, double numeroB) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.max(numeroA, numeroB);
     }
@@ -219,7 +220,7 @@ public final class Matematica extends Biblioteca
             },
             retorno = "o menor número"
     )
-    public Double menor_numero(Double numeroA, Double numeroB) throws ErroExecucaoBiblioteca
+    public double menor_numero(double numeroA, double numeroB) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return Math.min(numeroA, numeroB);
     }

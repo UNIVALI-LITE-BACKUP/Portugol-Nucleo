@@ -5,7 +5,7 @@ import br.univali.portugol.nucleo.asa.NoBloco;
 import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
 import br.univali.portugol.nucleo.asa.NoExpressao;
 import br.univali.portugol.nucleo.asa.NoOperacao;
-import br.univali.portugol.nucleo.asa.NoValor;
+import br.univali.portugol.nucleo.asa.NoExpressaoLiteral;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 
 /**
@@ -104,7 +104,7 @@ public final class ErroAtribuirEmExpressao extends ErroSemantico
         
         builder.append("Não é possível realizar uma atribuição à ");
                 
-        if (expressao instanceof NoValor)
+        if (expressao instanceof NoExpressaoLiteral)
         {
             builder.append("um valor literal.");
         }

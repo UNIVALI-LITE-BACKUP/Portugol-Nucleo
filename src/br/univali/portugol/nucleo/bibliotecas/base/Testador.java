@@ -90,6 +90,7 @@ final class Testador
                                     }
                                     catch(Exception excecao)
                                     {
+                                        excecao.printStackTrace(System.err);
                                         erros++;
                                         log.append(String.format("<p style='text-align: justify; color : red;'>%s</p><br><br>", excecao.getMessage()));
                                     }                                    

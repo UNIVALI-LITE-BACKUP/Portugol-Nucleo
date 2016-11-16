@@ -289,11 +289,11 @@ public class PortugolParser extends Parser
 
     // $ANTLR start "parse"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:231:1: parse returns [ArvoreSintaticaAbstrata asa] : prog= programa ;
-    public final ArvoreSintaticaAbstrata parse() throws RecognitionException
+    public final ASA parse() throws RecognitionException
     {
-        ArvoreSintaticaAbstrata asa = null;
+        ASA asa = null;
 
-        ArvoreSintaticaAbstrata prog = null;
+        ASA prog = null;
 
         try
         {
@@ -329,9 +329,9 @@ public class PortugolParser extends Parser
 
     // $ANTLR start "programa"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:240:1: programa returns [ArvoreSintaticaAbstrata asa] : PR_PROGRAMA '{' ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )* ( declaracoesGlobais[asa] | declaracaoFuncao[asa] )* '}' ;
-    public final ArvoreSintaticaAbstrata programa() throws RecognitionException
+    public final ASA programa() throws RecognitionException
     {
-        ArvoreSintaticaAbstrata asa = null;
+        ASA asa = null;
 
         pilhaContexto.push("programa");
 
@@ -354,9 +354,9 @@ public class PortugolParser extends Parser
                 {
                     if (gerarArvore)
                     {
-                        asa = new ArvoreSintaticaAbstrataPrograma();
+                        asa = new ASAPrograma();
                         asa.setListaDeclaracoesGlobais(new ArrayList<NoDeclaracao>());
-                        ((ArvoreSintaticaAbstrataPrograma) asa).setListaInclusoesBibliotecas(new ArrayList<NoInclusaoBiblioteca>());
+                        ((ASAPrograma) asa).setListaInclusoesBibliotecas(new ArrayList<NoInclusaoBiblioteca>());
                     }
                 }
                 // C:\\Users\\Paula\\Desktop\\Portugol.g:256:4: ( inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa] )*
@@ -376,7 +376,7 @@ public class PortugolParser extends Parser
                         // C:\\Users\\Paula\\Desktop\\Portugol.g:256:4: inclusaoBiblioteca[(ArvoreSintaticaAbstrataPrograma ) asa]
                         {
                             pushFollow(FOLLOW_inclusaoBiblioteca_in_programa960);
-                            inclusaoBiblioteca((ArvoreSintaticaAbstrataPrograma) asa);
+                            inclusaoBiblioteca((ASAPrograma) asa);
                             state._fsp--;
                             if (state.failed)
                             {
@@ -466,7 +466,7 @@ public class PortugolParser extends Parser
 
     // $ANTLR start "inclusaoBiblioteca"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:266:1: inclusaoBiblioteca[ArvoreSintaticaAbstrataPrograma asa] : incl= PR_INCLUA PR_BIBLIOTECA nome= ID ( '-->' alias= ID )? ;
-    public final void inclusaoBiblioteca(ArvoreSintaticaAbstrataPrograma asa) throws RecognitionException
+    public final void inclusaoBiblioteca(ASAPrograma asa) throws RecognitionException
     {
         Token incl = null;
         Token nome = null;
@@ -575,7 +575,7 @@ public class PortugolParser extends Parser
 
     // $ANTLR start "declaracoesGlobais"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:307:1: declaracoesGlobais[ArvoreSintaticaAbstrata asa] : vListaDeclaracoes= listaDeclaracoes ;
-    public final void declaracoesGlobais(ArvoreSintaticaAbstrata asa) throws RecognitionException
+    public final void declaracoesGlobais(ASA asa) throws RecognitionException
     {
         List<NoDeclaracao> vListaDeclaracoes = null;
 
@@ -1436,7 +1436,7 @@ public class PortugolParser extends Parser
 
     // $ANTLR start "declaracaoFuncao"
     // C:\\Users\\Paula\\Desktop\\Portugol.g:526:1: declaracaoFuncao[ArvoreSintaticaAbstrata asa] : PR_FUNCAO informacaoTipoDado= tipoRetornoFuncao vQuantificador= quantificador ID '(' vListaParametros= listaParametrosFuncao ')' '{' vBlocos= blocos '}' ;
-    public final void declaracaoFuncao(ArvoreSintaticaAbstrata asa) throws RecognitionException
+    public final void declaracaoFuncao(ASA asa) throws RecognitionException
     {
         Token ID3 = null;
         InformacaoTipoDado informacaoTipoDado = null;
@@ -5053,6 +5053,11 @@ public class PortugolParser extends Parser
                         }
                         pushFollow(FOLLOW_expressao_in_expressao83318);
                         vExpressao = expressao();
+                        
+                        if (vExpressao != null)
+                        {
+                            vExpressao.setEstaEntreParenteses(true);
+                        }
                         state._fsp--;
                         if (state.failed)
                         {

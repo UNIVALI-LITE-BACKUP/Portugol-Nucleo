@@ -43,4 +43,11 @@ public final class NoBitwiseNao extends NoExpressao
     {
         return expressao.getTrechoCodigoFonte();
     }
+
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return expressao.getTipoResultante();
+    }
+
 }

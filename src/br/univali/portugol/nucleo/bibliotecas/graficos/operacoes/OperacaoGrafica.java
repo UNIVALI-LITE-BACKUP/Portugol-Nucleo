@@ -1,13 +1,30 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 /**
  *
- * @author Luiz Fernando Noschang
+ * @author Luiz Fernando
  */
-public interface OperacaoGrafica
+public abstract class OperacaoGrafica
 {
-    public void executar(Graphics2D graficos, Rectangle areaGraficos);
+    private final CacheOperacoesGraficas cache;
+    
+    public OperacaoGrafica(CacheOperacoesGraficas cache)
+    {
+        this.cache = cache;
+    }
+    
+    public final void liberar()
+    {
+        cache.devolver(this);
+    }
+    
+    public void executar(Graphics2D graficos)
+    {
+        desenhar(graficos);
+    }
+    
+    protected abstract void desenhar(Graphics2D graficos);
 }

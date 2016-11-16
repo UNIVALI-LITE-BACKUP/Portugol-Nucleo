@@ -10,5 +10,11 @@ public abstract class NoOperacaoLogica extends NoOperacao
     public NoOperacaoLogica(NoExpressao operandoEsquerdo, NoExpressao operandoDireito)
     {
         super(operandoEsquerdo, operandoDireito);
-    }    
+    }
+
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.LOGICO;
+    }
 }

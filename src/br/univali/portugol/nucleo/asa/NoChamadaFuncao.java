@@ -1,6 +1,8 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.Programa;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,9 +23,11 @@ import java.util.List;
  * @version 1.0
  *
  */
-public final class NoChamadaFuncao extends NoReferencia
+public final class NoChamadaFuncao extends NoReferencia<NoDeclaracaoFuncao>
 {
+    private boolean funcaoDeBiblioteca = false;
     private List<NoExpressao> parametros;
+    private TipoDado tipoRetornoBiblioteca = TipoDado.VAZIO;
 
     /**
      * @param escopo o escopo da função sendo referenciada. Se o escopo for
@@ -38,6 +42,12 @@ public final class NoChamadaFuncao extends NoReferencia
         super(escopo, nome);
     }
 
+    @Override  // sobrescrevendo para retornar tipo mais específico (tipo de retorno covariante)
+    public NoDeclaracaoFuncao getOrigemDaReferencia()
+    {
+        return origemDaReferencia;
+    }
+
     /**
      * Obtém a lista dos parâmetros que estão sendo passados para a função. Os
      * prâmetros podem ser qualquer tipo de expressão, inclusive outras chamadas
@@ -50,7 +60,10 @@ public final class NoChamadaFuncao extends NoReferencia
      */
     public List<NoExpressao> getParametros()
     {
-        return parametros;
+        if (parametros != null)
+            return parametros;
+        
+        return Collections.EMPTY_LIST;
     }
 
     /**
@@ -100,9 +113,39 @@ public final class NoChamadaFuncao extends NoReferencia
     }
 
     @Override
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
-        return (estado == Depurador.Estado.BREAK_POINT && pontoDeParadaEstaAtivo()) || estado == Depurador.Estado.STEP_OVER;
+        return (estado == Programa.Estado.BREAK_POINT && pontoDeParadaEstaAtivo()) || estado == Programa.Estado.STEP_OVER;
     }
 
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        if (isFuncaoDeBiblioteca())
+        {
+            return getTipoRetornoBiblioteca();
+        }
+        
+        return super.getTipoResultante();
+    }
+
+    public boolean isFuncaoDeBiblioteca()
+    {
+        return funcaoDeBiblioteca;
+    }
+
+    public void setFuncaoDeBiblioteca(boolean funcaoDeBiblioteca)
+    {
+        this.funcaoDeBiblioteca = funcaoDeBiblioteca;
+    }
+
+    public void setTipoRetornoBiblioteca(TipoDado tipoRetornoBiblioteca)
+    {
+        this.tipoRetornoBiblioteca = tipoRetornoBiblioteca;
+    }
+
+    public TipoDado getTipoRetornoBiblioteca()
+    {
+        return tipoRetornoBiblioteca;
+    }
 }

@@ -18,7 +18,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa"
                     + "{"
                     + " funcao inicio(){"
@@ -45,7 +45,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa"
                     + "{"
                     + " funcao inicio(){"
@@ -72,7 +72,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa"
                     + "{"
                     + " funcao inicio(){"
@@ -101,7 +101,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa"
                     + "{"
                     + " funcao inicio(){"
@@ -132,7 +132,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa {"
                     + " funcao inicio() {"
                     + "  inteiro a = 1"
@@ -158,7 +158,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa {"
                     + " funcao inicio() {"
                     + "  inteiro a = 0, b = 1"
@@ -191,7 +191,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa {"
                     + " funcao inicio() {"
                     + "  inteiro a = 1"
@@ -217,7 +217,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa {"
                     + " funcao inicio() {"
                     + "  logico a = verdadeiro"
@@ -248,7 +248,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa {"
                     + " funcao inicio() {"
                     + "  caracter a = 'a'"
@@ -278,7 +278,7 @@ public final class AnalisadorSemanticoTest
     {
         try
         {
-            Portugol.compilar(
+            Portugol.compilarParaAnalise(
                     "programa {"
                     + " funcao inicio() {"
                     + "  cadeia a = \"a\""

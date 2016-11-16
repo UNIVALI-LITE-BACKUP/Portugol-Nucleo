@@ -15,7 +15,7 @@ public final class EntradaSaidaPadrao implements Entrada, Saida
     }
 
     @Override
-    public void solicitaEntrada(TipoDado tipoDado, Armazenador armazenador) throws Exception
+    public void solicitaEntrada(TipoDado tipoDado, Armazenador armazenador) throws InterruptedException
     {
         Scanner in = new Scanner(System.in);
 
@@ -42,8 +42,10 @@ public final class EntradaSaidaPadrao implements Entrada, Saida
         armazenador.setValor(null);
     }
 
+    
+    
     @Override
-    public void limpar() throws Exception
+    public void limpar() throws InterruptedException
     {
         for (int i = 0; i < 50; i++)
         {
@@ -52,31 +54,31 @@ public final class EntradaSaidaPadrao implements Entrada, Saida
     }
 
     @Override
-    public void escrever(String valor) throws Exception
+    public void escrever(String valor) throws InterruptedException
     {
         System.out.print(valor);
     }
 
     @Override
-    public void escrever(boolean valor) throws Exception
+    public void escrever(boolean valor) throws InterruptedException
     {
         System.out.print(valor ? "verdadeiro" : "falso");
     }
 
     @Override
-    public void escrever(int valor) throws Exception
+    public void escrever(int valor) throws InterruptedException
     {
         System.out.print(valor);
     }
 
     @Override
-    public void escrever(double valor) throws Exception
+    public void escrever(double valor) throws InterruptedException
     {
         System.out.print(valor);
     }
 
     @Override
-    public void escrever(char valor) throws Exception
+    public void escrever(char valor) throws InterruptedException
     {
         System.out.print(valor);
     }

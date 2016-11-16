@@ -5,17 +5,7 @@
  */
 package br.univali.portugol.nucleo.bibliotecas.graficos;
 
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoElipse;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoImagem;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoLinha;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoPonto;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoPorcaoImagem;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoRetangulo;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoTexto;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.DesenhoPoligono;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.OperacaoDefinirCor;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.OperacaoDefinirFonte;
-import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.OperacaoLimpar;
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.PoolOperacoesGraficas;
 import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.OperacaoGrafica;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -29,8 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,16 +28,27 @@ import java.util.Map;
  */
 final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 {
-    private final List<OperacaoGrafica> operacoes = new ArrayList<>(512);
+    private final PoolOperacoesGraficas POOL_OPERACOES_GRAFICAS = new PoolOperacoesGraficas();
+
+    private final OperacaoGrafica[] operacoes = new OperacaoGrafica[2048];
+    private int indiceOperacao = 0;
 
     private Font fonteTexto = null;
     private FontMetrics dimensoesFonte = null;
+    
+    //             Map<nomeFonte, Map<estilo, Map<sublinhado, Map<tamanho, Font>>> 
+    private  final Map<String, Map<Integer, Map<Boolean, Map<Float, Font>>>> cacheFontes = new HashMap<>(); // cache de fontes
+
+    boolean usandoSublinhado = false;
+    
+    private Map<Integer, Color> cacheCores = new HashMap<>();
 
     private double rotacao = 0.0;
     private int opacidade = 255;
     private Color cor = new Color(0, 0, 0, opacidade);
 
     private BufferStrategy buffer;
+    private Rectangle areaGrafica;
 
     public SuperficieDesenhoImpl()
     {
@@ -85,11 +85,9 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
                 graficos.setColor(cor);
                 graficos.setFont(fonteTexto);
 
-                int totalOperacoes = operacoes.size();
-                Rectangle bounds = getBounds();
-                for (int i = 0; i < totalOperacoes; ++i)
+                for (int i = 0; i < indiceOperacao; ++i)
                 {
-                    operacoes.get(i).executar(graficos, bounds);
+                    operacoes[i].executar(graficos);
                 }
 
                 graficos.dispose();
@@ -100,19 +98,25 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         }
         while (buffer.contentsLost());
 
-        operacoes.clear();
+        for (int i = 0; i < indiceOperacao; i++)
+        {
+            operacoes[i].liberar();
+            operacoes[i] = null;
+        }
+
+        indiceOperacao = 0;
     }
 
     private Color obterCorTransparente(int cor, int opacidade)
     {
-        Color aux = new Color(cor);
-
-        int a = opacidade;
-        int r = aux.getRed();
-        int g = aux.getGreen();
-        int b = aux.getBlue();
-
-        return new Color(r, g, b, a);
+        int chave = (cor << 8) | opacidade; // geram um inteiro com RGBA
+        if (!cacheCores.containsKey(chave))
+        {
+            Color aux = new Color(cor);
+            cacheCores.put(chave, new Color(aux.getRed(), aux.getGreen(), aux.getBlue(), opacidade));
+        }
+        
+        return cacheCores.get(chave);
     }
 
     @Override
@@ -120,19 +124,23 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     {
         setBounds(0, 0, largura, altura);
         criarBuffer();
+        areaGrafica = getBounds();
     }
 
     @Override
     public void limpar()
     {
-        operacoes.add(new OperacaoLimpar());
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoLimpar(areaGrafica.width, areaGrafica.height);
+        indiceOperacao++;
     }
 
     @Override
     public void definirCor(int cor)
     {
         this.cor = obterCorTransparente(cor, opacidade);
-        this.operacoes.add(new OperacaoDefinirCor(this.cor));
+        this.operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirCor(this.cor);
+
+        indiceOperacao++;
     }
 
     @Override
@@ -140,56 +148,115 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     {
         this.opacidade = opacidade;
         this.cor = obterCorTransparente(this.cor.getRGB(), opacidade);
-        this.operacoes.add(new OperacaoDefinirCor(this.cor));
+        this.operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirCor(this.cor);
+
+        indiceOperacao++;
     }
 
     @Override
     public void desenharRetangulo(int x, int y, int largura, int altura, boolean arredondarCantos, boolean preencher)
     {
-        operacoes.add(new DesenhoRetangulo(x, y, largura, altura, arredondarCantos, preencher, rotacao));
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoRetangulo(x, y, largura, altura, arredondarCantos, preencher, rotacao, opacidade);
+        indiceOperacao++;
     }
 
     @Override
     public void desenharElipse(int x, int y, int largura, int altura, boolean preencher)
     {
-        operacoes.add(new DesenhoElipse(x, y, largura, altura, preencher, rotacao));
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoElipse(x, y, largura, altura, preencher, rotacao, opacidade);
+        indiceOperacao++;
     }
 
     @Override
     public void desenharLinha(int x1, int y1, int x2, int y2)
     {
-        operacoes.add(new DesenhoLinha(x1, y1, x2, y2, rotacao));
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoLinha(x1, y1, x2, y2, rotacao, opacidade);
+        indiceOperacao++;
     }
 
     @Override
     public void desenharTexto(String texto, int x, int y)
     {
-        operacoes.add(new DesenhoTexto(x, y, texto, rotacao));
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoTexto(x, y, texto, dimensoesFonte, rotacao, opacidade);
+        indiceOperacao++;
     }
 
     @Override
     public void definirFonteTexto(String nome)
     {
-        Integer underline = (Integer) fonteTexto.getAttributes().get(TextAttribute.UNDERLINE);
-        Font fonte = new Font(nome, Font.PLAIN, 12);
+        fonteTexto = getFonte(nome, fonteTexto.getStyle(), usandoSublinhado, fonteTexto.getSize2D());
 
-        fonte = fonte.deriveFont(fonteTexto.getStyle(), fonteTexto.getSize2D());
-
-        Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonte.getAttributes();
-        atributos.put(TextAttribute.UNDERLINE, underline);
-
-        fonte = fonte.deriveFont(atributos);
-
-        fonteTexto = fonte;
-        dimensoesFonte = getFontMetrics(fonte);
-        operacoes.add(new OperacaoDefinirFonte(fonte));
+        dimensoesFonte = getFontMetrics(fonteTexto);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonteTexto);
+        indiceOperacao++;
     }
 
     @Override
     public void definirEstiloTexto(boolean italico, boolean negrito, boolean sublinhado)
     {
-        int estilo = Font.PLAIN;
+        this.usandoSublinhado = sublinhado;
+        String nomeFonte = fonteTexto.getName();
+        int estilo = getEstilo(negrito, italico);
+        float tamanho = fonteTexto.getSize2D();
 
+        fonteTexto = getFonte(nomeFonte, estilo, sublinhado, tamanho);
+
+        dimensoesFonte = getFontMetrics(fonteTexto);
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonteTexto);
+
+        indiceOperacao++;
+    }
+
+    @Override
+    public void registrarFonteCarregada(Font fonte)
+    {
+        cacheFontes.putIfAbsent(fonte.getName(), new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
+        Map<Integer, Map<Boolean, Map<Float, Font>>> fonteName = cacheFontes.get(fonte.getName());
+        fonteName.putIfAbsent(fonte.getStyle(), new HashMap<Boolean, Map<Float, Font>>());
+        Map<Boolean, Map<Float, Font>> style = fonteName.get(fonte.getStyle());
+        style.putIfAbsent(Boolean.FALSE, new HashMap<Float, Font>());
+        style.get(Boolean.FALSE).putIfAbsent(fonte.getSize2D(), fonte);
+    }
+
+    private Font getFonte(String nomeFonte, int estilo, boolean sublinhado, float tamanho)
+    {
+        if (!cacheFontes.containsKey(nomeFonte))
+        {
+            cacheFontes.put(nomeFonte, new HashMap<Integer, Map<Boolean, Map<Float, Font>>>());
+        }
+        Map<Integer, Map<Boolean, Map<Float, Font>>> fontesNome = cacheFontes.get(nomeFonte);
+
+        if (!fontesNome.containsKey(estilo))
+        {
+            fontesNome.put(estilo, new HashMap<Boolean, Map<Float, Font>>());
+        }
+        Map<Boolean, Map<Float, Font>> fontesEstilo = fontesNome.get(estilo);
+
+        if (!fontesEstilo.containsKey(sublinhado))
+        {
+            fontesEstilo.put(sublinhado, new HashMap<Float, Font>());
+        }
+
+        Map<Float, Font> fontesTamanho = fontesEstilo.get(sublinhado);
+        if (!fontesTamanho.containsKey(tamanho))
+        {
+            //System.out.println("Criando fonte");
+            Font novaFonte = new Font(nomeFonte, estilo, (int)tamanho); 
+            if (sublinhado)
+            {
+                Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonteTexto.getAttributes();
+                atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+                novaFonte = novaFonte.deriveFont(atributos);
+            }
+            cacheFontes.get(nomeFonte).get(estilo).get(sublinhado).put(tamanho, novaFonte);
+        }
+
+        return cacheFontes.get(nomeFonte).get(estilo).get(sublinhado).get(tamanho);
+    }
+
+    private int getEstilo(boolean negrito, boolean italico)
+    {
+        int estilo = Font.PLAIN;
         if (italico)
         {
             estilo = estilo | Font.ITALIC;
@@ -199,50 +266,35 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         {
             estilo = estilo | Font.BOLD;
         }
-
-        Map<TextAttribute, Integer> atributos = (Map<TextAttribute, Integer>) fonteTexto.getAttributes();
-
-        if (sublinhado)
-        {
-            atributos.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        }
-        else
-        {
-            atributos.put(TextAttribute.UNDERLINE, -1);
-        }
-
-        fonteTexto = fonteTexto.deriveFont(atributos);
-        fonteTexto = fonteTexto.deriveFont(estilo);
-
-        dimensoesFonte = getFontMetrics(fonteTexto);
-        operacoes.add(new OperacaoDefinirFonte(fonteTexto));
+        return estilo;
     }
 
     @Override
     public void definirTamanhoTexto(double tamanho)
     {
-        Double t = tamanho;
-
-        fonteTexto = fonteTexto.deriveFont(t.floatValue());
+        fonteTexto = fonteTexto.deriveFont((float) tamanho);
 
         dimensoesFonte = getFontMetrics(fonteTexto);
-        operacoes.add(new OperacaoDefinirFonte(fonteTexto));
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirFonte(fonteTexto);
+        indiceOperacao++;
     }
 
     @Override
     public void desenharImagem(int x, int y, BufferedImage imagem)
     {
-        operacoes.add(new DesenhoImagem(x, y, imagem, opacidade, rotacao));
+        // evita adicionar operações de pintura que estão fora das dimensões do canvas
+        if (y + imagem.getHeight() > 0 && y < getHeight() && x < getWidth() && x + imagem.getWidth() > 0)
+        {
+            operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoImagem(x, y, imagem, opacidade, rotacao);
+            indiceOperacao++;
+        }
     }
 
     @Override
     public void desenharPorcaoImagem(int x, int y, int xi, int yi, int largura, int altura, BufferedImage imagem)
     {
-        // evita adicionar operações de pintura que estão fora das dimensões do canvas
-        if (y + altura > 0 && y < getHeight() && x < getWidth() && x + largura > 0)
-        {
-            operacoes.add(new DesenhoPorcaoImagem(x, y, xi, yi, largura, altura, imagem, opacidade, rotacao));
-        }
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPorcaoImagem(x, y, xi, yi, largura, altura, imagem, opacidade, rotacao);
+        indiceOperacao++;
     }
 
     @Override
@@ -271,7 +323,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharPonto(int x, int y)
     {
-        operacoes.add(new DesenhoPonto(x, y));
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPonto(x, y, opacidade);
+        indiceOperacao++;
     }
 
     @Override
@@ -279,27 +332,27 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     {
         BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graficos = (Graphics2D) imagem.getGraphics();
-        
+
         graficos.setColor(cor);
         graficos.setFont(fonteTexto);
         graficos.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        Rectangle areaGraficos = new Rectangle(0, 0, largura, altura);
 
-        for (OperacaoGrafica operacao : operacoes)
+        for (int i = 0; i < indiceOperacao; i++)
         {
-            operacao.executar(graficos, areaGraficos);
+            operacoes[i].executar(graficos);
+            operacoes[i] = null;
         }
 
-        operacoes.clear();
-        
+        indiceOperacao = 0;
+
         return imagem;
     }
 
     @Override
     public void desenharPoligono(int[][] pontos, boolean preencher)
     {
-        operacoes.add(new DesenhoPoligono(pontos, preencher, rotacao));
+        operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPoligono(pontos, preencher, rotacao, opacidade);
+        indiceOperacao++;
     }
 
     @Override
@@ -308,4 +361,5 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         addMouseListener(observadorMouse);
         addMouseMotionListener(observadorMouse);
     }
+
 }

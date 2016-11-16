@@ -10,18 +10,13 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoParametro;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.sons.SonsUtils;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import br.univali.portugol.nucleo.execucao.ObservadorExecucaoBasico;
+import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
@@ -29,8 +24,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -48,15 +41,9 @@ public final class Sons extends Biblioteca
 {
     private static final Logger LOGGER = Logger.getLogger(Sons.class.getName());
 
-    private final AtomicInteger indiceDosSons = new AtomicInteger(0);
-    private final AtomicInteger indiceDasReproducoes = new AtomicInteger(0);
+    private final Map<Integer, Reproducao> reproducoes = new ConcurrentHashMap<>();
 
-    private final Map<Integer, Som> sons = new HashMap<>();
-    private final Map<Integer, Reproducao> reproducoes = Collections.synchronizedMap(new HashMap<Integer, Reproducao>());
-
-    private final AudioFormat formatoDeAudio = criaFormatoDeAudioPadrao();
-
-    private Integer volumeGeral = 100;
+    private int volumeGeral = 100;
 
     private Programa programa;
 
@@ -72,12 +59,22 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer carregar_som(String caminho_som) throws ErroExecucaoBiblioteca
+    public int carregar_som(String caminho_som) throws ErroExecucaoBiblioteca, InterruptedException
     {
         File caminho = resolveCaminho(caminho_som);
-        Integer indice = indiceDosSons.incrementAndGet();
-        sons.put(indice, new Som(caminho, indice));
-        return indice;
+        Integer endereco = caminho.hashCode();
+        if (!reproducoes.containsKey(endereco))
+        {
+            try
+            {   
+                reproducoes.put(endereco, new Reproducao(caminho, endereco));
+            }
+            catch(Exception ex)
+            {
+                throw new ErroExecucaoBiblioteca(ex);
+            }
+        }
+        return endereco;
     }
 
     private File resolveCaminho(String caminho)
@@ -101,11 +98,12 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void liberar_som(Integer endereco) throws ErroExecucaoBiblioteca
+    public void liberar_som(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (sons.containsKey(endereco))
+        Reproducao reproducao = reproducoes.remove(endereco);
+        if (reproducao != null)
         {
-            sons.remove(endereco);
+            reproducao.interrompe(true);
         }
     }
 
@@ -126,26 +124,18 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public Integer reproduzir_som(Integer endereco, Boolean repetir) throws ErroExecucaoBiblioteca
+    public int reproduzir_som(int endereco, boolean repetir) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (sons.containsKey(endereco))
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
         {
-            try
-            {
-                Som som = sons.get(endereco);
-                Integer enderecoDaReproducao = indiceDasReproducoes.incrementAndGet();
-                Reproducao reproducao = new Reproducao(som, formatoDeAudio, enderecoDaReproducao);
-                reproducao.setVolumeGeral(volumeGeral / 100f);
-                reproducoes.put(enderecoDaReproducao, reproducao);
-                reproducao.inicia(repetir);
-                return enderecoDaReproducao;
-            }
-            catch (Exception e)
-            {
-                throw new ErroExecucaoBiblioteca(e);
-            }
+            reproducao.inicia(repetir);
         }
-        throw new ErroExecucaoBiblioteca("Endereço de som inválido!");
+        else
+        {
+            throw new ErroExecucaoBiblioteca("Endereço de som inválido (" + endereco + ")!");
+        }
+        return endereco;
     }
 
     @DocumentacaoFuncao(
@@ -159,16 +149,12 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
-    public void interromper_som(Integer endereco) throws ErroExecucaoBiblioteca
+    public void interromper_som(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        synchronized (reproducoes)
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
         {
-            if (reproducoes.containsKey(endereco))
-            {
-                Reproducao reproducao = reproducoes.get(endereco);
-                reproducao.interrompe();
-                reproducoes.remove(endereco);
-            }
+            reproducao.interrompe(false); // não feche o clip de áudio para reutilizá-lo
         }
     }
 
@@ -184,18 +170,16 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume_reproducao(Integer endereco, Integer volume) throws ErroExecucaoBiblioteca
+    public void definir_volume_reproducao(int endereco, int volume) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        synchronized (reproducoes)
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
         {
-            if (reproducoes.containsKey(endereco))
-            {
-                reproducoes.get(endereco).setVolume(volume / 100f);
-            }
-            else
-            {
-                LOGGER.log(Level.WARNING, "Índice de reprodução não encontrado!");
-            }
+            reproducao.setVolume(volume / 100f);
+        }
+        else
+        {
+            LOGGER.log(Level.WARNING, "Índice de reprodução não encontrado!");
         }
     }
 
@@ -210,15 +194,14 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public void definir_volume(Integer volume) throws ErroExecucaoBiblioteca
+    public void definir_volume(int volume) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        synchronized (reproducoes)
+        volumeGeral = volume;
+        float volumeFloat = volume / 100f;
+        for (Map.Entry<Integer, Reproducao> entry : reproducoes.entrySet())
         {
-            volumeGeral = volume;
-            for (Reproducao reproducao : reproducoes.values())
-            {
-                reproducao.setVolumeGeral(volume / 100f);
-            }
+            Reproducao reproducao = entry.getValue();
+            reproducao.setVolumeGeral(volumeFloat);
         }
     }
 
@@ -230,7 +213,7 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public Integer obter_volume() throws ErroExecucaoBiblioteca
+    public int obter_volume() throws ErroExecucaoBiblioteca, InterruptedException
     {
         return volumeGeral;
     }
@@ -247,93 +230,75 @@ public final class Sons extends Biblioteca
                 @Autor(nome = "Elieser A. de Jesus", email = "elieser@univali.br")
             }
     )
-    public Integer obter_volume_reproducao(Integer endereco) throws ErroExecucaoBiblioteca
+    public int obter_volume_reproducao(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        synchronized (reproducoes)
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
         {
-            if (reproducoes.containsKey(endereco))
-            {
-                Reproducao reproducao = reproducoes.get(endereco);
-                return (int) (reproducao.getVolume() * 100);
-            }
+            return (int) (reproducao.getVolume() * 100);
         }
         return -1;
     }
 
     @Override
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
     {
         this.programa = programa;
+        this.programa.adicionarObservadorExecucao(new ObservadorExecucaoBasico()
+        {
+            @Override
+            public void execucaoEncerrada(Programa programa, ResultadoExecucao resultadoExecucao)
+            {
+                limparCacheReproducoes();
+            }
+            
+        });
     }
 
     @Override
-    protected void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca, InterruptedException
     {
-        synchronized (reproducoes)
-        {
-            for (Reproducao reproducao : reproducoes.values())
-            {
-                reproducao.interrompe();
-            }
-            reproducoes.clear();
-        }
-        sons.clear();
+        LOGGER.log(Level.INFO, "Finalizando biblioteca de Sons, fechando {0} reproduções.", reproducoes.size());
+        limparCacheReproducoes();
     }
 
-    private class ListenerDeInterrupcaoDeAudio implements LineListener
-    {
-        private final Integer endereco;
-
-        public ListenerDeInterrupcaoDeAudio(Integer endereco)
+    private void limparCacheReproducoes(){
+        LOGGER.log(Level.CONFIG, "Limpando cache de sons ({0} clips)", reproducoes.size());
+        for (Map.Entry<Integer, Reproducao> entry : reproducoes.entrySet())
         {
-            this.endereco = endereco;
+            Reproducao reproducao = entry.getValue();
+            reproducao.interrompe(true); // fecha o clip de áudio
         }
-
-        @Override
-        public void update(LineEvent evento)
-        {
-            if (evento.getType() == LineEvent.Type.STOP)
-            {
-                try
-                {
-                    interromper_som(endereco);
-                }
-                catch (ErroExecucaoBiblioteca excecao)
-                {
-                    LOGGER.log(Level.SEVERE, null, excecao);
-                }
-
-            }
-        }
-
+        reproducoes.clear();
     }
-
+    
     private class Reproducao
     {
-        private Clip reprodutor;
-        private final Integer endereco; //endereco da reprodução, não do som. O objeto Som tem outro endereço.
+        private Clip clip;
+        private final Integer endereco; 
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
         private FloatControl controleDeVolume = null;
-
-        public Reproducao(Som som, AudioFormat formatoDeAudio, Integer endereco) throws IOException, UnsupportedAudioFileException
+    
+        public Reproducao(File som, Integer endereco) throws IOException, UnsupportedAudioFileException
         {
             this.endereco = endereco;
             try
             {
-                reprodutor = AudioSystem.getClip();
-                reprodutor.open(criaStream(som, formatoDeAudio));
-                reprodutor.addLineListener(new ListenerDeInterrupcaoDeAudio(endereco));
-
-                if (reprodutor.isControlSupported(FloatControl.Type.MASTER_GAIN))
+                clip = AudioSystem.getClip();
+                AudioInputStream stream = criaStream(som);
+                clip.open(stream);
+                stream.close();
+                
+                if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN))
                 {
-                    controleDeVolume = (FloatControl) reprodutor.getControl(FloatControl.Type.MASTER_GAIN);
+                    controleDeVolume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 }
             }
-            catch (LineUnavailableException excecao)
+            catch (Exception excecao)
             {
-                LOGGER.log(Level.WARNING, "Não foi possível criar ou abrir uma linha de execução de áudio!", excecao);
-                reprodutor = null;
+                LOGGER.log(Level.WARNING, "Não foi possível criar ou abrir uma linha de execução de áudio para " + som.getAbsolutePath(), excecao);
+                clip = null;
             }
         }
 
@@ -342,7 +307,7 @@ public final class Sons extends Biblioteca
          */
         void setVolume(float volume)
         {
-            if (reprodutor == null || controleDeVolume == null)
+            if (clip == null || controleDeVolume == null)
             {
                 return;
             }
@@ -356,17 +321,11 @@ public final class Sons extends Biblioteca
             {
                 valorEmDecibeis = controleDeVolume.getMinimum();
             }
-            else
+            else if (valorEmDecibeis > controleDeVolume.getMaximum())
             {
-                if (valorEmDecibeis > controleDeVolume.getMaximum())
-                {
-                    valorEmDecibeis = controleDeVolume.getMaximum();
-                }
+                valorEmDecibeis = controleDeVolume.getMaximum();
             }
             controleDeVolume.setValue(valorEmDecibeis);
-            LOGGER.log(Level.INFO, "Valor linear {0}", valorLinear);
-            LOGGER.log(Level.INFO, "Valor em decibéis {0}", valorEmDecibeis);
-            LOGGER.log(Level.INFO, "Volume setado para {0}", controleDeVolume.getValue());
         }
 
         void setVolumeGeral(float volumeGeral) //esse 'workaround' no volume geral foi usado porque o Java não permite manipular o volume geral
@@ -380,37 +339,44 @@ public final class Sons extends Biblioteca
             return volume;
         }
 
-        public Integer getEndereco()
+        public int getEndereco()
         {
             return endereco;
         }
 
         public void inicia(boolean repetir)
         {
-            if (reprodutor == null)
+            if (clip == null)
             {
                 return;
             }
-
+            if (clip.isRunning())
+            {
+                clip.stop();
+            }
+            clip.setFramePosition(0);
             if (!repetir)
             {
-                reprodutor.start();
+                clip.loop(0);
             }
             else
             {
-                reprodutor.loop(Clip.LOOP_CONTINUOUSLY);
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
         }
 
-        public void interrompe()
+        public void interrompe(boolean fechaClip)
         {
-            if (reprodutor == null)
+            if (clip == null)
             {
                 return;
             }
-
-            reprodutor.stop();
-            reprodutor.close();
+            clip.stop();
+            clip.flush();
+            if (fechaClip)
+            {
+                clip.close();
+            }
         }
     }
 
@@ -420,128 +386,20 @@ public final class Sons extends Biblioteca
         {
             return 0;
         }
-        else
+        else if (volume > 1)
         {
-            if (volume > 1)
-            {
-                return 1;
-            }
+            return 1;
         }
         return volume;
     }
 
-    private static AudioInputStream criaStream(Som som, AudioFormat formatoDoAudio)
+    private static AudioInputStream criaStream(File som)
             throws UnsupportedAudioFileException, IOException
     {
-
-        InputStream fluxoPreCarregado = new ByteArrayInputStream(som.getDados());
-        AudioInputStream fluxoCodificado = AudioSystem.getAudioInputStream(fluxoPreCarregado);
+        AudioInputStream fluxoCodificado = AudioSystem.getAudioInputStream(som);
         AudioFormat formatoCodificado = fluxoCodificado.getFormat();
-
-        boolean precisaConverterTaxaDeAmostragem = formatoCodificado.getSampleRate() != formatoDoAudio.getSampleRate();
-        boolean precisaConververCanais = formatoCodificado.getChannels() != formatoDoAudio.getChannels();
-
-        //converte para PCM, mas mantendo a taxa de amostragem original e o número de canais originais
-        AudioFormat formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoCodificado.getSampleRate(), formatoCodificado.getChannels());
-        AudioInputStream fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoCodificado);
-
-        if (precisaConverterTaxaDeAmostragem)
-        {
-            // converte de PCM para PCM mas alterando a taxa de amostragem e mantendo a mesma quantidade de canais do áudio original
-            formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoCodificado.getChannels());
-            fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
-        }
-
-        if (precisaConververCanais) //o áudio original era mono e precisar ser convertido para stereo
-        {
-            // converte o fluxo para a quantidade final de canais
-            formatoDeConversao = criaNovoFormatoDeAudio(formatoDoAudio, formatoDoAudio.getSampleRate(), formatoDoAudio.getChannels());
-            fluxoDecodificado = AudioSystem.getAudioInputStream(formatoDeConversao, fluxoDecodificado);
-        }
-        return fluxoDecodificado;
-    }
-
-    private static AudioFormat criaNovoFormatoDeAudio(AudioFormat formatoBase, float novaTaxaDeAmostragem, int canais)
-    {
-        return new AudioFormat(
-                formatoBase.getEncoding(),
-                novaTaxaDeAmostragem,
-                formatoBase.getSampleSizeInBits(),
-                canais,
-                canais * formatoBase.getSampleSizeInBits() / 8,
-                formatoBase.getFrameRate(),
-                formatoBase.isBigEndian()
-        );
-    }
-
-    private final class Som
-    {
-        private final byte[] dados;
-        private final File arquivo;
-        private final int endereco;
-
-        public Som(File arquivo, int endereco) throws ErroExecucaoBiblioteca
-        {
-            this.dados = carregarDados(arquivo);
-            this.arquivo = arquivo;
-            this.endereco = endereco;
-        }
-
-        public byte[] getDados()
-        {
-            return dados;
-        }
-
-        public File getArquivo()
-        {
-            return arquivo;
-        }
-
-        public int getEndereco()
-        {
-            return endereco;
-        }
-
-        private byte[] carregarDados(File arquivo) throws ErroExecucaoBiblioteca
-        {
-            try
-            {
-                int bytesLidos;
-                int tamanhoBuffer = 1048576; // 1 MB
-
-                byte[] buffer = new byte[tamanhoBuffer];
-
-                InputStream fluxoArquivo = new BufferedInputStream(new FileInputStream(arquivo));
-                ByteArrayOutputStream fluxoSaida = new ByteArrayOutputStream(buffer.length);
-
-                while ((bytesLidos = fluxoArquivo.read(buffer, 0, buffer.length)) > 0)
-                {
-                    fluxoSaida.write(buffer, 0, bytesLidos);
-                }
-
-                fluxoSaida.flush();
-
-                return fluxoSaida.toByteArray();
-            }
-            catch (IOException excecao)
-            {
-                throw new ErroExecucaoBiblioteca(String.format("Erro ao carregar o som '%s'", arquivo.getAbsolutePath()));
-            }
-        }
-    }
-
-    private static AudioFormat criaFormatoDeAudioPadrao()
-    {
-        float taxaDeAmostragem = 44100; //44100 amostras por segundo (44.1 KHz)
-        int canais = 2;//estéreo
-        int quantidadeDeBitsPorAmostra = 16; //áudio de 16 bits
-        return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-                taxaDeAmostragem,
-                quantidadeDeBitsPorAmostra,
-                canais,
-                canais * quantidadeDeBitsPorAmostra / 8, //frame size
-                taxaDeAmostragem, //frame rate
-                false); //big endian?
+        AudioFormat formatoFinal = new AudioFormat(formatoCodificado.getSampleRate(), 16, formatoCodificado.getChannels(), true, formatoCodificado.isBigEndian());
+        return AudioSystem.getAudioInputStream(formatoFinal, fluxoCodificado);
     }
 
 }

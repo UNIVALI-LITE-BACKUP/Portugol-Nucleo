@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.Programa;
 import java.util.List;
 
 /**
@@ -103,7 +103,7 @@ public final class NoFacaEnquanto extends NoBloco
     }
     
      @Override
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
         if(getCondicao() != null){
             return super.ehParavel(estado) || getCondicao().ehParavel(estado);

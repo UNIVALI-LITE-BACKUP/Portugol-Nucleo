@@ -17,6 +17,9 @@ package br.univali.portugol.nucleo.asa;
  */
 public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel
 {
+    private int indiceReferencia = -1;
+    
+    
     /**
      *
      * @param nome define o nome detsa variável.
@@ -56,5 +59,20 @@ public final class NoDeclaracaoVariavel extends NoDeclaracaoInicializavel
             }
         }
         return TRECHO_NULO;
+    }
+
+    public boolean ehPassadaPorReferencia()
+    {
+        return indiceReferencia >= 0;
+    }
+
+    public int getIndiceReferencia()
+    {
+        return indiceReferencia;
+    }
+
+    public void setIndiceReferencia(int indiceReferencia)
+    {
+        this.indiceReferencia = indiceReferencia;
     }
 }

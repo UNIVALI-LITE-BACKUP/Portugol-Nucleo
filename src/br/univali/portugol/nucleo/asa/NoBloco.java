@@ -1,7 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
-import java.util.logging.Level;
+import br.univali.portugol.nucleo.Programa;
 import java.util.logging.Logger;
 
 /*
@@ -55,8 +54,8 @@ public abstract class NoBloco extends No
     }
     
     @Override
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
-        return super.ehParavel(estado) || estado == Depurador.Estado.STEP_OVER;
+        return super.ehParavel(estado) || estado == Programa.Estado.STEP_OVER;
     }
 }

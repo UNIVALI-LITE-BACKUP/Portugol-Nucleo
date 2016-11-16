@@ -10,7 +10,7 @@ package br.univali.portugol.nucleo.asa;
 public final class ExcecaoVisitaASA extends Exception
 {
     private No no;
-    private ArvoreSintaticaAbstrata arvoreSintaticaAbstrata;
+    private ASA arvoreSintaticaAbstrata;
 
     /**
      * 
@@ -19,7 +19,7 @@ public final class ExcecaoVisitaASA extends Exception
      * @param no                          o nó da ASA que estava sendo visitado quando a exceção ocorreu
      * @since 1.0
      */
-    public ExcecaoVisitaASA(String mensagem, ArvoreSintaticaAbstrata arvoreSintaticaAbstrata, No no)
+    public ExcecaoVisitaASA(String mensagem, ASA arvoreSintaticaAbstrata, No no)
     {
         super(mensagem);
         this.arvoreSintaticaAbstrata = arvoreSintaticaAbstrata;
@@ -33,7 +33,7 @@ public final class ExcecaoVisitaASA extends Exception
      * @param no                          o nó da ASA que estava sendo visitado quando a exceção ocorreu
      * @since 1.0
      */
-    public ExcecaoVisitaASA(Throwable causa, ArvoreSintaticaAbstrata arvoreSintaticaAbstrata, No no)
+    public ExcecaoVisitaASA(Throwable causa, ASA arvoreSintaticaAbstrata, No no)
     {
         super(causa);
         this.no = no;
@@ -48,7 +48,7 @@ public final class ExcecaoVisitaASA extends Exception
      * @param no                          o nó da ASA que estava sendo visitado quando a exceção ocorreu
      * @since 1.0
      */
-    public ExcecaoVisitaASA(String mensagem, Throwable causa, ArvoreSintaticaAbstrata arvoreSintaticaAbstrata, No no)
+    public ExcecaoVisitaASA(String mensagem, Throwable causa, ASA arvoreSintaticaAbstrata, No no)
     {
         super(mensagem, causa);
         this.no = no;
@@ -61,7 +61,7 @@ public final class ExcecaoVisitaASA extends Exception
      * @return     a ASA
      * @since 1.0
      */
-    public ArvoreSintaticaAbstrata getArvoreSintaticaAbstrata()
+    public ASA getArvoreSintaticaAbstrata()
     {
         return arvoreSintaticaAbstrata;
     }

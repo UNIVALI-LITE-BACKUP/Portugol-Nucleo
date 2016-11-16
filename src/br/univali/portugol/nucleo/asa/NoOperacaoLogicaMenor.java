@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.Programa;
 
 
 /**
@@ -34,7 +34,7 @@ public final class NoOperacaoLogicaMenor extends NoOperacaoLogica
     }
 
     @Override
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
          return super.ehParavel(estado) && getPai() instanceof NoPara;
     }

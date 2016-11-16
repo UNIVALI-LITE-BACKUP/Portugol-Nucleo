@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo;
 
-import br.univali.portugol.nucleo.asa.ArvoreSintaticaAbstrataPrograma;
+import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.asa.No;
 import br.univali.portugol.nucleo.asa.NoBitwiseNao;
@@ -94,7 +94,7 @@ final class RenomeadorDeSimbolos
 
         try
         {
-            Programa programaCompilado = Portugol.compilar(programa);
+            Programa programaCompilado = Portugol.compilarParaAnalise(programa);
             BuscadorDeSimbolo buscadorDeSimbolo = new BuscadorDeSimbolo();
 
             buscadorDeSimbolo.buscarSimbolo(programaCompilado, linha, coluna);
@@ -141,7 +141,7 @@ final class RenomeadorDeSimbolos
 
         try
         {
-            Programa programaCompilado = Portugol.compilar(programa);
+            Programa programaCompilado = Portugol.compilarParaAnalise(programa);
             BuscadorDeSimbolo buscadorDeSimbolo = new BuscadorDeSimbolo();
 
             buscadorDeSimbolo.buscarSimbolo(programaCompilado, linha, coluna);
@@ -201,7 +201,7 @@ final class RenomeadorDeSimbolos
 
     private final class BuscadorDeSimbolo implements VisitanteASA
     {
-        private ArvoreSintaticaAbstrataPrograma asa;
+        private ASAPrograma asa;
 
         private int linha;
         private int coluna;
@@ -239,7 +239,7 @@ final class RenomeadorDeSimbolos
         }
 
         @Override
-        public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
+        public Object visitar(ASAPrograma asap) throws ExcecaoVisitaASA
         {
             for (NoDeclaracao declaracao : asap.getListaDeclaracoesGlobais())
             {

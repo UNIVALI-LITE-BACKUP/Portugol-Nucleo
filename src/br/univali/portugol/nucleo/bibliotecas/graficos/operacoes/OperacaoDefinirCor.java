@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -8,17 +9,22 @@ import java.awt.Rectangle;
  *
  * @author Luiz Fernando Noschang
  */
-public final class OperacaoDefinirCor implements OperacaoGrafica
+public final class OperacaoDefinirCor extends OperacaoGrafica
 {
-    private final Color cor;
+    private Color cor;
 
-    public OperacaoDefinirCor(Color cor)
+    public OperacaoDefinirCor(CacheOperacoesGraficas<OperacaoDefinirCor> cache)
+    {
+        super(cache);
+    }
+    
+    void setParametros(Color cor)
     {
         this.cor = cor;
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void desenhar(Graphics2D graficos)
     {
         graficos.setColor(cor);
     }

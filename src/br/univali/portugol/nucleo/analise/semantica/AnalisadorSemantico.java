@@ -1,60 +1,12 @@
 package br.univali.portugol.nucleo.analise.semantica;
 
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirConstanteBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroExcedente;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosInicializacaoVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoMatrizLiteral;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroConstanteNaoEncontradaNaBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroParaSemExpressaoComparacao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeLinhasIncializacaoMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroBibliotecaNaoInserida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoMatrizEmBranco;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoVetorMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroDefinirTipoDadoVetorLiteral;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroVetorSemElementos;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantidadeElementosColunaInicializacaoMatriz;
 import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoSimboloGlobalOcultado;
 import br.univali.portugol.nucleo.analise.semantica.avisos.AvisoValorExpressaoSeraConvertido;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoAtribuirEmMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoAtribuirEmVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoInicializarMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAoInicializarVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmChamadaFuncao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmConstante;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirMatrizVetorEmVariavel;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroBlocoInvalido;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInclusaoBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoConstante;
+import br.univali.portugol.nucleo.analise.semantica.erros.*;
 import br.univali.portugol.nucleo.asa.NoInclusaoBiblioteca;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroInicializacaoInvalida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroNumeroParametrosFuncao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroAtribuirEmExpressao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroComandoNaoSuportado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroFuncaoSemRetorne;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroParametroRedeclarado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroPassagemParametroInvalida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroQuantificadorParametroFuncao;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroReferenciaInvalida;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSemanticoNaoTratado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoInicializado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloRedeclarado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoMaximoMatriz;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTamanhoMaximoVetor;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTipoParametroIncompativel;
-import br.univali.portugol.nucleo.analise.semantica.erros.ErroTiposIncompativeis;
-import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
-import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoValorSeraConvertido;
 import br.univali.portugol.nucleo.analise.sintatica.AnalisadorSintatico;
 import br.univali.portugol.nucleo.asa.*;
-import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
-import br.univali.portugol.nucleo.bibliotecas.base.ErroCarregamentoBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosBiblioteca;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstante;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosConstantes;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosFuncao;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametro;
-import br.univali.portugol.nucleo.bibliotecas.base.MetaDadosParametros;
+import br.univali.portugol.nucleo.bibliotecas.base.*;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
@@ -84,7 +36,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     private final TabelaCompatibilidadeTipos tabelaCompatibilidadeTipos = TabelaCompatibilidadeTiposPortugol.INSTANCE;
 
     private boolean declarandoSimbolosGlobais;
-    private ArvoreSintaticaAbstrata asa;
+    private ASA asa;
     private Funcao funcaoAtual;
     private TipoDado tipoDadoEscolha;
 
@@ -97,6 +49,10 @@ public final class AnalisadorSemantico implements VisitanteASA
     public final static String FUNCAO_ESCREVA = "escreva";
     public static final String FUNCAO_LIMPA = "limpa";
 
+    private int totalVariaveisDeclaradas = 0; // conta variáveis e parâmetros declarados
+    private int totalVetoresDeclarados = 0;
+    private int totalMatrizesDeclaradas = 0;
+    
     public AnalisadorSemantico()
     {
         memoria = new Memoria();
@@ -163,7 +119,7 @@ public final class AnalisadorSemantico implements VisitanteASA
      * @param asa a ASA que será percorrida em busca de erros semânticos.
      * @since 1.0
      */
-    public void analisar(ArvoreSintaticaAbstrata asa)
+    public void analisar(ASA asa)
     {
         this.asa = asa;
         if (asa != null)
@@ -180,7 +136,7 @@ public final class AnalisadorSemantico implements VisitanteASA
     }
 
     @Override
-    public Object visitar(ArvoreSintaticaAbstrataPrograma asap) throws ExcecaoVisitaASA
+    public Object visitar(ASAPrograma asap) throws ExcecaoVisitaASA
     {
         for (NoInclusaoBiblioteca inclusao : asap.getListaInclusoesBibliotecas())
         {
@@ -203,6 +159,10 @@ public final class AnalisadorSemantico implements VisitanteASA
             declaracao.aceitar(this);
         }
 
+        asap.setTotalVariaveisDeclaradas(totalVariaveisDeclaradas);
+        asap.setTotalVetoresDeclarados(totalVetoresDeclarados);
+        asap.setTotalMatrizesDeclaradas(totalMatrizesDeclaradas);
+        
         return null;
     }
 
@@ -292,6 +252,8 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
     }
 
+        
+
     private List<ModoAcesso> obterModosAcessoPassados(NoChamadaFuncao chamadaFuncao)
     {
         List<ModoAcesso> modosAcesso = new ArrayList<>();
@@ -309,7 +271,6 @@ public final class AnalisadorSemantico implements VisitanteASA
                         try
                         {
                             Simbolo simbolo = memoria.getSimbolo(noReferenciaVariavel.getNome());
-
                             if (simbolo.constante())
                             {
                                 modosAcesso.add(ModoAcesso.POR_VALOR);
@@ -812,11 +773,16 @@ public final class AnalisadorSemantico implements VisitanteASA
             if (metaDadosBiblioteca != null)
             {
                 MetaDadosFuncao metaDadosFuncao = metaDadosBiblioteca.obterMetaDadosFuncoes().obter(chamadaFuncao.getNome());
-
+                
                 if (metaDadosFuncao == null)
                 {
                     notificarErroSemantico(new ErroSimboloNaoDeclarado(chamadaFuncao));
                     throw new ExcecaoVisitaASA(new ExcecaoImpossivelDeterminarTipoDado(), asa, chamadaFuncao);
+                }
+                else
+                {
+                    chamadaFuncao.setFuncaoDeBiblioteca(true);
+                    chamadaFuncao.setTipoRetornoBiblioteca(metaDadosFuncao.getTipoDado());
                 }
             }
             else
@@ -895,6 +861,9 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoMatriz noDeclaracaoMatriz) throws ExcecaoVisitaASA
     {
+        noDeclaracaoMatriz.setIdParaInspecao(totalMatrizesDeclaradas);
+        totalMatrizesDeclaradas++;
+        
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = noDeclaracaoMatriz.getNome();
@@ -1008,7 +977,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                         {
                             for (int coluna = 0; coluna < valores.get(linha).size(); coluna++)
                             {
-                                if (!(valores.get(linha).get(coluna) instanceof NoValor))
+                                if (!(valores.get(linha).get(coluna) instanceof NoExpressaoLiteral))
                                 {
                                     notificarErroSemantico(new ErroInicializacaoConstante(noDeclaracaoMatriz, linha, coluna));
                                 }
@@ -1055,6 +1024,10 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoVariavel declaracaoVariavel) throws ExcecaoVisitaASA
     {
+        declaracaoVariavel.setIdParaInspecao(totalVariaveisDeclaradas);
+        //System.out.println(declaracaoVariavel.getNome() + " => " + totalVariaveisDeclaradas);
+        totalVariaveisDeclaradas++;
+        
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = declaracaoVariavel.getNome();
@@ -1129,12 +1102,12 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         if (inicializacao instanceof NoMenosUnario)
                         {
-                            if (!(((NoMenosUnario) inicializacao).getExpressao() instanceof NoValor))
+                            if (!(((NoMenosUnario) inicializacao).getExpressao() instanceof NoExpressaoLiteral))
                             {
                                 notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
                             }
                         }
-                        else if (!(inicializacao instanceof NoValor))
+                        else if (!(inicializacao instanceof NoExpressaoLiteral))
                         {
                             notificarErroSemantico(new ErroInicializacaoConstante(declaracaoVariavel));
                         }
@@ -1169,6 +1142,9 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoVetor noDeclaracaoVetor) throws ExcecaoVisitaASA
     {
+        noDeclaracaoVetor.setIdParaInspecao(totalVetoresDeclarados);
+        totalVetoresDeclarados++;
+        
         if (declarandoSimbolosGlobais == memoria.isEscopoGlobal())
         {
             String nome = noDeclaracaoVetor.getNome();
@@ -1259,7 +1235,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
                             for (int indice = 0; indice < noVetor.getValores().size(); indice++)
                             {
-                                if (!(noVetor.getValores().get(indice) instanceof NoValor))
+                                if (!(noVetor.getValores().get(indice) instanceof NoExpressaoLiteral))
                                 {
                                     notificarErroSemantico(new ErroInicializacaoConstante(noDeclaracaoVetor, indice));
                                 }
@@ -1915,6 +1891,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             try
             {
+                noRetorne.setPai(funcaoAtual.getOrigemDoSimbolo());
                 tipoExpressaoRetorno = (TipoDado) noRetorne.getExpressao().aceitar(this);
                 tipoRetornoFuncao = tabelaCompatibilidadeTipos.obterTipoRetornoFuncao(funcaoAtual.getTipoDado(), tipoExpressaoRetorno);
             }
@@ -1994,6 +1971,22 @@ public final class AnalisadorSemantico implements VisitanteASA
     @Override
     public Object visitar(NoDeclaracaoParametro noDeclaracaoParametro) throws ExcecaoVisitaASA
     {
+        switch (noDeclaracaoParametro.getQuantificador())
+        {
+            case VALOR:
+                noDeclaracaoParametro.setIdParaInspecao(totalVariaveisDeclaradas);
+                totalVariaveisDeclaradas++;
+                break;
+            case VETOR:
+                noDeclaracaoParametro.setIdParaInspecao(totalVetoresDeclarados);
+                totalVetoresDeclarados++;
+                break;
+            case MATRIZ:
+                noDeclaracaoParametro.setIdParaInspecao(totalMatrizesDeclaradas);
+                totalMatrizesDeclaradas++;
+                break;
+        }
+        
         String nome = noDeclaracaoParametro.getNome();
         TipoDado tipoDado = noDeclaracaoParametro.getTipoDado();
         Quantificador quantificador = noDeclaracaoParametro.getQuantificador();
@@ -2071,6 +2064,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         try
         {
             operandoEsquerdo = (TipoDado) noOperacao.getOperandoEsquerdo().aceitar(this);
+            //noOperacao.getOperandoEsquerdo().setTipoResultante(operandoEsquerdo);
         }
         catch (ExcecaoVisitaASA excecao)
         {
@@ -2083,6 +2077,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         try
         {
             operandoDireito = (TipoDado) noOperacao.getOperandoDireito().aceitar(this);
+            //noOperacao.getOperandoDireito().setTipoResultante(operandoDireito);
         }
         catch (ExcecaoVisitaASA excecao)
         {
@@ -2249,7 +2244,11 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 simbolo.getOrigemDoSimbolo().adicionarReferencia(noReferenciaVariavel);
             }
-
+            else if (simbolo instanceof Matriz)
+            {
+                simbolo.getOrigemDoSimbolo().adicionarReferencia(noReferenciaVariavel);
+            }
+            
             return simbolo.getTipoDado();
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
@@ -2272,6 +2271,9 @@ public final class AnalisadorSemantico implements VisitanteASA
 
             if (metaDadosConstante != null)
             {
+                noReferenciaVariavel.setVariavelDeBiblioteca(true);
+                noReferenciaVariavel.setTipoBiblioteca(metaDadosConstante.getTipoDado());
+                
                 return metaDadosConstante.getTipoDado();
             }
 

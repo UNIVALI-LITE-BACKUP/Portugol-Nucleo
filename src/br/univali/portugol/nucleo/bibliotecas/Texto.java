@@ -17,6 +17,10 @@ import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBibliot
 @DocumentacaoBiblioteca(descricao = "Esta biblioteca contém funções para manipulação de texto (dados do tipo <tipo>cadeia</tipo>)", versao = "1.1")
 public final class Texto extends Biblioteca
 {
+    
+    private StringBuilder stringBuilder = new StringBuilder(1024);
+    
+    
     @DocumentacaoFuncao
     (
         descricao = "Conta o número de caracteres existentes em uma <tipo>cadeia</tipo>",
@@ -30,7 +34,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public Integer numero_caracteres(String cadeia) throws ErroExecucaoBiblioteca
+    public int numero_caracteres(String cadeia) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cadeia.length();
     }
@@ -48,7 +52,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caixa_alta(String cad) throws ErroExecucaoBiblioteca
+    public String caixa_alta(String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cad.toUpperCase();
     }    
@@ -66,7 +70,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String caixa_baixa(String cad) throws ErroExecucaoBiblioteca
+    public String caixa_baixa(String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cad.toLowerCase();
     }
@@ -86,7 +90,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }        
     )    
-    public String substituir(String cad, String texto_pesquisa, String texto_substituto) throws ErroExecucaoBiblioteca
+    public String substituir(String cad, String texto_pesquisa, String texto_substituto) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cad.replace(texto_pesquisa, texto_substituto);
     }
@@ -114,20 +118,19 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Fillipi Domingos Pelz", email = "fillipi@univali.br")
         }
     )    
-    public String preencher_a_esquerda(Character car, Integer tamanho, String cad) throws ErroExecucaoBiblioteca
+    
+    public String preencher_a_esquerda(char car, int tamanho, String cad) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (cad.length() < tamanho)
         {
-            StringBuilder sb = new StringBuilder();
-            
+            stringBuilder.setLength(0); // limpa o buffer antes de usar
             int diferenca = tamanho - cad.length();
-            
             for (int i = 1; i <= diferenca; i++)
             {
-                sb.append(car);
+                stringBuilder.append(car);
             }
             
-            cad = sb.append(cad).toString();
+            cad = stringBuilder.append(cad).toString();
         }
         
         return cad;
@@ -152,7 +155,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )    
-    public Character obter_caracter(String cad, Integer indice) throws ErroExecucaoBiblioteca
+    public char obter_caracter(String cad, int indice) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (indice < 0)
         {
@@ -194,7 +197,7 @@ public final class Texto extends Biblioteca
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public Integer posicao_texto(String texto, String cadeia, Integer posicao_inicial) throws ErroExecucaoBiblioteca
+    public int posicao_texto(String texto, String cadeia, int posicao_inicial) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return cadeia.indexOf(texto, posicao_inicial);
     }
@@ -219,7 +222,7 @@ public final class Texto extends Biblioteca
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    public String extrair_subtexto(String cadeia, Integer posicao_inicial, Integer posicao_final) throws ErroExecucaoBiblioteca
+    public String extrair_subtexto(String cadeia, int posicao_inicial, int posicao_final) throws ErroExecucaoBiblioteca, InterruptedException
     {
         try
         {

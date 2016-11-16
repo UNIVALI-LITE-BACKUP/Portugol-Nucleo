@@ -1,6 +1,7 @@
 
 package br.univali.portugol.nucleo.analise;
 
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.mensagens.Aviso;
 import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.Erro;
@@ -24,10 +25,11 @@ import java.util.List;
  */
 public final class ResultadoAnalise
 {   
-    private List<ErroAnalise> erros = null;
-    private List<ErroSintatico> errosSintaticos = null;
-    private List<ErroSemantico> errosSemanticos = null;    
-    private List<AvisoAnalise> avisos = null;
+    private final List<ErroAnalise> erros;
+    private final List<ErroSintatico> errosSintaticos;
+    private final List<ErroSemantico> errosSemanticos;    
+    private final List<AvisoAnalise> avisos;
+    private Programa programa;
 
     public ResultadoAnalise()
     {
@@ -37,6 +39,16 @@ public final class ResultadoAnalise
         
         avisos = new ArrayList<>();
     }    
+    
+    public void setPrograma(Programa programa)
+    {
+        this.programa = programa;
+    }
+
+    public Programa getPrograma()
+    {
+        return programa;
+    }
     
     /**
      * Permite adicionar um aviso ao resultado da análise

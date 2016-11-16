@@ -1,62 +1,52 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoImagem;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoImagem implements OperacaoGrafica
+public final class DesenhoImagem extends OperacaoDesenho
 {
-    private final int x;
-    private final int y;
-    private final BufferedImage imagem;
-    private final int opacidade;
-    private final double rotacao;
+    private BufferedImage imagem;
+    private float nivelTransparencia;
 
-    public DesenhoImagem(int x, int y, BufferedImage imagem, int opacidade, double rotacao)
+    public DesenhoImagem(CacheOperacoesDesenhoImagem cache)
+    {
+        super(cache);        
+    }
+    
+    void setParametros(int x, int y, BufferedImage imagem, double rotacao, int opacidade)
     {
         this.x = x;
         this.y = y;
+        this.nivelTransparencia = opacidade / 255.0f;
+        this.rotacao = rotacao;
         this.imagem = imagem;
         this.opacidade = opacidade;
-        this.rotacao = rotacao;
+        this.centroX = x + (imagem.getWidth() >> 1);
+        this.centroY = y + (imagem.getHeight() >> 1);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void desenhar(Graphics2D graficos)
     {
-        AffineTransform transformacao = graficos.getTransform();
-
-        if (rotacao != 0.0)
-        {
-            graficos.rotate(rotacao, x + (imagem.getWidth() / 2), y + (imagem.getHeight() / 2));
-        } 
-        
         if (opacidade == 255)
         {
             graficos.drawImage(imagem, x, y, null);
         }
         else
-        {
-            float a = (1.0f * opacidade) / 255.f;
-            
+        {   
             Composite original = graficos.getComposite();
-            Composite alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a);
+            Composite alpha = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, nivelTransparencia);
             
             graficos.setComposite(alpha);
             graficos.drawImage(imagem, x, y, null);
             graficos.setComposite(original);
-        }
-        
-        if (rotacao != 0.0)
-        {
-            graficos.setTransform(transformacao);
-        }
+        }       
     }
 }

@@ -22,7 +22,7 @@ package br.univali.portugol.nucleo.asa;
  * @author Luiz Fernando Noschang
  * @version 1.0
  */
-public final class NoReferenciaMatriz extends NoReferencia
+public final class NoReferenciaMatriz extends NoReferencia<NoDeclaracaoMatriz>
 {
     private final NoExpressao linha;
     private final NoExpressao coluna;

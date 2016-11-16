@@ -35,7 +35,7 @@ public interface ObservadorExecucao
      * @param programa o programa que está sendo executado.
      * @since 1.0
      */
-    public void execucaoIniciada(Programa programa);
+    void execucaoIniciada(Programa programa);
 
     /**
      * Este método é chamado após o término da execução do programa, notificando
@@ -46,15 +46,15 @@ public interface ObservadorExecucao
      * programa como, por exemplo, o tempo total da execução.
      * @since 1.0
      */
-    public void execucaoEncerrada(Programa programa, ResultadoExecucao resultadoExecucao);
+    void execucaoEncerrada(Programa programa, ResultadoExecucao resultadoExecucao);
 
-    public void highlightLinha(int linha);
+    
+    void execucaoPausada();  // disparado quando um comando leia é executado
+    
+    void execucaoResumida(); // disparado quando um comando leia é encerrado
+    
+    void highlightLinha(int linha);
 
-    public void highlightDetalhadoAtual(int linha, int coluna, int tamanho);
+    void highlightDetalhadoAtual(int linha, int coluna, int tamanho);
 
-    public void simbolosAlterados(List<Simbolo> simbolos);
-
-    public void simboloDeclarado(Simbolo simbolo);
-
-    public void simboloRemovido(Simbolo simbolo);
 }

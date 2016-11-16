@@ -7,7 +7,7 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see TipoDado
  */
-public final class NoInteiro extends NoValor<Integer>
+public final class NoInteiro extends NoExpressaoLiteral<Integer>
 {
     /**
      * 
@@ -19,7 +19,12 @@ public final class NoInteiro extends NoValor<Integer>
         super(valor);
     }
 
-    
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.INTEIRO;
+    }
+
     /**
      * {@inheritDoc }
      */

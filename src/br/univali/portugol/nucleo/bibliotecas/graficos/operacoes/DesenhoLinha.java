@@ -1,45 +1,38 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesGraficas;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoLinha implements OperacaoGrafica
+public final class DesenhoLinha extends OperacaoDesenho
 {
-    private final int x1;
-    private final int y1;
-    private final int x2;
-    private final int y2;
-    private final double rotacao;
+    private int x2;
+    private int y2;
 
-    public DesenhoLinha(int x1, int y1, int x2, int y2, double rotacao)
+    public DesenhoLinha(CacheOperacoesGraficas<DesenhoLinha> cache)
     {
-        this.x1 = x1;
-        this.y1 = y1;
+        super(cache);
+    }
+
+    void setParametros(int x, int y, int x2, int y2, double rotacao, int opacidade)
+    {
+        this.x = x;
+        this.y = y;
         this.x2 = x2;
         this.y2 = y2;
         this.rotacao = rotacao;
+        this.opacidade = opacidade;
+        this.centroX = x + (Math.abs(x - x2) >> 1);
+        this.centroY = y + (Math.abs(y - y2) >> 1);
     }
 
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void desenhar(Graphics2D graficos)
     {
-        AffineTransform transformacao = graficos.getTransform();
-        
-        if (rotacao != 0.0)
-        {
-            graficos.rotate(rotacao, x1 + (Math.abs(x1 - x2) / 2), y1 + (Math.abs(y1 - y2) / 2));
-        }
-        
-        graficos.drawLine(x1, y1, x2, y2);
-        
-        if (rotacao != 0.0)
-        {
-            graficos.setTransform(transformacao);
-        }
+        graficos.drawLine(x, y, x2, y2);
     }
 }

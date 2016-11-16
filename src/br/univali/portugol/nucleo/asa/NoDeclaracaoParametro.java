@@ -7,11 +7,13 @@ package br.univali.portugol.nucleo.asa;
  * @version 1.0
  * @see NoDeclaracaoFuncao
  */
-public final class NoDeclaracaoParametro extends NoDeclaracao
+public final class NoDeclaracaoParametro extends NoDeclaracao implements NoDeclaracaoInspecionavel
 {
     private int indice;
     private final ModoAcesso modoAcesso;
     private final Quantificador quantificador;
+    
+    private int idParaInspecao = -1;
 
     /**
      * @param nome o nome deste parãmetro.
@@ -29,6 +31,17 @@ public final class NoDeclaracaoParametro extends NoDeclaracao
         super(nome, tipoDado, false);
         this.quantificador = quantificador;
         this.modoAcesso = modoAcesso;
+    }
+
+    public void setIdParaInspecao(int idParaInspecao)
+    {
+        this.idParaInspecao = idParaInspecao;
+    }
+
+    @Override
+    public int getIdParaInspecao()
+    {
+        return idParaInspecao;
     }
 
     /**

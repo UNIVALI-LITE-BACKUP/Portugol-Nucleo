@@ -1,21 +1,19 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
-
 /**
  * Representa um valor do tipo {@link TipoDado#CADEIA} no código fonte.
- * 
+ *
  * @author Luiz Fernando Noschang
  * @version 1.0
- * 
+ *
  * @see TipoDado
  */
-public final class NoCadeia extends NoValor<String>
+public final class NoCadeia extends NoExpressaoLiteral<String>
 {
     /**
-     * @param valor     a cadeia representada por este nó da árvore
+     * @param valor a cadeia representada por este nó da árvore
      * @since 1.0
-     */    
+     */
     public NoCadeia(String valor)
     {
         super(valor);
@@ -35,4 +33,11 @@ public final class NoCadeia extends NoValor<String>
     {
         return "\"" + getValor() + "\"";
     }
-    }    
+
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.CADEIA;
+    }
+   
+}

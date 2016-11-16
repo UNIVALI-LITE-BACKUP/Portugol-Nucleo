@@ -1,5 +1,11 @@
 package br.univali.portugol.nucleo.asa;
 
+import br.univali.portugol.nucleo.analise.semantica.TabelaCompatibilidadeTiposPortugol;
+import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoImpossivelDeterminarTipoDado;
+import br.univali.portugol.nucleo.analise.semantica.erros.ExcecaoValorSeraConvertido;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Representa uma operação no código fonte.
  * <p>
@@ -23,6 +29,7 @@ public abstract class NoOperacao extends NoExpressao
     private NoExpressao operandoEsquerdo;
     private NoExpressao operandoDireito;
     private TrechoCodigoFonte trechoCodigoFonteOperador;
+    private TipoDado tipoResultante;
 
     /**
      * 
@@ -36,7 +43,7 @@ public abstract class NoOperacao extends NoExpressao
         this.operandoEsquerdo = operandoEsquerdo;
         this.operandoDireito = operandoDireito;
     }
-
+    
     /**
      * Obtém a expressão à esquerda do operador. 
      * 
@@ -105,4 +112,43 @@ public abstract class NoOperacao extends NoExpressao
 
         return new TrechoCodigoFonte(linha, inicioOpEsquerdo, tamanhoTexto);
     }
+    
+    private TipoDado geraTipoResultante()
+    {
+        TipoDado tipoOpEsquerdo = operandoEsquerdo.getTipoResultante();
+        TipoDado tipoOpDireito = operandoDireito.getTipoResultante();
+
+        if (tipoOpEsquerdo != tipoOpDireito)
+        {
+            try
+            {
+                return TabelaCompatibilidadeTiposPortugol.INSTANCE.obterTipoRetornoOperacao(this.getClass(), tipoOpEsquerdo, tipoOpDireito);
+            }
+            catch (NullPointerException ex)
+            {
+                Logger.getLogger(NoOperacao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (ExcecaoImpossivelDeterminarTipoDado ex)
+            {
+                Logger.getLogger(NoOperacao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (ExcecaoValorSeraConvertido ex)
+            {
+                return ex.getTipoSaida();
+            }
+        }
+        
+        return tipoOpEsquerdo;
+    }
+    
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        if (tipoResultante == null)
+        {
+            tipoResultante = geraTipoResultante();
+        }
+        return tipoResultante;
+    }
+    
 }

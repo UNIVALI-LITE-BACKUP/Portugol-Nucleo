@@ -1,6 +1,6 @@
 package br.univali.portugol.nucleo.asa;
 
-import br.univali.portugol.nucleo.execucao.Depurador;
+import br.univali.portugol.nucleo.Programa;
 
 /**
  * Representa uma expressão no código fonte.
@@ -37,10 +37,25 @@ import br.univali.portugol.nucleo.execucao.Depurador;
  */
 public abstract class NoExpressao extends NoBloco
 {
-    public NoExpressao()
+    private boolean entreParentes = false;
+    //private TipoDado tipoResultante;
+    
+    public void setEstaEntreParenteses(boolean estaEntreParentes)
     {
+        this.entreParentes = estaEntreParentes;
     }
-
+    
+    public boolean estaEntreParenteses(){
+        return this.entreParentes;
+    }
+    
+//    public void setTipoResultante(TipoDado tipo)
+//    {
+//        this.tipoResultante = tipo;
+//    }
+    
+    public abstract TipoDado getTipoResultante();
+    
     /**
      * Obtém o trecho do código fonte no qual esta expressão se encontra.
      *
@@ -68,7 +83,7 @@ public abstract class NoExpressao extends NoBloco
     protected abstract TrechoCodigoFonte montarTrechoCodigoFonte();
 
     @Override
-    public boolean ehParavel(Depurador.Estado estado)
+    public boolean ehParavel(Programa.Estado estado)
     {
         return false;
     }

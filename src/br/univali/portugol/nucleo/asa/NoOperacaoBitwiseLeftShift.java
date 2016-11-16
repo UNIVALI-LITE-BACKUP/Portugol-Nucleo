@@ -23,4 +23,10 @@ public final class NoOperacaoBitwiseLeftShift extends NoOperacao
     {
         return visitante.visitar(this);
     }
+    
+    @Override
+    public TipoDado getTipoResultante()
+    {
+        return TipoDado.INTEIRO;
+    }
 }

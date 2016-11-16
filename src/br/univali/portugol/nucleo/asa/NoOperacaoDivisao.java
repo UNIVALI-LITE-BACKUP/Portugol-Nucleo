@@ -23,4 +23,5 @@ public final class NoOperacaoDivisao extends NoOperacao
     {
         return visitante.visitar(this);
     }
+
 }

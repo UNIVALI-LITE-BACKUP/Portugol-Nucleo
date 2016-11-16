@@ -1,42 +1,39 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos.operacoes;
 
+import br.univali.portugol.nucleo.bibliotecas.graficos.operacoes.cache.CacheOperacoesDesenhoElipse;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 /**
  *
  * @author Luiz Fernando Noschang
  */
-public final class DesenhoElipse implements OperacaoGrafica
+public final class DesenhoElipse extends OperacaoDesenho
 {
-    private final int x;
-    private final int y;
-    private final int largura;
-    private final int altura;
-    private final boolean preencher;
-    private final double rotacao;
+    private boolean preencher;
+    private int largura;
+    private int altura;
+    
+    public DesenhoElipse(CacheOperacoesDesenhoElipse cache)
+    {
+        super(cache);
+    }
 
-    public DesenhoElipse(int x, int y, int largura, int altura, boolean preencher, double rotacao)
+    void setParametros(int x, int y, int largura, int altura, boolean preencher, double rotacao, int opacidade)
     {
         this.x = x;
         this.y = y;
-        this.largura = largura;
-        this.altura = altura;
         this.preencher = preencher;
         this.rotacao = rotacao;
+        this.opacidade = opacidade;
+        this.largura = largura;
+        this.altura = altura;
+        this.centroX = x + (largura >> 1);
+        this.centroY = y + (altura >> 1);
     }
-
+    
     @Override
-    public void executar(Graphics2D graficos, Rectangle areaGraficos)
+    public void desenhar(Graphics2D graficos)
     {
-        AffineTransform transformacao = graficos.getTransform();
-
-        if (rotacao != 0.0)
-        {
-            graficos.rotate(rotacao, x + (largura / 2), y + (altura / 2));
-        }
-
         if (preencher)
         {
             graficos.fillOval(x, y, largura, altura);
@@ -44,11 +41,6 @@ public final class DesenhoElipse implements OperacaoGrafica
         else
         {
             graficos.drawOval(x, y, largura, altura);
-        }
-
-        if (rotacao != 0.0)
-        {
-            graficos.setTransform(transformacao);
         }
     }
 }

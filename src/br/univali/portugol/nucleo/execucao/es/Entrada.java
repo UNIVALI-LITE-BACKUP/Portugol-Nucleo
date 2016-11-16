@@ -29,5 +29,5 @@ public interface Entrada
      * @param tipoDado       o tipo de dado que está sendo lido.
      * @throws Exception     a exceção que ocorreu durante a leitura do dado (quando ocorrer).
      */
-    public void solicitaEntrada(TipoDado tipoDado, Armazenador armazenador) throws Exception;
+    public void solicitaEntrada(TipoDado tipoDado, Armazenador armazenador) throws InterruptedException;
 }

@@ -1,19 +1,13 @@
 package br.univali.portugol.nucleo.bibliotecas.base;
 
 import br.univali.portugol.nucleo.Programa;
-import br.univali.portugol.nucleo.asa.NoChamadaFuncao;
-import br.univali.portugol.nucleo.asa.NoReferenciaVariavel;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoConstante;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.DocumentacaoFuncao;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.PropriedadesBiblioteca;
-import br.univali.portugol.nucleo.execucao.erros.ErroExecucaoNaoTratado;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -111,12 +105,10 @@ import java.util.TreeMap;
 public abstract class Biblioteca
 {
     private TipoBiblioteca tipo = getClass().getAnnotation(PropriedadesBiblioteca.class).tipo();
-    private final Map<String, Method> cacheFuncoes;
     private final String nome;
 
     public Biblioteca()
     {
-        cacheFuncoes = new TreeMap<>();
         nome = getClass().getSimpleName();
     }
 
@@ -135,121 +127,6 @@ public abstract class Biblioteca
         this.tipo = tipo;
     }
 
-    public final Object getValorVariavel(NoReferenciaVariavel noReferencia) throws ErroExecucao
-    {
-        int linha = noReferencia.getTrechoCodigoFonteNome().getLinha();
-        int coluna = noReferencia.getTrechoCodigoFonte().getColuna();
-
-        try
-        {
-            Field variavel = this.getClass().getDeclaredField(noReferencia.getNome());
-
-            return variavel.get(this);
-        }
-        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException excecao)
-        {
-            throw traduzirExcecao(excecao, linha, coluna);
-        }
-    }
-
-    public final Object chamarFuncao(NoChamadaFuncao noChamadaFuncao, Object... parametros) throws ErroExecucao, InterruptedException
-    {
-        String nomeFuncao = noChamadaFuncao.getNome();
-        int linha = noChamadaFuncao.getTrechoCodigoFonteNome().getLinha();
-        int coluna = noChamadaFuncao.getTrechoCodigoFonteNome().getColuna();
-
-        try
-        {
-            if (!cacheFuncoes.containsKey(nomeFuncao))
-            {
-                for (Method funcao : this.getClass().getDeclaredMethods())
-                {
-                    if (Modifier.isPublic(funcao.getModifiers()) && funcao.getName().equals(nomeFuncao))
-                    {
-                        cacheFuncoes.put(nomeFuncao, funcao);
-                    }
-                }
-            }
-
-            return cacheFuncoes.get(nomeFuncao).invoke(this, parametros);
-        }
-        catch (InvocationTargetException ex)
-        {
-            if (programaFoiInterrompido(ex))
-            {
-                throw getInterrupcao(ex);
-            }
-            else
-            {
-                throw traduzirExcecao((Exception) ex.getCause(), linha, coluna);
-            }
-        }
-        catch (SecurityException | IllegalAccessException | IllegalArgumentException excecao)
-        {
-            throw traduzirExcecao(excecao, linha, coluna);
-        }
-    }
-
-    private boolean programaFoiInterrompido(Throwable excecao)
-    {
-        while (excecao != null)
-        {
-            if (excecao.getCause() != null && excecao.getCause() instanceof InterruptedException)
-            {
-                return true;
-            }
-
-            excecao = excecao.getCause();
-        }
-
-        return false;
-    }
-
-    private InterruptedException getInterrupcao(Throwable excecao)
-    {
-        while (excecao != null)
-        {
-            if (excecao.getCause() != null && excecao.getCause() instanceof InterruptedException)
-            {
-                return (InterruptedException) excecao.getCause();
-            }
-            
-            excecao = excecao.getCause();
-        }
-
-        return null;
-    }
-
-    private ErroExecucao traduzirExcecao(Exception excecao, int linha, int coluna)
-    {
-        if (!(excecao instanceof ErroExecucao))
-        {
-            excecao = new ErroExecucaoNaoTratado(excecao);
-        }
-
-        ErroExecucao erroExecucao = (ErroExecucao) excecao;
-
-        erroExecucao.setLinha(linha);
-        erroExecucao.setColuna(coluna);
-
-        return erroExecucao;
-    }
-
-    /**
-     * Este método será chamado automaticamente para inicializar as bibliotecas
-     * do tipo {@link TipoBiblioteca#COMPARTILHADA}. O método será chamado
-     * apenas uma vez, na primeira vez em que a biblioteca for carregada em
-     * memória
-     *
-     * @throws ErroExecucaoBiblioteca
-     *
-     * @see TipoBiblioteca
-     */
-    protected void inicializar() throws ErroExecucaoBiblioteca
-    {
-
-    }
-
     /**
      * Este método será chamado automaticamente para inicializar as bibliotecas
      * do tipo {@link TipoBiblioteca#RESERVADA}. O método será chamado no início
@@ -265,10 +142,11 @@ public abstract class Biblioteca
      * deve ser sobrescrito.
      *
      * @throws ErroExecucaoBiblioteca
+     * @throws java.lang.InterruptedException
      *
      * @see TipoBiblioteca
      */
-    protected void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca
+    public void inicializar(Programa programa, List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
     {
 
     }
@@ -284,11 +162,12 @@ public abstract class Biblioteca
      * </p>
      *
      * @throws ErroExecucaoBiblioteca
+     * @throws java.lang.InterruptedException
      *
      * @see GerenciadorBibliotecas
      *
      */
-    protected void finalizar() throws ErroExecucaoBiblioteca
+    public void finalizar() throws ErroExecucaoBiblioteca, InterruptedException
     {
 
     }
@@ -301,8 +180,9 @@ public abstract class Biblioteca
      * @param biblioteca
      *
      * @throws ErroExecucaoBiblioteca
+     * @throws java.lang.InterruptedException
      */
-    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca
+    protected void bibliotecaRegistrada(Biblioteca biblioteca) throws ErroExecucaoBiblioteca, InterruptedException
     {
 
     }
