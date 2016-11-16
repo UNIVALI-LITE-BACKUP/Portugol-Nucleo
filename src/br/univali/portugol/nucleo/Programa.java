@@ -575,6 +575,8 @@ public abstract class Programa
             resultadoExecucao.setTempoExecucao(System.currentTimeMillis() - horaInicialExecucao);
 
             notificarEncerramentoExecucao(resultadoExecucao);
+            
+            observadores.clear(); // remove todos os listeners quando termina de executar
         }
 
         public void continuar(Programa.Estado estado)
