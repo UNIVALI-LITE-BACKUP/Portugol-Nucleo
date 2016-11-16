@@ -20,9 +20,42 @@ public class GeradorOperacao
             saida.append("(");
         }
 
-        boolean operandosSaoStrings = operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
-        boolean usaOperadorPadrao = usaOperadorPadrao(no, operandosSaoStrings);
+        boolean ehConcatenacao = no instanceof NoOperacaoSoma && no.getOperandoEsquerdo() instanceof NoCadeia;
+        
+        if (!ehConcatenacao)
+        {
+            geraOperacaoPadrao(no, saida, visitor);
+        }
+        else
+        {
+            geraConcatenacao(no, saida, visitor); // gera código otimizado para concatenações
+        }
 
+        if (no.estaEntreParenteses())
+        {
+            saida.append(")");
+        }
+    }
+
+    private void geraConcatenacao(NoOperacao no, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
+    {
+        //chama o método protegido da classe 'Programa' que internamente usa um StringBuilder
+        
+        saida.append("concatena(");
+        no.getOperandoEsquerdo().aceitar(visitor);
+        
+        saida.append(", "); // vírgula separando os dois operandos da concatenação
+        
+        no.getOperandoDireito().aceitar(visitor);
+        saida.append(")");
+    }
+    
+    private void geraOperacaoPadrao(NoOperacao no, PrintWriter saida, VisitanteASA visitor) throws ExcecaoVisitaASA
+    {
+        boolean operandosSaoStrings = operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
+
+        boolean usaOperadorPadrao = usaOperadorPadrao(no, operandosSaoStrings);
+        
         boolean precisaDeNegacao = !usaOperadorPadrao && (no instanceof NoOperacaoLogicaDiferenca);
         if (precisaDeNegacao)
         {
@@ -48,13 +81,8 @@ public class GeradorOperacao
         {
             saida.append(")"); // fecha o parênteses do .equals()
         }
-
-        if (no.estaEntreParenteses())
-        {
-            saida.append(")");
-        }
     }
-
+    
     private static boolean operandosSaoStrings(NoExpressao a, NoExpressao b)
     {
         return a.getTipoResultante() == TipoDado.CADEIA

@@ -17,7 +17,7 @@ public class testVariaveisGlobaisInicializadasComExpressoes extends Programa
     @Override
     protected void inicializar() throws ErroExecucao, InterruptedException
     {
-        c = "teste" + " concatenacao";
+        c = concatena("teste", " concatenacao");
         i = ((10 + 2 * 4 / 1) << 1);
         l = true && true || false;
         r = 53.23 + 0.01;

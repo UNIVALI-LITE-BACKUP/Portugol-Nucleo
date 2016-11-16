@@ -37,6 +37,12 @@ public class GeradorCodigoTest
     }
 
     @Test
+    public void testeCodigoParaConcatenacaoOtimizada() throws Exception
+    {
+        comparaCodigos(); 
+    }
+    
+    @Test
     public void testeCodigoParaParametrosPorReferenciaInspecionados() throws Exception
     {
         comparaCodigos(false, false, true); 

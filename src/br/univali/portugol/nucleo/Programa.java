@@ -179,6 +179,8 @@ public abstract class Programa
     protected Vetor vetoresInspecionados[] = new Vetor[0];
     protected Matriz matrizesInspecionadas[] = new Matriz[0];
     
+    protected final StringBuilder stringBuilder = new StringBuilder(512); // string builder usado para otimizar as concatenações
+    
     public Programa()
     {
         EntradaSaidaPadrao es = new EntradaSaidaPadrao();
@@ -189,6 +191,42 @@ public abstract class Programa
         observadores = new ArrayList<>();
     }
 
+    protected String concatena(String a, String b)
+    {
+        stringBuilder.setLength(0);
+        return stringBuilder.append(a).append(b).toString();
+    }
+    
+    protected String concatena(String a, int b)
+    {
+        stringBuilder.setLength(0);
+        return stringBuilder.append(a).append(b).toString();
+    }
+    
+    protected String concatena(String a, double b)
+    {
+        stringBuilder.setLength(0);
+        return stringBuilder.append(a).append(b).toString();
+    }
+    
+    protected String concatena(String a, float b)
+    {
+        stringBuilder.setLength(0);
+        return stringBuilder.append(a).append(b).toString();
+    }
+    
+    protected String concatena(String a, char b)
+    {
+        stringBuilder.setLength(0);
+        return stringBuilder.append(a).append(b).toString();
+    }
+    
+    protected String concatena(String a, boolean b)
+    {
+        stringBuilder.setLength(0);
+        return stringBuilder.append(a).append(b).toString();
+    }
+    
     public void inspecionaVariavel(int idVariavel)
     {
         if (idVariavel >= 0 && idVariavel < variaveisInspecionadas.length)
