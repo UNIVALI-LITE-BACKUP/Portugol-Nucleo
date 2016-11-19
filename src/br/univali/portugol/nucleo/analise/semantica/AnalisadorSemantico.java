@@ -1033,7 +1033,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             String nome = declaracaoVariavel.getNome();
             TipoDado tipoDadoVariavel = declaracaoVariavel.getTipoDado();
             
-            Variavel variavel = Variavel.getVariavel(nome, tipoDadoVariavel, declaracaoVariavel);
+            Variavel variavel = new Variavel(nome, tipoDadoVariavel, declaracaoVariavel);
             variavel.setTrechoCodigoFonteNome(declaracaoVariavel.getTrechoCodigoFonteNome());
             variavel.setTrechoCodigoFonteTipoDado(declaracaoVariavel.getTrechoCodigoFonteTipoDado());
 
@@ -1994,7 +1994,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
         if (quantificador == Quantificador.VALOR)
         {
-            simbolo = Variavel.getVariavel(nome, tipoDado, noDeclaracaoParametro);
+            simbolo = new Variavel(nome, tipoDado, noDeclaracaoParametro);
         }
         else if (quantificador == Quantificador.VETOR)
         {

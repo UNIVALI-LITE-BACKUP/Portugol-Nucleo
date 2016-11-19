@@ -14,24 +14,8 @@ import java.util.Objects;
  */
 public final class Variavel extends Simbolo
 {
-    private static final Map<Integer, Variavel> CACHE = new HashMap<>();
-    
     private Object valor;
 
-    public static Variavel getVariavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
-    {
-        Integer hash = geraHash(nome, tipoDado, declaracaoOrigem);
-        if (!CACHE.containsKey(hash)) {
-            CACHE.put(hash, new Variavel(nome, tipoDado, declaracaoOrigem));
-        }
-        return CACHE.get(hash);
-    }
-    
-    public static void limpaCache()
-    {
-        CACHE.clear();
-    }
-    
     /**
      * Aloca uma variável em memória sem definir seu valor.
      *
@@ -43,7 +27,7 @@ public final class Variavel extends Simbolo
      *
      * @since 1.0
      */
-    private Variavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
+    public Variavel(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
     {
         super(nome, tipoDado, declaracaoOrigem);
     }
@@ -98,12 +82,4 @@ public final class Variavel extends Simbolo
         return variavel;
     }
     
-    private static Integer geraHash(String nome, TipoDado tipo, NoDeclaracao declaracao)
-    {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(nome);
-        hash = 23 * hash + Objects.hashCode(tipo);
-        hash = 23 * hash + Objects.hashCode(declaracao);
-        return hash;
-    }
 }
