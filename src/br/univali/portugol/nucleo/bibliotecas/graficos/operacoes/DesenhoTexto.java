@@ -17,6 +17,12 @@ public final class DesenhoTexto extends OperacaoDesenho
     {
         super(cache);
     }
+
+    @Override
+    public void liberarRecursos()
+    {
+        texto = null;
+    }
     
     void setParametros(int x, int y, String texto, FontMetrics dimensoesFonte, double rotacao, int opacidade)
     {

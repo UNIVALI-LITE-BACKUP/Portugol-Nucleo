@@ -26,6 +26,12 @@ public final class DesenhoPorcaoImagem extends OperacaoDesenho
         super(cache);
     }
 
+    @Override
+    public void liberarRecursos()
+    {
+        imagem = null;
+    }
+
     void setParametros(int x, int y, BufferedImage imagem, int xi, int yi, int largura, int altura, double rotacao, int opacidade)
     {
         this.x = x;

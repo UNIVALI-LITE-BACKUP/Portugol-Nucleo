@@ -16,6 +16,12 @@ public final class OperacaoDefinirFonte extends OperacaoGrafica
     {
         super(cache);
     }
+
+    @Override
+    public void liberarRecursos()
+    {
+        fonte = null;
+    }
     
     void setParametros(Font fonte)
     {

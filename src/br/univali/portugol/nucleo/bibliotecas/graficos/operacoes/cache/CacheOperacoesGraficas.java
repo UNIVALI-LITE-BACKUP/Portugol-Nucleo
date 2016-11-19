@@ -78,7 +78,7 @@ public abstract class CacheOperacoesGraficas<T extends OperacaoGrafica>
             {
                 OPERACOES[indiceDevolucao] = operacao;
                 indiceDevolucao = (indiceDevolucao + 1) % QUANTIDADE_MAXIMA;
-
+                operacao.liberarRecursos();
                 return;
             }
 

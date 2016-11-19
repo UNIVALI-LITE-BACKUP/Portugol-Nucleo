@@ -16,9 +16,19 @@ public abstract class OperacaoGrafica
         this.cache = cache;
     }
     
+    /***
+     * Devolve a opearação para a cache
+     */
     public final void liberar()
     {
         cache.devolver(this);
+    }
+    
+    /***
+     * Libera os recursos mais pesados para evitar retenção de memória, mas mantém a operação na cache.
+     */
+    public void liberarRecursos(){
+        // Usando uma implementação vazia para evitar que todas as subclasses sejam obrigadas a implementar métodos vazios apenas para cumprir 'o contrato'
     }
     
     public void executar(Graphics2D graficos)
@@ -27,4 +37,6 @@ public abstract class OperacaoGrafica
     }
     
     protected abstract void desenhar(Graphics2D graficos);
+ 
+   
 }

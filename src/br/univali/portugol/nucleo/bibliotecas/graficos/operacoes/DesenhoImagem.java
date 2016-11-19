@@ -19,7 +19,13 @@ public final class DesenhoImagem extends OperacaoDesenho
     {
         super(cache);        
     }
-    
+
+    @Override
+    public void liberarRecursos()
+    {
+        imagem = null;
+    }
+
     void setParametros(int x, int y, BufferedImage imagem, double rotacao, int opacidade)
     {
         this.x = x;
