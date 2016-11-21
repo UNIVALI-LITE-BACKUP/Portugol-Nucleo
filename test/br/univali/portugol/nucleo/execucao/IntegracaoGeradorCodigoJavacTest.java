@@ -46,7 +46,7 @@ public class IntegracaoGeradorCodigoJavacTest
         {
             geraCodigo(dir);
         }
-        //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/jogos/corrida.por"));
+        //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bobliotecario.por"));
         //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bateria.por"));
     }
     

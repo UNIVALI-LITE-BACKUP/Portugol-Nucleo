@@ -26,9 +26,9 @@ public class PreCompilador extends VisitanteNulo
     public Object visitar(NoInclusaoBiblioteca no) throws ExcecaoVisitaASA
     {
         String alias = no.getAlias();
-        if (alias != null && alias.isEmpty())
+        if (alias != null && !alias.isEmpty())
         {
-            no.setNome(alias + "_" + seedNomes); // evita que os aliases das bibliotecas colidam com variáveis declaradas pelos alunos
+            no.setAlias(alias + "_" + seedNomes); // evita que os aliases das bibliotecas colidam com variáveis declaradas pelos alunos
         }
         return super.visitar(no);
     }
@@ -37,6 +37,8 @@ public class PreCompilador extends VisitanteNulo
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         chamadaFuncao.setNome(geraNomeValido(chamadaFuncao.getNome()));
+        
+        atualizaEscopo(chamadaFuncao);
         
         NoDeclaracaoFuncao declaracaoFuncao = chamadaFuncao.getOrigemDaReferencia();
         if (!funcoesInvocadas.contains(declaracaoFuncao))
@@ -100,9 +102,17 @@ public class PreCompilador extends VisitanteNulo
         return super.visitar(no);
     }
     
+    private void atualizaEscopo(NoReferencia no){
+        String escopo = no.getEscopo();
+        if(escopo != null){
+           no.setEscopo(escopo+"_"+seedNomes);
+        }
+    }
+    
     @Override
     public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
     {
+        atualizaEscopo(no);
         no.setNome(geraNomeValido(no.getNome()));
         return super.visitar(no);
     }
@@ -170,16 +180,6 @@ public class PreCompilador extends VisitanteNulo
     public Set<NoDeclaracaoFuncao> getFuncoesQuerForamInvocadas()
     {
         return funcoesInvocadas;
-    }
-    
-    @Override
-    public Object visitar(ASAPrograma asa) throws ExcecaoVisitaASA
-    {
-        for (NoDeclaracao declaracao : asa.getListaDeclaracoesGlobais())
-        {
-            declaracao.aceitar(this);
-        }
-        return null;
     }
     
     private static final String[] NOMES_PROIBIDOS = {"inicializar", "executar", "concatena"};

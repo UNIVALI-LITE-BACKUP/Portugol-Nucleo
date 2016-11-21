@@ -7,8 +7,8 @@ import br.univali.portugol.nucleo.bibliotecas.Mouse;
 
 public class testInclusaoBibliotecasComAliases extends Programa
 {
-    private final Graficos g = new Graficos();
-    private final Mouse m = new Mouse();
+    private final Graficos g_1010 = new Graficos();
+    private final Mouse m_1010 = new Mouse();
 
     public testInclusaoBibliotecasComAliases() throws ErroExecucao, InterruptedException
     {
