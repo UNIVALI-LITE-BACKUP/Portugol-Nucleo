@@ -12,7 +12,7 @@ public class GeradorDeclaracaoMetodo
 {
     public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, 
             int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos, int seed) throws ExcecaoVisitaASA
+                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos, long seed) throws ExcecaoVisitaASA
     {
         saida.println();
 
@@ -72,7 +72,7 @@ public class GeradorDeclaracaoMetodo
     }
 
     private void geraCodigoInicializacaoParametrosInspecionados(List<NoDeclaracaoParametro> parametros,
-                     PrintWriter saida, int nivelEscopo, int seed)
+                     PrintWriter saida, int nivelEscopo, long seed)
     {
         for (NoDeclaracaoParametro parametro : parametros)
         {
@@ -105,7 +105,7 @@ public class GeradorDeclaracaoMetodo
     }
     
     private void geraCodigoInicializacaoVetor(NoDeclaracaoParametro parametro,
-            PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, int seed) 
+            PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, long seed) 
     {
         //gera um if verificando se é necessário redimensionar o vetor interno
         
@@ -138,7 +138,7 @@ public class GeradorDeclaracaoMetodo
     }
     
     private void geraCodigoInicializacaoVariavel(NoDeclaracaoParametro parametro,
-                     PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, int seed)
+                     PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, long seed)
     {
         int idInspecao = parametro.getIdParaInspecao();
         saida.append(Utils.geraIdentacao(nivelEscopo + 1));
@@ -153,7 +153,7 @@ public class GeradorDeclaracaoMetodo
     }
     
     private void geraCodigoInicializacaoMatriz(NoDeclaracaoParametro parametro,
-                    PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, int seed)
+                    PrintWriter saida, String nomeArrayInspecao, int nivelEscopo, long seed)
     {
         //gera um if verificando se é necessário redimensionar a matriz interna
         

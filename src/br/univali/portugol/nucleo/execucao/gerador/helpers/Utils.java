@@ -97,7 +97,7 @@ public class Utils
         }
     }
     
-    public static void geraCodigoParaInspecao(NoDeclaracaoVetor vetor, PrintWriter saida, int nivelEscopo, int seed)
+    public static void geraCodigoParaInspecao(NoDeclaracaoVetor vetor, PrintWriter saida, int nivelEscopo, long seed)
     {
         int ID = vetor.getIdParaInspecao();
         if (ID >= 0 && vetor.temInicializacao())
@@ -159,7 +159,7 @@ public class Utils
         }
     }
     
-    public static void geraCodigoParaInspecao(NoDeclaracaoMatriz matriz, PrintWriter saida, int nivelEscopo, int seed)
+    public static void geraCodigoParaInspecao(NoDeclaracaoMatriz matriz, PrintWriter saida, int nivelEscopo, long seed)
     {
         int ID = matriz.getIdParaInspecao();
         if (ID >= 0 && matriz.temInicializacao())
@@ -242,7 +242,7 @@ public class Utils
     }
     
     private static void geraCodigoParaInspecaoDeBloco(NoBloco bloco, PrintWriter saida, 
-            VisitanteASA visitor, int nivelEscopo, int seed) throws ExcecaoVisitaASA
+            VisitanteASA visitor, int nivelEscopo, long seed) throws ExcecaoVisitaASA
     {
         if (bloco instanceof NoDeclaracaoInspecionavel || bloco instanceof NoOperacaoAtribuicao)
         {
@@ -271,7 +271,7 @@ public class Utils
     
     public static void visitarBlocos(List<NoBloco> blocos, PrintWriter saida, 
             VisitanteASA visitor, int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolo, int seed) throws ExcecaoVisitaASA
+                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolo, long seed) throws ExcecaoVisitaASA
     {
         for (NoBloco bloco : blocos)
         {

@@ -132,8 +132,7 @@ final class Compilador
 
         try (PrintWriter writerArquivoJava = new PrintWriter(new FileOutputStream(arquivoJava)))
         {
-            int seed = (int) PreCompilador.getSeedGeracaoNomesValidos();
-            GeradorCodigoJava gerador = new GeradorCodigoJava(seed);
+            GeradorCodigoJava gerador = new GeradorCodigoJava();
             gerador.gera(asa, writerArquivoJava, nomeClasse, true, true, true);
             writerArquivoJava.flush();
 

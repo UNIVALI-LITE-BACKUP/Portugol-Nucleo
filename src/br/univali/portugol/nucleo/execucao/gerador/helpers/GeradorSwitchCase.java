@@ -14,7 +14,7 @@ public class GeradorSwitchCase
 
     public void geraSwitchCase(NoEscolha no, PrintWriter saida, VisitanteASA visitor, 
             int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos, int seed) throws ExcecaoVisitaASA
+                boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos, long seed) throws ExcecaoVisitaASA
     {
         String identacao = Utils.geraIdentacao(nivelEscopo);
 

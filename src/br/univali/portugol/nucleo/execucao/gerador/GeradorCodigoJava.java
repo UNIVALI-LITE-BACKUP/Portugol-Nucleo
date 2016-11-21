@@ -26,17 +26,17 @@ public class GeradorCodigoJava
     private final GeradorAtributo geradorAtributo = new GeradorAtributo();
     private final GeradorDeclaracaoVariavel geradorDeclaracaoVariavel = new GeradorDeclaracaoVariavel();
     private final GeradorAtribuicao geradorAtribuicao = new GeradorAtribuicao();
-    private final int seed;
+    private final long seed;
     private boolean processandoVariaveisGlobais = false; // não inicializa as variáveis quando está processando as variáveis globais
 
-    public GeradorCodigoJava(int seed)
+    public GeradorCodigoJava(long seed)
     {
         this.seed = seed;
     }
 
     public GeradorCodigoJava()
     {
-        this.seed = (int)PreCompilador.getSeedGeracaoNomesValidos();
+        this.seed = PreCompilador.getSeedGeracaoNomesValidos();
     }
     
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
