@@ -21,6 +21,17 @@ public class PreCompilador extends VisitanteNulo
     private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
     
     private static long seedNomes = System.currentTimeMillis();
+
+    @Override
+    public Object visitar(NoInclusaoBiblioteca no) throws ExcecaoVisitaASA
+    {
+        String alias = no.getAlias();
+        if (alias != null && alias.isEmpty())
+        {
+            no.setNome(alias + "_" + seedNomes); // evita que os aliases das bibliotecas colidam com variáveis declaradas pelos alunos
+        }
+        return super.visitar(no);
+    }
     
     @Override
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
