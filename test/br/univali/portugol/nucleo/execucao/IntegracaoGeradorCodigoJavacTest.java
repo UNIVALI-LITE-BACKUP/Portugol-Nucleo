@@ -9,6 +9,7 @@ package br.univali.portugol.nucleo.execucao;
 import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
+import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import java.io.BufferedOutputStream;
@@ -44,9 +45,9 @@ public class IntegracaoGeradorCodigoJavacTest
         File[] dirs = dirExemplos.listFiles();
         for (File dir : dirs)
         {
-            geraCodigo(dir);
+            //geraCodigo(dir);
         }
-        //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bobliotecario.por"));
+        geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/bibliotecas/graficos/solar.por"));
         //geraCodigo(new File("../Portugol-Studio-Recursos/exemplos/musica/bateria.por"));
     }
     
@@ -94,7 +95,12 @@ public class IntegracaoGeradorCodigoJavacTest
             {
                 String codigoPortugol = new Scanner(exemplo).useDelimiter("\\Z").next(); //Lê todo o conteúdo do arquivo de exemplo
                 AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
-                aa.analisar(codigoPortugol);
+                ResultadoAnalise resultado = aa.analisar(codigoPortugol);
+                if (!resultado.getErros().isEmpty())
+                {
+                    throw new ErroCompilacao(resultado);
+                }
+                
                 GeradorCodigoJava gerador = new GeradorCodigoJava();
                 String nomeExemplo = exemplo.getName().replace(".por", "");
                 String nomeClasse = "Exemplo" + (nomeExemplo.substring(0, 1).toUpperCase() + nomeExemplo.substring(1));

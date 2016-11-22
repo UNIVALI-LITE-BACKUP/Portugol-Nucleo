@@ -1781,7 +1781,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             TipoDado tipoLinha = (TipoDado) noReferenciaMatriz.getLinha().aceitar(this);
             TipoDado tipoColuna = (TipoDado) noReferenciaMatriz.getColuna().aceitar(this);
 
-            if (tipoLinha != TipoDado.INTEIRO && tipoColuna != TipoDado.INTEIRO)
+            if (tipoLinha != TipoDado.INTEIRO || tipoColuna != TipoDado.INTEIRO)
             {
                 notificarErroSemantico(new ErroTiposIncompativeis(noReferenciaMatriz, tipoLinha, TipoDado.INTEIRO, tipoColuna, TipoDado.INTEIRO));
             }

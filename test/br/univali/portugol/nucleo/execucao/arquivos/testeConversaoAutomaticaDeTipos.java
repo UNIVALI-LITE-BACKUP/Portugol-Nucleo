@@ -31,6 +31,7 @@ public class testeConversaoAutomaticaDeTipos extends Programa
         b = (int) ((a + 5.0) * a);
         testa((int) ((a + 5.0) * a));
         g_1010.desenhar_imagem((int) ((a + 5.0) * a), 1, 0);
+        
     }
 
     private int trunca(double x) throws ErroExecucao, InterruptedException
