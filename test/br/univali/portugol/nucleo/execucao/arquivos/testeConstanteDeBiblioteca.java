@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.bibliotecas.Matematica;
 
 public class testeConstanteDeBiblioteca extends Programa
 {
-    private final Matematica mat = new Matematica();
+    private final Matematica mat_1010 = new Matematica();
 
     public testeConstanteDeBiblioteca() throws ErroExecucao, InterruptedException
     {
@@ -16,6 +16,6 @@ public class testeConstanteDeBiblioteca extends Programa
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
         double raio = 2.0;
-        double area = mat.PI * mat.potencia(raio, 2.0);
+        double area = mat_1010.PI * mat_1010.potencia(raio, 2.0);
     }
 }

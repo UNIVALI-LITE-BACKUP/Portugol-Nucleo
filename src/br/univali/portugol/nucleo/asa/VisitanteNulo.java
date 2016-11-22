@@ -10,6 +10,12 @@ public class VisitanteNulo extends VisitanteASABasico {
 
     @Override
     public Object visitar(ASAPrograma asap) throws ExcecaoVisitaASA {
+        
+        for (NoInclusaoBiblioteca listaInclusoesBiblioteca : asap.getListaInclusoesBibliotecas())
+        {
+            listaInclusoesBiblioteca.aceitar(this);
+        }
+        
         for (NoDeclaracao declaracao : asap.getListaDeclaracoesGlobais()) {
             declaracao.aceitar(this);
         }

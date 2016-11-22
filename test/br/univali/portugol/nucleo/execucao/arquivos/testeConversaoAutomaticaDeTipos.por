@@ -2,7 +2,7 @@ programa
 {                                                            
     inclua biblioteca Graficos --> g                                            
     real a = 0.0                                            
-    inteiro b                                               
+    inteiro b         
                                                                              
     funcao inicio()                                         
     {                                                       
@@ -14,7 +14,8 @@ programa
         a = testa(b)                                       
         b = (a + 5.0) * a                                  
         testa((a + 5.0) * a)                               
-        g.desenhar_imagem((a + 5.0) * a, 1, 0)             
+        g.desenhar_imagem((a + 5.0) * a, 1, 0)       
+
     }                                                       
     
     funcao inteiro trunca(real x)                           

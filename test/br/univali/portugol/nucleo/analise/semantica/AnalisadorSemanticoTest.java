@@ -13,6 +13,34 @@ import org.junit.Test;
 public final class AnalisadorSemanticoTest
 {
 
+     @Test
+    public void testReferenciaMatriz()
+    {
+        try
+        {
+            Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a[2][2]           "
+                    + "   real x = 1.0              "
+                    + "   escreva(a[x][0])          "
+                    + " }                           "
+                    + "}                            "
+            );
+
+            fail("Era esperado um erro semantico");
+        }
+        catch (ErroCompilacao erroCompilacao)
+        {
+            ResultadoAnalise resultado = erroCompilacao.getResultadoAnalise();
+
+            assertEquals("Era esperado um erro semantico", 1, resultado.getErros().size());
+            assertEquals("Era esperado uma instancia de " + ErroTiposIncompativeis.class.getName(), ErroTiposIncompativeis.class, resultado.getErros().get(0).getClass());
+            //assertEquals("Tipos incompatíveis! O índice do vetor deve ser uma expressão do tipo \"" + TipoDado.INTEIRO + "\" mas foi passada uma expressão do tipo \"" + TipoDado.CADEIA + "\".", resultado.getErros().get(0).getMensagem());
+        }
+    }
+    
     @Test
     public void testReferenciaVetor()
     {

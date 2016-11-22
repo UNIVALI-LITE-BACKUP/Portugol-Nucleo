@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.bibliotecas.Util;
 
 public class testeParametroPorReferencia extends Programa
 {
-    private final Util u = new Util();
+    private final Util u_1010 = new Util();
     
     private final int[] REFS_INT = new int[5];
     private final double[] REFS_DOUBLE = new double[1];
@@ -53,8 +53,8 @@ public class testeParametroPorReferencia extends Programa
         
         int c = teste(INDICE_A_0, m, v, INDICE_TEXTO_0) + teste(INDICE_B_1, m, v, INDICE_TEXTO_0) * REFS_INT[INDICE_A_0] * REFS_INT[INDICE_B_1];
         c = teste(INDICE_I_2, m, v, INDICE_TEXTO_0);
-        c = u.numero_linhas(m);
-        c = u.numero_elementos(v);
+        c = u_1010.numero_linhas(m);
+        c = u_1010.numero_elementos(v);
         
         REFS_STRING[INDICE_X_1] = "asd";
         REFS_INT[INDICE_NUMERO_INTEIRO_3] = 0;

@@ -26,10 +26,17 @@ public class PreCompilador extends VisitanteNulo
     public Object visitar(NoInclusaoBiblioteca no) throws ExcecaoVisitaASA
     {
         String alias = no.getAlias();
-        if (alias != null && alias.isEmpty())
+        
+        if (alias == null ||  alias.isEmpty())
         {
-            no.setNome(alias + "_" + seedNomes); // evita que os aliases das bibliotecas colidam com variáveis declaradas pelos alunos
+            no.setAlias(no.getNome());
         }
+        alias = no.getAlias();
+        if (alias != null &&  !alias.isEmpty())
+        {
+            no.setAlias(alias + "_" + seedNomes); // evita que os aliases das bibliotecas colidam com variáveis declaradas pelos alunos
+        }
+        
         return super.visitar(no);
     }
     
@@ -37,6 +44,8 @@ public class PreCompilador extends VisitanteNulo
     public Void visitar(NoChamadaFuncao chamadaFuncao) throws ExcecaoVisitaASA
     {
         chamadaFuncao.setNome(geraNomeValido(chamadaFuncao.getNome()));
+        
+        atualizaEscopo(chamadaFuncao);
         
         NoDeclaracaoFuncao declaracaoFuncao = chamadaFuncao.getOrigemDaReferencia();
         if (!funcoesInvocadas.contains(declaracaoFuncao))
@@ -100,9 +109,24 @@ public class PreCompilador extends VisitanteNulo
         return super.visitar(no);
     }
     
+    private void atualizaEscopo(NoReferencia no){
+        String escopo = no.getEscopo();
+        if(escopo != null){
+           no.setEscopo(escopo+"_"+seedNomes);
+        }
+    }
+
+    @Override
+    public Object visitar(NoNao noNao) throws ExcecaoVisitaASA
+    {
+        noNao.getExpressao().aceitar(this);
+        return super.visitar(noNao); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
     {
+        atualizaEscopo(no);
         no.setNome(geraNomeValido(no.getNome()));
         return super.visitar(no);
     }
@@ -111,6 +135,7 @@ public class PreCompilador extends VisitanteNulo
     public Object visitar(NoReferenciaVetor no) throws ExcecaoVisitaASA
     {
         no.setNome(geraNomeValido(no.getNome()));
+        no.getIndice().aceitar(this);
         return super.visitar(no);
     }
     
@@ -118,6 +143,8 @@ public class PreCompilador extends VisitanteNulo
     public Object visitar(NoReferenciaMatriz no) throws ExcecaoVisitaASA
     {
         no.setNome(geraNomeValido(no.getNome()));
+        no.getLinha().aceitar(this);
+        no.getColuna().aceitar(this);
         return super.visitar(no);
     }
     
@@ -149,6 +176,8 @@ public class PreCompilador extends VisitanteNulo
         return super.visitar(no);
     }
     
+    
+    
     @Override
     public Object visitar(NoVetor noVetor) throws ExcecaoVisitaASA
     {
@@ -170,16 +199,6 @@ public class PreCompilador extends VisitanteNulo
     public Set<NoDeclaracaoFuncao> getFuncoesQuerForamInvocadas()
     {
         return funcoesInvocadas;
-    }
-    
-    @Override
-    public Object visitar(ASAPrograma asa) throws ExcecaoVisitaASA
-    {
-        for (NoDeclaracao declaracao : asa.getListaDeclaracoesGlobais())
-        {
-            declaracao.aceitar(this);
-        }
-        return null;
     }
     
     private static final String[] NOMES_PROIBIDOS = {"inicializar", "executar", "concatena"};
