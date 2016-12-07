@@ -9,11 +9,8 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoFuncao;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
-import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
-import br.univali.portugol.nucleo.execucao.gerador.PreCompilador;
-import br.univali.portugol.nucleo.mensagens.AvisoAnalise;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,15 +23,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 
 /**
  * Classe utilitária para abstrair as etapas necessárias à compilação do código
@@ -69,7 +60,7 @@ final class Compilador
      *
      * @throws ErroCompilacao
      */
-    public Programa compilar(String codigo, boolean compilarParaExecucao) throws ErroCompilacao
+    public Programa compilar(String codigo, boolean compilarParaExecucao, File classPath, String caminhoJavac) throws ErroCompilacao
     {
         AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
         ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
@@ -85,7 +76,7 @@ final class Compilador
 
             if (compilarParaExecucao)
             {
-                programa = geraPrograma(asa, resultadoAnalise);
+                programa = geraPrograma(asa, resultadoAnalise, classPath, caminhoJavac);
                 programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
                 programa.setFuncaoInicial(localizadorFuncoes.getFuncaoInicial());
                 programa.setResultadoAnalise(resultadoAnalise);
@@ -117,7 +108,7 @@ final class Compilador
     }
 
     
-    private Programa geraPrograma(ASAPrograma asa, ResultadoAnalise resultadoAnalise) throws ErroCompilacao
+    private Programa geraPrograma(ASAPrograma asa, ResultadoAnalise resultadoAnalise, File classPath, String caminhoJavac) throws ErroCompilacao
     {
         long idPrograma = System.currentTimeMillis();
         
@@ -136,7 +127,7 @@ final class Compilador
             gerador.gera(asa, writerArquivoJava, nomeClasse, true, true, true);
             writerArquivoJava.flush();
 
-            return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise);
+            return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise, classPath, caminhoJavac);
         }
         catch (final IOException | ExcecaoVisitaASA ex)
         {
@@ -158,79 +149,91 @@ final class Compilador
         }
     }
 
-    private Programa compilarJava(String nomeClasse, File arquivoJava, File diretorioCompilacao,
-                        ResultadoAnalise resultadoAnalise) throws ErroCompilacao
+    private boolean compilouSemErros(Process processoJavac)
     {
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-        Iterable<? extends JavaFileObject> compilationUnits
-                = fileManager.getJavaFileObjects(arquivoJava);
-
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
-        //ResultadoAnalise resultadoAnalise = new ResultadoAnalise();
-
-        if (task.call())
+        Scanner scanner = new Scanner(processoJavac.getErrorStream());
+        while (scanner.hasNext())
         {
-            try
+            String linha = scanner.nextLine();
+            if (linha.contains("error:"))
             {
-                URLClassLoader classLoader = new URLClassLoader(new URL[]
-                {
-                    diretorioCompilacao.toURI().toURL()
-                });
-                Class<?> loadedClass = classLoader.loadClass(NOME_PACOTE.concat(".").concat(nomeClasse));
-
-                return (Programa) loadedClass.newInstance();
+                System.out.println(linha);
+                return false; // encontrou um erro
             }
-            catch (ClassNotFoundException | IllegalAccessException | InstantiationException | MalformedURLException | RuntimeException ex)
-            {
-                resultadoAnalise.adicionarErro(new ErroAnalise()
-                {
-                    @Override
-                    protected String construirMensagem()
-                    {
-                        return ex.getMessage();
-                    }
-                });
+        }
+        
+        return true;
+    }
+    
+    private Programa compilarJava(String nomeClasse, File arquivoJava, File diretorioCompilacao,
+                        ResultadoAnalise resultadoAnalise, File classPath, String caminhoJavac) throws ErroCompilacao
+    {
+        
+        if (classPath == null)
+        {
+            throw new IllegalArgumentException("ClassPath não pode ser nulo!");
+        }
 
+        try
+        {
+            Runtime runtime = Runtime.getRuntime();
+            
+            String javac = caminhoJavac + " -cp " + classPath.getAbsolutePath() +"/*;. ";
+            Process processoCompilacao = runtime.exec(javac + " " + arquivoJava);
+            if (!compilouSemErros(processoCompilacao))
+            {
+                resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao("Erro na compilação!"));
                 throw new ErroCompilacao(resultadoAnalise);
             }
         }
-        else
+        catch (final IOException ex)
         {
-            for (Diagnostic diagnostic : diagnostics.getDiagnostics())
-            {
-                final String message = diagnostic.getKind() + ":\t Line [" + diagnostic.getLineNumber() + "] \t Position [" + diagnostic.getPosition() + "]\t" + diagnostic.getMessage(Locale.ROOT) + "\n";
+            resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao(ex.getMessage()));
+            
+            throw new ErroCompilacao(resultadoAnalise);
+        }
+        
+        return carregaProgramaCompilado(diretorioCompilacao, nomeClasse, resultadoAnalise);
+        
+    }
 
-                if (diagnostic.getKind() == Diagnostic.Kind.ERROR)
-                {
-                    resultadoAnalise.adicionarErro(new ErroAnalise()
-                    {
-                        @Override
-                        protected String construirMensagem()
-                        {
-                            return message;
-                        }
-                    });
-                }
-                else
-                {
-                    resultadoAnalise.adicionarAviso(new AvisoAnalise(new TrechoCodigoFonte(0, 0, 1))
-                    {
-                        @Override
-                        protected String construirMensagem()
-                        {
-                            return message;
-                        }
-                    });
-                }
-            }
+    private Programa carregaProgramaCompilado(File diretorioCompilacao, String nomeClasseCompilada, ResultadoAnalise resultadoAnalise) throws ErroCompilacao
+    {
+        try
+        {
+            URLClassLoader classLoader = new URLClassLoader(new URL[]
+            {
+                diretorioCompilacao.toURI().toURL()
+            });
+            Class<?> loadedClass = classLoader.loadClass(NOME_PACOTE.concat(".").concat(nomeClasseCompilada));
+
+            return (Programa) loadedClass.newInstance();
+        }
+        catch (ClassNotFoundException | IllegalAccessException | InstantiationException | MalformedURLException | RuntimeException ex)
+        {
+            resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao(ex.getMessage()));
 
             throw new ErroCompilacao(resultadoAnalise);
         }
     }
+    
+    private class ErroAnaliseNaCompilacao extends ErroAnalise
+    {
+        private final String mensagem;
+        
+        public ErroAnaliseNaCompilacao(String mensagem)
+        {
+            this.mensagem = mensagem;
+        }
 
+        @Override
+        protected String construirMensagem()
+        {
+            return mensagem;
+        }
+
+    }
+    
     private final class LocalizadorFuncoes extends VisitanteASABasico
     {
         private final List<String> funcoes = new ArrayList<>();

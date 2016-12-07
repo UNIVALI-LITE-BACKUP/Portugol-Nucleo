@@ -3,6 +3,8 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
+import com.sun.org.apache.bcel.internal.util.ClassPath;
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -22,13 +24,13 @@ public final class Portugol
     
     private static final ExecutorService servico = Executors.newSingleThreadExecutor(); // usa uma thread só para enfileirar compilações consecutivas, isso evita ter que tratar compilações simultâneas
     
-    private static Programa compilar(String codigo, boolean paraExecucao) throws ErroCompilacao
+    private static Programa compilar(String codigo, boolean paraExecucao, File classPath, String caminhoJavac) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();
         
         long start = System.currentTimeMillis();
         
-        Programa programa = compilador.compilar(codigo, paraExecucao);
+        Programa programa = compilador.compilar(codigo, paraExecucao, classPath, caminhoJavac);
         
         long tempoCompilacao = System.currentTimeMillis() - start;
         
@@ -42,10 +44,11 @@ public final class Portugol
     
     public static Programa compilarParaAnalise(String codigo) throws ErroCompilacao
     {
-        return compilar(codigo, false);
+        return compilar(codigo, false, null, null);
     }
     
-    public static void compilarParaExecucao(final String codigo, final ListenerCompilacao listener)
+    public static void compilarParaExecucao(final String codigo, final ListenerCompilacao listener, 
+                final File classPath, final String caminhoJavac)
     {
         Runnable tarefa = new Runnable()
         {
@@ -55,7 +58,7 @@ public final class Portugol
                 listener.compilacaoParaExecucaoIniciada();
                 try
                 {
-                    Programa programa = compilar(codigo, true);
+                    Programa programa = compilar(codigo, true, classPath, caminhoJavac);
                     listener.compilacaoParaExecucaoFinalizada(programa);
                 }
                 catch(ErroCompilacao erro)
