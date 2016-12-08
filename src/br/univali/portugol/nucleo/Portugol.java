@@ -3,7 +3,6 @@ package br.univali.portugol.nucleo;
 
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.bibliotecas.base.GerenciadorBibliotecas;
-import com.sun.org.apache.bcel.internal.util.ClassPath;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
