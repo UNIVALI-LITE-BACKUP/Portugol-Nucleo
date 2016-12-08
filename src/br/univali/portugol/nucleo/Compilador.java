@@ -178,7 +178,7 @@ final class Compilador
         {
             Runtime runtime = Runtime.getRuntime();
             
-            String javac = caminhoJavac + " -cp " + classPath.getAbsolutePath() +"/*;. ";
+            String javac = caminhoJavac + " -encoding utf8 -cp " + classPath.getAbsolutePath() +"/*;. ";
             Process processoCompilacao = runtime.exec(javac + " " + arquivoJava);
             if (!compilouSemErros(processoCompilacao))
             {
