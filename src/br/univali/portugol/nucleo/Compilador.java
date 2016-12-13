@@ -22,10 +22,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DaemonExecutor;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.LogOutputStream;
+import org.apache.commons.exec.PumpStreamHandler;
 
 /**
  * Classe utilitária para abstrair as etapas necessárias à compilação do código
@@ -149,12 +158,10 @@ final class Compilador
         }
     }
 
-    private boolean compilouSemErros(Process processoJavac)
+    private boolean compilouSemErros(CollectingLogOutputStream errStream)
     {
-        Scanner scanner = new Scanner(processoJavac.getErrorStream());
-        while (scanner.hasNext())
+        for (String linha : errStream.getLines())
         {
-            String linha = scanner.nextLine();
             if (linha.contains("error:"))
             {
                 System.out.println(linha);
@@ -175,16 +182,46 @@ final class Compilador
         }
 
         try
-        {
-            Runtime runtime = Runtime.getRuntime();
+        {            
+            /* 
+             * Utilizando a biblioteca Apache Commons Exec para gerenciar o processo do Java. 
+             * Esta biblioteca resolve automaticamente o problema de caminhos com espaços.
+             */
             
-            String javac = caminhoJavac + " -encoding utf8 -cp " + classPath.getAbsolutePath() +"/*;. ";
-            Process processoCompilacao = runtime.exec(javac + " " + arquivoJava);
-            if (!compilouSemErros(processoCompilacao))
+            Map paths = new HashMap();
+            
+            paths.put("classpath", classPath.getAbsolutePath() + "/*;.");
+            paths.put("arquivoJava", arquivoJava);
+            
+            CommandLine linhaComando = new CommandLine(caminhoJavac);
+            
+            linhaComando.addArgument("-encoding");
+            linhaComando.addArgument("utf8");
+            linhaComando.addArgument("-cp");
+            linhaComando.addArgument("${classpath}");
+            linhaComando.addArgument("${arquivoJava}");
+            linhaComando.setSubstitutionMap(paths);
+            
+            CollectingLogOutputStream outStream = new CollectingLogOutputStream();
+            CollectingLogOutputStream errStream = new CollectingLogOutputStream();
+            
+            DefaultExecutor executor = new DaemonExecutor();
+
+            executor.setStreamHandler(new PumpStreamHandler(outStream, errStream));
+            executor.setExitValue(0);            
+            
+            int exitValue = executor.execute(linhaComando);
+
+            if (exitValue != 0 || !compilouSemErros(errStream))
             {
                 resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao("Erro na compilação!"));
                 throw new ErroCompilacao(resultadoAnalise);
             }
+        }
+        catch (ExecuteException ex)
+        {
+            resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao("Erro na compilação!"));
+            throw new ErroCompilacao(resultadoAnalise);
         }
         catch (final IOException ex)
         {
@@ -195,6 +232,21 @@ final class Compilador
         
         return carregaProgramaCompilado(diretorioCompilacao, nomeClasse, resultadoAnalise);
         
+    }
+    
+    public class CollectingLogOutputStream extends LogOutputStream
+    {
+        private final List<String> lines = new LinkedList<>();
+    
+        @Override protected void processLine(String line, int level)
+        {
+            lines.add(line);
+        }   
+        
+        public List<String> getLines()
+        {
+            return lines;
+        }
     }
 
     private Programa carregaProgramaCompilado(File diretorioCompilacao, String nomeClasseCompilada, ResultadoAnalise resultadoAnalise) throws ErroCompilacao
