@@ -361,7 +361,6 @@ public final class Arquivos extends Biblioteca
                             
                             String arquivoSelecionado = obterCaminhoArquivo(dialogo.getSelectedFile());
                             resultadoSelecao.setArquivoSelecionado(arquivoSelecionado);
-                            System.out.println("Selecionou Arquivo " + arquivoSelecionado);
                         }
                         UIManager.setLookAndFeel(previousLF);
                         synchronized (Arquivos.this)
