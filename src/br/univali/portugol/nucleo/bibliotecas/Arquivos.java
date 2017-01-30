@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -331,6 +332,7 @@ public final class Arquivos extends Biblioteca
                 @Override
                 public void run()
                 {
+                    LookAndFeel previousLF = UIManager.getLookAndFeel();
                     try
                     {
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -361,7 +363,7 @@ public final class Arquivos extends Biblioteca
                             resultadoSelecao.setArquivoSelecionado(arquivoSelecionado);
                             System.out.println("Selecionou Arquivo " + arquivoSelecionado);
                         }
-                        
+                        UIManager.setLookAndFeel(previousLF);
                         synchronized (Arquivos.this)
                         {
                             Arquivos.this.notifyAll();
