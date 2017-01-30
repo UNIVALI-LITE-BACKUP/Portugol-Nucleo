@@ -25,8 +25,12 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -329,6 +333,7 @@ public final class Arquivos extends Biblioteca
                 {
                     try
                     {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                         JFileChooser dialogo = obterDialogoSelecao();
                         List<FileFilter> filtros = criarFiltros(formatos_suportados);
 
@@ -351,10 +356,12 @@ public final class Arquivos extends Biblioteca
 
                         if (dialogo.showDialog(janelaPai, null) == JFileChooser.APPROVE_OPTION)
                         {
+                            
                             String arquivoSelecionado = obterCaminhoArquivo(dialogo.getSelectedFile());
                             resultadoSelecao.setArquivoSelecionado(arquivoSelecionado);
+                            System.out.println("Selecionou Arquivo " + arquivoSelecionado);
                         }
-
+                        
                         synchronized (Arquivos.this)
                         {
                             Arquivos.this.notifyAll();
@@ -363,6 +370,22 @@ public final class Arquivos extends Biblioteca
                     catch (ErroExecucaoBiblioteca excecao)
                     {
                         throw new RuntimeException(excecao);
+                    }
+                    catch (ClassNotFoundException ex)
+                    {
+                        Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch (InstantiationException ex)
+                    {
+                        Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch (IllegalAccessException ex)
+                    {
+                        Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch (UnsupportedLookAndFeelException ex)
+                    {
+                        Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             });
