@@ -57,6 +57,15 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
     public static final int COR_AMARELO = Color.YELLOW.getRGB();
+    
+    @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
+    public static final int R = 0;
+    
+    @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
+    public static final int G = 1;
+    
+    @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
+    public static final int B = 2;
 
     private Programa programa;
     private JanelaGrafica janela;
@@ -362,7 +371,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public void desenhar_ponto(final int x, final int y) throws ErroExecucaoBiblioteca, InterruptedException
     {
         janela().getSuperficieDesenho().desenharPonto(x, y);
-    }
+    }    
 
     @DocumentacaoFuncao(
             descricao
@@ -465,6 +474,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
+    
+    
     public int transformar_imagem(int endereco, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca, InterruptedException
     {
         BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
@@ -474,6 +485,89 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
         return cacheImagens.adicionarImagem(imagemTransformada);
+    }
+    
+    @DocumentacaoFuncao(
+            descricao = "Esta função permite redimensionar uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). ",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem que será transformada"),
+                @DocumentacaoParametro(nome = "largura", descricao = "a largura desejada da imagem"),
+                @DocumentacaoParametro(nome = "altura", descricao = "a altura desejada da imagem")
+            },
+            retorno = "o endereço de memória da nova imagem",
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
+                @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+            }
+    )
+    public int redimensionar_imagem(int endereco, int largura, int altura) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
+        
+        //Dimension dimension = getScaledDimension(new Dimension(imagemTransformada.getWidth(), imagemTransformada.getHeight()), new Dimension(largura, altura));
+        //int img_width = dimension.width;
+        //int img_height = dimension.height;
+        
+        
+        int type = BufferedImage.TYPE_INT_ARGB;
+        BufferedImage resizedImage = new BufferedImage(largura, altura, type);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(imagemTransformada, 0, 0, largura, altura, null);
+        g.dispose();
+        
+        return cacheImagens.adicionarImagem(resizedImage);
+    }
+    @DocumentacaoFuncao(
+            descricao = "Esta função permite obter uma cor em um pixel expecifico de uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). ",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem que será transformada"),
+                @DocumentacaoParametro(nome = "x", descricao = "coluna do pixel no bitmap"),
+                @DocumentacaoParametro(nome = "y", descricao = "linha do pixel no bitmap")
+            },
+            retorno = "cor RGB do pixel",
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
+                @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+            }
+    )
+    public int obter_cor_pixel(int endereco, int x, int y) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
+        
+        
+        int clr=  imagemTransformada.getRGB(x,y);
+        
+        return clr;
+    }
+    
+        @DocumentacaoFuncao(
+            descricao = "Esta função permite obter um canal de uma cor.",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "cor", descricao = "cor que será extraido o canal"),
+                @DocumentacaoParametro(nome = "canal", descricao = "canal R, G ou B")
+            },
+            retorno = "cor RGB do pixel",
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
+                @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+            }
+    )
+    public int obter_RGB(int cor, int canal) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        
+        switch(canal){
+            case R : return (cor & 0xff0000) >> 16;
+            case G : return (cor & 0x00ff00) >> 8;
+            case B : return cor & 0x0000ff;
+        }
+        
+        return 0;
     }
 
     @DocumentacaoFuncao(
@@ -644,6 +738,34 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         }
 
         return imagem;
+    }
+    
+    private static Dimension getScaledDimension(Dimension imgSize, Dimension boundary) {
+
+        int original_width = imgSize.width;
+        int original_height = imgSize.height;
+        int bound_width = boundary.width;
+        int bound_height = boundary.height;
+        int new_width = original_width;
+        int new_height = original_height;
+
+        // first check if we need to scale width
+        if (original_width > bound_width) {
+            //scale width to fit
+            new_width = bound_width;
+            //scale height to maintain aspect ratio
+            new_height = (new_width * original_height) / original_width;
+        }
+
+        // then check if we need to scale even with the new height
+        if (new_height > bound_height) {
+            //scale height to fit instead
+            new_height = bound_height;
+            //scale width to maintain aspect ratio
+            new_width = (new_height * original_width) / original_height;
+        }
+
+        return new Dimension(new_width, new_height);
     }
 
     @DocumentacaoFuncao(
