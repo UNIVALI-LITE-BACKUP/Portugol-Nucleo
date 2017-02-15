@@ -137,7 +137,28 @@ public final class Sons extends Biblioteca
         }
         return endereco;
     }
-
+    
+        @DocumentacaoFuncao(
+            descricao = "Pausa uma reprodução específica de um som que está sendo executada no momento",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer interromper")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
+                @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+            }
+    )
+    public void pausar_som(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
+        {
+            reproducao.pausa(false); // não feche o clip de áudio para reutilizá-lo
+        }
+    }
+    
     @DocumentacaoFuncao(
             descricao = "Interrompe uma reprodução específica de um som que está sendo executada no momento",
             parametros =
@@ -157,7 +178,82 @@ public final class Sons extends Biblioteca
             reproducao.interrompe(false); // não feche o clip de áudio para reutilizá-lo
         }
     }
-
+    
+        @DocumentacaoFuncao(
+            descricao = "Obtêm o tamanho da música em milisegundos",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
+                @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+            }
+    )
+    public int obter_tamanho_musica(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
+        {
+            return (int)reproducao.getTamanhoMusica()/1000;
+        }
+        return 0;
+    }
+    
+            @DocumentacaoFuncao(
+            descricao = "Obtêm a posição atual da música em milisegundos",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
+                @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+            }
+    )
+    public int obter_posicao_atual_musica(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
+        {
+            return (int)reproducao.getPosicaoAtualMusica()/1000;
+        }
+        return 0;
+    }
+    
+    @DocumentacaoFuncao(
+            descricao = "Define a posição atual da música em milisegundos",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume"),
+                @DocumentacaoParametro(nome = "milissegundos", descricao = "o tempo em milissegundos que deseja colocar a musica")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
+                @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+            }
+    )
+    public void definir_posicao_atual_musica(int endereco, int milissegundos) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        Reproducao reproducao = reproducoes.get(endereco);
+        if (reproducao != null)
+        {
+            if(reproducao.clipTime>0){
+                reproducao.setPosicaoMusica(milissegundos*1000);
+            }
+            else{
+                reproducao.pausa(false);
+                reproducao.setPosicaoMusica(milissegundos*1000);
+                reproducao.inicia(false);
+            }
+            
+            
+        }
+    }
+    
     @DocumentacaoFuncao(
             descricao = "Define um novo volume para um som que já está sendo executado",
             parametros =
@@ -278,6 +374,7 @@ public final class Sons extends Biblioteca
         private final Integer endereco; 
         private float volume = 1.0f;
         private float volumeGeral = 1.0f;
+        private long clipTime = 0;
         private FloatControl controleDeVolume = null;
     
         public Reproducao(File som, Integer endereco) throws IOException, UnsupportedAudioFileException
@@ -343,6 +440,24 @@ public final class Sons extends Biblioteca
         {
             return endereco;
         }
+        
+        public long getPosicaoAtualMusica()
+        {
+            if(clipTime>0)
+            {
+                return clipTime;
+            }
+            return clip.getMicrosecondPosition();
+        }
+        
+        public long getTamanhoMusica()
+        {
+            return clip.getMicrosecondLength();
+        }
+        
+        public void setPosicaoMusica(long microssecond){
+            clipTime = microssecond;
+        }
 
         public void inicia(boolean repetir)
         {
@@ -353,8 +468,14 @@ public final class Sons extends Biblioteca
             if (clip.isRunning())
             {
                 clip.stop();
-            }
+            }            
             clip.setFramePosition(0);
+            if(clipTime>0)
+            {
+                clip.setMicrosecondPosition(clipTime);
+                clipTime=0;
+                clip.start();
+            }
             if (!repetir)
             {
                 clip.loop(0);
@@ -362,6 +483,21 @@ public final class Sons extends Biblioteca
             else
             {
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+        }
+        
+        public void pausa(boolean fechaClip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+            clipTime=clip.getMicrosecondPosition();
+            clip.stop();
+            clip.flush();
+            if (fechaClip)
+            {
+                clip.close();
             }
         }
 
