@@ -898,7 +898,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     }
     
     @DocumentacaoFuncao(
-            descricao = "Obtêm o delay entre of frames de um gif",
+            descricao = "Obtêm o intervalo entre os quadros de um gif",
             parametros =
             {
                 @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif")
@@ -909,9 +909,26 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             }
     )
     
-    public int obter_delay_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    public int obter_intervalo_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         return gifs.get(endereco).getGifDelay()*10;
+    }
+    
+    @DocumentacaoFuncao(
+            descricao = "Obtêm o numerod e quadros de um gif",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+            }
+    )
+    
+    public int obter_numero_quadros_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        return gifs.get(endereco).getFrameNumber();
     }
     
     @DocumentacaoFuncao(
@@ -1372,7 +1389,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
         public BufferedImage getActualImage()
         {
-            //System.out.println(gifFrames.size());
             return gifFrames.get(actualImage).getImage();
         }
         
@@ -1384,6 +1400,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         public void setActualImage(int actualImage)
         {
             this.actualImage = actualImage;
+        }
+        
+        public int getFrameNumber()
+        {
+            return gifFrames.size();
         }
         
         public void nextImage()
@@ -1444,93 +1465,98 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 }
             }
             }
-
+ 
             BufferedImage master = null;
             boolean hasBackround = false;
-
-            for (int frameIndex = 0;; frameIndex++) {
-            BufferedImage image;
-            try{
-                image = reader.read(frameIndex);
-            }catch (IndexOutOfBoundsException io){
-                break;
-            }
-
-            if (width == -1 || height == -1){
-                width = image.getWidth();
-                height = image.getHeight();
-            }
-
-            IIOMetadataNode root = (IIOMetadataNode) reader.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
-            IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
-            NodeList children = root.getChildNodes();
-
-            int delay = Integer.valueOf(gce.getAttribute("delayTime"));
-
-            String disposal = gce.getAttribute("disposalMethod");
-
-            if (master == null){
-                master = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                master.createGraphics().setColor(backgroundColor);
-                master.createGraphics().fillRect(0, 0, master.getWidth(), master.getHeight());
-
-            hasBackround = image.getWidth() == width && image.getHeight() == height;
-
-                master.createGraphics().drawImage(image, 0, 0, null);
-            }else{
-                int x = 0;
-                int y = 0;
-
-                for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++){
-                    Node nodeItem = children.item(nodeIndex);
-
-                    if (nodeItem.getNodeName().equals("ImageDescriptor")){
-                        NamedNodeMap map = nodeItem.getAttributes();
-
-                        x = Integer.valueOf(map.getNamedItem("imageLeftPosition").getNodeValue());
-                        y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
-                    }
+            int frameCount = reader.getNumImages(true);
+            
+            for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+                BufferedImage image;
+                try{
+                    image = reader.read(frameIndex);
+                }catch (IndexOutOfBoundsException io){
+                    continue;
                 }
 
-                if (disposal.equals("restoreToPrevious")){
-                    BufferedImage from = null;
-                    for (int i = frameIndex - 1; i >= 0; i--){
-                        if (!frames.get(i).getDisposal().equals("restoreToPrevious") || frameIndex == 0){
-                            from = frames.get(i).getImage();
-                            break;
+                if (width == -1 || height == -1){
+                    width = image.getWidth();
+                    height = image.getHeight();
+                }
+
+                IIOMetadataNode root = (IIOMetadataNode) reader.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
+                IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
+                NodeList children = root.getChildNodes();
+
+                int delay = Integer.valueOf(gce.getAttribute("delayTime"));
+
+                String disposal = gce.getAttribute("disposalMethod");
+
+                if (master == null){
+                    master = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                    master.createGraphics().setColor(backgroundColor);
+                    master.createGraphics().fillRect(0, 0, master.getWidth(), master.getHeight());
+
+                hasBackround = image.getWidth() == width && image.getHeight() == height;
+
+                    master.createGraphics().drawImage(image, 0, 0, null);
+                }else{
+                    int x = 0;
+                    int y = 0;
+
+                    for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++){
+                        Node nodeItem = children.item(nodeIndex);
+
+                        if (nodeItem.getNodeName().equals("ImageDescriptor")){
+                            NamedNodeMap map = nodeItem.getAttributes();
+
+                            x = Integer.valueOf(map.getNamedItem("imageLeftPosition").getNodeValue());
+                            y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
                         }
                     }
 
+                    if (disposal.equals("restoreToPrevious")){
+                        BufferedImage from = null;
+                        for (int i = frameIndex - 1; i >= 0; i--){
+                            if (!frames.get(i).getDisposal().equals("restoreToPrevious") || frameIndex == 0){
+                                from = frames.get(i).getImage();
+                                break;
+                            }
+                        }
+
+                        {
+                            ColorModel model = from.getColorModel();
+                            boolean alpha = from.isAlphaPremultiplied();
+                            WritableRaster raster = from.copyData(null);
+                            master = new BufferedImage(model, raster, alpha, null);
+                        }
+                    }else if (disposal.equals("restoreToBackgroundColor") && backgroundColor != null){
+                        if (!hasBackround || frameIndex > 1){
+                            master.createGraphics().fillRect(lastx, lasty, frames.get(frameIndex - 1).getWidth(), frames.get(frameIndex - 1).getHeight());
+                        }
+                    }
+                    master.createGraphics().drawImage(image, x, y, null);
+
+                    lastx = x;
+                    lasty = y;
+                }
+
+                try{
+                    BufferedImage copy;
+
                     {
-                        ColorModel model = from.getColorModel();
-                        boolean alpha = from.isAlphaPremultiplied();
-                        WritableRaster raster = from.copyData(null);
-                        master = new BufferedImage(model, raster, alpha, null);
+                        ColorModel model = master.getColorModel();
+                        boolean alpha = master.isAlphaPremultiplied();
+                        WritableRaster raster = master.copyData(null);
+                        copy = new BufferedImage(model, raster, alpha, null);
                     }
-                }else if (disposal.equals("restoreToBackgroundColor") && backgroundColor != null){
-                    if (!hasBackround || frameIndex > 1){
-                        master.createGraphics().fillRect(lastx, lasty, frames.get(frameIndex - 1).getWidth(), frames.get(frameIndex - 1).getHeight());
-                    }
+                    frames.add(new ImageFrame(copy, delay, disposal, image.getWidth(), image.getHeight()));
                 }
-                master.createGraphics().drawImage(image, x, y, null);
-
-                lastx = x;
-                lasty = y;
-            }
-
-            {
-                BufferedImage copy;
-
+                catch (Throwable ex)
                 {
-                    ColorModel model = master.getColorModel();
-                    boolean alpha = master.isAlphaPremultiplied();
-                    WritableRaster raster = master.copyData(null);
-                    copy = new BufferedImage(model, raster, alpha, null);
+                    ex.printStackTrace(System.err);
                 }
-                frames.add(new ImageFrame(copy, delay, disposal, image.getWidth(), image.getHeight()));
-            }
 
-            master.flush();
+                master.flush();
             }
             reader.dispose();
 
