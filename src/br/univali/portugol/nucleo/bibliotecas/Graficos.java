@@ -6,8 +6,11 @@ import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import br.univali.portugol.nucleo.bibliotecas.graficos.CacheImagens;
+import br.univali.portugol.nucleo.bibliotecas.graficos.ImageFrame;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGrafica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGraficaImpl;
+import com.sun.imageio.plugins.gif.GIFImageReader;
+import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
@@ -16,13 +19,24 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -71,6 +85,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     private JanelaGrafica janela;
     private CacheImagens cacheImagens;
     private boolean inicializado = false;
+    private final Map<Integer, ImageGif> gifs = new ConcurrentHashMap<>();
 
     @Override
     public void inicializar(final Programa programa, final List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
@@ -430,6 +445,54 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
         }
     }
+    
+    @DocumentacaoFuncao(
+            descricao
+            = "Carrega um gif na memória para ser utilizada mais tarde.",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "caminho", descricao = "o caminho do arquivo de imagem no computador")
+            },
+            retorno = "o endereço de memória no qual o gif foi carregado",
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+            }
+    )
+    public int carregar_gif(String caminho) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        File arquivo = programa.resolverCaminho(new File(caminho));
+        Integer endereco = caminho.hashCode();
+
+        if (arquivo.exists() && !gifs.containsKey(endereco))
+        {
+            gifs.put(endereco, new ImageGif(caminho));
+        }
+        else
+        {
+            throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
+        }
+        return endereco;
+    }
+    
+    @DocumentacaoFuncao(
+            descricao
+            = "Define a imagem a ser desenhada do gif como o próximo frame",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "caminho", descricao = "o caminho do arquivo de imagem no computador")
+            },
+            retorno = "o endereço de memória no qual o gif foi carregado",
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+            }
+    )
+    public void proximo_frame_gif(int caminho) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        ImageGif imageGif = gifs.get(caminho);        
+        imageGif.nextImage();
+    }
 
     private BufferedImage criaImagemCompativel(BufferedImage original)
     {
@@ -788,6 +851,26 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco));
     }
+    
+    @DocumentacaoFuncao(
+            descricao
+            = "Desenha um frame de um gif previamente carregado, na posição especificada pelos "
+            + "parâmetros <param>x</param> e <param>y</param>",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) da imagem no eixo horizontal, em relação ao lado esquerdo da janela"),
+                @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) da imagem no eixo vertical, em relação ao topo da janela"),
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem a ser desenhada")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+            }
+    )
+    public void desenhar_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
+    }
 
     @DocumentacaoFuncao(
             descricao
@@ -813,7 +896,24 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco));
     }
-
+    
+    @DocumentacaoFuncao(
+            descricao = "Obtêm o delay entre of frames de um gif",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+            }
+    )
+    
+    public int obter_delay_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        return gifs.get(endereco).getGifDelay();
+    }
+    
     @DocumentacaoFuncao(
             descricao = "Libera a memória utilizada por uma imagem que tenha sido previamente carregada",
             parametros =
@@ -825,9 +925,25 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
             }
     )
+    
     public void liberar_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         cacheImagens.liberarImagem(endereco);
+    }
+    @DocumentacaoFuncao(
+            descricao = "Libera a memória utilizada por umgif que tenha sido previamente carregado",
+            parametros =
+            {
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem")
+            },
+            autores =
+            {
+                @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+            }
+    )
+    public void liberar_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        gifs.remove(endereco);
     }
 
     @DocumentacaoFuncao(
@@ -1225,5 +1341,199 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public void sair_modo_tela_cheia() throws ErroExecucaoBiblioteca, InterruptedException
     {
         janela().sairModoTelaCheia();
+    }
+    
+    private class ImageGif
+    {
+        private List<ImageFrame> gifFrames;
+        private int actualImage;
+
+        public ImageGif(String caminho) throws ErroExecucaoBiblioteca
+        {
+            File arquivo = programa.resolverCaminho(new File(caminho));
+
+            if (arquivo.exists())
+            {
+                gifFrames = new ArrayList<>();
+                try
+                {                   
+                    gifFrames.addAll(readGif(arquivo));
+                }
+                catch (IOException excecao)
+                {
+                    throw new ErroExecucaoBiblioteca(String.format("Ocorreu um erro ao carregar a imagem '%s'", caminho));
+                }
+            }
+            else
+            {
+                throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
+            }
+        }
+
+        public BufferedImage getActualImage()
+        {
+            return gifFrames.get(actualImage).getImage();
+        }
+        
+        public int getGifDelay()
+        {
+            return gifFrames.get(actualImage).getDelay();
+        }
+
+        public void setActualImage(int actualImage)
+        {
+            this.actualImage = actualImage;
+        }
+        
+        public void nextImage()
+        {
+            actualImage = (actualImage+1)%gifFrames.size();
+        }
+        
+        private List<ImageFrame> readGif(File stream) throws IOException{
+            ArrayList<ImageFrame> frames = new ArrayList<ImageFrame>(2);
+
+            ImageReader reader = (ImageReader) ImageIO.getImageReadersByFormatName("gif").next();
+            reader.setInput(ImageIO.createImageInputStream(stream));
+
+            int lastx = 0;
+            int lasty = 0;
+
+            int width = -1;
+            int height = -1;
+
+            IIOMetadata metadata = reader.getStreamMetadata();
+
+            Color backgroundColor = null;
+
+            if(metadata != null) {
+            IIOMetadataNode globalRoot = (IIOMetadataNode) metadata.getAsTree(metadata.getNativeMetadataFormatName());
+
+            NodeList globalColorTable = globalRoot.getElementsByTagName("GlobalColorTable");
+            NodeList globalScreeDescriptor = globalRoot.getElementsByTagName("LogicalScreenDescriptor");
+
+            if (globalScreeDescriptor != null && globalScreeDescriptor.getLength() > 0){
+                IIOMetadataNode screenDescriptor = (IIOMetadataNode) globalScreeDescriptor.item(0);
+
+                if (screenDescriptor != null){
+                    width = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenWidth"));
+                    height = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenHeight"));
+                }
+            }
+
+            if (globalColorTable != null && globalColorTable.getLength() > 0){
+                IIOMetadataNode colorTable = (IIOMetadataNode) globalColorTable.item(0);
+
+                if (colorTable != null) {
+                    String bgIndex = colorTable.getAttribute("backgroundColorIndex");
+
+                    IIOMetadataNode colorEntry = (IIOMetadataNode) colorTable.getFirstChild();
+                    while (colorEntry != null) {
+                        if (colorEntry.getAttribute("index").equals(bgIndex)) {
+                            int red = Integer.parseInt(colorEntry.getAttribute("red"));
+                            int green = Integer.parseInt(colorEntry.getAttribute("green"));
+                            int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
+
+                            backgroundColor = new Color(red, green, blue);
+                            break;
+                        }
+
+                        colorEntry = (IIOMetadataNode) colorEntry.getNextSibling();
+                    }
+                }
+            }
+            }
+
+            BufferedImage master = null;
+            boolean hasBackround = false;
+
+            for (int frameIndex = 0;; frameIndex++) {
+            BufferedImage image;
+            try{
+                image = reader.read(frameIndex);
+            }catch (IndexOutOfBoundsException io){
+                break;
+            }
+
+            if (width == -1 || height == -1){
+                width = image.getWidth();
+                height = image.getHeight();
+            }
+
+            IIOMetadataNode root = (IIOMetadataNode) reader.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
+            IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
+            NodeList children = root.getChildNodes();
+
+            int delay = Integer.valueOf(gce.getAttribute("delayTime"));
+
+            String disposal = gce.getAttribute("disposalMethod");
+
+            if (master == null){
+                master = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                master.createGraphics().setColor(backgroundColor);
+                master.createGraphics().fillRect(0, 0, master.getWidth(), master.getHeight());
+
+            hasBackround = image.getWidth() == width && image.getHeight() == height;
+
+                master.createGraphics().drawImage(image, 0, 0, null);
+            }else{
+                int x = 0;
+                int y = 0;
+
+                for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++){
+                    Node nodeItem = children.item(nodeIndex);
+
+                    if (nodeItem.getNodeName().equals("ImageDescriptor")){
+                        NamedNodeMap map = nodeItem.getAttributes();
+
+                        x = Integer.valueOf(map.getNamedItem("imageLeftPosition").getNodeValue());
+                        y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
+                    }
+                }
+
+                if (disposal.equals("restoreToPrevious")){
+                    BufferedImage from = null;
+                    for (int i = frameIndex - 1; i >= 0; i--){
+                        if (!frames.get(i).getDisposal().equals("restoreToPrevious") || frameIndex == 0){
+                            from = frames.get(i).getImage();
+                            break;
+                        }
+                    }
+
+                    {
+                        ColorModel model = from.getColorModel();
+                        boolean alpha = from.isAlphaPremultiplied();
+                        WritableRaster raster = from.copyData(null);
+                        master = new BufferedImage(model, raster, alpha, null);
+                    }
+                }else if (disposal.equals("restoreToBackgroundColor") && backgroundColor != null){
+                    if (!hasBackround || frameIndex > 1){
+                        master.createGraphics().fillRect(lastx, lasty, frames.get(frameIndex - 1).getWidth(), frames.get(frameIndex - 1).getHeight());
+                    }
+                }
+                master.createGraphics().drawImage(image, x, y, null);
+
+                lastx = x;
+                lasty = y;
+            }
+
+            {
+                BufferedImage copy;
+
+                {
+                    ColorModel model = master.getColorModel();
+                    boolean alpha = master.isAlphaPremultiplied();
+                    WritableRaster raster = master.copyData(null);
+                    copy = new BufferedImage(model, raster, alpha, null);
+                }
+                frames.add(new ImageFrame(copy, delay, disposal, image.getWidth(), image.getHeight()));
+            }
+
+            master.flush();
+            }
+            reader.dispose();
+
+            return frames;
+        }
     }
 }
