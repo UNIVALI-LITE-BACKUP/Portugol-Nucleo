@@ -911,7 +911,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     public int obter_delay_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return gifs.get(endereco).getGifDelay();
+        return gifs.get(endereco).getGifDelay()*10;
     }
     
     @DocumentacaoFuncao(
@@ -1372,6 +1372,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
         public BufferedImage getActualImage()
         {
+            //System.out.println(gifFrames.size());
             return gifFrames.get(actualImage).getImage();
         }
         
