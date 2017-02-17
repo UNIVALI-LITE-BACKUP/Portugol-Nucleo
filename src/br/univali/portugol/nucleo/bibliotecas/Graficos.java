@@ -477,17 +477,21 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             = "Define a imagem a ser desenhada do gif como o próximo frame",
             parametros =
             {
-                @DocumentacaoParametro(nome = "caminho", descricao = "o caminho do arquivo de imagem no computador")
+                @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória no qual o gif foi carregado")
             },
-            retorno = "o endereço de memória no qual o gif foi carregado",
             autores =
             {
                 @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
             }
     )
-    public void proximo_frame_gif(int caminho) throws ErroExecucaoBiblioteca, InterruptedException
+    public void proximo_frame_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        ImageGif imageGif = gifs.get(caminho);        
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
+        }
+        
+        ImageGif imageGif = gifs.get(endereco);        
         imageGif.nextImage();
     }
 
@@ -903,6 +907,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
+        }
+        
         janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
     }
 
@@ -945,6 +954,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     public int obter_intervalo_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
+        }
+        
         return gifs.get(endereco).getGifDelay()*10;
     }
     
@@ -962,6 +976,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     public int obter_numero_quadros_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
+        }
+        
         return gifs.get(endereco).getFrameNumber();
     }
     
@@ -994,6 +1013,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void liberar_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
+        }
+        
         gifs.remove(endereco);
     }
 
