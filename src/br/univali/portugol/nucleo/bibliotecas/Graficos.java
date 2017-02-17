@@ -9,8 +9,6 @@ import br.univali.portugol.nucleo.bibliotecas.graficos.CacheImagens;
 import br.univali.portugol.nucleo.bibliotecas.graficos.ImageFrame;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGrafica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGraficaImpl;
-import com.sun.imageio.plugins.gif.GIFImageReader;
-import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
@@ -23,7 +21,6 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +89,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         this.programa = programa;
         this.janela = JanelaGraficaImpl.criar(programa);
-        this.cacheImagens = CacheImagens.criar(programa);
+        this.cacheImagens = CacheImagens.criar();
     }
 
     @Override
@@ -433,7 +430,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             try
             {
                 BufferedImage imagem = ImageIO.read(arquivo);
-                return cacheImagens.adicionarImagem(criaImagemCompativel(imagem));
+                return cacheImagens.adicionarImagem(criarImagemCompativel(imagem));
             }
             catch (IOException excecao)
             {
@@ -494,7 +491,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         imageGif.nextImage();
     }
 
-    private BufferedImage criaImagemCompativel(BufferedImage original)
+    private BufferedImage criarImagemCompativel(BufferedImage original)
     {
         GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
                 .getLocalGraphicsEnvironment()
@@ -512,7 +509,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
         return imagemCompativel;
     }
-
+    
     @DocumentacaoFuncao(
             descricao = "Esta função permite transformar uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). "
             + "As transformações possíveis são: espelhamento, rotação e remoção de cor.<br><br>O espelhamento permite inverter a imagem tanto na "
@@ -541,13 +538,13 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     public int transformar_imagem(int endereco, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
+        BufferedImage imagemTransformada = (BufferedImage) cacheImagens.obterImagem(endereco);
 
         imagemTransformada = aplicarChromaKey(imagemTransformada, cor_ignorada);
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
-        return cacheImagens.adicionarImagem(imagemTransformada);
+        return cacheImagens.adicionarImagem(criarImagemCompativel(imagemTransformada));
     }
     
     @DocumentacaoFuncao(
@@ -556,7 +553,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             {
                 @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem que será transformada"),
                 @DocumentacaoParametro(nome = "largura", descricao = "a largura desejada da imagem"),
-                @DocumentacaoParametro(nome = "altura", descricao = "a altura desejada da imagem")
+                @DocumentacaoParametro(nome = "altura", descricao = "a altura desejada da imagem"),
+                @DocumentacaoParametro(nome = "manter_qualidade", descricao = "define se a qualidade da imagem deve ser mantida ao redimensionar"),
             },
             retorno = "o endereço de memória da nova imagem",
             autores =
@@ -565,23 +563,46 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
             }
     )
-    public int redimensionar_imagem(int endereco, int largura, int altura) throws ErroExecucaoBiblioteca, InterruptedException
+    public int redimensionar_imagem(int endereco, int largura, int altura, boolean manter_qualidade) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
+        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco);
         
-        //Dimension dimension = getScaledDimension(new Dimension(imagemTransformada.getWidth(), imagemTransformada.getHeight()), new Dimension(largura, altura));
-        //int img_width = dimension.width;
-        //int img_height = dimension.height;
+        // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
+        // melhor do que criando uma nova BufferedImage na mão
         
+        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDefaultConfiguration();
         
-        int type = BufferedImage.TYPE_INT_ARGB;
-        BufferedImage resizedImage = new BufferedImage(largura, altura, type);
-        Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(imagemTransformada, 0, 0, largura, altura, null);
+        BufferedImage imagemCompativel = graphicsConfiguration.createCompatibleImage(largura, altura, original.getTransparency());
+
+        Graphics2D g = (Graphics2D) imagemCompativel.getGraphics();
+        
+        if (manter_qualidade)
+        {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        }
+        
+        g.drawImage(original, 0, 0, largura, altura, null);
         g.dispose();
         
-        return cacheImagens.adicionarImagem(resizedImage);
+        return cacheImagens.adicionarImagem(imagemCompativel);
     }
+    
+//    public int redimensionar_imagem(int endereco, int largura, int altura) throws ErroExecucaoBiblioteca, InterruptedException
+//    {
+//        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
+//        
+//        int type = BufferedImage.TYPE_INT_ARGB;
+//        BufferedImage resizedImage = new BufferedImage(largura, altura, type);
+//        Graphics2D g = resizedImage.createGraphics();
+//        g.drawImage(imagemTransformada, 0, 0, largura, altura, null);
+//        g.dispose();
+//        
+//        return cacheImagens.adicionarImagem(resizedImage);
+//    }
+    
     @DocumentacaoFuncao(
             descricao = "Esta função permite obter uma cor em um pixel expecifico de uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). ",
             parametros =
@@ -599,12 +620,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int obter_cor_pixel(int endereco, int x, int y) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
-        
-        
-        int clr=  imagemTransformada.getRGB(x,y);
-        
-        return clr;
+        return cacheImagens.obterImagem(endereco).getRGB(x,y);
     }
     
         @DocumentacaoFuncao(
@@ -692,9 +708,12 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
         return copia;
     }
-
+    
     private BufferedImage espelharImagem(BufferedImage imagem, boolean espelhamento_horizontal, boolean espelhamento_vertical)
     {
+        if (!espelhamento_horizontal && !espelhamento_vertical)
+            return imagem;
+        
         int escalaX = (espelhamento_horizontal) ? -1 : 1;
         int escalaY = (espelhamento_vertical) ? -1 : 1;
 
