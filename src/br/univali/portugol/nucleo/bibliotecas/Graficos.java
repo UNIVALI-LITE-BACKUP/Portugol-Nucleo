@@ -985,7 +985,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     }
     
     @DocumentacaoFuncao(
-        descricao = "Obtêm determinado de um gif",
+        descricao = "Obtêm determinado quadro de um gif",
         parametros =
         {
             @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif"),
@@ -1006,6 +1006,29 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         
         BufferedImage bf = criarImagemCompativel(gifs.get(endereco).gifFrames.get(quadro).getImage());
         return cacheImagens.adicionarImagem(bf);
+    }
+    
+    @DocumentacaoFuncao(
+        descricao = "Define determinado quadro a um gif",
+        parametros =
+        {
+            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif"),
+            @DocumentacaoParametro(nome = "quadro", descricao = "o quadro que deseja ser definido")
+        },
+        autores =
+        {
+            @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
+        }
+    )
+    
+    public void definir_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
+        }
+        
+        gifs.get(endereco).setActualImage(quadro);
     }
     
     @DocumentacaoFuncao(
