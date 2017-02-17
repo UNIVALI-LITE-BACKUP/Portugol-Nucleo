@@ -678,7 +678,22 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int transformar_porcao_imagem(int endereco, int x, int y, int largura, int altura, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage imagemTransformada = copiarPorcaoImagem((BufferedImage) cacheImagens.obterImagem(endereco), x, y, largura, altura);
+        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco);
+        
+        // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
+        // melhor do que criando uma nova BufferedImage na mão
+        
+        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDefaultConfiguration();
+        
+        BufferedImage imagemTransformada = graphicsConfiguration.createCompatibleImage(largura, altura, original.getTransparency());
+
+        Graphics2D g = (Graphics2D) imagemTransformada.getGraphics();
+        
+        g.drawImage(original, 0, 0, largura, altura, x, y, x + largura, y + altura, null);
+        g.dispose();
 
         imagemTransformada = aplicarChromaKey(imagemTransformada, cor_ignorada);
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
@@ -687,27 +702,27 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         return cacheImagens.adicionarImagem(imagemTransformada);
     }
 
-    private BufferedImage copiarImagem(BufferedImage original)
-    {
-        BufferedImage copia = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics graficos = copia.getGraphics();
+//    private BufferedImage copiarImagem(BufferedImage original)
+//    {
+//        BufferedImage copia = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_ARGB);
+//        Graphics graficos = copia.getGraphics();
+//
+//        graficos.drawImage(original, 0, 0, null);
+//        graficos.dispose();
+//
+//        return copia;
+//    }
 
-        graficos.drawImage(original, 0, 0, null);
-        graficos.dispose();
-
-        return copia;
-    }
-
-    private BufferedImage copiarPorcaoImagem(BufferedImage original, int x, int y, int largura, int altura)
-    {
-        BufferedImage copia = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
-        Graphics graficos = copia.getGraphics();
-
-        graficos.drawImage(original, 0, 0, largura, altura, x, y, x + largura, y + altura, null);
-        graficos.dispose();
-
-        return copia;
-    }
+//    private BufferedImage copiarPorcaoImagem(BufferedImage original, int x, int y, int largura, int altura)
+//    {
+//        BufferedImage copia = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_ARGB);
+//        Graphics graficos = copia.getGraphics();
+//
+//        graficos.drawImage(original, 0, 0, largura, altura, x, y, x + largura, y + altura, null);
+//        graficos.dispose();
+//
+//        return copia;
+//    }
     
     private BufferedImage espelharImagem(BufferedImage imagem, boolean espelhamento_horizontal, boolean espelhamento_vertical)
     {
