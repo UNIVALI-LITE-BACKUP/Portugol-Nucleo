@@ -594,18 +594,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         return cacheImagens.adicionarImagem(imagemCompativel);
     }
     
-//    public int redimensionar_imagem(int endereco, int largura, int altura) throws ErroExecucaoBiblioteca, InterruptedException
-//    {
-//        BufferedImage imagemTransformada = copiarImagem((BufferedImage) cacheImagens.obterImagem(endereco));
-//        
-//        int type = BufferedImage.TYPE_INT_ARGB;
-//        BufferedImage resizedImage = new BufferedImage(largura, altura, type);
-//        Graphics2D g = resizedImage.createGraphics();
-//        g.drawImage(imagemTransformada, 0, 0, largura, altura, null);
-//        g.dispose();
-//        
-//        return cacheImagens.adicionarImagem(resizedImage);
-//    }
     
     @DocumentacaoFuncao(
         descricao = "Esta função permite obter uma cor em um pixel expecifico de uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). ",
