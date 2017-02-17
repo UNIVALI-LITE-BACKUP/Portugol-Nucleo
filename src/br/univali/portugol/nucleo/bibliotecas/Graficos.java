@@ -950,8 +950,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
         }
-    )
-    
+    )    
     public int obter_intervalo_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (!gifs.containsKey(endereco))
@@ -973,7 +972,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
         }
     )
-    
     public int obter_numero_quadros_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (!gifs.containsKey(endereco))
@@ -995,8 +993,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
         }
-    )
-    
+    )    
     public int obter_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (!gifs.containsKey(endereco))
@@ -1019,8 +1016,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
         }
-    )
-    
+    )    
     public void definir_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (!gifs.containsKey(endereco))
@@ -1042,11 +1038,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Luiz Fernando Noschang", email = "noschang@univali.br")
         }
     )
-    
     public void liberar_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         cacheImagens.liberarImagem(endereco);
     }
+    
     @DocumentacaoFuncao(
         descricao = "Libera a memória utilizada por umgif que tenha sido previamente carregado",
         parametros =
