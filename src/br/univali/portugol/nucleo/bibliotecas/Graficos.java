@@ -902,6 +902,38 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         
         janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
     }
+    
+    @DocumentacaoFuncao(
+        descricao
+        = "Desenha um frame de um gif previamente carregado, na posição especificada pelos "
+        + "parâmetros <param>x</param> e <param>y</param>",
+        parametros =
+        {
+            @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) da imagem no eixo horizontal, em relação ao lado esquerdo da janela"),
+            @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) da imagem no eixo vertical, em relação ao topo da janela"),
+            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem a ser desenhada")
+        },
+        autores =
+        {
+            @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br"),
+            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+        }
+    )
+    public void desenhar_gif_automatico(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
+        }
+        
+        if(System.currentTimeMillis()-gifs.get(endereco).drawTime>=gifs.get(endereco).getGifDelay()*10){
+            gifs.get(endereco).nextImage();
+            gifs.get(endereco).drawTime = System.currentTimeMillis();
+        }else if(gifs.get(endereco).drawTime == 0){
+           gifs.get(endereco).drawTime = System.currentTimeMillis();
+        }
+        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
+    }
 
     @DocumentacaoFuncao(
         descricao
@@ -1453,6 +1485,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         private List<ImageFrame> gifFrames;
         private int actualImage;
+        public long drawTime = 0;
 
         public ImageGif(String caminho) throws ErroExecucaoBiblioteca
         {
