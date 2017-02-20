@@ -69,13 +69,13 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
     public static final int COR_AMARELO = Color.YELLOW.getRGB();
     
-    @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
+    @DocumentacaoConstante(descricao = "constante que representa o canal 'VERMELHO'")
     public static final int R = 0;
     
-    @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
+    @DocumentacaoConstante(descricao = "constante que representa o canal 'VERDE'")
     public static final int G = 1;
     
-    @DocumentacaoConstante(descricao = "constante que representa a cor 'amarelo'")
+    @DocumentacaoConstante(descricao = "constante que representa o canal 'AZUL'")
     public static final int B = 2;
 
     private Programa programa;
@@ -893,7 +893,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
         }
     )
-    public void desenhar_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    public void desenhar_quadro_atual_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (!gifs.containsKey(endereco))
         {
@@ -919,7 +919,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
         }
     )
-    public void desenhar_gif_automatico(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    public void desenhar_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
         if (!gifs.containsKey(endereco))
         {
@@ -975,7 +975,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         if (!gifs.containsKey(endereco))
         {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
         }
         
         return gifs.get(endereco).getGifDelay()*10;
