@@ -185,6 +185,7 @@ public final class Sons extends Biblioteca
             {
                 @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume")
             },
+            retorno = "tempo total em milissegundos do som",
             autores =
             {
                 @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),
@@ -207,6 +208,7 @@ public final class Sons extends Biblioteca
             {
                 @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da reprodução que se quer alterar o volume")
             },
+            retorno = "o tempo atual em milissegundos do som",
             autores =
             {
                 @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br"),

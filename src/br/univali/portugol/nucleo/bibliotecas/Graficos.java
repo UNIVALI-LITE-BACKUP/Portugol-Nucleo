@@ -984,6 +984,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif")
         },
+        retorno = "intervalo em milissegundos do quadro atual",
         autores =
         {
             @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
@@ -1005,6 +1006,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif")
         },
+        retorno = "o número de quadros que o gif possui",
         autores =
         {
             @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
@@ -1027,6 +1029,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
             @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif"),
             @DocumentacaoParametro(nome = "quadro", descricao = "o quadro que deseja obter")
         },
+        retorno = "imagem do quadro pedido por parâmetro",
         autores =
         {
             @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br")
