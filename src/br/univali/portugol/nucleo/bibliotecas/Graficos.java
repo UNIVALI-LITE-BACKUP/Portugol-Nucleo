@@ -571,6 +571,21 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco);
         
+        if(largura<=0 && altura<=0){
+            throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
+        }
+        
+        if(altura == 0 && largura !=0){
+            double l = largura;
+            double lo = original.getWidth();
+            double ao = original.getHeight();
+            altura = (int) (ao*(l/lo));
+        }else if(altura != 0 && largura ==0){
+            double a = altura;
+            double lo = original.getWidth();
+            double ao = original.getHeight();
+            largura = (int) (lo*(a/ao));
+        }
         // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
         // melhor do que criando uma nova BufferedImage na mão
         
@@ -587,6 +602,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         }
+        
+        
         
         g.drawImage(original, 0, 0, largura, altura, null);
         g.dispose();
