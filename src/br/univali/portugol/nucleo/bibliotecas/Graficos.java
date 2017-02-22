@@ -70,13 +70,13 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public static final int COR_AMARELO = Color.YELLOW.getRGB();
     
     @DocumentacaoConstante(descricao = "constante que representa o canal 'VERMELHO'")
-    public static final int R = 0;
+    public static final int CANAL_R = 0;
     
     @DocumentacaoConstante(descricao = "constante que representa o canal 'VERDE'")
-    public static final int G = 1;
+    public static final int CANAL_G = 1;
     
     @DocumentacaoConstante(descricao = "constante que representa o canal 'AZUL'")
-    public static final int B = 2;
+    public static final int CANAL_B = 2;
 
     private Programa programa;
     private JanelaGrafica janela;
@@ -651,9 +651,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         
         switch(canal){
-            case R : return (cor & 0xff0000) >> 16;
-            case G : return (cor & 0x00ff00) >> 8;
-            case B : return cor & 0x0000ff;
+            case CANAL_R : return (cor & 0xff0000) >> 16;
+            case CANAL_G : return (cor & 0x00ff00) >> 8;
+            case CANAL_B : return cor & 0x0000ff;
         }
         
         return 0;
@@ -1020,6 +1020,28 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         }
         
         return gifs.get(endereco).getFrameNumber();
+    }
+    
+    @DocumentacaoFuncao(
+        descricao = "Obtêm o numero do quadro atual de um gif",
+        parametros =
+        {
+            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória do gif")
+        },
+        retorno = "o número do quadro atual que o gif está",
+        autores =
+        {
+            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
+        }
+    )
+    public int obter_numero_quadro_atual_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
+    {
+        if (!gifs.containsKey(endereco))
+        {
+            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
+        }
+        
+        return gifs.get(endereco).getActualNumber();
     }
     
     @DocumentacaoFuncao(
@@ -1533,6 +1555,11 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         public BufferedImage getActualImage()
         {
             return gifFrames.get(actualImage).getImage();
+        }
+        
+        public int getActualNumber()
+        {
+            return actualImage;
         }
         
         public int getGifDelay()
