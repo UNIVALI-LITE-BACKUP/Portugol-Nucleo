@@ -552,7 +552,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     }
     
     @DocumentacaoFuncao(
-        descricao = "Esta função permite redimensionar uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). ",
+        descricao = "Esta função permite redimensionar uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). "
+            +" Caso um dos parametros de dimensão seja 0, o outro parametro será proporcional ao dado",
         parametros =
         {
             @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem que será transformada"),
