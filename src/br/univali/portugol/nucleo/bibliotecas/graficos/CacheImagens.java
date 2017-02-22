@@ -1,6 +1,5 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos;
 
-import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import java.awt.image.BufferedImage;
 
@@ -13,16 +12,15 @@ public final class CacheImagens
     private static final int NUMERO_MAXIMO_IMAGENS = 128;
 
     private final BufferedImage[] imagens = new BufferedImage[NUMERO_MAXIMO_IMAGENS];
-    private final Programa programa;
 
-    private CacheImagens(Programa programa)
+    private CacheImagens()
     {
-        this.programa = programa;
+
     }
 
-    public static CacheImagens criar(Programa programa)
+    public static CacheImagens criar()
     {
-        return new CacheImagens(programa);
+        return new CacheImagens();
     }
 
     private int obterProximoIndiceLivre() throws ErroExecucaoBiblioteca
