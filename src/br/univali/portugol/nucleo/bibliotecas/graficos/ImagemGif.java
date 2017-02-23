@@ -221,24 +221,24 @@ public final class ImagemGif extends Imagem
         {
             boolean hasBackround = false;
 
-//            BufferedImage image = null;
-//            
-//            while (image == null && frameIndex < metadados.numeroQuadros)
-//            {
-//                try
-//                {
-//                    image = leitorGif.read(frameIndex);
-//                }
-//                catch (ArrayIndexOutOfBoundsException ex)
-//                {
-//                    frameIndex++;
-//                }                
-//            }
-//            
-//            if (image == null)
-//                throw new ErroExecucaoBiblioteca("Erro ao processar o quadro atual da imagem GIF");
+            BufferedImage image = null;
+            
+            while (image == null && frameIndex < metadados.numeroQuadros)
+            {
+                try
+                {
+                    image = leitorGif.read(frameIndex);
+                }
+                catch (ArrayIndexOutOfBoundsException ex)
+                {
+                    frameIndex++;
+                }                
+            }
+            
+            if (image == null)
+                throw new ErroExecucaoBiblioteca("Erro ao processar o quadro atual da imagem GIF");
 
-            BufferedImage image = leitorGif.read(frameIndex);
+//            BufferedImage image = leitorGif.read(frameIndex);
             
             if (metadados.largura == -1 || metadados.altura == -1)
             {
@@ -285,6 +285,9 @@ public final class ImagemGif extends Imagem
                     {
                         if (!metadados.informacoesQuadros[i].disposicao.equals("restoreToPrevious") || frameIndex == 0)
                         {
+                            if(i<0){
+                                i=0;
+                            }
                             from = lerQuadro(i);
                             break;
                         }
@@ -299,7 +302,7 @@ public final class ImagemGif extends Imagem
                 }
                 else if (disposal.equals("restoreToBackgroundColor") && metadados.corFundo != null)
                 {
-                    if (!hasBackround || frameIndex > 1)
+                    if (!hasBackround && frameIndex > 1)
                     {
                         metadados.master.createGraphics().fillRect(metadados.lastx, metadados.lasty, metadados.informacoesQuadros[frameIndex - 1].largura, metadados.informacoesQuadros[frameIndex - 1].altura);
                     }
