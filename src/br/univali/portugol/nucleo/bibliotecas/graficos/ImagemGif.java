@@ -5,6 +5,7 @@
  */
 package br.univali.portugol.nucleo.bibliotecas.graficos;
 
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -14,9 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
@@ -36,59 +34,51 @@ public final class ImagemGif extends Imagem
     private final ImageReader leitorGif;
     private final MetadadosGif metadados;
     
-    private int indiceQuadroAtual;
-    private long drawTime = 0;
-
-    public ImagemGif(File arquivo) throws IOException
+    
+    public ImagemGif(File arquivo) throws ErroExecucaoBiblioteca
     {
-        byte[] bytesImagem = copiarParaMemoria(arquivo);
+        try
+        {
+            byte[] bytesImagem = copiarParaMemoria(arquivo);
+            BufferedImage master = null;
+
+             imprimirInformacoesGif(bytesImagem);
+
+            leitorGif = criarLeitorGif(bytesImagem);        
+            metadados = lerMetadadosGif();
+
+            lerQuadro(0);
+        }
+        catch (IOException ex)
+        {
+            throw new ErroExecucaoBiblioteca("Erro ao carregar a imagem GIF");
+        }
         
-         imprimirInformacoesGif(bytesImagem);
-        
-        leitorGif = criarLeitorGif(bytesImagem);        
-        metadados = lerMetadadosGif();
     }    
     
     @Override
-    public BufferedImage getImagem()
+    public BufferedImage getImagem() throws ErroExecucaoBiblioteca
     {
-        if (System.currentTimeMillis() - drawTime >= getGifDelay() * 10)
+        long tempoDesdeUltimoDesenho = System.currentTimeMillis() - metadados.instanteUltimoDesenho;
+        int intervaloAtual = metadados.informacoesQuadros[metadados.indiceQuadroAtual].intervalo * 10;
+                
+        if (tempoDesdeUltimoDesenho >= intervaloAtual)
         {
-            nextImage();
-            drawTime = System.currentTimeMillis();            
+            avancarQuadro();
+            metadados.instanteUltimoDesenho = System.currentTimeMillis();
         }
-        else if(drawTime == 0)
+        else if (metadados.instanteUltimoDesenho == 0)
         {
-           drawTime = System.currentTimeMillis();
+           metadados.instanteUltimoDesenho = System.currentTimeMillis();
         }
         
-        return Utils.criarImagemCompativel(getActualImage());
+        return metadados.quadroAtual;
     }
 
-    public BufferedImage getActualImage()
+    public void avancarQuadro() throws ErroExecucaoBiblioteca
     {
-        //return gifFrames.get(actualImage).imagem;
-        throw new UnsupportedOperationException("Não implementado");
-    }
-
-    public int getActualNumber()
-    {
-//        return actualImage;
-        throw new UnsupportedOperationException("Não implementado");
-    }
-
-
-
-    public void nextImage()
-    {
-//        actualImage = (actualImage + 1) % gifFrames.size();
-        throw new UnsupportedOperationException("Não implementado");
-    }    
-    
-    public int getGifDelay()
-    {
-//        return gifFrames.get(actualImage).intervalo;
-        throw new UnsupportedOperationException("Não implementado");
+        metadados.indiceQuadroAtual = (metadados.indiceQuadroAtual + 1) % (metadados.numeroQuadros);
+        metadados.quadroAtual = lerQuadro(metadados.indiceQuadroAtual);        
     }
 
     public int getLargura()
@@ -103,7 +93,7 @@ public final class ImagemGif extends Imagem
 
     public int getNumeroFrames()
     {
-        return metadados.numeroFrames;
+        return metadados.numeroQuadros;
     }
 
     public Color getCorFundo()
@@ -175,8 +165,7 @@ public final class ImagemGif extends Imagem
     
     private MetadadosGif lerMetadadosGif() throws IOException
     {
-        MetadadosGif metadadosGif = new MetadadosGif();
-        metadadosGif.numeroFrames = leitorGif.getNumImages(true);
+        MetadadosGif metadadosGif = new MetadadosGif(leitorGif.getNumImages(true));
         
         IIOMetadata metadata = leitorGif.getStreamMetadata();
         
@@ -226,102 +215,267 @@ public final class ImagemGif extends Imagem
         
         return metadadosGif;
     }
+    
+    private BufferedImage lerQuadro(int frameIndex) throws ErroExecucaoBiblioteca
+    {        
+        try
+        {
+            boolean hasBackround = false;
 
-//    private List<QuadroGif> readGif(InputStream stream) throws IOException
+            BufferedImage image = leitorGif.read(frameIndex);
+
+            if (metadados.largura == -1 || metadados.altura == -1)
+            {
+                metadados.altura = image.getWidth();
+                metadados.altura = image.getHeight();
+            }
+
+            IIOMetadataNode root = (IIOMetadataNode) leitorGif.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
+            IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
+            NodeList children = root.getChildNodes();
+
+            String disposal = gce.getAttribute("disposalMethod");
+            metadados.informacoesQuadros[frameIndex].disposicao = disposal;
+
+            if (metadados.master != null)
+            {
+                int x = 0;
+                int y = 0;
+
+                for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++)
+                {
+                    Node nodeItem = children.item(nodeIndex);
+
+                    if (nodeItem.getNodeName().equals("ImageDescriptor"))
+                    {
+                        NamedNodeMap map = nodeItem.getAttributes();
+
+                        x = Integer.valueOf(map.getNamedItem("imageLeftPosition").getNodeValue());
+                        y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
+                    }
+                }
+
+                if (disposal.equals("restoreToPrevious"))
+                {
+                    BufferedImage from = null;
+
+                    for (int i = frameIndex - 1; i >= 0; i--)
+                    {
+                        if (!metadados.informacoesQuadros[i].disposicao.equals("restoreToPrevious") || frameIndex == 0)
+                        {
+                            from = lerQuadro(i);
+                            break;
+                        }
+                    }
+
+                    {
+                        ColorModel model = from.getColorModel();
+                        boolean alpha = from.isAlphaPremultiplied();
+                        WritableRaster raster = from.copyData(null);
+                        metadados.master = new BufferedImage(model, raster, alpha, null);
+                    }
+                }
+                else if (disposal.equals("restoreToBackgroundColor") && metadados.corFundo != null)
+                {
+                    if (!hasBackround || frameIndex > 1)
+                    {
+                        metadados.master.createGraphics().fillRect(metadados.lastx, metadados.lasty, metadados.informacoesQuadros[frameIndex - 1].largura, metadados.informacoesQuadros[frameIndex - 1].altura);
+                    }
+                }
+
+                metadados.master.createGraphics().drawImage(image, x, y, null);
+                metadados.lastx = x;
+                metadados.lasty = y;
+            }
+            else
+            {
+                metadados.master = new BufferedImage(metadados.largura, metadados.altura, BufferedImage.TYPE_INT_ARGB);
+                metadados.master.createGraphics().setColor(metadados.corFundo);
+                metadados.master.createGraphics().fillRect(0, 0, metadados.master.getWidth(), metadados.master.getHeight());
+                hasBackround = image.getWidth() == metadados.largura && image.getHeight() == metadados.altura;
+
+                metadados.master.createGraphics().drawImage(image, 0, 0, null);
+            }
+
+
+            BufferedImage copy;
+            {
+                ColorModel model = metadados.master.getColorModel();
+                boolean alpha = metadados.master.isAlphaPremultiplied();
+                WritableRaster raster = metadados.master.copyData(null);
+                copy = new BufferedImage(model, raster, alpha, null);
+            }
+
+            InformacoesQuadro quadro = new InformacoesQuadro();
+            quadro.intervalo = metadados.intervaloQuadroAtual;
+            quadro.disposicao = disposal;
+            quadro.largura = image.getWidth();
+            quadro.altura = image.getHeight();                
+
+            metadados.master.flush();
+
+            metadados.intervaloQuadroAtual = Integer.valueOf(gce.getAttribute("delayTime"));
+            metadados.indiceQuadroAtual = frameIndex;
+
+            return copy;
+        }
+        catch (IOException ex)
+        {
+            throw new ErroExecucaoBiblioteca("Erro ao processar o quadro atual da imagem GIF");
+        }
+    }
+    
+//    private List<Object> readGif(File stream) throws IOException
 //    {
-//        int lastx = 0;
-//        int lasty = 0;
-//        
-//        BufferedImage master = null;
-//        boolean hasBackround = false;
-//        
-//        
-//        for (int frameIndex = 0; frameIndex < frameCount; frameIndex++)
-//        {
-//            BufferedImage image;
-//            try
-//            {
-//                image = leitorGif.read(frameIndex);
-//            }
-//            catch (IndexOutOfBoundsException io)
-//            {
-//                continue;
-//            }
-//            if (width == -1 || height == -1)
-//            {
-//                width = image.getWidth();
-//                height = image.getHeight();
-//            }
-//            IIOMetadataNode root = (IIOMetadataNode) leitorGif.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
-//            IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
-//            NodeList children = root.getChildNodes();
-//            int delay = Integer.valueOf(gce.getAttribute("delayTime"));
-//            String disposal = gce.getAttribute("disposalMethod");
-//            if (master == null)
-//            {
-//                master = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//                master.createGraphics().setColor(backgroundColor);
-//                master.createGraphics().fillRect(0, 0, master.getWidth(), master.getHeight());
-//                hasBackround = image.getWidth() == width && image.getHeight() == height;
-//                master.createGraphics().drawImage(image, 0, 0, null);
-//            }
-//            else
-//            {
-//                int x = 0;
-//                int y = 0;
-//                for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++)
-//                {
-//                    Node nodeItem = children.item(nodeIndex);
-//                    if (nodeItem.getNodeName().equals("ImageDescriptor"))
-//                    {
-//                        NamedNodeMap map = nodeItem.getAttributes();
-//                        x = Integer.valueOf(map.getNamedItem("imageLeftPosition").getNodeValue());
-//                        y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
-//                    }
+//            ArrayList<Object> frames = new ArrayList<>(2);
+//
+//            ImageReader reader = (ImageReader) ImageIO.getImageReadersByFormatName("gif").next();
+//            reader.setInput(ImageIO.createImageInputStream(stream));
+//
+//            int lastx = 0;
+//            int lasty = 0;
+//
+//            int width = -1;
+//            int height = -1;
+//
+//            IIOMetadata metadata = reader.getStreamMetadata();
+//
+//            Color backgroundColor = null;
+//
+//            if(metadata != null) {
+//            IIOMetadataNode globalRoot = (IIOMetadataNode) metadata.getAsTree(metadata.getNativeMetadataFormatName());
+//
+//            NodeList globalColorTable = globalRoot.getElementsByTagName("GlobalColorTable");
+//            NodeList globalScreeDescriptor = globalRoot.getElementsByTagName("LogicalScreenDescriptor");
+//
+//            if (globalScreeDescriptor != null && globalScreeDescriptor.getLength() > 0){
+//                IIOMetadataNode screenDescriptor = (IIOMetadataNode) globalScreeDescriptor.item(0);
+//
+//                if (screenDescriptor != null){
+//                    width = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenWidth"));
+//                    height = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenHeight"));
 //                }
-//                if (disposal.equals("restoreToPrevious"))
-//                {
-//                    BufferedImage from = null;
-//                    for (int i = frameIndex - 1; i >= 0; i--)
-//                    {
-//                        if (!frames.get(i).disposicao.equals("restoreToPrevious") || frameIndex == 0)
-//                        {
-//                            from = frames.get(i).imagem;
+//            }
+//
+//            if (globalColorTable != null && globalColorTable.getLength() > 0){
+//                IIOMetadataNode colorTable = (IIOMetadataNode) globalColorTable.item(0);
+//
+//                if (colorTable != null) {
+//                    String bgIndex = colorTable.getAttribute("backgroundColorIndex");
+//
+//                    IIOMetadataNode colorEntry = (IIOMetadataNode) colorTable.getFirstChild();
+//                    while (colorEntry != null) {
+//                        if (colorEntry.getAttribute("index").equals(bgIndex)) {
+//                            int red = Integer.parseInt(colorEntry.getAttribute("red"));
+//                            int green = Integer.parseInt(colorEntry.getAttribute("green"));
+//                            int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
+//
+//                            backgroundColor = new Color(red, green, blue);
 //                            break;
 //                        }
-//                    }
-//                    {
-//                        ColorModel model = from.getColorModel();
-//                        boolean alpha = from.isAlphaPremultiplied();
-//                        WritableRaster raster = from.copyData(null);
-//                        master = new BufferedImage(model, raster, alpha, null);
+//
+//                        colorEntry = (IIOMetadataNode) colorEntry.getNextSibling();
 //                    }
 //                }
-//                else if (disposal.equals("restoreToBackgroundColor") && backgroundColor != null)
-//                {
-//                    if (!hasBackround || frameIndex > 1)
-//                    {
-//                        master.createGraphics().fillRect(lastx, lasty, frames.get(frameIndex - 1).largura, frames.get(frameIndex - 1).altura);
-//                    }
-//                }
-//                master.createGraphics().drawImage(image, x, y, null);
-//                lastx = x;
-//                lasty = y;
 //            }
+//            }
+// 
+//            BufferedImage master = null;
+//            boolean hasBackround = false;
+//            int frameCount = reader.getNumImages(true);
 //            
-//            BufferedImage copy;
-//            {
-//                ColorModel model = master.getColorModel();
-//                boolean alpha = master.isAlphaPremultiplied();
-//                WritableRaster raster = master.copyData(null);
-//                copy = new BufferedImage(model, raster, alpha, null);
+//            for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+//                BufferedImage image;
+//                try{
+//                    image = reader.read(frameIndex);
+//                }catch (IndexOutOfBoundsException io){
+//                    continue;
+//                }
+//
+//                if (width == -1 || height == -1){
+//                    width = image.getWidth();
+//                    height = image.getHeight();
+//                }
+//
+//                IIOMetadataNode root = (IIOMetadataNode) reader.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
+//                IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
+//                NodeList children = root.getChildNodes();
+//
+//                int delay = Integer.valueOf(gce.getAttribute("delayTime"));
+//
+//                String disposal = gce.getAttribute("disposalMethod");
+//
+//                if (master == null){
+//                    master = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//                    master.createGraphics().setColor(backgroundColor);
+//                    master.createGraphics().fillRect(0, 0, master.getWidth(), master.getHeight());
+//
+//                hasBackround = image.getWidth() == width && image.getHeight() == height;
+//
+//                    master.createGraphics().drawImage(image, 0, 0, null);
+//                }else{
+//                    int x = 0;
+//                    int y = 0;
+//
+//                    for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++){
+//                        Node nodeItem = children.item(nodeIndex);
+//
+//                        if (nodeItem.getNodeName().equals("ImageDescriptor")){
+//                            NamedNodeMap map = nodeItem.getAttributes();
+//
+//                            x = Integer.valueOf(map.getNamedItem("imageLeftPosition").getNodeValue());
+//                            y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
+//                        }
+//                    }
+//
+//                    if (disposal.equals("restoreToPrevious")){
+//                        BufferedImage from = null;
+//                        for (int i = frameIndex - 1; i >= 0; i--){
+//                            if (!frames.get(i).getDisposal().equals("restoreToPrevious") || frameIndex == 0){
+//                                from = frames.get(i).getImage();
+//                                break;
+//                            }
+//                        }
+//
+//                        {
+//                            ColorModel model = from.getColorModel();
+//                            boolean alpha = from.isAlphaPremultiplied();
+//                            WritableRaster raster = from.copyData(null);
+//                            master = new BufferedImage(model, raster, alpha, null);
+//                        }
+//                    }else if (disposal.equals("restoreToBackgroundColor") && backgroundColor != null){
+//                        if (!hasBackround || frameIndex > 1){
+//                            master.createGraphics().fillRect(lastx, lasty, frames.get(frameIndex - 1).getWidth(), frames.get(frameIndex - 1).getHeight());
+//                        }
+//                    }
+//                    master.createGraphics().drawImage(image, x, y, null);
+//
+//                    lastx = x;
+//                    lasty = y;
+//                }
+//
+//                try{
+//                    BufferedImage copy;
+//
+//                    {
+//                        ColorModel model = master.getColorModel();
+//                        boolean alpha = master.isAlphaPremultiplied();
+//                        WritableRaster raster = master.copyData(null);
+//                        copy = new BufferedImage(model, raster, alpha, null);
+//                    }
+//                    frames.add(new ImageFrame(copy, delay, disposal, image.getWidth(), image.getHeight()));
+//                }
+//                catch (Throwable ex)
+//                {
+//                    ex.printStackTrace(System.err);
+//                }
+//
+//                master.flush();
 //            }
-//            frames.add(new QuadroGif(copy, delay, disposal, image.getWidth(), image.getHeight()));
-//                
-//            master.flush();
+//            reader.dispose();
+//
+//            return frames;
 //        }
-//        leitorGif.dispose();
-//        return frames;
 //    }
     
     private final class MetadadosGif
@@ -329,7 +483,41 @@ public final class ImagemGif extends Imagem
         public int largura = -1;
         public int altura = -1;    
         public Color corFundo = null;
-        public int numeroFrames = 0;
-        public int indiceQuadroAtual = 0;
+        public int numeroQuadros = -1;
+        public int indiceQuadroAtual = -1;
+        public int intervaloQuadroAtual = -1;        
+        public long instanteUltimoDesenho = 0;
+        public boolean manterQualidade = false;
+        
+        public int lastx = 0;
+        public int lasty = 0;
+        
+        public final InformacoesQuadro[] informacoesQuadros;
+        public BufferedImage master = null;
+        public BufferedImage quadroAtual = null;
+
+        public MetadadosGif(int numeroFrames)
+        {
+            this.numeroQuadros = numeroFrames;
+            this.informacoesQuadros = new InformacoesQuadro[numeroFrames];
+            
+            this.inicializarListaQuadros();
+        }
+        
+        private void inicializarListaQuadros()
+        {
+            for (int i = 0; i < numeroQuadros; i++)
+            {
+                informacoesQuadros[i] = new InformacoesQuadro();
+            }
+        }
+    }
+    
+    public class InformacoesQuadro
+    {
+        public int intervalo = -1;
+        public String disposicao = "";
+        public int largura = -1;
+        public int altura = -1;
     }
 }

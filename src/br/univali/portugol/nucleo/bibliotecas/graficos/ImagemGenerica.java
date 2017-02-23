@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos;
 
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import java.awt.image.BufferedImage;
 
 /**
@@ -12,11 +13,11 @@ public final class ImagemGenerica extends Imagem
     
     public ImagemGenerica(BufferedImage imagem)
     {
-        this.imagem = Utils.criarImagemCompativel(imagem);
+        this.imagem = Utils.criarImagemCompativel(imagem, true);
     }
 
     @Override
-    public BufferedImage getImagem()
+    public BufferedImage getImagem() throws ErroExecucaoBiblioteca
     {
         return imagem;
     }

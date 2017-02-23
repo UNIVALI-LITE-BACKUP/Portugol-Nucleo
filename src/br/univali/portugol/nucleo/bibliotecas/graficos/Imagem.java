@@ -1,5 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos;
 
+import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -41,5 +42,5 @@ public abstract class Imagem
         }
     }
     
-    public abstract BufferedImage getImagem();
+    public abstract BufferedImage getImagem() throws ErroExecucaoBiblioteca;
 }

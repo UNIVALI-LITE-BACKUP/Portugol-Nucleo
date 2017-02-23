@@ -492,7 +492,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
-        imagemTransformada = Utils.criarImagemCompativel(imagemTransformada);
+        imagemTransformada = Utils.criarImagemCompativel(imagemTransformada, true);
         
         return cacheImagens.adicionarImagem(new ImagemGenerica(imagemTransformada));
     }
@@ -536,26 +536,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
         // melhor do que criando uma nova BufferedImage na mão
         
-        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
-                .getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice()
-                .getDefaultConfiguration();
-        
-        BufferedImage imagemCompativel = graphicsConfiguration.createCompatibleImage(largura, altura, original.getTransparency());
-
-        Graphics2D g = (Graphics2D) imagemCompativel.getGraphics();
-        
-        if (manter_qualidade)
-        {
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        }
-        
-        
-        
-        g.drawImage(original, 0, 0, largura, altura, null);
-        g.dispose();
-        
-        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemCompativel));
+        return cacheImagens.adicionarImagem(new ImagemGenerica(Utils.criarImagemCompativel(original, largura, altura, manter_qualidade)));
     }
     
     
