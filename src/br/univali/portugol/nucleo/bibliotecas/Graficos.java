@@ -6,10 +6,12 @@ import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import br.univali.portugol.nucleo.bibliotecas.graficos.CacheImagens;
+import br.univali.portugol.nucleo.bibliotecas.graficos.Imagem;
 import br.univali.portugol.nucleo.bibliotecas.graficos.ImagemGenerica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGrafica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGraficaImpl;
-import br.univali.portugol.nucleo.bibliotecas.graficos.gif.ImagemGif;
+import br.univali.portugol.nucleo.bibliotecas.graficos.Utils;
+import br.univali.portugol.nucleo.bibliotecas.graficos.ImagemGif;
 import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
@@ -75,7 +77,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     private JanelaGrafica janela;
     private CacheImagens cacheImagens;
     private boolean inicializado = false;
-    private final Map<Integer, ImagemGif> gifs = new ConcurrentHashMap<>();
 
     @Override
     public void inicializar(final Programa programa, final List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
@@ -422,9 +423,10 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             try
             {
-                BufferedImage imagem = criarImagemCompativel(ImageIO.read(arquivo));
+                int endereco = cacheImagens.adicionarImagem(Imagem.carregar(arquivo));
+                //System.gc();
                 
-                return cacheImagens.adicionarImagem(new ImagemGenerica(imagem));
+                return endereco;
             }
             catch (IOException excecao)
             {
@@ -435,35 +437,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
         }
-    }
-    
-    @DocumentacaoFuncao(
-        descricao
-        = "Carrega um gif na memória para ser utilizada mais tarde.",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "caminho", descricao = "o caminho do arquivo de imagem no computador")
-        },
-        retorno = "o endereço de memória no qual o gif foi carregado",
-        autores =
-        {
-            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
-        }
-    )
-    public int carregar_gif(String caminho) throws ErroExecucaoBiblioteca, InterruptedException
-    {
-        File arquivo = programa.resolverCaminho(new File(caminho));
-        Integer endereco = caminho.hashCode();
-
-        if (arquivo.exists() && !gifs.containsKey(endereco))
-        {
-            gifs.put(endereco, new ImagemGif(arquivo));
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
-        }
-        return endereco;
     }
     
     @DocumentacaoFuncao(
@@ -480,33 +453,10 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void proximo_frame_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
-        }
-        
-        ImagemGif imageGif = gifs.get(endereco);        
-        imageGif.nextImage();
+//        ImagemGif imageGif = gifs.get(endereco);        
+//        imageGif.nextImage();
     }
 
-    private BufferedImage criarImagemCompativel(BufferedImage original)
-    {
-        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
-                .getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice()
-                .getDefaultConfiguration();
-
-        BufferedImage imagemCompativel
-                = graphicsConfiguration.createCompatibleImage(
-                        original.getWidth(null),
-                        original.getHeight(null), original.getTransparency());
-
-        Graphics g = imagemCompativel.getGraphics();
-        g.drawImage(original, 0, 0, null);
-        g.dispose();
-
-        return imagemCompativel;
-    }
     
     @DocumentacaoFuncao(
         descricao = "Esta função permite transformar uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). "
@@ -542,7 +492,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
-        imagemTransformada = criarImagemCompativel(imagemTransformada);
+        imagemTransformada = Utils.criarImagemCompativel(imagemTransformada);
         
         return cacheImagens.adicionarImagem(new ImagemGenerica(imagemTransformada));
     }
@@ -909,45 +859,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_quadro_atual_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
-    }
-    
-    @DocumentacaoFuncao(
-        descricao
-        = "Desenha um frame de um gif previamente carregado, na posição especificada pelos "
-        + "parâmetros <param>x</param> e <param>y</param>",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) da imagem no eixo horizontal, em relação ao lado esquerdo da janela"),
-            @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) da imagem no eixo vertical, em relação ao topo da janela"),
-            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem a ser desenhada")
-        },
-        autores =
-        {
-            @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br"),
-            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
-        }
-    )
-    public void desenhar_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
-    {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        if(System.currentTimeMillis()-gifs.get(endereco).drawTime>=gifs.get(endereco).getGifDelay()*10){
-            gifs.get(endereco).nextImage();
-            gifs.get(endereco).drawTime = System.currentTimeMillis();
-        }else if(gifs.get(endereco).drawTime == 0){
-           gifs.get(endereco).drawTime = System.currentTimeMillis();
-        }
-        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
-    }
+//        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
+    }   
 
     @DocumentacaoFuncao(
         descricao
@@ -988,12 +901,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public int obter_intervalo_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        return gifs.get(endereco).getGifDelay()*10;
+//        return gifs.get(endereco).getGifDelay()*10;
+        return -1;        
     }
     
     @DocumentacaoFuncao(
@@ -1010,12 +919,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int obter_numero_quadros_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        return gifs.get(endereco).getFrameNumber();
+        return cacheImagens.obterGif(endereco).getNumeroFrames();
     }
     
     @DocumentacaoFuncao(
@@ -1032,12 +936,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int obter_numero_quadro_atual_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        return gifs.get(endereco).getActualNumber();
+        return cacheImagens.obterGif(endereco).getIndiceQuadroAtual();
     }
     
     @DocumentacaoFuncao(
@@ -1055,13 +954,10 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public int obter_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
+//       cacheImagens.obterGif(endereco).get
         
-        BufferedImage bf = criarImagemCompativel(gifs.get(endereco).gifFrames.get(quadro).imagem);
-        return cacheImagens.adicionarImagem(new ImagemGenerica(bf));
+//        return cacheImagens.adicionarImagem(new ImagemGenerica(gifs.get(endereco).gifFrames.get(quadro).imagem));
+return -1;
     }
     
     @DocumentacaoFuncao(
@@ -1078,12 +974,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public void definir_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        gifs.get(endereco).setActualImage(quadro);
+        cacheImagens.obterGif(endereco).setIndiceQuadroAtual(quadro);
     }
     
     @DocumentacaoFuncao(
@@ -1098,29 +989,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         }
     )
     public void liberar_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
-    {
+    {        
         cacheImagens.liberarImagem(endereco);
-    }
-    
-    @DocumentacaoFuncao(
-        descricao = "Libera a memória utilizada por umgif que tenha sido previamente carregado",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem")
-        },
-        autores =
-        {
-            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
-        }
-    )
-    public void liberar_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
-    {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
-        }
-        
-        gifs.remove(endereco);
+        //System.gc();
     }
 
     @DocumentacaoFuncao(

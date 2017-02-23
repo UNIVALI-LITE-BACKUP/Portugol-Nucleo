@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.bibliotecas.graficos.gif;
+package br.univali.portugol.nucleo.bibliotecas.graficos;
 
 /**
  *

@@ -12,7 +12,7 @@ public final class ImagemGenerica extends Imagem
     
     public ImagemGenerica(BufferedImage imagem)
     {
-        this.imagem = imagem;
+        this.imagem = Utils.criarImagemCompativel(imagem);
     }
 
     @Override

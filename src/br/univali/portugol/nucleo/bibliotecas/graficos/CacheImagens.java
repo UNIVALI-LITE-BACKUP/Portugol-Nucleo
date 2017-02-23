@@ -35,6 +35,18 @@ public final class CacheImagens
         throw new ErroExecucaoBiblioteca("O número máximo de imagens que podem ser carregadas foi atingido");
     }
 
+    public ImagemGif obterGif(int endereco) throws ErroExecucaoBiblioteca
+    {
+       Imagem imagem = obterImagem(endereco);
+       
+       if (imagem instanceof ImagemGif)
+       {
+           return (ImagemGif) imagem;
+       }
+           
+       throw new ErroExecucaoBiblioteca("O endereço de memória especificado aponta para uma imagem, mas esta imagem não é um GIF animado");
+    }
+    
     public Imagem obterImagem(int endereco) throws ErroExecucaoBiblioteca
     {
         if (endereco >= 0 && endereco < NUMERO_MAXIMO_IMAGENS)
