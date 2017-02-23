@@ -32,19 +32,25 @@ public final class ImagemGif extends Imagem
 {
     private static final int TAMANHO_BUFFER = 131072; // 128 KB
     
-    private final ImageReader leitorGif;
-    private final MetadadosGif metadados;
+    private ImageReader leitorGif;
+    private MetadadosGif metadados;
     
+    private byte[] bytesImagem;
+
+    private ImagemGif()
+    {
+
+    }
     
     public ImagemGif(File arquivo) throws ErroExecucaoBiblioteca
     {
         try
         {
-            byte[] bytesImagem = copiarParaMemoria(arquivo);
+            bytesImagem = copiarParaMemoria(arquivo);
 
              imprimirInformacoesGif(bytesImagem);
 
-            leitorGif = criarLeitorGif(bytesImagem);        
+            leitorGif = criarLeitorGif(bytesImagem);     
             metadados = lerMetadadosGif();
 
             avancarQuadro();
@@ -270,7 +276,7 @@ public final class ImagemGif extends Imagem
         
         if (metadados.largura == -1 || metadados.altura == -1)
         {
-            metadados.altura = image.getWidth();
+            metadados.largura = image.getWidth();
             metadados.altura = image.getHeight();
         }
 
@@ -365,6 +371,7 @@ public final class ImagemGif extends Imagem
                 boolean alpha = metadados.master.isAlphaPremultiplied();
                 WritableRaster raster = metadados.master.copyData(null);
                 copy = new BufferedImage(model, raster, alpha, null);
+                copy = Utils.criarImagemCompativel(copy, this.metadados.largura, this.metadados.altura, this.metadados.manterQualidade);
             }
 
             metadados.master.flush();
@@ -375,6 +382,13 @@ public final class ImagemGif extends Imagem
         {
             return image;
         }
+    }
+
+    public void setDimensoes(int largura, int altura, boolean manterQualidade)
+    {
+        this.metadados.largura = largura;
+        this.metadados.altura = altura;
+        this.metadados.manterQualidade = manterQualidade;
     }
     
     private final class MetadadosGif
@@ -418,5 +432,18 @@ public final class ImagemGif extends Imagem
         public String disposicao = "";
         public int largura = -1;
         public int altura = -1;
+    }
+    
+    public ImagemGif clonar() throws IOException, ErroExecucaoBiblioteca
+    {
+        ImagemGif imagemGif = new ImagemGif();
+        
+        imagemGif.bytesImagem = this.bytesImagem;
+        imagemGif.leitorGif = criarLeitorGif(this.bytesImagem);
+        //imagemGif.leitorGif = this.leitorGif;
+        imagemGif.metadados = imagemGif.lerMetadadosGif();
+        imagemGif.avancarQuadro();
+        
+        return imagemGif;
     }
 }

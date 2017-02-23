@@ -515,27 +515,64 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int redimensionar_imagem(int endereco, int largura, int altura, boolean manter_qualidade) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco).getImagem();
+        Imagem imagem = cacheImagens.obterImagem(endereco);
         
-        if(largura<=0 && altura<=0){
-            throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
+        if (!(imagem instanceof ImagemGif))
+        {
+            BufferedImage original = (BufferedImage) imagem.getImagem();
+        
+            if(largura<=0 && altura<=0){
+                throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
+            }
+
+            if(altura == 0 && largura !=0){
+                double l = largura;
+                double lo = original.getWidth();
+                double ao = original.getHeight();
+                altura = (int) (ao*(l/lo));
+            }else if(altura != 0 && largura ==0){
+                double a = altura;
+                double lo = original.getWidth();
+                double ao = original.getHeight();
+                largura = (int) (lo*(a/ao));
+            }
+            // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
+            // melhor do que criando uma nova BufferedImage na mão
+
+            return cacheImagens.adicionarImagem(new ImagemGenerica(Utils.criarImagemCompativel(original, largura, altura, manter_qualidade)));
         }
-        
-        if(altura == 0 && largura !=0){
-            double l = largura;
-            double lo = original.getWidth();
-            double ao = original.getHeight();
-            altura = (int) (ao*(l/lo));
-        }else if(altura != 0 && largura ==0){
-            double a = altura;
-            double lo = original.getWidth();
-            double ao = original.getHeight();
-            largura = (int) (lo*(a/ao));
-        }
-        // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
-        // melhor do que criando uma nova BufferedImage na mão
-        
-        return cacheImagens.adicionarImagem(new ImagemGenerica(Utils.criarImagemCompativel(original, largura, altura, manter_qualidade)));
+        else
+        {
+            try
+            {   
+                ImagemGif imagemGif = (ImagemGif) imagem;
+                ImagemGif nova = imagemGif.clonar();
+                
+                 if(largura<=0 && altura<=0){
+                throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
+                }
+
+                if(altura == 0 && largura !=0){
+                    double l = largura;
+                    double lo = imagemGif.getLargura();
+                    double ao = imagemGif.getAltura();
+                    altura = (int) (ao*(l/lo));
+                }else if(altura != 0 && largura ==0){
+                    double a = altura;
+                    double lo = imagemGif.getLargura();
+                    double ao = imagemGif.getAltura();
+                    largura = (int) (lo*(a/ao));
+                }
+                
+                nova.setDimensoes(largura, altura, manter_qualidade);
+                
+                return cacheImagens.adicionarImagem(nova);
+            }
+            catch (IOException e)
+            {
+                throw new ErroExecucaoBiblioteca("Erro ao redimensionar a imagem GIF");
+            }
+        }        
     }
     
     
