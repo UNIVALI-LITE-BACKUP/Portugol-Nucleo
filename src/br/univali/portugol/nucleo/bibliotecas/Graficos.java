@@ -6,6 +6,7 @@ import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import br.univali.portugol.nucleo.bibliotecas.graficos.CacheImagens;
+import br.univali.portugol.nucleo.bibliotecas.graficos.ImagemGenerica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGrafica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGraficaImpl;
 import br.univali.portugol.nucleo.bibliotecas.graficos.gif.ImagemGif;
@@ -293,7 +294,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         BufferedImage imagem = janela().getSuperficieDesenho().renderizarImagem(largura, altura);
 
-        return cacheImagens.adicionarImagem(imagem);
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagem));
     }
 
     @DocumentacaoFuncao(
@@ -421,8 +422,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             try
             {
-                BufferedImage imagem = ImageIO.read(arquivo);
-                return cacheImagens.adicionarImagem(criarImagemCompativel(imagem));
+                BufferedImage imagem = criarImagemCompativel(ImageIO.read(arquivo));
+                
+                return cacheImagens.adicionarImagem(new ImagemGenerica(imagem));
             }
             catch (IOException excecao)
             {
@@ -534,13 +536,15 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     public int transformar_imagem(int endereco, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage imagemTransformada = (BufferedImage) cacheImagens.obterImagem(endereco);
+        BufferedImage imagemTransformada = (BufferedImage) cacheImagens.obterImagem(endereco).getImagem();
 
         imagemTransformada = aplicarChromaKey(imagemTransformada, cor_ignorada);
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
-        return cacheImagens.adicionarImagem(criarImagemCompativel(imagemTransformada));
+        imagemTransformada = criarImagemCompativel(imagemTransformada);
+        
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemTransformada));
     }
     
     @DocumentacaoFuncao(
@@ -562,7 +566,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int redimensionar_imagem(int endereco, int largura, int altura, boolean manter_qualidade) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco);
+        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco).getImagem();
         
         if(largura<=0 && altura<=0){
             throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
@@ -601,7 +605,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         g.drawImage(original, 0, 0, largura, altura, null);
         g.dispose();
         
-        return cacheImagens.adicionarImagem(imagemCompativel);
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemCompativel));
     }
     
     
@@ -622,7 +626,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int obter_cor_pixel(int endereco, int x, int y) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return cacheImagens.obterImagem(endereco).getRGB(x,y);
+        return cacheImagens.obterImagem(endereco).getImagem().getRGB(x,y);
     }
     
     @DocumentacaoFuncao(
@@ -680,7 +684,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int transformar_porcao_imagem(int endereco, int x, int y, int largura, int altura, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco);
+        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco).getImagem();
         
         // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
         // melhor do que criando uma nova BufferedImage na mão
@@ -701,7 +705,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
-        return cacheImagens.adicionarImagem(imagemTransformada);
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemTransformada));
     }
 
 //    private BufferedImage copiarImagem(BufferedImage original)
@@ -885,7 +889,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_imagem(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco));
+        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco).getImagem());
     }
     
     @DocumentacaoFuncao(
@@ -967,7 +971,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_porcao_imagem(final int x, final int y, final int xi, final int yi, final int largura, final int altura, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco));
+        janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco).getImagem());
     }
     
     @DocumentacaoFuncao(
@@ -1057,7 +1061,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         }
         
         BufferedImage bf = criarImagemCompativel(gifs.get(endereco).gifFrames.get(quadro).imagem);
-        return cacheImagens.adicionarImagem(bf);
+        return cacheImagens.adicionarImagem(new ImagemGenerica(bf));
     }
     
     @DocumentacaoFuncao(
@@ -1266,7 +1270,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int largura_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return cacheImagens.obterImagem(endereco).getWidth(null);
+        return cacheImagens.obterImagem(endereco).getImagem().getWidth(null);
     }
 
     @DocumentacaoFuncao(
@@ -1283,7 +1287,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int altura_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return cacheImagens.obterImagem(endereco).getHeight(null);
+        return cacheImagens.obterImagem(endereco).getImagem().getHeight(null);
     }
 
     @DocumentacaoFuncao(
@@ -1368,7 +1372,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_icone_janela(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().definirIcone(cacheImagens.obterImagem(endereco));
+        janela().definirIcone(cacheImagens.obterImagem(endereco).getImagem());
     }
 
     @DocumentacaoFuncao(

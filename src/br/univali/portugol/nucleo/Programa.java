@@ -17,7 +17,6 @@ import br.univali.portugol.nucleo.execucao.es.Armazenador;
 import br.univali.portugol.nucleo.execucao.es.InputMediator;
 import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import br.univali.portugol.nucleo.simbolos.Variavel;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
