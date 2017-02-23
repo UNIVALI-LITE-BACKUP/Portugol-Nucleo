@@ -453,8 +453,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void proximo_frame_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-//        ImagemGif imageGif = gifs.get(endereco);        
-//        imageGif.nextImage();
+        cacheImagens.obterGif(endereco).avancarQuadro();
     }
 
     
@@ -840,7 +839,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_quadro_atual_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-//        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
+        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterGif(endereco).getQuadroAtual());
     }   
 
     @DocumentacaoFuncao(
@@ -882,8 +881,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public int obter_intervalo_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-//        return gifs.get(endereco).getGifDelay()*10;
-        return -1;        
+        return cacheImagens.obterGif(endereco).getIntervalo();
     }
     
     @DocumentacaoFuncao(
@@ -935,10 +933,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public int obter_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
-//       cacheImagens.obterGif(endereco).get
+        BufferedImage imagemQuadro = cacheImagens.obterGif(endereco).getQuadro(quadro);
         
-//        return cacheImagens.adicionarImagem(new ImagemGenerica(gifs.get(endereco).gifFrames.get(quadro).imagem));
-return -1;
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemQuadro));
     }
     
     @DocumentacaoFuncao(
@@ -955,7 +952,7 @@ return -1;
     )    
     public void definir_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        cacheImagens.obterGif(endereco).setIndiceQuadroAtual(quadro);
+        cacheImagens.obterGif(endereco).irParaQuadro(quadro);
     }
     
     @DocumentacaoFuncao(
