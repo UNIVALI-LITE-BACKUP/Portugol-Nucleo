@@ -251,6 +251,10 @@ public final class ImagemGif extends Imagem
             NodeList children = root.getChildNodes();
             
             int intervalo = Integer.valueOf(gce.getAttribute("delayTime"));
+            
+            if(intervalo==0){
+                intervalo=10;
+            }
 
             String disposal = gce.getAttribute("disposalMethod");
             metadados.informacoesQuadros[frameIndex].disposicao = disposal;
