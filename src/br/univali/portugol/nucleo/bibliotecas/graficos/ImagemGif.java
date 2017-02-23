@@ -47,7 +47,7 @@ public final class ImagemGif extends Imagem
             leitorGif = criarLeitorGif(bytesImagem);        
             metadados = lerMetadadosGif();
 
-            lerQuadro(0);
+            avancarQuadro();
         }
         catch (IOException ex)
         {
@@ -222,8 +222,25 @@ public final class ImagemGif extends Imagem
         {
             boolean hasBackround = false;
 
-            BufferedImage image = leitorGif.read(frameIndex);
+//            BufferedImage image = null;
+//            
+//            while (image == null && frameIndex < metadados.numeroQuadros)
+//            {
+//                try
+//                {
+//                    image = leitorGif.read(frameIndex);
+//                }
+//                catch (ArrayIndexOutOfBoundsException ex)
+//                {
+//                    frameIndex++;
+//                }                
+//            }
+//            
+//            if (image == null)
+//                throw new ErroExecucaoBiblioteca("Erro ao processar o quadro atual da imagem GIF");
 
+            BufferedImage image = leitorGif.read(frameIndex);
+            
             if (metadados.largura == -1 || metadados.altura == -1)
             {
                 metadados.altura = image.getWidth();
@@ -233,6 +250,8 @@ public final class ImagemGif extends Imagem
             IIOMetadataNode root = (IIOMetadataNode) leitorGif.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
             IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
             NodeList children = root.getChildNodes();
+            
+            int intervalo = Integer.valueOf(gce.getAttribute("delayTime"));
 
             String disposal = gce.getAttribute("disposalMethod");
             metadados.informacoesQuadros[frameIndex].disposicao = disposal;
@@ -307,15 +326,12 @@ public final class ImagemGif extends Imagem
             }
 
             InformacoesQuadro quadro = new InformacoesQuadro();
-            quadro.intervalo = metadados.intervaloQuadroAtual;
+            quadro.intervalo = intervalo;
             quadro.disposicao = disposal;
             quadro.largura = image.getWidth();
             quadro.altura = image.getHeight();                
 
             metadados.master.flush();
-
-            metadados.intervaloQuadroAtual = Integer.valueOf(gce.getAttribute("delayTime"));
-            metadados.indiceQuadroAtual = frameIndex;
 
             return copy;
         }
@@ -485,7 +501,6 @@ public final class ImagemGif extends Imagem
         public Color corFundo = null;
         public int numeroQuadros = -1;
         public int indiceQuadroAtual = -1;
-        public int intervaloQuadroAtual = -1;        
         public long instanteUltimoDesenho = 0;
         public boolean manterQualidade = false;
         

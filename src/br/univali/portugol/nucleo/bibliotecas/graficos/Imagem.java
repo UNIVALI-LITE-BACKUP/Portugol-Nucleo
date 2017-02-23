@@ -14,7 +14,7 @@ import javax.imageio.stream.ImageInputStream;
  */
 public abstract class Imagem
 {
-    public static Imagem carregar(File arquivo) throws IOException
+    public static Imagem carregar(File arquivo) throws IOException, ErroExecucaoBiblioteca
     {
         if (imagemEhGifAnimado(arquivo))
         {
