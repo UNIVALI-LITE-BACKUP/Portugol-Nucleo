@@ -181,6 +181,9 @@ final class Compilador
             throw new IllegalArgumentException("ClassPath não pode ser nulo!");
         }
 
+        CollectingLogOutputStream outStream = new CollectingLogOutputStream();
+        CollectingLogOutputStream errStream = new CollectingLogOutputStream();
+        
         try
         {            
             /* 
@@ -202,9 +205,6 @@ final class Compilador
             linhaComando.addArgument("${arquivoJava}");
             linhaComando.setSubstitutionMap(paths);
             
-            CollectingLogOutputStream outStream = new CollectingLogOutputStream();
-            CollectingLogOutputStream errStream = new CollectingLogOutputStream();
-            
             DefaultExecutor executor = new DaemonExecutor();
 
             executor.setStreamHandler(new PumpStreamHandler(outStream, errStream));
@@ -220,7 +220,13 @@ final class Compilador
         }
         catch (ExecuteException ex)
         {
-            resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao("Erro na compilação!"));
+            resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao("Erro na compilação!"));            
+            
+            for (String mensagemErro : errStream.getLines())
+            {
+                resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao(mensagemErro));
+            }
+            
             throw new ErroCompilacao(resultadoAnalise);
         }
         catch (final IOException ex)
