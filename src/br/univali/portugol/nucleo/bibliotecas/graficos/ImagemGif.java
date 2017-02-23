@@ -61,7 +61,6 @@ public final class ImagemGif extends Imagem
     {
         long tempoDesdeUltimoDesenho = System.currentTimeMillis() - metadados.instanteUltimoDesenho;
         int intervaloAtual = metadados.informacoesQuadros[metadados.indiceQuadroAtual].intervalo * 10;
-                
         if (tempoDesdeUltimoDesenho >= intervaloAtual)
         {
             avancarQuadro();
@@ -325,12 +324,12 @@ public final class ImagemGif extends Imagem
                 copy = new BufferedImage(model, raster, alpha, null);
             }
 
-            InformacoesQuadro quadro = new InformacoesQuadro();
+            InformacoesQuadro quadro = metadados.informacoesQuadros[frameIndex];
             quadro.intervalo = intervalo;
             quadro.disposicao = disposal;
             quadro.largura = image.getWidth();
-            quadro.altura = image.getHeight();                
-
+            quadro.altura = image.getHeight();            
+            //metadados.informacoesQuadros[frameIndex] = quadro;
             metadados.master.flush();
 
             return copy;
