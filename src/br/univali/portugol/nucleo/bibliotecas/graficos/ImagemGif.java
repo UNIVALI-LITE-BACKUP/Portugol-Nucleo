@@ -8,6 +8,7 @@ package br.univali.portugol.nucleo.bibliotecas.graficos;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -16,10 +17,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Stack;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -34,6 +38,8 @@ public final class ImagemGif extends Imagem
     
     private ImageReader leitorGif;
     private MetadadosGif metadados;
+    private BufferedImage notDisposedImage = null;
+    private boolean hasANotDisposable = false;
     
     private byte[] bytesImagem;
 
@@ -52,7 +58,6 @@ public final class ImagemGif extends Imagem
 
             leitorGif = criarLeitorGif(bytesImagem);     
             metadados = lerMetadadosGif();
-
             avancarQuadro();
         }
         catch (IOException ex)
@@ -224,8 +229,12 @@ public final class ImagemGif extends Imagem
                             int red = Integer.parseInt(colorEntry.getAttribute("red"));
                             int green = Integer.parseInt(colorEntry.getAttribute("green"));
                             int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
-                            
-                            metadadosGif.corFundo = new Color(red, green, blue);
+                            if((red==148 && green==239 && blue==24)||(red==255 && green==255 && blue==255) ||(red==0 && green==0 && blue==0)){
+                                metadadosGif.corFundo = new Color(0,0,0,0);
+                            }
+                            else{
+                                metadadosGif.corFundo = new Color(red, green, blue);
+                            }
                             
                             break;
                         }
@@ -251,14 +260,14 @@ public final class ImagemGif extends Imagem
     private BufferedImage lerQuadro(int frameIndex)
     {        
         boolean hasBackround = false;
+        BufferedImage fakeimage = null;
+        BufferedImage image = new BufferedImage(metadados.largura, metadados.altura, BufferedImage.TYPE_4BYTE_ABGR);
 
-        BufferedImage image = null;
-
-        while (image == null && frameIndex < metadados.numeroQuadros)
+        while (fakeimage == null && frameIndex < metadados.numeroQuadros)
         {
             try
             {
-                image = leitorGif.read(frameIndex);
+                fakeimage = leitorGif.read(frameIndex);
             }
             catch (IOException | ArrayIndexOutOfBoundsException ex)
             {
@@ -266,9 +275,9 @@ public final class ImagemGif extends Imagem
             }                
         }
 
-        if (image == null)
+        if (fakeimage == null)
         {
-            image = metadados.quadroErro;
+            fakeimage = metadados.quadroErro;
             
             if (frameIndex > metadados.numeroQuadros - 1)
                 frameIndex = metadados.numeroQuadros - 1;
@@ -276,14 +285,14 @@ public final class ImagemGif extends Imagem
         
         if (metadados.largura == -1 || metadados.altura == -1)
         {
-            metadados.largura = image.getWidth();
-            metadados.altura = image.getHeight();
+            metadados.largura = fakeimage.getWidth();
+            metadados.altura = fakeimage.getHeight();
         }
 
         InformacoesQuadro quadro = metadados.informacoesQuadros[frameIndex];
         
-        quadro.largura = image.getWidth();
-        quadro.altura = image.getHeight();
+        quadro.largura = fakeimage.getWidth();
+        quadro.altura = fakeimage.getHeight();
             
         try
         {
@@ -304,9 +313,12 @@ public final class ImagemGif extends Imagem
 
             if (metadados.master != null)
             {
+                metadados.master = new BufferedImage(metadados.largura, metadados.altura, BufferedImage.TYPE_INT_ARGB);
+                metadados.master.createGraphics();
+                Graphics2D g2d = (Graphics2D) metadados.master.getGraphics();
                 int x = 0;
                 int y = 0;
-
+                g2d.setColor(metadados.corFundo);
                 for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++)
                 {
                     Node nodeItem = children.item(nodeIndex);
@@ -319,13 +331,14 @@ public final class ImagemGif extends Imagem
                         y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
                     }
                 }
-
+                System.out.println(disposal);
                 if (disposal.equals("restoreToPrevious"))
                 {
+                    
                     BufferedImage from = null;
-
-                    for (int i = frameIndex - 1; i >= 0; i--)
-                    {
+                    Graphics2D gr2d = (Graphics2D) fakeimage.getGraphics();
+                    for (int i = frameIndex; i >=0 ; i--)
+                    {    
                         if (!metadados.informacoesQuadros[i].disposicao.equals("restoreToPrevious") || frameIndex == 0)
                         {
                             if(i<0){
@@ -335,34 +348,47 @@ public final class ImagemGif extends Imagem
                             break;
                         }
                     }
-
-                    {
-                        ColorModel model = from.getColorModel();
-                        boolean alpha = from.isAlphaPremultiplied();
-                        WritableRaster raster = from.copyData(null);
-                        metadados.master = new BufferedImage(model, raster, alpha, null);
-                    }
+                    gr2d.drawImage(from, x, y, null);
                 }
                 else if (disposal.equals("restoreToBackgroundColor") && metadados.corFundo != null)
                 {
-                    if (!hasBackround && frameIndex > 1)
-                    {
-                        metadados.master.createGraphics().fillRect(metadados.lastx, metadados.lasty, metadados.informacoesQuadros[frameIndex - 1].largura, metadados.informacoesQuadros[frameIndex - 1].altura);
-                    }
+                    g2d.setColor(metadados.corFundo);
+                    g2d.fillRect(metadados.lastx, metadados.lasty, metadados.largura, metadados.altura);
+                 
                 }
-
-                metadados.master.createGraphics().drawImage(image, x, y, null);
+                //JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master));
+                Graphics2D gr2d = (Graphics2D) image.getGraphics();
+                gr2d.drawImage(fakeimage, x, y, null);
+                if(hasANotDisposable){
+                    hasANotDisposable = false;
+                    g2d.drawImage(notDisposedImage, 0, 0, null);
+                }
+                g2d.drawImage(image, 0, 0, null);
                 metadados.lastx = x;
                 metadados.lasty = y;
+                if(disposal.equals("doNotDispose")){
+                    notDisposedImage = image;
+                    hasANotDisposable = true;
+                }
             }
             else
             {
                 metadados.master = new BufferedImage(metadados.largura, metadados.altura, BufferedImage.TYPE_INT_ARGB);
-                metadados.master.createGraphics().setColor(metadados.corFundo);
-                metadados.master.createGraphics().fillRect(0, 0, metadados.master.getWidth(), metadados.master.getHeight());
+                metadados.master.createGraphics();
+                Graphics2D g2d = (Graphics2D) metadados.master.getGraphics();
+                g2d.setColor(metadados.corFundo);
+                g2d.fillRect(0, 0, metadados.master.getWidth(), metadados.master.getHeight());
                 hasBackround = image.getWidth() == metadados.largura && image.getHeight() == metadados.altura;
-
-                metadados.master.createGraphics().drawImage(image, 0, 0, null);
+                
+                Graphics2D gr2d = (Graphics2D) image.getGraphics();
+                gr2d.drawImage(fakeimage, 0, 0, null);
+                g2d.drawImage(image, 0, 0, null);
+                
+                if(disposal.equals("doNotDispose")){
+                    notDisposedImage = image;
+                    hasANotDisposable = true;
+                }
+                
             }
             
             BufferedImage copy;
@@ -373,9 +399,8 @@ public final class ImagemGif extends Imagem
                 copy = new BufferedImage(model, raster, alpha, null);
                 copy = Utils.criarImagemCompativel(copy, this.metadados.largura, this.metadados.altura, this.metadados.manterQualidade);
             }
-
             metadados.master.flush();
-        
+            
             return copy;
         }
         catch (IOException ex)
