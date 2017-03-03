@@ -237,9 +237,9 @@ public final class ImagemGif extends Imagem
                             boolean isBlueChroma = red==0 && green==0 && blue==255;
                             boolean isChroma = isBlueChroma|| isGreenChroma|| isfullBlack|| isfullwhite;
 //                            if(isChroma){
-//                                metadadosGif.corFundo = new Color(0,0,0,0);
+                                metadadosGif.corFundo = new Color(0,0,0,0);
 //                            }else{
-                                metadadosGif.corFundo = new Color(red,green,blue);
+//                                metadadosGif.corFundo = new Color(red,green,blue);
 //                            }
                             
                             break;
@@ -374,22 +374,26 @@ public final class ImagemGif extends Imagem
                 Graphics2D gr2d = (Graphics2D) image.getGraphics();
                 gr2d.drawImage(fakeimage, x, y, null);
                 if(hasANotDisposable){
-                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "NotDisposable", JOptionPane.INFORMATION_MESSAGE);
+//                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "NotDisposable", JOptionPane.INFORMATION_MESSAGE);
                     g2d.drawImage(notDisposedImage, 0, 0, null);
                     g2d.setColor(metadados.corFundo);
-                    g2d.clearRect(metadados.lastx, metadados.lasty, larguraFutura, alturaFutura);
+                    int margem_de_okayizidade = 10;
+                    if(larguraFutura<metadados.largura-margem_de_okayizidade && alturaFutura<metadados.altura-margem_de_okayizidade)
+                    {                        
+                        g2d.clearRect(metadados.lastx, metadados.lasty, larguraFutura, alturaFutura);
+                    }
                     larguraFutura = quadro.largura;
                     alturaFutura = quadro.altura;
-                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Parte apagada", JOptionPane.INFORMATION_MESSAGE);
+//                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Parte apagada", JOptionPane.INFORMATION_MESSAGE);
                 }
-                JOptionPane.showMessageDialog(null, new ImageIcon(fakeimage), "Nova", JOptionPane.INFORMATION_MESSAGE);
+//                JOptionPane.showMessageDialog(null, new ImageIcon(fakeimage), "Nova", JOptionPane.INFORMATION_MESSAGE);
                 g2d.drawImage(image, 0, 0, null);
-                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
+//                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
                 metadados.lastx = x;
                 metadados.lasty = y;
                 if(disposal.equals("doNotDispose")){
                     notDisposedImage = metadados.master;
-                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
+//                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
                     hasANotDisposable = true;
                 }
             }
