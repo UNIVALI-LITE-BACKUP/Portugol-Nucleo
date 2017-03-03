@@ -40,6 +40,8 @@ public final class ImagemGif extends Imagem
     private MetadadosGif metadados;
     private BufferedImage notDisposedImage = null;
     private boolean hasANotDisposable = false;
+    private int alturaFutura = 0;
+    private int larguraFutura = 0;
     
     private byte[] bytesImagem;
 
@@ -229,7 +231,17 @@ public final class ImagemGif extends Imagem
                             int red = Integer.parseInt(colorEntry.getAttribute("red"));
                             int green = Integer.parseInt(colorEntry.getAttribute("green"));
                             int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
-                            metadadosGif.corFundo = new Color(0,0,0,0);
+                            boolean isfullBlack = red==0 && green==0 && blue==0;
+                            boolean isfullwhite = red==255 && green==255 && blue==255;
+                            boolean isGreenChroma = red==0 && green==255 && blue==0;
+                            boolean isBlueChroma = red==0 && green==0 && blue==255;
+                            boolean isChroma = isBlueChroma|| isGreenChroma|| isfullBlack|| isfullwhite;
+//                            if(isChroma){
+//                                metadadosGif.corFundo = new Color(0,0,0,0);
+//                            }else{
+                                metadadosGif.corFundo = new Color(red,green,blue);
+//                            }
+                            
                             break;
                         }
                         colorEntry = (IIOMetadataNode) colorEntry.getNextSibling();
@@ -256,7 +268,14 @@ public final class ImagemGif extends Imagem
         boolean hasBackround = false;
         BufferedImage fakeimage = null;
         BufferedImage image = new BufferedImage(metadados.largura, metadados.altura, BufferedImage.TYPE_4BYTE_ABGR);
-
+        
+        if(frameIndex == 0)
+        {
+            hasANotDisposable=false;
+            larguraFutura = 0;
+            alturaFutura = 0;
+        }
+        
         while (fakeimage == null && frameIndex < metadados.numeroQuadros)
         {
             try
@@ -309,7 +328,8 @@ public final class ImagemGif extends Imagem
             {
                 metadados.master = new BufferedImage(metadados.largura, metadados.altura, BufferedImage.TYPE_INT_ARGB);
                 metadados.master.createGraphics();
-                Graphics2D g2d = (Graphics2D) metadados.master.getGraphics();
+                Graphics2D g2d = (Graphics2D) metadados.master.getGraphics();                
+                g2d.setBackground(metadados.corFundo);
                 int x = 0;
                 int y = 0;
                 g2d.setColor(metadados.corFundo);
@@ -354,14 +374,22 @@ public final class ImagemGif extends Imagem
                 Graphics2D gr2d = (Graphics2D) image.getGraphics();
                 gr2d.drawImage(fakeimage, x, y, null);
                 if(hasANotDisposable){
-                    hasANotDisposable = false;
+                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "NotDisposable", JOptionPane.INFORMATION_MESSAGE);
                     g2d.drawImage(notDisposedImage, 0, 0, null);
+                    g2d.setColor(metadados.corFundo);
+                    g2d.clearRect(metadados.lastx, metadados.lasty, larguraFutura, alturaFutura);
+                    larguraFutura = quadro.largura;
+                    alturaFutura = quadro.altura;
+                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Parte apagada", JOptionPane.INFORMATION_MESSAGE);
                 }
+                JOptionPane.showMessageDialog(null, new ImageIcon(fakeimage), "Nova", JOptionPane.INFORMATION_MESSAGE);
                 g2d.drawImage(image, 0, 0, null);
+                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
                 metadados.lastx = x;
                 metadados.lasty = y;
                 if(disposal.equals("doNotDispose")){
-                    notDisposedImage = image;
+                    notDisposedImage = metadados.master;
+                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
                     hasANotDisposable = true;
                 }
             }
@@ -379,7 +407,7 @@ public final class ImagemGif extends Imagem
                 g2d.drawImage(image, 0, 0, null);
                 
                 if(disposal.equals("doNotDispose")){
-                    notDisposedImage = image;
+                    notDisposedImage = metadados.master;
                     hasANotDisposable = true;
                 }
                 
