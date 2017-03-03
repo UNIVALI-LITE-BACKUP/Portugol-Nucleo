@@ -40,6 +40,7 @@ public final class ImagemGif extends Imagem
     private MetadadosGif metadados;
     private BufferedImage notDisposedImage = null;
     private boolean hasANotDisposable = false;
+    private boolean firstNotDispose = false;
     private int alturaFutura = 0;
     private int larguraFutura = 0;
     
@@ -366,11 +367,13 @@ public final class ImagemGif extends Imagem
                 }
                 else if (disposal.equals("restoreToBackgroundColor") && metadados.corFundo != null)
                 {
-                    g2d.setColor(metadados.corFundo);
-                    g2d.fillRect(metadados.lastx, metadados.lasty, metadados.largura, metadados.altura);
-                 
+                    if (!hasBackround && frameIndex > 1)
+                    {
+                        g2d.setColor(metadados.corFundo);
+                        g2d.fillRect(metadados.lastx, metadados.lasty, metadados.informacoesQuadros[frameIndex - 1].largura, metadados.informacoesQuadros[frameIndex - 1].altura);
+                    }
                 }
-                //JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master));
+//                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master));
                 Graphics2D gr2d = (Graphics2D) image.getGraphics();
                 gr2d.drawImage(fakeimage, x, y, null);
                 if(hasANotDisposable){
@@ -379,19 +382,27 @@ public final class ImagemGif extends Imagem
                     g2d.setColor(metadados.corFundo);
                     int margem_de_okayizidade = 10;
                     if(larguraFutura<metadados.largura-margem_de_okayizidade && alturaFutura<metadados.altura-margem_de_okayizidade)
-                    {                        
-                        g2d.clearRect(metadados.lastx, metadados.lasty, larguraFutura, alturaFutura);
+                    {
+                        if(firstNotDispose)
+                        {
+                            firstNotDispose=false;
+                        }
+                        else
+                        {
+                            g2d.clearRect(metadados.lastx-5, metadados.lasty-5, larguraFutura+5, alturaFutura+5);
+                        }
                     }
                     larguraFutura = quadro.largura;
                     alturaFutura = quadro.altura;
 //                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Parte apagada", JOptionPane.INFORMATION_MESSAGE);
                 }
-//                JOptionPane.showMessageDialog(null, new ImageIcon(fakeimage), "Nova", JOptionPane.INFORMATION_MESSAGE);
+//                JOptionPane.showMessageDialog(null, new ImageIcon(image), "Nova", JOptionPane.INFORMATION_MESSAGE);
                 g2d.drawImage(image, 0, 0, null);
 //                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
                 metadados.lastx = x;
                 metadados.lasty = y;
                 if(disposal.equals("doNotDispose")){
+                    firstNotDispose = true;
                     notDisposedImage = metadados.master;
 //                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
                     hasANotDisposable = true;
@@ -411,6 +422,7 @@ public final class ImagemGif extends Imagem
                 g2d.drawImage(image, 0, 0, null);
                 
                 if(disposal.equals("doNotDispose")){
+                    firstNotDispose = true;
                     notDisposedImage = metadados.master;
                     hasANotDisposable = true;
                 }
