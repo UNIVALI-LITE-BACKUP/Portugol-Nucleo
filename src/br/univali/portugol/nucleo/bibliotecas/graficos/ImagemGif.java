@@ -229,13 +229,7 @@ public final class ImagemGif extends Imagem
                             int red = Integer.parseInt(colorEntry.getAttribute("red"));
                             int green = Integer.parseInt(colorEntry.getAttribute("green"));
                             int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
-                            if((red==148 && green==239 && blue==24)||(red==255 && green==255 && blue==255) ||(red==0 && green==0 && blue==0)){
-                                metadadosGif.corFundo = new Color(0,0,0,0);
-                            }
-                            else{
-                                metadadosGif.corFundo = new Color(red, green, blue);
-                            }
-                            
+                            metadadosGif.corFundo = new Color(0,0,0,0);
                             break;
                         }
                         colorEntry = (IIOMetadataNode) colorEntry.getNextSibling();
