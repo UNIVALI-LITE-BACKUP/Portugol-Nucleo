@@ -376,18 +376,14 @@ public final class ImagemGif extends Imagem
 //                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "NotDisposable", JOptionPane.INFORMATION_MESSAGE);
                     g2d.drawImage(notDisposedImage, 0, 0, null);
                     g2d.setColor(metadados.corFundo);
-                    int margem_de_okayizidade = 10;
-//                    if(larguraFutura<metadados.largura-margem_de_okayizidade && alturaFutura<metadados.altura-margem_de_okayizidade)
-//                    {
-                        if(firstNotDispose)
-                        {
-                            firstNotDispose=false;
-                        }
-                        else
-                        {
-                            g2d.clearRect(metadados.lastx, metadados.lasty, larguraFutura, alturaFutura);
-                        }
-//                    }
+                    if(firstNotDispose)
+                    {
+                        firstNotDispose=false;
+                    }
+                    else
+                    {
+                        g2d.clearRect(metadados.lastx, metadados.lasty, larguraFutura, alturaFutura);
+                    }
                     larguraFutura = quadro.largura;
                     alturaFutura = quadro.altura;
 //                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Parte apagada", JOptionPane.INFORMATION_MESSAGE);
@@ -397,7 +393,7 @@ public final class ImagemGif extends Imagem
 //                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
                 metadados.lastx = x;
                 metadados.lasty = y;
-                if(disposal.equals("doNotDispose")){
+                if(disposal.equals("doNotDispose") || disposal.equals("none")){
                     firstNotDispose = true;
                     notDisposedImage = metadados.master;
 //                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
@@ -412,14 +408,15 @@ public final class ImagemGif extends Imagem
                 g2d.setColor(metadados.corFundo);
                 g2d.fillRect(0, 0, metadados.master.getWidth(), metadados.master.getHeight());
                 hasBackround = image.getWidth() == metadados.largura && image.getHeight() == metadados.altura;
-                
+                System.out.println(disposal);
                 Graphics2D gr2d = (Graphics2D) image.getGraphics();
                 gr2d.drawImage(fakeimage, 0, 0, null);
                 g2d.drawImage(image, 0, 0, null);
-                
-                if(disposal.equals("doNotDispose")){
+//                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
+                if(disposal.equals("doNotDispose") || disposal.equals("none")){
                     firstNotDispose = true;
                     notDisposedImage = metadados.master;
+//                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
                     hasANotDisposable = true;
                 }
                 
@@ -433,7 +430,7 @@ public final class ImagemGif extends Imagem
                 copy = new BufferedImage(model, raster, alpha, null);
                 copy = Utils.criarImagemCompativel(copy, this.metadados.largura, this.metadados.altura, this.metadados.manterQualidade);
             }
-            metadados.master.flush();
+//            metadados.master.flush();
             leitorGif.dispose();
             
             return copy;
