@@ -213,6 +213,8 @@ public final class ImagemGif extends Imagem
                 {
                     metadadosGif.largura = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenWidth"));
                     metadadosGif.altura = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenHeight"));
+                    metadadosGif.largura_nova = metadadosGif.largura;
+                    metadadosGif.altura_nova = metadadosGif.altura;
                 }
             }
             
@@ -423,28 +425,31 @@ public final class ImagemGif extends Imagem
             }
             
             BufferedImage copy;
-            {
-                ColorModel model = metadados.master.getColorModel();
-                boolean alpha = metadados.master.isAlphaPremultiplied();
-                WritableRaster raster = metadados.master.copyData(null);
-                copy = new BufferedImage(model, raster, alpha, null);
-                copy = Utils.criarImagemCompativel(copy, this.metadados.largura, this.metadados.altura, this.metadados.manterQualidade);
-            }
-//            metadados.master.flush();
-            leitorGif.dispose();
+//                ColorModel model = metadados.master.getColorModel();
+//                boolean alpha = metadados.master.isAlphaPremultiplied();
+//                WritableRaster raster = metadados.master.copyData(null);
+//                copy = new BufferedImage(model, raster, alpha, null);
+                //JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master));
+                copy = Utils.criarImagemCompativel(metadados.master, this.metadados.largura_nova, this.metadados.altura_nova, this.metadados.manterQualidade);
+                
+                
+//                JOptionPane.showMessageDialog(null, new ImageIcon(copy));
+            
+            metadados.master.flush();
             
             return copy;
         }
         catch (IOException ex)
         {
+            System.out.println("opaa");
             return image;
         }
     }
 
     public void setDimensoes(int largura, int altura, boolean manterQualidade)
     {
-        this.metadados.largura = largura;
-        this.metadados.altura = altura;
+        this.metadados.largura_nova = largura;
+        this.metadados.altura_nova = altura;
         this.metadados.manterQualidade = manterQualidade;
     }
     
@@ -452,6 +457,8 @@ public final class ImagemGif extends Imagem
     {
         public int largura = -1;
         public int altura = -1;    
+        public int largura_nova = -1;
+        public int altura_nova = -1;    
         public Color corFundo = null;
         public int numeroQuadros = -1;
         public int indiceQuadroAtual = -1;
