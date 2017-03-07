@@ -352,7 +352,7 @@ public final class ImagemGif extends Imagem
                     
                     BufferedImage from = null;
                     Graphics2D gr2d = (Graphics2D) fakeimage.getGraphics();
-                    for (int i = frameIndex; i >=0 ; i--)
+                    for (int i = frameIndex-1; i >=0 ; i--)
                     {    
                         if (!metadados.informacoesQuadros[i].disposicao.equals("restoreToPrevious") || frameIndex == 0)
                         {
