@@ -1,7 +1,6 @@
 package br.univali.portugol.nucleo.bibliotecas.graficos;
 
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
-import java.awt.image.BufferedImage;
 
 /**
  *
@@ -11,7 +10,7 @@ public final class CacheImagens
 {
     private static final int NUMERO_MAXIMO_IMAGENS = 128;
 
-    private final BufferedImage[] imagens = new BufferedImage[NUMERO_MAXIMO_IMAGENS];
+    private final Imagem[] imagens = new Imagem[NUMERO_MAXIMO_IMAGENS];
 
     private CacheImagens()
     {
@@ -36,11 +35,23 @@ public final class CacheImagens
         throw new ErroExecucaoBiblioteca("O número máximo de imagens que podem ser carregadas foi atingido");
     }
 
-    public BufferedImage obterImagem(int endereco) throws ErroExecucaoBiblioteca
+    public ImagemGif obterGif(int endereco) throws ErroExecucaoBiblioteca
+    {
+       Imagem imagem = obterImagem(endereco);
+       
+       if (imagem instanceof ImagemGif)
+       {
+           return (ImagemGif) imagem;
+       }
+           
+       throw new ErroExecucaoBiblioteca("O endereço de memória especificado aponta para uma imagem, mas esta imagem não é um GIF animado");
+    }
+    
+    public Imagem obterImagem(int endereco) throws ErroExecucaoBiblioteca
     {
         if (endereco >= 0 && endereco < NUMERO_MAXIMO_IMAGENS)
         {
-            BufferedImage imagem = imagens[endereco];
+            Imagem imagem = imagens[endereco];
 
             if (imagem != null)
             {
@@ -67,7 +78,7 @@ public final class CacheImagens
         }
     }
 
-    public int adicionarImagem(BufferedImage imagem) throws ErroExecucaoBiblioteca
+    public int adicionarImagem(Imagem imagem) throws ErroExecucaoBiblioteca
     {
         int indiceImagem = obterProximoIndiceLivre();
 

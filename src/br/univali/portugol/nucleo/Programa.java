@@ -11,12 +11,12 @@ import br.univali.portugol.nucleo.execucao.ModoEncerramento;
 import br.univali.portugol.nucleo.execucao.ObservadorExecucao;
 import br.univali.portugol.nucleo.execucao.ResultadoExecucao;
 import br.univali.portugol.nucleo.execucao.TradutorErrosExecucao;
+import br.univali.portugol.nucleo.execucao.erros.ErroMemoriaInsuficiente;
 import br.univali.portugol.nucleo.execucao.erros.ErroValorEntradaInvalido;
 import br.univali.portugol.nucleo.execucao.es.Armazenador;
 import br.univali.portugol.nucleo.execucao.es.InputMediator;
 import br.univali.portugol.nucleo.execucao.es.Saida;
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
-import br.univali.portugol.nucleo.simbolos.Variavel;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -569,6 +569,15 @@ public abstract class Programa
                 inicializaBibliotecasIncluidas();
                 inicializar(); // reinicializa todas as variaveis antes de executar
                 executar(parametros);
+            }
+            catch (OutOfMemoryError erroMemoria)
+            {
+                ErroMemoriaInsuficiente erroExecucao = new ErroMemoriaInsuficiente();
+                erroExecucao.setLinha(ultimaLinha);
+                erroExecucao.setColuna(ultimaColuna);
+                
+                resultadoExecucao.setModoEncerramento(ModoEncerramento.ERRO);
+                resultadoExecucao.setErro(erroExecucao);
             }
             catch (ErroExecucao erroExecucao)
             {

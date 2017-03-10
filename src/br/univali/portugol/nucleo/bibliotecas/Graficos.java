@@ -6,9 +6,12 @@ import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.TipoBiblioteca;
 import br.univali.portugol.nucleo.bibliotecas.base.anotacoes.*;
 import br.univali.portugol.nucleo.bibliotecas.graficos.CacheImagens;
-import br.univali.portugol.nucleo.bibliotecas.graficos.ImageFrame;
+import br.univali.portugol.nucleo.bibliotecas.graficos.Imagem;
+import br.univali.portugol.nucleo.bibliotecas.graficos.ImagemGenerica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGrafica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGraficaImpl;
+import br.univali.portugol.nucleo.bibliotecas.graficos.Utils;
+import br.univali.portugol.nucleo.bibliotecas.graficos.ImagemGif;
 import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
@@ -17,23 +20,15 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.metadata.IIOMetadataNode;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -82,7 +77,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     private JanelaGrafica janela;
     private CacheImagens cacheImagens;
     private boolean inicializado = false;
-    private final Map<Integer, ImageGif> gifs = new ConcurrentHashMap<>();
 
     @Override
     public void inicializar(final Programa programa, final List<Biblioteca> bibliotecasReservadas) throws ErroExecucaoBiblioteca, InterruptedException
@@ -301,7 +295,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         BufferedImage imagem = janela().getSuperficieDesenho().renderizarImagem(largura, altura);
 
-        return cacheImagens.adicionarImagem(imagem);
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagem));
     }
 
     @DocumentacaoFuncao(
@@ -429,8 +423,10 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             try
             {
-                BufferedImage imagem = ImageIO.read(arquivo);
-                return cacheImagens.adicionarImagem(criarImagemCompativel(imagem));
+                int endereco = cacheImagens.adicionarImagem(Imagem.carregar(arquivo));
+                //System.gc();
+                
+                return endereco;
             }
             catch (IOException excecao)
             {
@@ -441,35 +437,6 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         {
             throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
         }
-    }
-    
-    @DocumentacaoFuncao(
-        descricao
-        = "Carrega um gif na memória para ser utilizada mais tarde.",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "caminho", descricao = "o caminho do arquivo de imagem no computador")
-        },
-        retorno = "o endereço de memória no qual o gif foi carregado",
-        autores =
-        {
-            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
-        }
-    )
-    public int carregar_gif(String caminho) throws ErroExecucaoBiblioteca, InterruptedException
-    {
-        File arquivo = programa.resolverCaminho(new File(caminho));
-        Integer endereco = caminho.hashCode();
-
-        if (arquivo.exists() && !gifs.containsKey(endereco))
-        {
-            gifs.put(endereco, new ImageGif(caminho));
-        }
-        else
-        {
-            throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
-        }
-        return endereco;
     }
     
     @DocumentacaoFuncao(
@@ -486,33 +453,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void proximo_frame_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
-        }
-        
-        ImageGif imageGif = gifs.get(endereco);        
-        imageGif.nextImage();
+        cacheImagens.obterGif(endereco).avancarQuadro();
     }
 
-    private BufferedImage criarImagemCompativel(BufferedImage original)
-    {
-        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
-                .getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice()
-                .getDefaultConfiguration();
-
-        BufferedImage imagemCompativel
-                = graphicsConfiguration.createCompatibleImage(
-                        original.getWidth(null),
-                        original.getHeight(null), original.getTransparency());
-
-        Graphics g = imagemCompativel.getGraphics();
-        g.drawImage(original, 0, 0, null);
-        g.dispose();
-
-        return imagemCompativel;
-    }
     
     @DocumentacaoFuncao(
         descricao = "Esta função permite transformar uma imagem previamente carregada no ambiente gráfico com a função carregar_imagem(). "
@@ -542,13 +485,15 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     
     public int transformar_imagem(int endereco, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage imagemTransformada = (BufferedImage) cacheImagens.obterImagem(endereco);
+        BufferedImage imagemTransformada = (BufferedImage) cacheImagens.obterImagem(endereco).getImagem();
 
         imagemTransformada = aplicarChromaKey(imagemTransformada, cor_ignorada);
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
-        return cacheImagens.adicionarImagem(criarImagemCompativel(imagemTransformada));
+        imagemTransformada = Utils.criarImagemCompativel(imagemTransformada, true);
+        
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemTransformada));
     }
     
     @DocumentacaoFuncao(
@@ -570,46 +515,64 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int redimensionar_imagem(int endereco, int largura, int altura, boolean manter_qualidade) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco);
+        Imagem imagem = cacheImagens.obterImagem(endereco);
         
-        if(largura<=0 && altura<=0){
-            throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
-        }
-        
-        if(altura == 0 && largura !=0){
-            double l = largura;
-            double lo = original.getWidth();
-            double ao = original.getHeight();
-            altura = (int) (ao*(l/lo));
-        }else if(altura != 0 && largura ==0){
-            double a = altura;
-            double lo = original.getWidth();
-            double ao = original.getHeight();
-            largura = (int) (lo*(a/ao));
-        }
-        // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
-        // melhor do que criando uma nova BufferedImage na mão
-        
-        GraphicsConfiguration graphicsConfiguration = GraphicsEnvironment
-                .getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice()
-                .getDefaultConfiguration();
-        
-        BufferedImage imagemCompativel = graphicsConfiguration.createCompatibleImage(largura, altura, original.getTransparency());
-
-        Graphics2D g = (Graphics2D) imagemCompativel.getGraphics();
-        
-        if (manter_qualidade)
+        if (!(imagem instanceof ImagemGif))
         {
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            BufferedImage original = (BufferedImage) imagem.getImagem();
+        
+            if(largura<=0 && altura<=0){
+                throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
+            }
+
+            if(altura == 0 && largura !=0){
+                double l = largura;
+                double lo = original.getWidth();
+                double ao = original.getHeight();
+                altura = (int) (ao*(l/lo));
+            }else if(altura != 0 && largura ==0){
+                double a = altura;
+                double lo = original.getWidth();
+                double ao = original.getHeight();
+                largura = (int) (lo*(a/ao));
+            }
+            // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
+            // melhor do que criando uma nova BufferedImage na mão
+
+            return cacheImagens.adicionarImagem(new ImagemGenerica(Utils.criarImagemCompativel(original, largura, altura, manter_qualidade)));
         }
-        
-        
-        
-        g.drawImage(original, 0, 0, largura, altura, null);
-        g.dispose();
-        
-        return cacheImagens.adicionarImagem(imagemCompativel);
+        else
+        {
+            try
+            {   
+                ImagemGif imagemGif = (ImagemGif) imagem;
+                ImagemGif nova = imagemGif.clonar();
+                
+                 if(largura<=0 && altura<=0){
+                throw new ErroExecucaoBiblioteca("Impossível transformar imagem para estas dimensões");
+                }
+
+                if(altura == 0 && largura !=0){
+                    double l = largura;
+                    double lo = imagemGif.getLargura();
+                    double ao = imagemGif.getAltura();
+                    altura = (int) (ao*(l/lo));
+                }else if(altura != 0 && largura ==0){
+                    double a = altura;
+                    double lo = imagemGif.getLargura();
+                    double ao = imagemGif.getAltura();
+                    largura = (int) (lo*(a/ao));
+                }
+                
+                nova.setDimensoes(largura, altura, manter_qualidade);
+                
+                return cacheImagens.adicionarImagem(nova);
+            }
+            catch (IOException e)
+            {
+                throw new ErroExecucaoBiblioteca("Erro ao redimensionar a imagem GIF");
+            }
+        }        
     }
     
     
@@ -630,7 +593,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int obter_cor_pixel(int endereco, int x, int y) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return cacheImagens.obterImagem(endereco).getRGB(x,y);
+        return cacheImagens.obterImagem(endereco).getImagem().getRGB(x,y);
     }
     
     @DocumentacaoFuncao(
@@ -688,7 +651,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int transformar_porcao_imagem(int endereco, int x, int y, int largura, int altura, boolean espelhamento_horizontal, boolean espelhamento_vertical, int rotacao, int cor_ignorada) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco);
+        BufferedImage original = (BufferedImage) cacheImagens.obterImagem(endereco).getImagem();
         
         // Usar o GraphicsConfiguration faz com a imagem seja criada e desenhada com performance
         // melhor do que criando uma nova BufferedImage na mão
@@ -709,7 +672,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         imagemTransformada = espelharImagem(imagemTransformada, espelhamento_horizontal, espelhamento_vertical);
         imagemTransformada = rotacionarImagem(imagemTransformada, rotacao);
 
-        return cacheImagens.adicionarImagem(imagemTransformada);
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemTransformada));
     }
 
 //    private BufferedImage copiarImagem(BufferedImage original)
@@ -893,7 +856,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_imagem(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco));
+        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco).getImagem());
     }
     
     @DocumentacaoFuncao(
@@ -913,45 +876,8 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_quadro_atual_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
-    }
-    
-    @DocumentacaoFuncao(
-        descricao
-        = "Desenha um frame de um gif previamente carregado, na posição especificada pelos "
-        + "parâmetros <param>x</param> e <param>y</param>",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "x", descricao = "a posição (distância) da imagem no eixo horizontal, em relação ao lado esquerdo da janela"),
-            @DocumentacaoParametro(nome = "y", descricao = "a posição (distância) da imagem no eixo vertical, em relação ao topo da janela"),
-            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem a ser desenhada")
-        },
-        autores =
-        {
-            @Autor(nome = "Alisson Steffens Henrique", email = "ash@edu.univali.br"),
-            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
-        }
-    )
-    public void desenhar_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
-    {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        if(System.currentTimeMillis()-gifs.get(endereco).drawTime>=gifs.get(endereco).getGifDelay()*10){
-            gifs.get(endereco).nextImage();
-            gifs.get(endereco).drawTime = System.currentTimeMillis();
-        }else if(gifs.get(endereco).drawTime == 0){
-           gifs.get(endereco).drawTime = System.currentTimeMillis();
-        }
-        janela().getSuperficieDesenho().desenharImagem(x, y, gifs.get(endereco).getActualImage());
-    }
+        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterGif(endereco).getQuadroAtual());
+    }   
 
     @DocumentacaoFuncao(
         descricao
@@ -975,7 +901,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_porcao_imagem(final int x, final int y, final int xi, final int yi, final int largura, final int altura, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco));
+        janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco).getImagem());
     }
     
     @DocumentacaoFuncao(
@@ -992,12 +918,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public int obter_intervalo_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        return gifs.get(endereco).getGifDelay()*10;
+        return cacheImagens.obterGif(endereco).getIntervalo();
     }
     
     @DocumentacaoFuncao(
@@ -1014,12 +935,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int obter_numero_quadros_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        return gifs.get(endereco).getFrameNumber();
+        return cacheImagens.obterGif(endereco).getNumeroFrames();
     }
     
     @DocumentacaoFuncao(
@@ -1036,12 +952,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int obter_numero_quadro_atual_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        return gifs.get(endereco).getActualNumber();
+        return cacheImagens.obterGif(endereco).getIndiceQuadroAtual();
     }
     
     @DocumentacaoFuncao(
@@ -1059,13 +970,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public int obter_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
+        BufferedImage imagemQuadro = cacheImagens.obterGif(endereco).getQuadro(quadro);
         
-        BufferedImage bf = criarImagemCompativel(gifs.get(endereco).gifFrames.get(quadro).getImage());
-        return cacheImagens.adicionarImagem(bf);
+        return cacheImagens.adicionarImagem(new ImagemGenerica(imagemQuadro));
     }
     
     @DocumentacaoFuncao(
@@ -1082,12 +989,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )    
     public void definir_quadro_gif(int endereco, int quadro) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para um gif");
-        }
-        
-        gifs.get(endereco).setActualImage(quadro);
+        cacheImagens.obterGif(endereco).irParaQuadro(quadro);
     }
     
     @DocumentacaoFuncao(
@@ -1102,29 +1004,9 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
         }
     )
     public void liberar_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
-    {
+    {        
         cacheImagens.liberarImagem(endereco);
-    }
-    
-    @DocumentacaoFuncao(
-        descricao = "Libera a memória utilizada por umgif que tenha sido previamente carregado",
-        parametros =
-        {
-            @DocumentacaoParametro(nome = "endereco", descricao = "o endereço de memória da imagem")
-        },
-        autores =
-        {
-            @Autor(nome = "Adson Marques da Silva Esteves", email = "adson@edu.univali.br")
-        }
-    )
-    public void liberar_gif(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
-    {
-        if (!gifs.containsKey(endereco))
-        {
-            throw new ErroExecucaoBiblioteca("O endereço de memória especificado não aponta para uma imagem");
-        }
-        
-        gifs.remove(endereco);
+        //System.gc();
     }
 
     @DocumentacaoFuncao(
@@ -1274,7 +1156,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int largura_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return cacheImagens.obterImagem(endereco).getWidth(null);
+        return cacheImagens.obterImagem(endereco).getImagem().getWidth(null);
     }
 
     @DocumentacaoFuncao(
@@ -1291,7 +1173,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int altura_imagem(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return cacheImagens.obterImagem(endereco).getHeight(null);
+        return cacheImagens.obterImagem(endereco).getImagem().getHeight(null);
     }
 
     @DocumentacaoFuncao(
@@ -1376,7 +1258,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_icone_janela(int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().definirIcone(cacheImagens.obterImagem(endereco));
+        janela().definirIcone(cacheImagens.obterImagem(endereco).getImagem());
     }
 
     @DocumentacaoFuncao(
@@ -1522,215 +1404,5 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public void sair_modo_tela_cheia() throws ErroExecucaoBiblioteca, InterruptedException
     {
         janela().sairModoTelaCheia();
-    }
-    
-    private class ImageGif
-    {
-        private List<ImageFrame> gifFrames;
-        private int actualImage;
-        public long drawTime = 0;
-
-        public ImageGif(String caminho) throws ErroExecucaoBiblioteca
-        {
-            File arquivo = programa.resolverCaminho(new File(caminho));
-
-            if (arquivo.exists())
-            {
-                gifFrames = new ArrayList<>();
-                try
-                {                   
-                    gifFrames.addAll(readGif(arquivo));
-                }
-                catch (IOException excecao)
-                {
-                    throw new ErroExecucaoBiblioteca(String.format("Ocorreu um erro ao carregar a imagem '%s'", caminho));
-                }
-            }
-            else
-            {
-                throw new ErroExecucaoBiblioteca(String.format("A imagem '%s' não foi encontrada", caminho));
-            }
-        }
-
-        public BufferedImage getActualImage()
-        {
-            return gifFrames.get(actualImage).getImage();
-        }
-        
-        public int getActualNumber()
-        {
-            return actualImage;
-        }
-        
-        public int getGifDelay()
-        {
-            return gifFrames.get(actualImage).getDelay();
-        }
-
-        public void setActualImage(int actualImage)
-        {
-            this.actualImage = actualImage;
-        }
-        
-        public int getFrameNumber()
-        {
-            return gifFrames.size();
-        }
-        
-        public void nextImage()
-        {
-            actualImage = (actualImage+1)%gifFrames.size();
-        }
-        
-        private List<ImageFrame> readGif(File stream) throws IOException{
-            ArrayList<ImageFrame> frames = new ArrayList<ImageFrame>(2);
-
-            ImageReader reader = (ImageReader) ImageIO.getImageReadersByFormatName("gif").next();
-            reader.setInput(ImageIO.createImageInputStream(stream));
-
-            int lastx = 0;
-            int lasty = 0;
-
-            int width = -1;
-            int height = -1;
-
-            IIOMetadata metadata = reader.getStreamMetadata();
-
-            Color backgroundColor = null;
-
-            if(metadata != null) {
-            IIOMetadataNode globalRoot = (IIOMetadataNode) metadata.getAsTree(metadata.getNativeMetadataFormatName());
-
-            NodeList globalColorTable = globalRoot.getElementsByTagName("GlobalColorTable");
-            NodeList globalScreeDescriptor = globalRoot.getElementsByTagName("LogicalScreenDescriptor");
-
-            if (globalScreeDescriptor != null && globalScreeDescriptor.getLength() > 0){
-                IIOMetadataNode screenDescriptor = (IIOMetadataNode) globalScreeDescriptor.item(0);
-
-                if (screenDescriptor != null){
-                    width = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenWidth"));
-                    height = Integer.parseInt(screenDescriptor.getAttribute("logicalScreenHeight"));
-                }
-            }
-
-            if (globalColorTable != null && globalColorTable.getLength() > 0){
-                IIOMetadataNode colorTable = (IIOMetadataNode) globalColorTable.item(0);
-
-                if (colorTable != null) {
-                    String bgIndex = colorTable.getAttribute("backgroundColorIndex");
-
-                    IIOMetadataNode colorEntry = (IIOMetadataNode) colorTable.getFirstChild();
-                    while (colorEntry != null) {
-                        if (colorEntry.getAttribute("index").equals(bgIndex)) {
-                            int red = Integer.parseInt(colorEntry.getAttribute("red"));
-                            int green = Integer.parseInt(colorEntry.getAttribute("green"));
-                            int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
-
-                            backgroundColor = new Color(red, green, blue);
-                            break;
-                        }
-
-                        colorEntry = (IIOMetadataNode) colorEntry.getNextSibling();
-                    }
-                }
-            }
-            }
- 
-            BufferedImage master = null;
-            boolean hasBackround = false;
-            int frameCount = reader.getNumImages(true);
-            
-            for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
-                BufferedImage image;
-                try{
-                    image = reader.read(frameIndex);
-                }catch (IndexOutOfBoundsException io){
-                    continue;
-                }
-
-                if (width == -1 || height == -1){
-                    width = image.getWidth();
-                    height = image.getHeight();
-                }
-
-                IIOMetadataNode root = (IIOMetadataNode) reader.getImageMetadata(frameIndex).getAsTree("javax_imageio_gif_image_1.0");
-                IIOMetadataNode gce = (IIOMetadataNode) root.getElementsByTagName("GraphicControlExtension").item(0);
-                NodeList children = root.getChildNodes();
-
-                int delay = Integer.valueOf(gce.getAttribute("delayTime"));
-
-                String disposal = gce.getAttribute("disposalMethod");
-
-                if (master == null){
-                    master = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                    master.createGraphics().setColor(backgroundColor);
-                    master.createGraphics().fillRect(0, 0, master.getWidth(), master.getHeight());
-
-                hasBackround = image.getWidth() == width && image.getHeight() == height;
-
-                    master.createGraphics().drawImage(image, 0, 0, null);
-                }else{
-                    int x = 0;
-                    int y = 0;
-
-                    for (int nodeIndex = 0; nodeIndex < children.getLength(); nodeIndex++){
-                        Node nodeItem = children.item(nodeIndex);
-
-                        if (nodeItem.getNodeName().equals("ImageDescriptor")){
-                            NamedNodeMap map = nodeItem.getAttributes();
-
-                            x = Integer.valueOf(map.getNamedItem("imageLeftPosition").getNodeValue());
-                            y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
-                        }
-                    }
-
-                    if (disposal.equals("restoreToPrevious")){
-                        BufferedImage from = null;
-                        for (int i = frameIndex - 1; i >= 0; i--){
-                            if (!frames.get(i).getDisposal().equals("restoreToPrevious") || frameIndex == 0){
-                                from = frames.get(i).getImage();
-                                break;
-                            }
-                        }
-
-                        {
-                            ColorModel model = from.getColorModel();
-                            boolean alpha = from.isAlphaPremultiplied();
-                            WritableRaster raster = from.copyData(null);
-                            master = new BufferedImage(model, raster, alpha, null);
-                        }
-                    }else if (disposal.equals("restoreToBackgroundColor") && backgroundColor != null){
-                        if (!hasBackround || frameIndex > 1){
-                            master.createGraphics().fillRect(lastx, lasty, frames.get(frameIndex - 1).getWidth(), frames.get(frameIndex - 1).getHeight());
-                        }
-                    }
-                    master.createGraphics().drawImage(image, x, y, null);
-
-                    lastx = x;
-                    lasty = y;
-                }
-
-                try{
-                    BufferedImage copy;
-
-                    {
-                        ColorModel model = master.getColorModel();
-                        boolean alpha = master.isAlphaPremultiplied();
-                        WritableRaster raster = master.copyData(null);
-                        copy = new BufferedImage(model, raster, alpha, null);
-                    }
-                    frames.add(new ImageFrame(copy, delay, disposal, image.getWidth(), image.getHeight()));
-                }
-                catch (Throwable ex)
-                {
-                    ex.printStackTrace(System.err);
-                }
-
-                master.flush();
-            }
-            reader.dispose();
-
-            return frames;
-        }
     }
 }
