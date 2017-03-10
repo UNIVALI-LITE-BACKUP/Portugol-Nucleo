@@ -231,19 +231,10 @@ public final class ImagemGif extends Imagem
                     {
                         if (colorEntry.getAttribute("index").equals(bgIndex))
                         {
-                            int red = Integer.parseInt(colorEntry.getAttribute("red"));
-                            int green = Integer.parseInt(colorEntry.getAttribute("green"));
-                            int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
-                            boolean isfullBlack = red==0 && green==0 && blue==0;
-                            boolean isfullwhite = red==255 && green==255 && blue==255;
-                            boolean isGreenChroma = red==0 && green==255 && blue==0;
-                            boolean isBlueChroma = red==0 && green==0 && blue==255;
-                            boolean isChroma = isBlueChroma|| isGreenChroma|| isfullBlack|| isfullwhite;
-//                            if(isChroma){
-                                metadadosGif.corFundo = new Color(0,0,0,0);
-//                            }else{
-//                                metadadosGif.corFundo = new Color(red,green,blue);
-//                            }
+//                            int red = Integer.parseInt(colorEntry.getAttribute("red"));
+//                            int green = Integer.parseInt(colorEntry.getAttribute("green"));
+//                            int blue = Integer.parseInt(colorEntry.getAttribute("blue"));
+                              metadadosGif.corFundo = new Color(0,0,0,0);
                             
                             break;
                         }
@@ -348,7 +339,6 @@ public final class ImagemGif extends Imagem
                         y = Integer.valueOf(map.getNamedItem("imageTopPosition").getNodeValue());
                     }
                 }
-                System.out.println(disposal);
                 if (disposal.equals("restoreToPrevious"))
                 {
                     
@@ -371,11 +361,9 @@ public final class ImagemGif extends Imagem
                 {
                     g2d.clearRect(x, y, fakeimage.getWidth(), fakeimage.getHeight());
                 }
-//                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master));
                 Graphics2D gr2d = (Graphics2D) image.getGraphics();
                 gr2d.drawImage(fakeimage, x, y, null);
                 if(hasANotDisposable){
-//                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "NotDisposable", JOptionPane.INFORMATION_MESSAGE);
                     g2d.drawImage(notDisposedImage, 0, 0, null);
                     g2d.setColor(metadados.corFundo);
                     if(firstNotDispose)
@@ -388,17 +376,13 @@ public final class ImagemGif extends Imagem
                     }
                     larguraFutura = quadro.largura;
                     alturaFutura = quadro.altura;
-//                    JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "Parte apagada", JOptionPane.INFORMATION_MESSAGE);
                 }
-//                JOptionPane.showMessageDialog(null, new ImageIcon(fakeimage), "Nova", JOptionPane.INFORMATION_MESSAGE);
                 g2d.drawImage(image, 0, 0, null);
-//                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
                 metadados.lastx = x;
                 metadados.lasty = y;
                 if(disposal.equals("doNotDispose") || disposal.equals("none")){
                     firstNotDispose = true;
                     notDisposedImage = metadados.master;
-//                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
                     hasANotDisposable = true;
                 }
             }
@@ -410,38 +394,26 @@ public final class ImagemGif extends Imagem
                 g2d.setColor(metadados.corFundo);
                 g2d.fillRect(0, 0, metadados.master.getWidth(), metadados.master.getHeight());
                 hasBackround = image.getWidth() == metadados.largura && image.getHeight() == metadados.altura;
-                System.out.println(disposal);
                 Graphics2D gr2d = (Graphics2D) image.getGraphics();
                 gr2d.drawImage(fakeimage, 0, 0, null);
                 g2d.drawImage(image, 0, 0, null);
-//                JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master), "final", JOptionPane.INFORMATION_MESSAGE);                
                 if(disposal.equals("doNotDispose") || disposal.equals("none")){
                     firstNotDispose = true;
                     notDisposedImage = metadados.master;
-//                    JOptionPane.showMessageDialog(null, new ImageIcon(notDisposedImage), "Salvou como doNotDispose", JOptionPane.INFORMATION_MESSAGE);
                     hasANotDisposable = true;
                 }
                 
             }
             
             BufferedImage copy;
-//                ColorModel model = metadados.master.getColorModel();
-//                boolean alpha = metadados.master.isAlphaPremultiplied();
-//                WritableRaster raster = metadados.master.copyData(null);
-//                copy = new BufferedImage(model, raster, alpha, null);
-                //JOptionPane.showMessageDialog(null, new ImageIcon(metadados.master));
-                copy = Utils.criarImagemCompativel(metadados.master, this.metadados.largura_nova, this.metadados.altura_nova, this.metadados.manterQualidade);
-                
-                
-//                JOptionPane.showMessageDialog(null, new ImageIcon(copy));
-            
+            copy = Utils.criarImagemCompativel(metadados.master, this.metadados.largura_nova, this.metadados.altura_nova, this.metadados.manterQualidade);
+                           
             metadados.master.flush();
             
             return copy;
         }
         catch (IOException ex)
         {
-            System.out.println("opaa");
             return image;
         }
     }
@@ -504,7 +476,6 @@ public final class ImagemGif extends Imagem
         
         imagemGif.bytesImagem = this.bytesImagem;
         imagemGif.leitorGif = criarLeitorGif(this.bytesImagem);
-        //imagemGif.leitorGif = this.leitorGif;
         imagemGif.metadados = imagemGif.lerMetadadosGif();
         imagemGif.avancarQuadro();
         
