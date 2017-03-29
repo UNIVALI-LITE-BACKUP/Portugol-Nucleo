@@ -21,8 +21,6 @@ public final class Portugol
     
     private static final Logger LOGGER = Logger.getLogger(Portugol.class.getName());
     
-    private static final ExecutorService servico = Executors.newSingleThreadExecutor(); // usa uma thread só para enfileirar compilações consecutivas, isso evita ter que tratar compilações simultâneas
-    
     private static Programa compilar(String codigo, boolean paraExecucao, File classPath, String caminhoJavac) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();
@@ -46,27 +44,9 @@ public final class Portugol
         return compilar(codigo, false, null, null);
     }
     
-    public static void compilarParaExecucao(final String codigo, final ListenerCompilacao listener, 
-                final File classPath, final String caminhoJavac)
+    public static Programa compilarParaExecucao(String codigo, File classPath, String caminhoJavac) throws ErroCompilacao
     {
-        Runnable tarefa = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                listener.compilacaoParaExecucaoIniciada();
-                try
-                {
-                    Programa programa = compilar(codigo, true, classPath, caminhoJavac);
-                    listener.compilacaoParaExecucaoFinalizada(programa);
-                }
-                catch(ErroCompilacao erro)
-                {
-                    listener.errosDeCompilacaoDetectados(erro);
-                }
-            }
-        };
-        servico.submit(tarefa);
+        return compilar(codigo, true, classPath, caminhoJavac);
     }
     
     public static String renomearSimbolo(String programa, int linha, int coluna, String novoNome) throws ErroAoRenomearSimbolo
