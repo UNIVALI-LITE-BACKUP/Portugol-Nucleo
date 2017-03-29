@@ -287,9 +287,8 @@ public class GeradorCodigoTest
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(bos);
         String nomeClasseJava = nomeTeste.getMethodName();
-        
-        gerador.gera(asa, writer, nomeClasseJava, geraCodigoParaInterrupcaoDeThread, 
-                    geraCodigoParaPontosDeParada, geraCodigoParaInspecaoDeSimbolos);
+        GeradorCodigoJava.Opcoes opcoes = new GeradorCodigoJava.Opcoes(geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada, geraCodigoParaInspecaoDeSimbolos);
+        gerador.gera(asa, writer, nomeClasseJava, opcoes);
         
         writer.flush();
         String codigoGerado = bos.toString();

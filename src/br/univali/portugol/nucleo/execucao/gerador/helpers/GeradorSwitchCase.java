@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
+import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -13,8 +14,7 @@ public class GeradorSwitchCase
     public static final String NOME_VARIAVEL_BREAK = "___sw_break___";
 
     public void geraSwitchCase(NoEscolha no, PrintWriter saida, VisitanteASA visitor, 
-            int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos, long seed) throws ExcecaoVisitaASA
+            int nivelEscopo, GeradorCodigoJava.Opcoes opcoes, long seed) throws ExcecaoVisitaASA
     {
         String identacao = Utils.geraIdentacao(nivelEscopo);
 
@@ -44,9 +44,7 @@ public class GeradorSwitchCase
                     saida.append(identacao).append("default:");
                 }
 
-                Utils.visitarBlocos(caso.getBlocos(), saida, visitor, nivelEscopo, 
-                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada, 
-                            geraCodigoParaInspecaoDeSimbolos, seed);
+                Utils.visitarBlocos(caso.getBlocos(), saida, visitor, nivelEscopo, opcoes, seed);
 
                 saida.println();
             }
@@ -57,11 +55,10 @@ public class GeradorSwitchCase
     }
 
     public void geraSeSenao(NoEscolha noEscolha, PrintWriter saida, VisitanteASA visitor, 
-            int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada) throws ExcecaoVisitaASA
+            int nivelEscopo, GeradorCodigoJava.Opcoes opcoes) throws ExcecaoVisitaASA
     {
 
-        if (geraCodigoParaPontosDeParada)
+        if (opcoes.gerandoCodigoParaPontosDeParada)
         {
             Utils.geraParadaPassoAPasso(noEscolha.getExpressao(), saida, nivelEscopo);
         }
@@ -103,7 +100,7 @@ public class GeradorSwitchCase
             NoSe se = new NoSe(condicao);
             se.setBlocosVerdadeiros(noCaso.getBlocos());
 
-            if (geraCodigoParaPontosDeParada)
+            if (opcoes.gerandoCodigoParaPontosDeParada)
             {
                 Utils.geraParadaPassoAPasso(se, saida, nivelEscopo);
             }

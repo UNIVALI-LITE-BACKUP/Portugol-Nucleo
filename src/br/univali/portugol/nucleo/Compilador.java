@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.exec.CommandLine;
@@ -133,7 +132,8 @@ final class Compilador
         try (PrintWriter writerArquivoJava = new PrintWriter(new FileOutputStream(arquivoJava)))
         {
             GeradorCodigoJava gerador = new GeradorCodigoJava();
-            gerador.gera(asa, writerArquivoJava, nomeClasse, true, true, true);
+            GeradorCodigoJava.Opcoes opcoes = new GeradorCodigoJava.Opcoes(true, true, true);
+            gerador.gera(asa, writerArquivoJava, nomeClasse, opcoes);
             writerArquivoJava.flush();
 
             return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise, classPath, caminhoJavac);
