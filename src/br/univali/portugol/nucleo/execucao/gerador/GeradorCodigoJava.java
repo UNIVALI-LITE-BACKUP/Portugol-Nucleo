@@ -29,6 +29,25 @@ public class GeradorCodigoJava
     private final long seed;
     private boolean processandoVariaveisGlobais = false; // não inicializa as variáveis quando está processando as variáveis globais
 
+    public static class Opcoes
+    {
+        public final boolean gerandoCodigoParaInterrupcaoDeThread;
+        public final boolean gerandoCodigoParaPontosDeParada;
+        public final boolean gerandoCodigoParaInspecaoDeSimbolos;
+
+        public Opcoes(boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos)
+        {
+            this.gerandoCodigoParaInterrupcaoDeThread = geraCodigoParaInterrupcaoDeThread;
+            this.gerandoCodigoParaPontosDeParada = geraCodigoParaPontosDeParada;
+            this.gerandoCodigoParaInspecaoDeSimbolos = geraCodigoParaInspecaoDeSimbolos;
+        }
+
+        public Opcoes()
+        {
+            this(false, false, false);
+        }
+    }
+    
     public GeradorCodigoJava(long seed)
     {
         this.seed = seed;
@@ -41,47 +60,35 @@ public class GeradorCodigoJava
     
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava) throws ExcecaoVisitaASA, IOException
     {
-        gera(asa, saida, nomeClasseJava, false, false, false); // não gera código para interrupção de thread, pontos de parada e inspeção de símbolos
+        gera(asa, saida, nomeClasseJava, new Opcoes()); // não gera código para interrupção de thread, pontos de parada e inspeção de símbolos
     }
 
     public void gera(ASAPrograma asa, PrintWriter saida, String nomeClasseJava, 
-            boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada,
-                    boolean geraCodigoParaInspecaoDeSimbolos) throws ExcecaoVisitaASA, IOException
+            Opcoes opcoes) throws ExcecaoVisitaASA, IOException
     {
 
         PreCompilador preCompilador = new PreCompilador();
         asa.aceitar(preCompilador);
 
-        VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida 
-                        ,geraCodigoParaInterrupcaoDeThread
-                        ,geraCodigoParaPontosDeParada
-                        ,geraCodigoParaInspecaoDeSimbolos);
+        VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida, opcoes);
         
         int totalVariaveis = asa.getTotalVariaveisDeclaradas();
         int totalVetores = asa.getTotalVetoresDeclarados();
         int totalMatrizes = asa.getTotalMatrizesDeclaradas();
         
         gerador.geraPackage("programas")
-                .pulaLinha()
-                .geraImportacaoPara(ErroExecucao.class)
-                .geraImportacaoPara(Programa.class)
-                .geraImportacaoDasBibliotecasIncluidas()
-                .pulaLinha()
-                .geraNomeDaClasse(nomeClasseJava)
-                .geraChaveDeAberturaDaClasse()
-                .pulaLinha()
-                .geraAtributosParaAsBibliotecasIncluidas()
-                .pulaLinha()
-                .geraAtributosParaAsVariaveisGlobais()
-                .pulaLinha()
-                .geraAtributosParaAsVariaveisPassadasPorReferencia(preCompilador.getVariaveisPassadasPorReferencia())
-                .pulaLinha()
-                .geraConstrutor(nomeClasseJava, totalVariaveis, totalVetores, totalMatrizes)
-                .pulaLinha()
-                .geraInicializacaoVariaveisGlobais()
-                .pulaLinha()
-                .geraMetodos(preCompilador.getFuncoesQuerForamInvocadas())
-                .geraChaveDeFechamentoDaClasse();
+               .geraImportacaoPara(ErroExecucao.class)
+               .geraImportacaoPara(Programa.class)
+               .geraImportacaoBibliotecasIncluidas()
+               .geraNomeClasse(nomeClasseJava)
+               .geraChaveAberturaClasse()
+               .geraAtributosParaBibliotecasIncluidas()
+               .geraAtributosParaVariaveisGlobais()
+               .geraAtributosParaVariaveisPassadasPorReferencia(preCompilador.getVariaveisPassadasPorReferencia())
+               .geraConstrutor(nomeClasseJava, totalVariaveis, totalVetores, totalMatrizes)
+               .geraInicializacaoVariaveisGlobais()
+               .geraMetodos(preCompilador.getFuncoesQuerForamInvocadas())
+               .geraChaveFechamentoClasse();
     }
 
     private class VisitorGeracaoCodigo extends VisitanteASABasico
@@ -89,35 +96,27 @@ public class GeradorCodigoJava
         private final PrintWriter saida;
         private final ASAPrograma asa;
         private int nivelEscopo = 1;
-        private final boolean gerandoCodigoParaInterrupcaoDeThread;
-        private final boolean gerandoCodigoParaPontosDeParada;
-        private final boolean gerandoCodigoParaInspecaoDeSimbolos;
+        private final Opcoes opcoes;
 
-        public VisitorGeracaoCodigo(ASAPrograma asa, PrintWriter saida, 
-                boolean geraCodigoParaInterrupcaoDeThread, boolean geraCodigoParaPontosDeParada,
-                            boolean geraCodigoParaInspecaoDeSimbolos)
+        public VisitorGeracaoCodigo(ASAPrograma asa, PrintWriter saida, Opcoes opcoes)
         {
             this.saida = saida;
             this.asa = asa;
-            this.gerandoCodigoParaInterrupcaoDeThread = geraCodigoParaInterrupcaoDeThread;
-            this.gerandoCodigoParaPontosDeParada = geraCodigoParaPontosDeParada;
-            this.gerandoCodigoParaInspecaoDeSimbolos = geraCodigoParaInspecaoDeSimbolos;
+            this.opcoes = opcoes;
         }
 
         private void visitarBlocos(List<NoBloco> blocos) throws ExcecaoVisitaASA
         {
             nivelEscopo++;
             
-            Utils.visitarBlocos(blocos, saida, this, nivelEscopo, 
-                    gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, 
-                        gerandoCodigoParaInspecaoDeSimbolos, seed);
+            Utils.visitarBlocos(blocos, saida, this, nivelEscopo, opcoes, seed);
             
             nivelEscopo--;
         }
 
         private void geraVerificacaoThreadInterrompida()
         {
-            if (gerandoCodigoParaInterrupcaoDeThread)
+            if (opcoes.gerandoCodigoParaInterrupcaoDeThread)
             {
                 nivelEscopo++;
                 Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo);
@@ -223,10 +222,13 @@ public class GeradorCodigoJava
             
             saida.append(Utils.geraIdentacao(nivelEscopo));
             saida.append("}").println();
+            
+            saida.println();
+            
             return this;
         }
 
-        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisGlobais() throws ExcecaoVisitaASA
+        public VisitorGeracaoCodigo geraAtributosParaVariaveisGlobais() throws ExcecaoVisitaASA
         {
             processandoVariaveisGlobais = true;
             boolean existemVariaveisGlobais = false;
@@ -251,10 +253,12 @@ public class GeradorCodigoJava
 
             processandoVariaveisGlobais = false;
             
+            saida.println();
+            
             return this;
         }
 
-        public VisitorGeracaoCodigo geraAtributosParaAsBibliotecasIncluidas()
+        public VisitorGeracaoCodigo geraAtributosParaBibliotecasIncluidas()
         {
             List<NoInclusaoBiblioteca> libsIncluidas = asa.getListaInclusoesBibliotecas();
             for (NoInclusaoBiblioteca biblioteca : libsIncluidas)
@@ -267,6 +271,8 @@ public class GeradorCodigoJava
                 saida.println(); // deixa uma linha em branco depois dos atributos das bibliotecas
             }
 
+            saida.println();
+            
             return this;
         }
 
@@ -283,6 +289,8 @@ public class GeradorCodigoJava
                     .append(";")
                     .println();
 
+            saida.println();
+            
             return this;
         }
 
@@ -296,9 +304,7 @@ public class GeradorCodigoJava
                     NoDeclaracaoFuncao declaracaoFuncao = (NoDeclaracaoFuncao)declaracao;
                     if (declaracaoFuncao.getNome().equals("inicio") || funcoesQueForamInvocadas.contains(declaracaoFuncao)) //só gera código para funções que foram invocadas
                     {
-                        geradorDeclaracaoMetodo.gera(declaracaoFuncao, saida, this, nivelEscopo, 
-                                gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, 
-                                    gerandoCodigoParaInspecaoDeSimbolos, seed);
+                        geradorDeclaracaoMetodo.gera(declaracaoFuncao, saida, this, nivelEscopo, opcoes, seed);
                     }
                 }
             }
@@ -650,7 +656,7 @@ public class GeradorCodigoJava
 
             geraVerificacaoThreadInterrompida();
             
-            if (gerandoCodigoParaInspecaoDeSimbolos)
+            if (opcoes.gerandoCodigoParaInspecaoDeSimbolos)
             {
                 geraCodigoInspecao(no);
             }
@@ -734,14 +740,11 @@ public class GeradorCodigoJava
 
             if (!contemCasosNaoConstantes)
             {
-                geradorSwitchCase.geraSwitchCase(no, saida, this, nivelEscopo, 
-                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada, 
-                        gerandoCodigoParaInspecaoDeSimbolos, seed);
+                geradorSwitchCase.geraSwitchCase(no, saida, this, nivelEscopo, opcoes, seed);
             }
             else
             {
-                geradorSwitchCase.geraSeSenao(no, saida, this, nivelEscopo, 
-                        gerandoCodigoParaInterrupcaoDeThread, gerandoCodigoParaPontosDeParada);
+                geradorSwitchCase.geraSeSenao(no, saida, this, nivelEscopo, opcoes);
             }
 
             return null;
@@ -850,7 +853,7 @@ public class GeradorCodigoJava
             return this;
         }
 
-        private VisitorGeracaoCodigo geraImportacaoDasBibliotecasIncluidas()
+        private VisitorGeracaoCodigo geraImportacaoBibliotecasIncluidas()
         {
             for (NoInclusaoBiblioteca no : asa.getListaInclusoesBibliotecas())
             {
@@ -861,6 +864,8 @@ public class GeradorCodigoJava
                         .println();
 
             }
+            
+            saida.println();
 
             return this;
         }
@@ -897,7 +902,7 @@ public class GeradorCodigoJava
 
             nivelEscopo++;
             
-            if (gerandoCodigoParaInspecaoDeSimbolos)
+            if (opcoes.gerandoCodigoParaInspecaoDeSimbolos)
             {
                 String identacaoInterna = Utils.geraIdentacao(nivelEscopo);
                 saida.append(identacaoInterna)
@@ -918,31 +923,35 @@ public class GeradorCodigoJava
             saida.append(identacao)
                     .append("}").println();
 
+            saida.println();
+            
             return this;
         }
 
-        private VisitorGeracaoCodigo geraNomeDaClasse(String nomeClasseJava)
+        private VisitorGeracaoCodigo geraNomeClasse(String nomeClasseJava)
         {
             saida.format("public class %s extends Programa", nomeClasseJava).println();
 
             return this;
         }
 
-        public VisitorGeracaoCodigo geraChaveDeAberturaDaClasse()
+        public VisitorGeracaoCodigo geraChaveAberturaClasse()
         {
             saida.append("{").println();
 
+            saida.println();
+            
             return this;
         }
 
-        public VisitorGeracaoCodigo geraChaveDeFechamentoDaClasse()
+        public VisitorGeracaoCodigo geraChaveFechamentoClasse()
         {
             saida.append("}").println();
 
             return this;
         }
 
-        public VisitorGeracaoCodigo geraAtributosParaAsVariaveisPassadasPorReferencia(Map<TipoDado, List<NoDeclaracaoVariavel>> variaveis)
+        public VisitorGeracaoCodigo geraAtributosParaVariaveisPassadasPorReferencia(Map<TipoDado, List<NoDeclaracaoVariavel>> variaveis)
         {
             if (variaveis.isEmpty())
             {
@@ -992,6 +1001,8 @@ public class GeradorCodigoJava
                 }
             }
 
+            saida.println();
+            
             return this;
         }
 

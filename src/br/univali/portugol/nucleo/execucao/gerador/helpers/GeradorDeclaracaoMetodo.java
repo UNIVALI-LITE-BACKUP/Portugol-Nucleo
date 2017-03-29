@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.execucao.gerador.helpers;
 
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
+import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -11,8 +12,7 @@ import java.util.List;
 public class GeradorDeclaracaoMetodo
 {
     public void gera(NoDeclaracaoFuncao noFuncao, PrintWriter saida, VisitanteASA visitor, 
-            int nivelEscopo, boolean geraCodigoParaInterrupcaoDeThread, 
-                    boolean geraCodigoParaPontosDeParada, boolean geraCodigoParaInspecaoDeSimbolos, long seed) throws ExcecaoVisitaASA
+            int nivelEscopo, GeradorCodigoJava.Opcoes opcoes, long seed) throws ExcecaoVisitaASA
     {
         saida.println();
 
@@ -47,24 +47,22 @@ public class GeradorDeclaracaoMetodo
         saida.println(); // pula uma linha depois da declaração da assinatura do método
         saida.append(identacao).append("{").println(); // inicia o escopo do método
 
-        if (geraCodigoParaInterrupcaoDeThread)
+        if (opcoes.gerandoCodigoParaInterrupcaoDeThread)
         {
             Utils.geraVerificacaoThreadInterrompida(saida, nivelEscopo);
         }
 
-        if (geraCodigoParaInspecaoDeSimbolos)
+        if (opcoes.gerandoCodigoParaInspecaoDeSimbolos)
         {
             geraCodigoInicializacaoParametrosInspecionados(noFuncao.getParametros(), saida, nivelEscopo, seed);
         }
         
-        if (geraCodigoParaPontosDeParada)
+        if (opcoes.gerandoCodigoParaPontosDeParada)
         {
             Utils.geraParadaPassoAPasso(noFuncao, saida, nivelEscopo);
         }
 
-        Utils.visitarBlocos(noFuncao.getBlocos(), saida, visitor, nivelEscopo, 
-                        geraCodigoParaInterrupcaoDeThread, geraCodigoParaPontosDeParada, 
-                            geraCodigoParaInspecaoDeSimbolos, seed); // gera o código dentro do método
+        Utils.visitarBlocos(noFuncao.getBlocos(), saida, visitor, nivelEscopo, opcoes, seed); // gera o código dentro do método
 
         saida.println();
         saida.append(identacao).append("}").println(); // finaliza o escopo do método
