@@ -446,7 +446,7 @@ public abstract class Programa
         return OBJETO_NULO;
     }
     
-    void setNumeroLinhas(int numeroLinhas)
+    public void setNumeroLinhas(int numeroLinhas)
     {
         pontosDeParadaAtivados = new boolean[numeroLinhas];
     }
