@@ -43,6 +43,7 @@ import java.util.logging.Logger;
  *
  * @author Luiz Fernando Noschang
  * @author Fillipi Domingos Pelz
+ * @author Elieser A. de Jesus
  *
  * @version 1.0
  * @see Interpretador
@@ -72,7 +73,6 @@ public abstract class Programa
     private File arquivoOrigem = null;
 
     private TarefaExecucao tarefaExecucao = null;
-    private Future controleTarefaExecucao = null;
 
     private ASAPrograma arvoreSintaticaAbstrataPrograma;
     private List<String> funcoes;
@@ -85,6 +85,8 @@ public abstract class Programa
     private volatile boolean lendo = false;
     private volatile boolean leituraIgnorada = false;
 
+    protected volatile boolean interrupcaoSolicitada = false;
+    
     private final Object LOCK = new Object();
     
     private int ultimaLinha = 0;
@@ -498,12 +500,17 @@ public abstract class Programa
         if (!isExecutando())
         {
             this.estado = estado;
+            this.interrupcaoSolicitada = false;
             tarefaExecucao = new TarefaExecucao(parametros);
-            controleTarefaExecucao = POOL_DE_THREADS.submit(tarefaExecucao);
+            POOL_DE_THREADS.submit(tarefaExecucao);
         }
     }
 
-    protected void inicializar() throws ErroExecucao, InterruptedException {}; // usado para reinicializar todas as variáveis globais, assim o programa pode ser re-executado
+     // usado para reinicializar todas as variáveis globais, assim o programa pode ser re-executado
+    protected void inicializar() throws ErroExecucao, InterruptedException 
+    {
+        interrupcaoSolicitada = false;
+    }
     
     public void continuar(Programa.Estado estado)
     {
@@ -649,7 +656,7 @@ public abstract class Programa
     {
         if (isExecutando())
         {
-            controleTarefaExecucao.cancel(true);
+            interrupcaoSolicitada = true;
         }
     }
     
@@ -852,7 +859,7 @@ public abstract class Programa
      */
     public boolean isExecutando()
     {
-        return (tarefaExecucao != null && controleTarefaExecucao != null && !controleTarefaExecucao.isDone());
+        return (tarefaExecucao != null && !interrupcaoSolicitada);
     }
 
     /**
@@ -894,7 +901,6 @@ public abstract class Programa
     private void notificarEncerramentoExecucao(ResultadoExecucao resultadoExecucao)
     {
         tarefaExecucao = null;
-        controleTarefaExecucao = null;
 
         for (ObservadorExecucao observador : observadores)
         {
