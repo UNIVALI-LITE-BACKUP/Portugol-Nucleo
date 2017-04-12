@@ -328,7 +328,7 @@ public class Utils
     public static void geraVerificacaoThreadInterrompida(PrintWriter saida, int nivelEscopo)
     {
         saida.append(Utils.geraIdentacao(nivelEscopo));
-        saida.append("if (this.interrupcaoSolicitada) {throw new InterruptedException();}");
+        saida.append("if (this.interrupcaoSolicitada || Thread.currentThread().isInterrupted()) {throw new InterruptedException();}");
         saida.println();
         saida.println();
     }
