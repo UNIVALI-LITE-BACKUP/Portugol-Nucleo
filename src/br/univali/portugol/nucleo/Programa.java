@@ -86,6 +86,7 @@ public abstract class Programa
     private volatile boolean leituraIgnorada = false;
 
     protected volatile boolean interrupcaoSolicitada = false;
+    private Future controleExecucao;
     
     private final Object LOCK = new Object();
     
@@ -502,7 +503,8 @@ public abstract class Programa
             this.estado = estado;
             this.interrupcaoSolicitada = false;
             tarefaExecucao = new TarefaExecucao(parametros);
-            POOL_DE_THREADS.submit(tarefaExecucao);
+            controleExecucao = POOL_DE_THREADS.submit(tarefaExecucao);
+            
         }
     }
 
@@ -656,6 +658,7 @@ public abstract class Programa
     {
         if (isExecutando())
         {
+            controleExecucao.cancel(true);
             interrupcaoSolicitada = true;
         }
     }
@@ -901,6 +904,7 @@ public abstract class Programa
     private void notificarEncerramentoExecucao(ResultadoExecucao resultadoExecucao)
     {
         tarefaExecucao = null;
+        controleExecucao = null;
 
         for (ObservadorExecucao observador : observadores)
         {
