@@ -75,7 +75,7 @@ final class Compilador
         
         ASAPrograma asa = (ASAPrograma) analisadorAlgoritmo.getASA();
 
-        Programa programa = new ProgramaVazio();
+        Programa programa = ProgramaVazio.getInstancia();
         programa.setResultadoAnalise(resultadoAnalise);
         programa.setNumeroLinhas(getNumeroDeLinhas(codigo));
         
