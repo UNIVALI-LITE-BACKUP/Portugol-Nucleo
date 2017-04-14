@@ -12,15 +12,18 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -129,7 +132,7 @@ final class Compilador
         File arquivoJava = new File(DIRETORIO_PACOTE, nomeArquivoJava);
         File arquivoClass = new File(DIRETORIO_PACOTE, nomeArquivoClass);
 
-        try (PrintWriter writerArquivoJava = new PrintWriter(new FileOutputStream(arquivoJava)))
+        try (PrintWriter writerArquivoJava = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(arquivoJava), Charset.forName("utf-8")))))
         {
             GeradorCodigoJava gerador = new GeradorCodigoJava();
             GeradorCodigoJava.Opcoes opcoes = new GeradorCodigoJava.Opcoes(true, true, true);
