@@ -175,6 +175,13 @@ final class Compilador
         return true;
     }
     
+    private static boolean rodandoNoMac()
+    {
+        String so = System.getProperty("os.name");
+
+        return (so != null && so.toLowerCase().contains("os x"));
+    }
+    
     private Programa compilarJava(String nomeClasse, File arquivoJava, File diretorioCompilacao,
                         ResultadoAnalise resultadoAnalise, File classPath, String caminhoJavac) throws ErroCompilacao
     {
@@ -196,7 +203,8 @@ final class Compilador
             
             Map paths = new HashMap();
             
-            paths.put("classpath", classPath.getAbsolutePath() + "/*;.");
+            String classPathSeparator = rodandoNoMac() ? ":" : ";"; 
+            paths.put("classpath", classPath.getAbsolutePath() + "/*" + classPathSeparator + ".");
             paths.put("arquivoJava", arquivoJava);
             
             CommandLine linhaComando = new CommandLine(caminhoJavac);
