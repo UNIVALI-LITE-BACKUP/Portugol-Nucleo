@@ -203,8 +203,6 @@ final class Compilador
             paths.put("classpath", classPath + ".");
             paths.put("arquivoJava", arquivoJava);
             
-            JOptionPane.showMessageDialog(null, paths.get("classpath"));
-            
             CommandLine linhaComando = new CommandLine(caminhoJavac);
             
             linhaComando.addArgument("-encoding");
