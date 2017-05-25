@@ -21,7 +21,7 @@ public final class Portugol
     
     private static final Logger LOGGER = Logger.getLogger(Portugol.class.getName());
     
-    private static Programa compilar(String codigo, boolean paraExecucao, File classPath, String caminhoJavac) throws ErroCompilacao
+    private static Programa compilar(String codigo, boolean paraExecucao, String classPath, String caminhoJavac) throws ErroCompilacao
     {
         Compilador compilador = new Compilador();
         
@@ -44,7 +44,7 @@ public final class Portugol
         return compilar(codigo, false, null, null);
     }
     
-    public static Programa compilarParaExecucao(String codigo, File classPath, String caminhoJavac) throws ErroCompilacao
+    public static Programa compilarParaExecucao(String codigo, String classPath, String caminhoJavac) throws ErroCompilacao
     {
         return compilar(codigo, true, classPath, caminhoJavac);
     }

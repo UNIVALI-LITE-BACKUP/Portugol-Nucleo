@@ -15,6 +15,7 @@ import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DaemonExecutor;
 import org.apache.commons.exec.DefaultExecutor;
@@ -71,7 +73,7 @@ final class Compilador
      *
      * @throws ErroCompilacao
      */
-    public Programa compilar(String codigo, boolean compilarParaExecucao, File classPath, String caminhoJavac) throws ErroCompilacao
+    public Programa compilar(String codigo, boolean compilarParaExecucao, String classPath, String caminhoJavac) throws ErroCompilacao
     {
         AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
         ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
@@ -119,7 +121,7 @@ final class Compilador
     }
 
     
-    private Programa geraPrograma(ASAPrograma asa, ResultadoAnalise resultadoAnalise, File classPath, String caminhoJavac) throws ErroCompilacao
+    private Programa geraPrograma(ASAPrograma asa, ResultadoAnalise resultadoAnalise, String classPath, String caminhoJavac) throws ErroCompilacao
     {
         long idPrograma = System.currentTimeMillis();
         
@@ -175,15 +177,10 @@ final class Compilador
         return true;
     }
     
-    private static boolean rodandoNoMac()
-    {
-        String so = System.getProperty("os.name");
 
-        return (so != null && so.toLowerCase().contains("os x"));
-    }
     
     private Programa compilarJava(String nomeClasse, File arquivoJava, File diretorioCompilacao,
-                        ResultadoAnalise resultadoAnalise, File classPath, String caminhoJavac) throws ErroCompilacao
+                        ResultadoAnalise resultadoAnalise, String classPath, String caminhoJavac) throws ErroCompilacao
     {
         
         if (classPath == null)
@@ -201,11 +198,12 @@ final class Compilador
              * Esta biblioteca resolve automaticamente o problema de caminhos com espaços.
              */
             
-            Map paths = new HashMap();
-            
-            String classPathSeparator = rodandoNoMac() ? ":" : ";"; 
-            paths.put("classpath", classPath.getAbsolutePath() + "/*" + classPathSeparator + ".");
+            Map paths = new HashMap();            
+                        
+            paths.put("classpath", classPath + ".");
             paths.put("arquivoJava", arquivoJava);
+            
+            JOptionPane.showMessageDialog(null, paths.get("classpath"));
             
             CommandLine linhaComando = new CommandLine(caminhoJavac);
             
