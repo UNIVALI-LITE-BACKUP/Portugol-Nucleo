@@ -38,6 +38,30 @@ public final class AnalisadorSemanticoTest
         }
     }
     
+    @Test
+    public void testFuncaoLeiaComVariasVariaveis() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a,b,c                 "
+                    + "   leia(a,b,c)                   "
+                    + " }                           "
+                    + "}                            "
+            );
+
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", resultado.getAvisos().isEmpty() && resultado.getErros().isEmpty());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
      @Test
     public void testReferenciaMatriz()
     {
