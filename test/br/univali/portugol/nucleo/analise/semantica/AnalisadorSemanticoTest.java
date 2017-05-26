@@ -14,6 +14,95 @@ import org.junit.Test;
 public final class AnalisadorSemanticoTest
 {
 
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComFuncao() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+            "    programa {             " +
+            "	funcao inicio() {       " +
+            "		leia(teste())   " +
+            "	}                       " +
+            "                           " +
+            "	funcao teste(){}        " +
+            "}"
+        );
+    }
+
+
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComConstante() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{                            "
+                + " funcao inicio(){            "
+                + "   leia(10)                   "
+                + " }                           "
+                + "}                            "
+        );
+    }
+    
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaSemParametros() throws ErroCompilacao {
+        // a função leia não pode ser usada sem parametros
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{                            "
+                + " funcao inicio(){            "
+                + "   leia()                   "
+                + " }                           "
+                + "}                            "
+        );
+    }
+    
+    @Test
+    public void testFuncaoLeiaComMatriz() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a[3][2]                 "
+                    + "   leia(a[0][0])                   "
+                    + " }                           "
+                    + "}                            "
+            );
+            
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testFuncaoLeiaComVetor() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a[3]                 "
+                    + "   leia(a[0])                   "
+                    + " }                           "
+                    + "}                            "
+            );
+            
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
     @Test
     public void testFuncaoLeiaComVariavel() {
         try
@@ -27,10 +116,10 @@ public final class AnalisadorSemanticoTest
                     + " }                           "
                     + "}                            "
             );
-
+            
             ResultadoAnalise resultado = programa.getResultadoAnalise();
             
-            assertTrue("O programa deveria ter compilado sem erros e avisos", resultado.getAvisos().isEmpty() && resultado.getErros().isEmpty());
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
         }
         catch (Exception ex)
         {
@@ -54,7 +143,7 @@ public final class AnalisadorSemanticoTest
 
             ResultadoAnalise resultado = programa.getResultadoAnalise();
             
-            assertTrue("O programa deveria ter compilado sem erros e avisos", resultado.getAvisos().isEmpty() && resultado.getErros().isEmpty());
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
         }
         catch (Exception ex)
         {
