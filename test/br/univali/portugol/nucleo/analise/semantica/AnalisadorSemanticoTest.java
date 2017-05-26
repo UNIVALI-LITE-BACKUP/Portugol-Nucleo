@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.analise.semantica;
 
 import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.Portugol;
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoInicializado;
@@ -13,6 +14,30 @@ import org.junit.Test;
 public final class AnalisadorSemanticoTest
 {
 
+    @Test
+    public void testFuncaoLeiaComVariavel() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a                 "
+                    + "   leia(a)                   "
+                    + " }                           "
+                    + "}                            "
+            );
+
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", resultado.getAvisos().isEmpty() && resultado.getErros().isEmpty());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
      @Test
     public void testReferenciaMatriz()
     {
