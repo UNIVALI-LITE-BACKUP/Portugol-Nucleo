@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public final class AnalisadorSemanticoTest
 {
-
+    
     @Test (expected = ErroCompilacao.class)
     public void testFuncaoLeiaComFuncao() throws ErroCompilacao {
         
@@ -28,6 +28,19 @@ public final class AnalisadorSemanticoTest
         );
     }
 
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComVariavelConstante() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{                            "
+                + " funcao inicio(){            "
+                + "   const inteiro x = 1       "
+                + "   leia(x)                   "
+                + " }                           "
+                + "}                            "
+        );
+    }
 
     @Test (expected = ErroCompilacao.class)
     public void testFuncaoLeiaComConstante() throws ErroCompilacao {

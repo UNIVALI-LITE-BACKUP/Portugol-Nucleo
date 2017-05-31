@@ -234,6 +234,12 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
                 boolean parametroValido = parametro instanceof NoReferenciaVariavel || parametro instanceof NoReferenciaVetor || parametro instanceof NoReferenciaMatriz;
+
+                // verifica se o usuário está tentando usar uma constante na função LEIA
+                if (parametroValido && parametro instanceof NoReferenciaVariavel) {
+                    NoDeclaracao origemDaReferencia = ((NoReferenciaVariavel)parametro).getOrigemDaReferencia();
+                    parametroValido = !origemDaReferencia.constante();
+                }
                 if (!parametroValido)
                 {
                     notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome(), indice));
