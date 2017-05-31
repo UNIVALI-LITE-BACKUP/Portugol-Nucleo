@@ -238,7 +238,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                 // verifica se o usuário está tentando usar uma constante na função LEIA
                 if (parametroValido && parametro instanceof NoReferenciaVariavel) {
                     NoDeclaracao origemDaReferencia = ((NoReferenciaVariavel)parametro).getOrigemDaReferencia();
-                    parametroValido = !origemDaReferencia.constante();
+                    parametroValido = origemDaReferencia != null && !origemDaReferencia.constante();
+                        
                 }
                 if (!parametroValido)
                 {
