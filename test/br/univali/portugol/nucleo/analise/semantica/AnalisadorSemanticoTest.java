@@ -29,6 +29,19 @@ public final class AnalisadorSemanticoTest
     }
 
     @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComConstanteDeBiblioteca() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{ inclua biblioteca Graficos "
+                + " funcao inicio(){            "
+                + "   leia(Graficos.COR_AMARELO)"
+                + " }                           "
+                + "}                            "
+        );
+    }
+    
+    @Test (expected = ErroCompilacao.class)
     public void testFuncaoLeiaComVariavelConstante() throws ErroCompilacao {
         
         Portugol.compilarParaAnalise(
