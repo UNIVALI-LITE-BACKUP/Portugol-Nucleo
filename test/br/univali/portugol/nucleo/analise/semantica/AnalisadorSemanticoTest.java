@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.analise.semantica;
 
 import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.Portugol;
+import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoDeclarado;
 import br.univali.portugol.nucleo.analise.semantica.erros.ErroSimboloNaoInicializado;
@@ -12,7 +13,170 @@ import org.junit.Test;
 
 public final class AnalisadorSemanticoTest
 {
+    
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComFuncao() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+            "    programa {             " +
+            "	funcao inicio() {       " +
+            "		leia(teste())   " +
+            "	}                       " +
+            "                           " +
+            "	funcao teste(){}        " +
+            "}"
+        );
+    }
 
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComConstanteDeBiblioteca() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{ inclua biblioteca Graficos "
+                + " funcao inicio(){            "
+                + "   leia(Graficos.COR_AMARELO)"
+                + " }                           "
+                + "}                            "
+        );
+    }
+    
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComVariavelConstante() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{                            "
+                + " funcao inicio(){            "
+                + "   const inteiro x = 1       "
+                + "   leia(x)                   "
+                + " }                           "
+                + "}                            "
+        );
+    }
+
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaComConstante() throws ErroCompilacao {
+        
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{                            "
+                + " funcao inicio(){            "
+                + "   leia(10)                   "
+                + " }                           "
+                + "}                            "
+        );
+    }
+    
+    @Test (expected = ErroCompilacao.class)
+    public void testFuncaoLeiaSemParametros() throws ErroCompilacao {
+        // a função leia não pode ser usada sem parametros
+        Portugol.compilarParaAnalise(
+                "programa                       "
+                + "{                            "
+                + " funcao inicio(){            "
+                + "   leia()                   "
+                + " }                           "
+                + "}                            "
+        );
+    }
+    
+    @Test
+    public void testFuncaoLeiaComMatriz() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a[3][2]                 "
+                    + "   leia(a[0][0])                   "
+                    + " }                           "
+                    + "}                            "
+            );
+            
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testFuncaoLeiaComVetor() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a[3]                 "
+                    + "   leia(a[0])                   "
+                    + " }                           "
+                    + "}                            "
+            );
+            
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testFuncaoLeiaComVariavel() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a                 "
+                    + "   leia(a)                   "
+                    + " }                           "
+                    + "}                            "
+            );
+            
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testFuncaoLeiaComVariasVariaveis() {
+        try
+        {
+            Programa programa = Portugol.compilarParaAnalise(
+                    "programa                       "
+                    + "{                            "
+                    + " funcao inicio(){            "
+                    + "   inteiro a,b,c                 "
+                    + "   leia(a,b,c)                   "
+                    + " }                           "
+                    + "}                            "
+            );
+
+            ResultadoAnalise resultado = programa.getResultadoAnalise();
+            
+            assertTrue("O programa deveria ter compilado sem erros e avisos", !resultado.contemAvisos() && !resultado.contemErros());
+        }
+        catch (Exception ex)
+        {
+            fail(ex.getMessage());
+        }
+    }
+    
      @Test
     public void testReferenciaMatriz()
     {

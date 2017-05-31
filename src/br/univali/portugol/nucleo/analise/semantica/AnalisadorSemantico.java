@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Esta classe percorre a ASA gerada a partir do código fonte para detectar
@@ -28,6 +30,8 @@ import java.util.TreeMap;
  */
 public final class AnalisadorSemantico implements VisitanteASA
 {
+    private static final Logger LOGGER = Logger.getLogger(AnalisadorSemantico.class.getName());
+    
     private static final List<String> FUNCOES_RESERVADAS = getLista();
 
     private final Memoria memoria;
@@ -225,11 +229,19 @@ public final class AnalisadorSemantico implements VisitanteASA
         
         if (chamadaFuncao.getNome().equals(FUNCAO_LEIA))
         {
+            cont = modosAcessoPassados.size();// a função leia retorna uma lista vazia em modos de acesso esperados
             for (int indice = 0; indice < cont; indice++)
             {
                 NoExpressao parametro = chamadaFuncao.getParametros().get(indice);
-                
-                if (!(parametro instanceof NoReferenciaVariavel) && (parametro instanceof NoReferenciaVetor) && (parametro instanceof NoReferenciaMatriz))
+                boolean parametroValido = parametro instanceof NoReferenciaVariavel || parametro instanceof NoReferenciaVetor || parametro instanceof NoReferenciaMatriz;
+
+                // verifica se o usuário está tentando usar uma constante na função LEIA
+                if (parametroValido && parametro instanceof NoReferenciaVariavel) {
+                    NoDeclaracao origemDaReferencia = ((NoReferenciaVariavel)parametro).getOrigemDaReferencia();
+                    parametroValido = origemDaReferencia != null && !origemDaReferencia.constante();
+                        
+                }
+                if (!parametroValido)
                 {
                     notificarErroSemantico(new ErroPassagemParametroInvalida(chamadaFuncao.getParametros().get(indice), obterNomeParametro(chamadaFuncao, indice), chamadaFuncao.getNome(), indice));
                 }
@@ -320,6 +332,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 catch (ExcecaoSimboloNaoDeclarado ex)
                 {
                     // Não faz nada aqui
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
             }
         }
