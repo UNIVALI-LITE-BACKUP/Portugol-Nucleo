@@ -22,6 +22,11 @@ final public class ProgramaVazio extends Programa
         inicializaASA();
     }
 
+    public static Programa novaInstancia()
+    {
+        return new ProgramaVazio();
+    }
+    
     public static Programa getInstancia()
     {
         return INSTANCIA;
