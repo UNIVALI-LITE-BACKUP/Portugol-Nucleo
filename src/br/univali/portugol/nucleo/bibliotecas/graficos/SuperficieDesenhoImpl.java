@@ -30,7 +30,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
 {
     private final PoolOperacoesGraficas POOL_OPERACOES_GRAFICAS = new PoolOperacoesGraficas();
 
-    private final OperacaoGrafica[] operacoes = new OperacaoGrafica[2048];
+    private final OperacaoGrafica[] operacoes = new OperacaoGrafica[131072];
     private int indiceOperacao = 0;
 
     private Font fonteTexto = null;
