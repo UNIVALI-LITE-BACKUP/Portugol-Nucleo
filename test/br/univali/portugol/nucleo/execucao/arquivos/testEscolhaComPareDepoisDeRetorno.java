@@ -1,4 +1,4 @@
-package br.univali.portugol.nucleo.execucao.arquivos;
+package programas;
 
 import br.univali.portugol.nucleo.mensagens.ErroExecucao;
 import br.univali.portugol.nucleo.Programa;
