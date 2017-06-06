@@ -22,7 +22,7 @@ import java.awt.image.BufferedImage;
  */
 public final class PoolOperacoesGraficas
 {
-    private static final int QUANTIDADE_MAXIMA_OPERACOES = 2048;
+    public static final int QUANTIDADE_MAXIMA_OPERACOES = 131072;
     private static final int QUANTIDADE_INICIAL_OPERACOES = 8;
 
     private final CacheOperacoesDesenhoElipse CACHE_OPERACOES_DESENHO_ELIPSE;

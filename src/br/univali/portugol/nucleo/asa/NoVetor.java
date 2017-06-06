@@ -85,6 +85,9 @@ public final class NoVetor extends NoExpressao
             {
                 return ((NoExpressao)valor).getTipoResultante();
             }
+            else if(valor instanceof NoReferencia){
+                return ((NoReferencia)valor).getOrigemDaReferencia().getTipoDado();
+            }
         }
         return TipoDado.VAZIO;
     }
