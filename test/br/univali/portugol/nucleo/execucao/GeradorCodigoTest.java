@@ -37,6 +37,12 @@ public class GeradorCodigoTest
     }
 
     @Test
+    public void testEscolhaComPareDepoisDeRetorno() throws Exception
+    {
+        comparaCodigos(false, true, false); // gera código para realizar paradas
+    }
+    
+    @Test
     public void testeCodigoParaConcatenacaoOtimizada() throws Exception
     {
         comparaCodigos(); 
