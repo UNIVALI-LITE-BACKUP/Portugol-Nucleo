@@ -300,8 +300,8 @@ public class Utils
                 geraCodigoParaInspecaoDeBloco(bloco, saida, visitor, nivelEscopo, seed);
             }
             
-            if (bloco instanceof NoRetorne)
-                break; // aborta o loop se o bloco atual for um NoRetorne, assim nenhum código Java é gerado depois de um "return", o que geraria um erro de compilação no Java
+            if (bloco instanceof NoRetorne || bloco instanceof NoPare)
+                break; // aborta o loop se o bloco atual for um NoRetorne ou NoPare, assim nenhum código Java é gerado depois de um "return" ou depois de um "break", o que geraria um erro de compilação no Java
         }
 
     }
