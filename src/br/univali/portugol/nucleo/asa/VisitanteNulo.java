@@ -331,7 +331,12 @@ public class VisitanteNulo extends VisitanteASABasico {
 
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA {
-        return noRetorne.getExpressao().aceitar(this);
+        NoExpressao expressao = noRetorne.getExpressao();
+        if (expressao != null) {
+            return expressao.aceitar(this);
+        }
+        
+        return null;
     }
 
     @Override
