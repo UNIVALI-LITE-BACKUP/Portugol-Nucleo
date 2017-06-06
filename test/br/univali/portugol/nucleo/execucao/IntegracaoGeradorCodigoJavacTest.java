@@ -87,6 +87,7 @@ public class IntegracaoGeradorCodigoJavacTest
             ignore.add("varios.por");
             ignore.add("logico.por");
             ignore.add("lagarta.por");
+            ignore.add("arkanoid.por");
             
             if (ignore.contains(exemplo.getName()))
                 return;
