@@ -28,6 +28,15 @@ public class GeradorCodigoUtilsTest
     }
     
     @Test
+    public void testStringComEscapedeBarra()
+    {
+        String string = "string com escape de barra \\";
+        String expResult = "string com escape de barra \\\\";
+        String result = Utils.preservaCaracteresEspeciais(string);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
     public void testStringLimpa()
     {
         String string = "string sem aspas ou quebra de linha";

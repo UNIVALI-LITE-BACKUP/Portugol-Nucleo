@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -138,7 +140,11 @@ final class Compilador
             GeradorCodigoJava.Opcoes opcoes = new GeradorCodigoJava.Opcoes(true, true, true);
             gerador.gera(asa, writerArquivoJava, nomeClasse, opcoes);
             writerArquivoJava.flush();
-
+            
+            byte[] encoded = Files.readAllBytes(Paths.get(arquivoJava.getAbsolutePath()));
+ 
+            System.out.println(new String(encoded, "UTF-8"));
+            
             return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise, classPath, caminhoJavac);
         }
         catch (final IOException | ExcecaoVisitaASA ex)
