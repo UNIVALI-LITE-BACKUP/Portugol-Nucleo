@@ -86,6 +86,7 @@ public final class NoMatriz extends NoExpressao
     @Override
     public TipoDado getTipoResultante()
     {
+        
         if (!valores.isEmpty() && !valores.get(0).isEmpty())
         {
             Object valor = valores.get(0).get(0);
@@ -93,8 +94,12 @@ public final class NoMatriz extends NoExpressao
             {
                 return ((NoExpressaoLiteral)valor).getTipoResultante();
             }
+            else if(valor instanceof NoReferencia){
+                return ((NoReferencia)valor).getOrigemDaReferencia().getTipoDado();
+            }
             
         }
+        
         return TipoDado.VAZIO;
     }
 }
