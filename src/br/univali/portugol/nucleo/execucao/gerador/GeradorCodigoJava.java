@@ -748,7 +748,7 @@ public class GeradorCodigoJava
             {
                 geradorSwitchCase.geraSeSenao(no, saida, this, nivelEscopo, opcoes);
             }
-
+            simularBreakCaso = false;
             return null;
         }
 
