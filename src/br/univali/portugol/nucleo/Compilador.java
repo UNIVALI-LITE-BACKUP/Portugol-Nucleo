@@ -141,10 +141,6 @@ final class Compilador
             gerador.gera(asa, writerArquivoJava, nomeClasse, opcoes);
             writerArquivoJava.flush();
             
-            byte[] encoded = Files.readAllBytes(Paths.get(arquivoJava.getAbsolutePath()));
- 
-            System.out.println(new String(encoded, "UTF-8"));
-            
             return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise, classPath, caminhoJavac);
         }
         catch (final IOException | ExcecaoVisitaASA ex)
