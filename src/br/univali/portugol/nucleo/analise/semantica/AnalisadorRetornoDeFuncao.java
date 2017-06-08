@@ -53,6 +53,7 @@ import br.univali.portugol.nucleo.asa.NoSe;
 import br.univali.portugol.nucleo.asa.NoTitulo;
 import br.univali.portugol.nucleo.asa.NoVaPara;
 import br.univali.portugol.nucleo.asa.NoVetor;
+import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,8 @@ import java.util.List;
  */
 class AnalisadorRetornoDeFuncao implements VisitanteASA
 {
+    private NoDeclaracaoFuncao noDeclaracaoFuncao;
+
     /**
      * Analisa se na declaração de função passada existe 100% de chance entrar
      * em algum "retorne".
@@ -74,12 +77,22 @@ class AnalisadorRetornoDeFuncao implements VisitanteASA
      */
     public boolean possuiRetornoObrigatorio(NoDeclaracaoFuncao noDeclaracaoFuncao) throws ExcecaoVisitaASA
     {
+        this.noDeclaracaoFuncao = noDeclaracaoFuncao;
         return (Boolean) visitar(noDeclaracaoFuncao.getBlocos());
     }
 
     @Override
     public Object visitar(NoRetorne noRetorne) throws ExcecaoVisitaASA
     {
+        if (noRetorne.getExpressao() != null)
+        {
+            return true;
+        }
+
+        if (noDeclaracaoFuncao.getTipoDado() != TipoDado.VAZIO)
+        {
+            return false;
+        }
         return true;
     }
 
@@ -111,14 +124,18 @@ class AnalisadorRetornoDeFuncao implements VisitanteASA
     {
         List<NoCaso> noCasos = noEscolha.getCasos();
         int tamanhoNoCasos = noCasos.size();
-        if(noCasos.get(tamanhoNoCasos-1).getExpressao() != null){
+
+        if (noCasos.get(tamanhoNoCasos - 1) == null)
+        {
+            return false;
+        }
+        if (noCasos.get(tamanhoNoCasos - 1).getExpressao() != null)
+        {
             return false;
         }
         for (int indice = 0; indice < tamanhoNoCasos; indice++)
         {
             NoCaso noCaso = noCasos.get(indice);
-            boolean retorna;
-            boolean possuiPare = false;
             //Verifica se possui pare
             List<NoBloco> noBlocos = noCaso.getBlocos();
             List<NoBloco> noBlocosAntesPare = new ArrayList<>();
@@ -130,8 +147,10 @@ class AnalisadorRetornoDeFuncao implements VisitanteASA
                 }
                 noBlocosAntesPare.add(noBloco);
             }
-            //Verifica se possui retorno
-            return (Boolean) visitar(noBlocosAntesPare);
+            if (!(Boolean) visitar(noBlocosAntesPare))
+            {
+                return false;
+            }
         }
         return true;
     }
