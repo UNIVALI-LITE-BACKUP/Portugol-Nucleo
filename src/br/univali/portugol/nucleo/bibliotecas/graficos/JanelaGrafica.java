@@ -11,6 +11,10 @@ import java.awt.Image;
  */
 public interface JanelaGrafica extends Mouse.InstaladorMouse, Teclado.InstaladorTeclado
 {
+    public int largura();
+    
+    public int altura();
+    
     public void exibir(boolean manterVisivel) throws ErroExecucaoBiblioteca;
 
     public void ocultar() throws ErroExecucaoBiblioteca;
