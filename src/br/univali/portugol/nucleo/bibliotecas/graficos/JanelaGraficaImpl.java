@@ -17,6 +17,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -60,7 +63,7 @@ public final class JanelaGraficaImpl extends JFrame implements JanelaGrafica
                 JanelaGraficaImpl janela = new JanelaGraficaImpl(programa);
                 janela.setResizable(false);
                 janela.criarSuperficieDesenho();
-
+                
                 retornoJanela.janela = janela;
             }
         });
@@ -294,7 +297,7 @@ public final class JanelaGraficaImpl extends JFrame implements JanelaGrafica
             return janelaAtiva.getIconImages().get(0);
         }
 
-        return null;
+        return new ImageIcon(getClass().getResource("/br/univali/portugol/nucleo/bibliotecas/graficos/light-bulb.png")).getImage();
     }
 
     private void instalarObservadores()

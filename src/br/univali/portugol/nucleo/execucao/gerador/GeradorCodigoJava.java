@@ -160,10 +160,12 @@ public class GeradorCodigoJava
                 
                 if (ehVetor || ehMatriz || variavelInicializada)
                 {
+                    
                     saida.append(Utils.geraIdentacao(nivelEscopo + 1));
                     saida.format("%s = ", variavel.getNome());
                     if (variavelInicializada)
                     {
+                        //System.out.println("var - "+variavel.getNome()+" é inicializada com "+variavel.getTipoDado()+" inicialização: "+variavel.getInicializacao().toString());
                         variavel.getInicializacao().aceitar(this);
                     }
                     else //vetores e matrizes não inicializados precisam ser instanciados
@@ -746,7 +748,7 @@ public class GeradorCodigoJava
             {
                 geradorSwitchCase.geraSeSenao(no, saida, this, nivelEscopo, opcoes);
             }
-
+            simularBreakCaso = false;
             return null;
         }
 
