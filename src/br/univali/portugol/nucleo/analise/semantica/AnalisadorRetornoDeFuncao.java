@@ -89,10 +89,10 @@ class AnalisadorRetornoDeFuncao implements VisitanteASA
             return true;
         }
 
-        if (noDeclaracaoFuncao.getTipoDado() != TipoDado.VAZIO)
-        {
-            return false;
-        }
+//        if (noDeclaracaoFuncao.getTipoDado() != TipoDado.VAZIO)
+//        {
+//            return false;
+//        }
         return true;
     }
 

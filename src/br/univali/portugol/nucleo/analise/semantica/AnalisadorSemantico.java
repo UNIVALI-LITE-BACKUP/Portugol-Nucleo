@@ -1921,6 +1921,14 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }, funcaoAtual.getTipoDado(), tipoExpressaoRetorno));
                 throw new ExcecaoVisitaASA(ex, asa, noRetorne);
             }
+        }else{
+            if(tipoRetornoFuncao != funcaoAtual.getOrigemDoSimbolo().getTipoDado()){
+                notificarErroSemantico(new ErroTiposIncompativeis(noRetorne, new String[]
+                {
+                    funcaoAtual.getNome()
+                }, funcaoAtual.getTipoDado(), TipoDado.VAZIO));
+                //throw new ExcecaoVisitaASA(new Exception(""), asa, noRetorne);
+            }
         }
 
         return tipoRetornoFuncao;
