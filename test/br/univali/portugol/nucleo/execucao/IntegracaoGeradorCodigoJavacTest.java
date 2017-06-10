@@ -73,7 +73,6 @@ public class IntegracaoGeradorCodigoJavacTest
     
     private void geraCodigo(File exemplo) throws FileNotFoundException, ErroCompilacao, ExcecaoVisitaASA, IOException
     {
-        System.out.println(exemplo);
         if (exemplo.isDirectory()) {
             File files[] = exemplo.listFiles();
             for (File file : files)
@@ -94,6 +93,8 @@ public class IntegracaoGeradorCodigoJavacTest
                 
             if (exemplo.getName().endsWith(".por"))
             {
+                System.out.println("Testando " + exemplo);
+                
                 String codigoPortugol = new Scanner(exemplo).useDelimiter("\\Z").next(); //Lê todo o conteúdo do arquivo de exemplo
                 AnalisadorAlgoritmo aa = new AnalisadorAlgoritmo();
                 ResultadoAnalise resultado = aa.analisar(codigoPortugol);
