@@ -1927,7 +1927,6 @@ public final class AnalisadorSemantico implements VisitanteASA
                 {
                     funcaoAtual.getNome()
                 }, funcaoAtual.getTipoDado(), TipoDado.VAZIO));
-                //throw new ExcecaoVisitaASA(new Exception(""), asa, noRetorne);
             }
         }
 
