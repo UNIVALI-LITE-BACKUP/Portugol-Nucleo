@@ -634,9 +634,12 @@ public class GeradorCodigoJava
         public Void visitar(NoPara no) throws ExcecaoVisitaASA
         {
             saida.append("for(");
-            if (no.getInicializacao() != null)
+            NoBloco inicializacao = no.getInicializacao();
+            
+            // não gera código de inicialização se a seção de inicialização tiver apenas uma referência para variável (sem inicialização) - corrige o bug #110 do núcleo
+            if (inicializacao != null && !(inicializacao instanceof NoReferenciaVariavel))
             {
-                no.getInicializacao().aceitar(this);
+                inicializacao.aceitar(this);
             }
 
             saida.append("; "); // separador depois da inicialização do for 

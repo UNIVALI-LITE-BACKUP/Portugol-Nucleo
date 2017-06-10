@@ -17,5 +17,12 @@ public class testGeracaoLoopPara extends Programa
         {
             escreva(i);
         }
+        
+        int j = 0;
+        for(; j <= 10; j = j + 1)
+        {
+            escreva(j);
+
+        }
     }
 }
