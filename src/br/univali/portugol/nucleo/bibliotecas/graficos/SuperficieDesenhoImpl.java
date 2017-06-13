@@ -84,6 +84,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
                 graficos.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 graficos.setColor(cor);
                 graficos.setFont(fonteTexto);
+                graficos.fillRect(0, 0, getWidth(), getHeight());
 
                 for (int i = 0; i < indiceOperacao; ++i)
                 {
