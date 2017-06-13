@@ -8,22 +8,18 @@ package br.univali.portugol.nucleo.bibliotecas.graficos;
 import br.univali.portugol.nucleo.bibliotecas.base.ErroExecucaoBiblioteca;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -34,6 +30,8 @@ import org.w3c.dom.NodeList;
  */
 public final class ImagemGif extends Imagem
 {
+    private static final Logger LOGGER = Logger.getLogger(ImagemGif.class.getName());
+    
     private static final int TAMANHO_BUFFER = 131072; // 128 KB
     
     private ImageReader leitorGif;
@@ -190,7 +188,7 @@ public final class ImagemGif extends Imagem
             unit = "gigabytes";
         }
         
-        System.out.println("GIF carregado, tamanho em memória: " + length + " " + unit);
+        LOGGER.log(Level.INFO, "GIF carregado, tamanho em memmória: {0} {1}", new Object[]{length, unit});
     }
     
     private MetadadosGif lerMetadadosGif() throws IOException
