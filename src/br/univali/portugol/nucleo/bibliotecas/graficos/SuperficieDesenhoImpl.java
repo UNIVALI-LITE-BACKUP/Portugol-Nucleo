@@ -130,6 +130,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void limpar()
     {
+        verificaExcessoOperacoes();
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoLimpar(areaGrafica.width, areaGrafica.height);
         indiceOperacao++;
     }
@@ -137,6 +138,7 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirCor(int cor)
     {
+        verificaExcessoOperacoes();
         this.cor = obterCorTransparente(cor, opacidade);
         this.operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirCor(this.cor);
 
@@ -146,6 +148,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirOpacidade(int opacidade)
     {
+        verificaExcessoOperacoes();
+        
         this.opacidade = opacidade;
         this.cor = obterCorTransparente(this.cor.getRGB(), opacidade);
         this.operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDefinirCor(this.cor);
@@ -156,6 +160,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharRetangulo(int x, int y, int largura, int altura, boolean arredondarCantos, boolean preencher)
     {
+        verificaExcessoOperacoes();
+        
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoRetangulo(x, y, largura, altura, arredondarCantos, preencher, rotacao, opacidade);
         indiceOperacao++;
     }
@@ -163,6 +169,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharElipse(int x, int y, int largura, int altura, boolean preencher)
     {
+        verificaExcessoOperacoes();
+        
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoElipse(x, y, largura, altura, preencher, rotacao, opacidade);
         indiceOperacao++;
     }
@@ -170,6 +178,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharLinha(int x1, int y1, int x2, int y2)
     {
+        verificaExcessoOperacoes();
+        
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoLinha(x1, y1, x2, y2, rotacao, opacidade);
         indiceOperacao++;
     }
@@ -177,6 +187,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharTexto(String texto, int x, int y)
     {
+        verificaExcessoOperacoes();
+        
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoTexto(x, y, texto, dimensoesFonte, rotacao, opacidade);
         indiceOperacao++;
     }
@@ -184,6 +196,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirFonteTexto(String nome)
     {
+        verificaExcessoOperacoes();
+        
         fonteTexto = getFonte(nome, fonteTexto.getStyle(), usandoSublinhado, fonteTexto.getSize2D());
 
         dimensoesFonte = getFontMetrics(fonteTexto);
@@ -194,6 +208,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirEstiloTexto(boolean italico, boolean negrito, boolean sublinhado)
     {
+        verificaExcessoOperacoes();
+        
         this.usandoSublinhado = sublinhado;
         String nomeFonte = fonteTexto.getName();
         int estilo = getEstilo(negrito, italico);
@@ -272,6 +288,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void definirTamanhoTexto(double tamanho)
     {
+        verificaExcessoOperacoes();
+        
         fonteTexto = fonteTexto.deriveFont((float) tamanho);
 
         dimensoesFonte = getFontMetrics(fonteTexto);
@@ -285,6 +303,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         // evita adicionar operações de pintura que estão fora das dimensões do canvas
         if (y + imagem.getHeight() > 0 && y < getHeight() && x < getWidth() && x + imagem.getWidth() > 0)
         {
+            verificaExcessoOperacoes();
+            
             operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoImagem(x, y, imagem, opacidade, rotacao);
             indiceOperacao++;
         }
@@ -293,6 +313,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharPorcaoImagem(int x, int y, int xi, int yi, int largura, int altura, BufferedImage imagem)
     {
+        verificaExcessoOperacoes();
+        
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPorcaoImagem(x, y, xi, yi, largura, altura, imagem, opacidade, rotacao);
         indiceOperacao++;
     }
@@ -323,6 +345,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharPonto(int x, int y)
     {
+        verificaExcessoOperacoes();
+        
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPonto(x, y, opacidade);
         indiceOperacao++;
     }
@@ -351,6 +375,8 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
     @Override
     public void desenharPoligono(int[][] pontos, boolean preencher)
     {
+        verificaExcessoOperacoes();
+        
         operacoes[indiceOperacao] = POOL_OPERACOES_GRAFICAS.obterOperacaoDesenhoPoligono(pontos, preencher, rotacao, opacidade);
         indiceOperacao++;
     }
@@ -361,5 +387,12 @@ final class SuperficieDesenhoImpl extends Canvas implements SuperficieDesenho
         addMouseListener(observadorMouse);
         addMouseMotionListener(observadorMouse);
     }
-
+    
+    private void verificaExcessoOperacoes()
+    {
+        if (indiceOperacao >= PoolOperacoesGraficas.QUANTIDADE_MAXIMA_OPERACOES)
+        {
+            throw new IllegalStateException("A quantidade máxima de operações foi excedida!");
+        }
+    }
 }

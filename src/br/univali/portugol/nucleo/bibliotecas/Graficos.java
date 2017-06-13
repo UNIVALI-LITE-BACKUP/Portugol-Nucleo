@@ -12,6 +12,7 @@ import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGrafica;
 import br.univali.portugol.nucleo.bibliotecas.graficos.JanelaGraficaImpl;
 import br.univali.portugol.nucleo.bibliotecas.graficos.Utils;
 import br.univali.portugol.nucleo.bibliotecas.graficos.ImagemGif;
+import br.univali.portugol.nucleo.bibliotecas.graficos.SuperficieDesenho;
 import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
@@ -24,15 +25,13 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 
 /**
  *
  * @author Luiz Fernando Noschang
+ * @author Elieser A. de Jesus
  */
 @PropriedadesBiblioteca(tipo = TipoBiblioteca.RESERVADA)
 @DocumentacaoBiblioteca(
@@ -75,6 +74,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
 
     private Programa programa;
     private JanelaGrafica janela;
+    private SuperficieDesenho superficieDesenho;
     private CacheImagens cacheImagens;
     private boolean inicializado = false;
 
@@ -83,6 +83,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         this.programa = programa;
         this.janela = JanelaGraficaImpl.criar(programa);
+        this.superficieDesenho = this.janela.getSuperficieDesenho();
         this.cacheImagens = CacheImagens.criar();
     }
 
@@ -253,7 +254,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void limpar() throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().limpar();
+        try
+        {
+            superficieDesenho.limpar();
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }
     }
 
     @DocumentacaoFuncao(
@@ -273,7 +281,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void renderizar() throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().renderizar();
+        superficieDesenho.renderizar();
     }
 
     @DocumentacaoFuncao(
@@ -293,9 +301,16 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int renderizar_imagem(int largura, int altura) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        BufferedImage imagem = janela().getSuperficieDesenho().renderizarImagem(largura, altura);
+        try
+        {
+            BufferedImage imagem = superficieDesenho.renderizarImagem(largura, altura);
 
-        return cacheImagens.adicionarImagem(new ImagemGenerica(imagem));
+            return cacheImagens.adicionarImagem(new ImagemGenerica(imagem));
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }
     }
 
     @DocumentacaoFuncao(
@@ -326,7 +341,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_retangulo(final int x, final int y, final int largura, final int altura, final boolean arredondar_cantos, final boolean preencher) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharRetangulo(x, y, largura, altura, arredondar_cantos, preencher);
+        try
+        {
+            superficieDesenho.desenharRetangulo(x, y, largura, altura, arredondar_cantos, preencher);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
 
     @DocumentacaoFuncao(
@@ -356,7 +378,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_elipse(final int x, final int y, final int largura, final int altura, final boolean preencher) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharElipse(x, y, largura, altura, preencher);
+        try
+        {
+            superficieDesenho.desenharElipse(x, y, largura, altura, preencher);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }                        
     }
 
     @DocumentacaoFuncao(
@@ -376,7 +405,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_ponto(final int x, final int y) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharPonto(x, y);
+        try
+        {
+            superficieDesenho.desenharPonto(x, y);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }    
 
     @DocumentacaoFuncao(
@@ -398,7 +434,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_linha(final int x1, final int y1, final int x2, final int y2) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharLinha(x1, y1, x2, y2);
+        try
+        {
+            superficieDesenho.desenharLinha(x1, y1, x2, y2);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }
     }
 
     @DocumentacaoFuncao(
@@ -856,7 +899,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_imagem(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterImagem(endereco).getImagem());
+        try
+        {
+            superficieDesenho.desenharImagem(x, y, cacheImagens.obterImagem(endereco).getImagem());
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
     
     @DocumentacaoFuncao(
@@ -876,7 +926,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_quadro_atual_gif(final int x, final int y, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharImagem(x, y, cacheImagens.obterGif(endereco).getQuadroAtual());
+        try
+        {
+            superficieDesenho.desenharImagem(x, y, cacheImagens.obterGif(endereco).getQuadroAtual());
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }
     }   
 
     @DocumentacaoFuncao(
@@ -901,7 +958,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_porcao_imagem(final int x, final int y, final int xi, final int yi, final int largura, final int altura, int endereco) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco).getImagem());
+        try
+        {
+            superficieDesenho.desenharPorcaoImagem(x, y, xi, yi, largura, altura, cacheImagens.obterImagem(endereco).getImagem());
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
     
     @DocumentacaoFuncao(
@@ -1027,7 +1091,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void desenhar_texto(final int x, final int y, final String texto) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().desenharTexto(texto, x, y);
+        try
+        {
+            superficieDesenho.desenharTexto(texto, x, y);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
 
     @DocumentacaoFuncao(
@@ -1046,7 +1117,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_cor(final int cor) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().definirCor(cor);
+        try
+        {
+            superficieDesenho.definirCor(cor);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }
     }
 
     @DocumentacaoFuncao(
@@ -1067,7 +1145,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_fonte_texto(final String nome) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().definirFonteTexto(nome);
+        try
+        {
+            superficieDesenho.definirFonteTexto(nome);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }
     }
 
     @DocumentacaoFuncao(
@@ -1087,7 +1172,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_tamanho_texto(final double tamanho) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().definirTamanhoTexto(tamanho);
+        try
+        {
+            superficieDesenho.definirTamanhoTexto(tamanho);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
 
     @DocumentacaoFuncao(
@@ -1105,7 +1197,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_estilo_texto(final boolean italico, final boolean negrito, final boolean sublinhado) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().definirEstiloTexto(italico, negrito, sublinhado);
+        try
+        {
+            superficieDesenho.definirEstiloTexto(italico, negrito, sublinhado);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }
     }
 
     @DocumentacaoFuncao(
@@ -1122,7 +1221,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int largura_texto(String texto) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return janela().getSuperficieDesenho().larguraTexto(texto);
+        try
+        {
+            return superficieDesenho.larguraTexto(texto);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
 
     @DocumentacaoFuncao(
@@ -1139,7 +1245,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public int altura_texto(String texto) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        return janela().getSuperficieDesenho().alturaTexto(texto);
+        try
+        {
+            return superficieDesenho.alturaTexto(texto);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
 
     @DocumentacaoFuncao(
@@ -1226,7 +1339,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
                 boolean fonteRegistrada = GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(fonte);
                 if (fonteRegistrada)
                 {
-                    janela.getSuperficieDesenho().registrarFonteCarregada(fonte);
+                    superficieDesenho.registrarFonteCarregada(fonte);
                 }
                 else
                 {
@@ -1285,12 +1398,16 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         try
         {
-            janela().getSuperficieDesenho().definirOpacidade(opacidade);
+            superficieDesenho.definirOpacidade(opacidade);
         }
         catch (IllegalArgumentException excecao)
         {
             throw new ErroExecucaoBiblioteca("O valor da opacidade deve esta entre 0 e 255");
         }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }        
     }
 
     @DocumentacaoFuncao(
@@ -1315,7 +1432,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     )
     public void definir_rotacao(int rotacao) throws ErroExecucaoBiblioteca, InterruptedException
     {
-        janela().getSuperficieDesenho().definirRotacao(rotacao);
+        try
+        {
+            superficieDesenho.definirRotacao(rotacao);
+        }
+        catch(IllegalStateException e)
+        {
+            throw new ErroExcessoOperacoes();
+        }            
     }
 
     private JanelaGrafica janela() throws ErroExecucaoBiblioteca, InterruptedException
@@ -1404,5 +1528,14 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     public void sair_modo_tela_cheia() throws ErroExecucaoBiblioteca, InterruptedException
     {
         janela().sairModoTelaCheia();
+    }
+    
+    private class ErroExcessoOperacoes extends ErroExecucaoBiblioteca
+    {
+        public ErroExcessoOperacoes()
+        {
+            super("A função Graficos.renderizar() não foi chamada nenhuma vez em seu código! Se você não chamar esta função, seus desenhos não aparecerão na tela. Inclua uma chamada para esta função após a última operação de desenho que seu prorama estiver executando");
+        }
+        
     }
 }

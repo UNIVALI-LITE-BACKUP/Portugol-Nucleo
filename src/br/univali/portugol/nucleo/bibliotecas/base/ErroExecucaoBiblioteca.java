@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.mensagens.ErroExecucao;
  *
  * @author Luiz Fernando Noschang
  */
-public final class ErroExecucaoBiblioteca extends ErroExecucao
+public class ErroExecucaoBiblioteca extends ErroExecucao
 {
     private String mensagem;
     private Throwable causa;
