@@ -540,7 +540,10 @@ public abstract class Programa
         Arrays.fill(pontosDeParadaAtivados, false);
         for (Integer linha : linhasComPontosDeParadaAtivados)
         {
-            pontosDeParadaAtivados[linha] = true;
+            if (linha < pontosDeParadaAtivados.length)
+            {
+                pontosDeParadaAtivados[linha] = true;
+            }
         }
     }
 
