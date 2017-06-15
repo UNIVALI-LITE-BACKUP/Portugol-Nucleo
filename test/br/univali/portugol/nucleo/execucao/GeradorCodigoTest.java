@@ -204,19 +204,7 @@ public class GeradorCodigoTest
     }
 
     @Test
-    public void testInclusaoBibliotecasComESemAliases() throws Exception
-    {
-        comparaCodigos();
-    }
-
-    @Test
-    public void testInclusaoBibliotecasComAliases() throws Exception
-    {
-        comparaCodigos();
-    }
-
-    @Test
-    public void testInclusaoBibliotecasSemAliases() throws Exception
+    public void testInclusaoBibliotecas() throws Exception
     {
         comparaCodigos();
     }

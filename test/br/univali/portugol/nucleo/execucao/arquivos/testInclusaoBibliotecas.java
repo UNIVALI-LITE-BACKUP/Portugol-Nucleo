@@ -5,17 +5,20 @@ import br.univali.portugol.nucleo.Programa;
 import br.univali.portugol.nucleo.bibliotecas.Graficos;
 import br.univali.portugol.nucleo.bibliotecas.Mouse;
 
-public class testInclusaoBibliotecasComAliases extends Programa
+public class testInclusaoBibliotecas extends Programa
 {
-    private final Graficos g_1010 = new Graficos();
-    private final Mouse m_1010 = new Mouse();
+    private final Graficos Graficos = new Graficos();
+    private final Mouse Mouse = new Mouse();
 
-    public testInclusaoBibliotecasComAliases() throws ErroExecucao, InterruptedException
+    public testInclusaoBibliotecas() throws ErroExecucao, InterruptedException
     {
     }
 
     @Override
     protected void executar(String[] parametros) throws ErroExecucao, InterruptedException
     {
+        Graficos.iniciar_modo_grafico(false);
+        Graficos.definir_cor(0);
+        Mouse.exibir_cursor();
     }
 }

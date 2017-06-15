@@ -67,7 +67,7 @@ public class GeradorCodigoJava
             Opcoes opcoes) throws ExcecaoVisitaASA, IOException
     {
 
-        PreCompilador preCompilador = new PreCompilador();
+        PreCompilador preCompilador = new PreCompilador(asa);
         asa.aceitar(preCompilador);
 
         VisitorGeracaoCodigo gerador = new VisitorGeracaoCodigo(asa, saida, opcoes);
@@ -583,10 +583,11 @@ public class GeradorCodigoJava
         public Void visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
         {
             String nome = no.getNome();
-            if (no.getEscopo() != null)
+            String escopo = no.getEscopo();
+            if (escopo != null)
             {
-                saida.append(no.getEscopo())
-                        .append(".");
+                escopo = Utils.getNomeBiblioteca(escopo, asa);
+                saida.append(escopo).append(".");
             }
 
             NoDeclaracao declaracao = no.getOrigemDaReferencia();

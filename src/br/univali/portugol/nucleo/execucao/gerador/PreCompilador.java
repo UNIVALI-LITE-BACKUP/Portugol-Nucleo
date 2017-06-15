@@ -1,6 +1,7 @@
 package br.univali.portugol.nucleo.execucao.gerador;
 
 import br.univali.portugol.nucleo.asa.*;
+import br.univali.portugol.nucleo.execucao.gerador.helpers.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,22 +22,21 @@ public class PreCompilador extends VisitanteNulo
     private final Set<NoDeclaracaoFuncao> funcoesInvocadas = new HashSet<>(); // guarda apenas as funções que foram invocadas, as funções que não são invocadas não serão geradas no código Java
     
     private static long seedNomes = System.currentTimeMillis();
+    
+    private final Map<String, String> dadosBibliotecas = new HashMap<>(); // nomes e aliases das bibliotecas incluídas
 
+    private final ASAPrograma asa;
+
+    public PreCompilador(ASAPrograma asa)
+    {
+        this.asa = asa;
+    }
+    
     @Override
     public Object visitar(NoInclusaoBiblioteca no) throws ExcecaoVisitaASA
     {
-        String alias = no.getAlias();
-        
-        if (alias == null ||  alias.isEmpty())
-        {
-            no.setAlias(no.getNome());
-        }
-        alias = no.getAlias();
-        if (alias != null &&  !alias.isEmpty())
-        {
-            no.setAlias(alias + "_" + seedNomes); // evita que os aliases das bibliotecas colidam com variáveis declaradas pelos alunos
-        }
-        
+        dadosBibliotecas.put(no.getNome(), no.getAlias());
+
         return super.visitar(no);
     }
     
@@ -45,7 +45,17 @@ public class PreCompilador extends VisitanteNulo
     {
         chamadaFuncao.setNome(geraNomeValido(chamadaFuncao.getNome()));
         
-        atualizaEscopo(chamadaFuncao);
+        // atualiza o escopo para evitar geração de código usando aliases. As chamadas de função de biblioteca sempre usam o nome completo da Biblioteca
+        if (chamadaFuncao.isFuncaoDeBiblioteca())
+        {
+            String escopo = chamadaFuncao.getEscopo();
+            Set<String> nomesBibliotecas = dadosBibliotecas.keySet();
+            boolean invocandoComAlias = !nomesBibliotecas.contains(escopo);
+            if (invocandoComAlias)
+            {
+                chamadaFuncao.setEscopo(Utils.getNomeBiblioteca(escopo, asa));
+            }
+        }
         
         NoDeclaracaoFuncao declaracaoFuncao = chamadaFuncao.getOrigemDaReferencia();
         if (!funcoesInvocadas.contains(declaracaoFuncao))
@@ -108,13 +118,6 @@ public class PreCompilador extends VisitanteNulo
         no.setNome(geraNomeValido(no.getNome()));
         return super.visitar(no);
     }
-    
-    private void atualizaEscopo(NoReferencia no){
-        String escopo = no.getEscopo();
-        if(escopo != null){
-           no.setEscopo(escopo+"_"+seedNomes);
-        }
-    }
 
     @Override
     public Object visitar(NoNao noNao) throws ExcecaoVisitaASA
@@ -126,7 +129,6 @@ public class PreCompilador extends VisitanteNulo
     @Override
     public Object visitar(NoReferenciaVariavel no) throws ExcecaoVisitaASA
     {
-        atualizaEscopo(no);
         no.setNome(geraNomeValido(no.getNome()));
         return super.visitar(no);
     }

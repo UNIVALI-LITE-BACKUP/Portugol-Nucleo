@@ -17,11 +17,8 @@ public class GeradorAtributo
     public void gera(NoInclusaoBiblioteca biblioteca, PrintWriter saida, int nivelEscopo)
     {
         String tipo = biblioteca.getNome();
-        String nome = tipo; // quando a biblioteca não tem alias o nome e o tipo são idênticos
-        if (biblioteca.getAlias() != null)
-        {
-            nome = biblioteca.getAlias();
-        }
+        String nome = tipo; // o nome da variável é sempre idêntico ao tipo, o alias da biblioteca é ignorado na geração do código Java
+        
         saida.append(Utils.geraIdentacao(nivelEscopo))
                 .format("private final %s %s = new %s();", tipo, nome, tipo)
                 .println();

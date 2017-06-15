@@ -6,7 +6,7 @@ import br.univali.portugol.nucleo.bibliotecas.Graficos;
 
 public class testeConversaoAutomaticaDeTipos extends Programa
 {
-    private final Graficos g_1010 = new Graficos();
+    private final Graficos Graficos = new Graficos();
     private double a;
     private int b;
 
@@ -30,7 +30,7 @@ public class testeConversaoAutomaticaDeTipos extends Programa
         a = testa(b);
         b = (int) ((a + 5.0) * a);
         testa((int) ((a + 5.0) * a));
-        g_1010.desenhar_imagem((int) ((a + 5.0) * a), 1, 0);
+        Graficos.desenhar_imagem((int) ((a + 5.0) * a), 1, 0);
         
     }
 

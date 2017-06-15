@@ -440,16 +440,11 @@ public class Utils
         List<NoInclusaoBiblioteca> libs = asa.getListaInclusoesBibliotecas();
         for (NoInclusaoBiblioteca lib : libs)
         {
-            if (lib.getAlias() != null)
+            String alias = lib.getAlias();
+            String nome = lib.getNome();
+            if ((alias != null && alias.equals(escopo)) || nome.equals(escopo))
             {
-                if (lib.getAlias().equals(escopo))
-                {
-                    return lib.getNome();
-                }
-            }
-            else if (lib.getNome().equals(escopo))
-            {
-                return escopo;
+                return nome;
             }
         }
 
