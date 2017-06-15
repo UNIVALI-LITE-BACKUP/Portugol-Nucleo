@@ -1,9 +1,11 @@
 package br.univali.portugol.nucleo.execucao;
 
+import br.univali.portugol.nucleo.ErroCompilacao;
 import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.analise.AnalisadorAlgoritmo;
 import br.univali.portugol.nucleo.analise.ResultadoAnalise;
 import br.univali.portugol.nucleo.asa.ASAPrograma;
+import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
 import br.univali.portugol.nucleo.execucao.gerador.PreCompilador;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.ByteArrayOutputStream;
@@ -36,6 +38,12 @@ public class GeradorCodigoTest
         gerador = new GeradorCodigoJava(seed);
     }
 
+    @Test(expected = ExcecaoVisitaASA.class)
+    public void testeComparacaoStringInvalida() throws Exception
+    {
+        comparaCodigos();
+    }
+    
     @Test
     public void testeCodigoParaConcatenacaoOtimizada() throws Exception
     {

@@ -54,6 +54,20 @@ public class GeradorOperacao
     {
         boolean operandosSaoStrings = operandosSaoStrings(no.getOperandoEsquerdo(), no.getOperandoDireito());
 
+        String operador = OPERADORES.get(no.getClass());
+        assert (operador != null);
+        if (operandosSaoStrings)
+        {
+            boolean operadorInvalido = operador.equals(">")  || 
+                                       operador.equals("<")  ||
+                                       operador.equals(">=") ||
+                                       operador.equals("<=");
+            if (operadorInvalido)
+            {
+                throw new ExcecaoVisitaASA("Não é possível comparar cadeias com o operador " + operador, null, no);
+            }
+        }
+        
         boolean usaOperadorPadrao = usaOperadorPadrao(no, operandosSaoStrings);
         
         boolean precisaDeNegacao = !usaOperadorPadrao && (no instanceof NoOperacaoLogicaDiferenca);
@@ -66,8 +80,6 @@ public class GeradorOperacao
 
         if (usaOperadorPadrao)
         {
-            String operador = OPERADORES.get(no.getClass());
-            assert (operador != null);
             saida.format(" %s ", operador);
         }
         else
