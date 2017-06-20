@@ -75,8 +75,18 @@ final class Compilador
      */
     public Programa compilar(String codigo, boolean compilarParaExecucao, String classPath, String caminhoJavac) throws ErroCompilacao
     {
+        if (Thread.currentThread().isInterrupted()) // a compilação acontece em background e pode ser interrompida
+        {
+            return null;
+        }
+            
         AnalisadorAlgoritmo analisadorAlgoritmo = new AnalisadorAlgoritmo();
         ResultadoAnalise resultadoAnalise = analisadorAlgoritmo.analisar(codigo);
+        
+        if (Thread.currentThread().isInterrupted())
+        {
+            return null;
+        }
         
         ASAPrograma asa = (ASAPrograma) analisadorAlgoritmo.getASA();
 
@@ -87,7 +97,11 @@ final class Compilador
         if (!resultadoAnalise.contemErros())
         {
 
-            if (compilarParaExecucao)
+            if (Thread.currentThread().isInterrupted())
+            {
+                return null;
+            }
+            if (compilarParaExecucao && !Thread.currentThread().isInterrupted())
             {
                 programa = geraPrograma(asa, resultadoAnalise, classPath, caminhoJavac);
                 programa.setFuncoes(localizadorFuncoes.getFuncoes(asa));
@@ -129,6 +143,11 @@ final class Compilador
         String nomeArquivoJava = nomeClasse.concat(".java");
         String nomeArquivoClass = nomeClasse.concat(".class");
 
+        if (Thread.currentThread().isInterrupted())
+        {
+            return null;
+        }
+        
         DIRETORIO_PACOTE.mkdirs();
         
         File arquivoJava = new File(DIRETORIO_PACOTE, nomeArquivoJava);
@@ -136,10 +155,20 @@ final class Compilador
 
         try (PrintWriter writerArquivoJava = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(arquivoJava), Charset.forName("utf-8")))))
         {
+            if (Thread.currentThread().isInterrupted())
+            {
+                return null;
+            }
+            
             GeradorCodigoJava gerador = new GeradorCodigoJava();
             GeradorCodigoJava.Opcoes opcoes = new GeradorCodigoJava.Opcoes(true, true, true);
             gerador.gera(asa, writerArquivoJava, nomeClasse, opcoes);
             writerArquivoJava.flush();
+    
+            if (Thread.currentThread().isInterrupted())
+            {
+                return null;
+            }
             
             return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise, classPath, caminhoJavac);
         }
