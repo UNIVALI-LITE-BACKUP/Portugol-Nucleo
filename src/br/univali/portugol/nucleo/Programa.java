@@ -118,6 +118,15 @@ public abstract class Programa
             this.tamanho = tamanho;
         }
 
+        private void reseta()
+        {
+            ultimaColunaAlterada = -1;
+            for (int i = 0; i < tamanho; i++)
+            {
+                dados[i] = OBJETO_NULO;
+            }
+        }
+        
         public void setValor(Object valor, int coluna)
         {
             if (coluna >= 0 && coluna < dados.length)
@@ -145,6 +154,19 @@ public abstract class Programa
             this.dados = new Vetor[totalLinhas];
             this.linhas = totalLinhas;
             this.colunas = totalColunas;
+        }
+        
+        private void reseta()
+        {
+            ultimaLinhaAlterada = -1;
+            
+            for (int i = 0; i < dados.length; i++)
+            {
+                if (dados[i] != null) 
+                {
+                    dados[i].reseta();
+                }
+            }
         }
         
         public void setValor(Object valor, int linha, int coluna)
@@ -449,6 +471,33 @@ public abstract class Programa
         return OBJETO_NULO;
     }
     
+    private void resetaSimbolosInspecionados()
+    {
+        for (int i = 0; i < variaveisInspecionadas.length; i++)
+        {
+            if (variaveisInspecionadas[i] != null) // a variável está sendo inspecionada?
+            {
+                variaveisInspecionadas[i] = OBJETO_NULO;
+            }
+        }
+        
+        for (int i = 0; i < vetoresInspecionados.length; i++)
+        {
+            if (vetoresInspecionados[i]!= null)
+            {
+                vetoresInspecionados[i].reseta();
+            }
+        }
+
+        for (int i = 0; i < matrizesInspecionadas.length; i++)
+        {
+            if (matrizesInspecionadas[i] != null)
+            {
+                matrizesInspecionadas[i].reseta();    
+            }
+        }
+    }
+    
     public void setNumeroLinhas(int numeroLinhas)
     {
         pontosDeParadaAtivados = new boolean[numeroLinhas];
@@ -512,6 +561,7 @@ public abstract class Programa
     protected void inicializar() throws ErroExecucao, InterruptedException 
     {
         interrupcaoSolicitada = false;
+        resetaSimbolosInspecionados();        
     }
     
     public void continuar(Programa.Estado estado)
