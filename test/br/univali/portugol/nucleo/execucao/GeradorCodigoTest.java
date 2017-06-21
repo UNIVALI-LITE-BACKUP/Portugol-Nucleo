@@ -38,6 +38,13 @@ public class GeradorCodigoTest
         gerador = new GeradorCodigoJava(seed);
     }
 
+    @Test
+    public void testMatrizVazia() throws Exception
+    {
+        comparaCodigos();
+    }
+
+    
     @Test(expected = ExcecaoVisitaASA.class)
     public void testeComparacaoStringInvalida() throws Exception
     {
