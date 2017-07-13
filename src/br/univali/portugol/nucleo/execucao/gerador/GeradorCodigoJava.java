@@ -812,7 +812,7 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoChamadaFuncao no) throws ExcecaoVisitaASA
         {
-            geradorChamadaMetodo.gera(no, saida, this, asa, nivelEscopo);
+            geradorChamadaMetodo.gera(no, saida, this, asa, opcoes, nivelEscopo);
             return null;
         }
 
