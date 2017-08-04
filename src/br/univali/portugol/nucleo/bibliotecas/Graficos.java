@@ -1534,7 +1534,7 @@ public final class Graficos extends Biblioteca implements Teclado.InstaladorTecl
     {
         public ErroExcessoOperacoes()
         {
-            super("A função Graficos.renderizar() não foi chamada nenhuma vez em seu código! Se você não chamar esta função, seus desenhos não aparecerão na tela. Inclua uma chamada para esta função após a última operação de desenho que seu prorama estiver executando");
+            super("A função Graficos.renderizar() não foi chamada nenhuma vez em seu código ou o número de operações de desenho que você chamou antes do Graficos.renderizar() foi muito grande");
         }
         
     }
