@@ -331,7 +331,8 @@ public class GeradorCodigoJava
         @Override
         public Void visitar(NoCaracter noCaracter) throws ExcecaoVisitaASA
         {
-            String valor = "'" + noCaracter.getValor() + "'";
+            String valor = Utils.preservaCaracteresEspeciais(noCaracter.getValor().toString());
+            valor = "'" + valor + "'";
             saida.append(valor);
             return null;
         }
