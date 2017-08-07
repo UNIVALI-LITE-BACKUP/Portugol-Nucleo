@@ -407,7 +407,7 @@ public class Utils
                 .replaceAll("\\\\\r", "\\\\\\r") // preserva \n nas string do código Portugol
                 .replaceAll("\\\\\b", "\\\\\\b") // preserva \n nas string do código Portugol
                 .replaceAll("\\\\\f", "\\\\\\f") // preserva \n nas string do código Portugol
-                .replaceAll("\\\\", "\\\\\\\\") // preserva \\ nas string do código Portugol 
+                .replaceAll("\\\\", "\\\\\\\\") // preserva \\ nas string do código Portugol
                 .replaceAll("\n", "\\\\n") // preserva \n nas string do código Portugol 
                 .replaceAll("\t", "\\\\t") // preserva \t nas string do código Portugol
                 .replaceAll("\r", "\\\\r") // preserva \r nas string do código Portugol
