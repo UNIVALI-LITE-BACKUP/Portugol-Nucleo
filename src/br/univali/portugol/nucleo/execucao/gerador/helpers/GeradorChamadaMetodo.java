@@ -3,6 +3,7 @@ package br.univali.portugol.nucleo.execucao.gerador.helpers;
 import br.univali.portugol.nucleo.asa.*;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
 import br.univali.portugol.nucleo.bibliotecas.base.*;
+import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,13 +15,13 @@ import java.util.List;
 public class GeradorChamadaMetodo
 {
     public void gera(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, 
-                            ASAPrograma asa, int nivelEscopo) throws ExcecaoVisitaASA
+                            ASAPrograma asa, GeradorCodigoJava.Opcoes opcoes, int nivelEscopo) throws ExcecaoVisitaASA
     {
         String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
         String nomeFuncao = no.getNome();
         if (escopoFuncao.isEmpty() && "leia".equals(nomeFuncao)) //a função 'leia' tem um tratamento especial
         {
-            geraCodigoParaFuncaoLeia(no, saida, visitor, asa);
+            geraCodigoParaFuncaoLeia(no, saida, visitor, opcoes);
             return;
         }
 
@@ -183,7 +184,7 @@ public class GeradorChamadaMetodo
         }
     }
     
-    private void geraCodigoParaFuncaoLeia(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, ASAPrograma asa) throws ExcecaoVisitaASA
+    private void geraCodigoParaFuncaoLeia(NoChamadaFuncao no, PrintWriter saida, VisitanteASA visitor, GeradorCodigoJava.Opcoes opcoes) throws ExcecaoVisitaASA
     {
         List<NoExpressao> parametrosPassados = no.getParametros();
 
@@ -201,10 +202,81 @@ public class GeradorChamadaMetodo
             }
             String nomeFuncao = "leia" + Utils.getNomeTipoEmCamelCase(tipo);
             saida.format(" = %s()", nomeFuncao);
-            if (i < parametrosPassados.size() - 1) // adiciona um ponto e vírgula depois de cada atribuição gerada, exceto para a última
+            
+            boolean gerandoCodigoInspecao = opcoes.gerandoCodigoParaInspecaoDeSimbolos;
+            boolean ultimoParametro = i == parametrosPassados.size() - 1;
+                    
+            if (!ultimoParametro || gerandoCodigoInspecao) // adiciona um ponto e vírgula depois de cada atribuição gerada, exceto para a última
             {
                 saida.append(";").println();
             }
+            
+            if (gerandoCodigoInspecao) {
+                
+                geraCodigoParaVariaveisInspecionadas(parametroPassado, saida, visitor, ultimoParametro);
+            }
+        }
+        
+    }
+    
+    private void geraCodigoParaVariaveisInspecionadas(NoReferencia parametroPassado, PrintWriter saida, VisitanteASA visitor, boolean ultimoParametro) throws ExcecaoVisitaASA
+    {
+        
+        int idInspecao = ((NoDeclaracaoInspecionavel) parametroPassado.getOrigemDaReferencia()).getIdParaInspecao();
+
+        if (parametroPassado instanceof NoReferenciaVariavel)
+        {
+            saida.format("if (%s < variaveisInspecionadas.length) {", idInspecao);
+            saida.println();
+            
+            saida.format("variaveisInspecionadas[%d] = ", idInspecao);
+            visitaParametroPassado(parametroPassado, visitor);
+            
+            saida.append(";").println();
+            saida.append("}"); //fecha o IF
+        }
+        else if (parametroPassado instanceof NoReferenciaVetor)
+        {
+            NoReferenciaVetor noVetor = (NoReferenciaVetor) parametroPassado;
+            NoExpressao indice = noVetor.getIndice();
+            
+            saida.format("if (%1$d < vetoresInspecionados.length && vetoresInspecionados[%1$d] != null) {", idInspecao);
+            saida.println();
+            
+            saida.format("vetoresInspecionados[%d].setValor(", idInspecao);
+            visitaParametroPassado(parametroPassado, visitor);
+            saida.append(", ");
+            indice.aceitar(visitor); 
+            saida.append(")");
+            
+            saida.append(";").println();
+            saida.append("}"); //fecha o IF
+        }
+        else if (parametroPassado instanceof NoReferenciaMatriz)
+        {
+            NoReferenciaMatriz noMatriz = (NoReferenciaMatriz) parametroPassado;
+            NoExpressao coluna = noMatriz.getColuna();
+            NoExpressao linha = noMatriz.getLinha();
+            
+            saida.format("if (%1$d < matrizesInspecionadas.length && matrizesInspecionadas[%1$d] != null) {", idInspecao);
+            saida.println();
+            
+            saida.format("matrizesInspecionadas[%d].setValor(", idInspecao);
+            visitaParametroPassado(parametroPassado, visitor);
+            saida.append(", ");
+            linha.aceitar(visitor);
+            saida.append(", ");
+            coluna.aceitar(visitor);
+            saida.append(")");
+            
+            saida.append(";").println();
+            saida.append("}"); //fecha o IF
+        }
+        
+        if (!ultimoParametro) // adiciona um ponto e vírgula depois de cada inspeção gerada, exceto para a última
+        {
+            saida.append(";");
+            saida.println();
         }
     }
 }

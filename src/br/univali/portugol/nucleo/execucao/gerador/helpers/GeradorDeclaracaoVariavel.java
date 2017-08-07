@@ -11,6 +11,7 @@ import br.univali.portugol.nucleo.asa.NoVetor;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.VisitanteASA;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,22 +20,28 @@ import java.util.List;
 public class GeradorDeclaracaoVariavel
 {
 
+    
     public void gera(NoMatriz matriz, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
+     
+        List<List<Object>> valoresNaoNulos = getValoresNaoNulos(matriz);
         
-        saida.format("new %s[][]", Utils.getNomeTipoJava(matriz.getTipoResultante()));
+        if (!valoresNaoNulos.isEmpty())
+        {
+            saida.format("new %s[][]", Utils.getNomeTipoJava(matriz.getTipoResultante()));
+        }
+        
         saida.append("{");
 
-        List<List<Object>> valores = matriz.getValores();
-        int totalLinhas = valores.size();
+        int totalLinhas = valoresNaoNulos.size();
         int totalColunas = 0;
         for (int i = 0; i < totalLinhas; i++)
         {
-            totalColunas = valores.get(i).size();
+            totalColunas = valoresNaoNulos.get(i).size();
             saida.append("{");
             for (int j = 0; j < totalColunas; j++)
             {
-                saida.append(valores.get(i).get(j).toString());
+                saida.append(valoresNaoNulos.get(i).get(j).toString());
                 if (j < totalColunas - 1)
                 {
                     saida.append(", ");
@@ -50,23 +57,67 @@ public class GeradorDeclaracaoVariavel
         saida.append("}");
     }
 
+    private List<List<Object>> getValoresNaoNulos(NoMatriz matriz)
+    {
+        List<List<Object>> valoresNaoNulos = new ArrayList<>();
+        List<List<Object>> valoresOriginais = matriz.getValores();
+        for (List<Object> linha : valoresOriginais)
+        {
+            List<Object> novaLinha = new ArrayList<>();
+            for (Object valor : linha)
+            {
+                if (valor !=null)
+                {
+                    novaLinha.add(valor);
+                }
+            }
+            
+            if (!novaLinha.isEmpty()) {
+                valoresNaoNulos.add(novaLinha);            
+            }
+        }
+        
+        return valoresNaoNulos;
+    }
+
+    private List<Object> getValoresNaoNulos(NoVetor vetor)
+    {
+        List<Object> valoresNaoNulos = new ArrayList<>();
+        List<Object> valoresOriginais = vetor.getValores();
+        for (Object valor : valoresOriginais)
+        {
+            if (valor != null)
+            {
+                valoresNaoNulos.add(valor);
+            }
+        }
+        
+        return valoresNaoNulos;
+    }
+    
     public void gera(NoVetor vetor, PrintWriter saida, VisitanteASA visitor, int nivelEscopo) throws ExcecaoVisitaASA
     {
 
-        saida.format("new %s[]", Utils.getNomeTipoJava(vetor.getTipoResultante()));
+        List<Object> valoresNaoNulos = getValoresNaoNulos(vetor);
+        
+        if (!valoresNaoNulos.isEmpty())
+        {
+            saida.format("new %s[]", Utils.getNomeTipoJava(vetor.getTipoResultante()));
+        }
+        
         saida.append("{");
 
-        List<Object> valores = vetor.getValores();
-        int totalValores = valores.size();
+        int totalValores = valoresNaoNulos.size();
         for (int i = 0; i < totalValores; i++)
         {
-            if (valores.get(i) instanceof NoExpressaoLiteral)
+            Object valor = valoresNaoNulos.get(i);
+            if (valor instanceof NoExpressaoLiteral)
             {
-                saida.append(valores.get(i).toString());
+                saida.append(valor.toString());
             }
             else
             {
-                ((NoExpressao) valores.get(i)).aceitar(visitor);
+                ((NoExpressao) valor).aceitar(visitor);
             }
 
             if (i < totalValores - 1)
