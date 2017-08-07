@@ -85,8 +85,9 @@ public class IntegracaoGeradorCodigoJavacTest
             List<String> ignore = new ArrayList<>();
             ignore.add("varios.por");
             ignore.add("logico.por");
-            ignore.add("lagarta.por");
             ignore.add("arkanoid.por");
+            ignore.add("Programe.por");
+            ignore.add("CriadordeFases.por");
             
             if (ignore.contains(exemplo.getName()))
                 return;
