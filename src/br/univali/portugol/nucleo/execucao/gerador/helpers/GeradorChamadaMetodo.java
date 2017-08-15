@@ -19,9 +19,20 @@ public class GeradorChamadaMetodo
     {
         String escopoFuncao = (no.getEscopo() != null) ? (no.getEscopo() + ".") : "";
         String nomeFuncao = no.getNome();
-        if (escopoFuncao.isEmpty() && "leia".equals(nomeFuncao)) //a função 'leia' tem um tratamento especial
+        
+        boolean invocandoFuncaoLeia = "leia".equals(nomeFuncao);
+        boolean invocandoFuncaoInicio = "inicio".equals(nomeFuncao);
+        
+        if (escopoFuncao.isEmpty() && (invocandoFuncaoInicio || invocandoFuncaoLeia)) // chamadas para as funções 'leia' e 'inicio' têm um tratamento especial
         {
-            geraCodigoParaFuncaoLeia(no, saida, visitor, opcoes);
+            if (invocandoFuncaoLeia) {
+                geraCodigoParaFuncaoLeia(no, saida, visitor, opcoes);
+            }
+            else {
+                // as chamadas para a função início no código Portugol se transformam em chamadas para 'executar' no código Java
+                saida.append("executar(new String[0])");
+            }
+            
             return;
         }
 
