@@ -12,6 +12,7 @@ import br.univali.portugol.nucleo.mensagens.ErroSemantico;
 import br.univali.portugol.nucleo.simbolos.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -862,9 +863,23 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 throw new ExcecaoVisitaASA(excecaoSimboloNaoDeclarado, asa, declaracaoFuncao);
             }
+            catch(ClassCastException castException) {
+                // essa exceção acontece quando existe uma função declarada com o mesmo nome de uma variável global. Ela está
+                // sendo 'engolida' para que a stacktrace do java não seja exibida na console do PS
+            }
             finally
             {
-                memoria.desempilharFuncao();
+                try
+                {
+                    memoria.desempilharFuncao();
+                }
+                catch (EmptyStackException e)
+                {
+                    // esta excessão ocorre quando a ClassCastException acima também acontece (função com mesmo nome de variável global). 
+                    // Nesses casos a função não chega a ser empilhada (porque o nome dela coincide com uma variável) e então a pilha
+                    // está vazia, gerando uma EmptyStackException quando se tenta 'desempilhar'.
+                    // Estamos 'engolindo' a excessão aqui apenas para evitar que a stack trace seja mostrada na console do PS.
+                }
             }
         }
 
