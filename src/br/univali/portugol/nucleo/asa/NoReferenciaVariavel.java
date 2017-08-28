@@ -48,12 +48,19 @@ public final class NoReferenciaVariavel extends NoReferencia<NoDeclaracao>
     @Override
     protected TrechoCodigoFonte montarTrechoCodigoFonte()
     {
+
+        TrechoCodigoFonte trechoCodigoFonteNome = getTrechoCodigoFonteNome();
+        
+        if (trechoCodigoFonteNome == null) {
+            return NoBloco.TRECHO_NULO;
+        }
+        
         int tamanhoTexto = 0;
 
-        int linha = getTrechoCodigoFonteNome().getLinha();
-        int coluna = getTrechoCodigoFonteNome().getColuna();
+        int linha = trechoCodigoFonteNome.getLinha();
+        int coluna = trechoCodigoFonteNome.getColuna();
 
-        tamanhoTexto = tamanhoTexto + getTrechoCodigoFonteNome().getTamanhoTexto();
+        tamanhoTexto = tamanhoTexto + trechoCodigoFonteNome.getTamanhoTexto();
 
         return new TrechoCodigoFonte(linha, coluna, tamanhoTexto);
     }

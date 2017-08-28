@@ -164,11 +164,17 @@ final class Compilador
             GeradorCodigoJava.Opcoes opcoes = new GeradorCodigoJava.Opcoes(true, true, true);
             gerador.gera(asa, writerArquivoJava, nomeClasse, opcoes);
             writerArquivoJava.flush();
-    
+            
+//            byte[] encoded = Files.readAllBytes(Paths.get(arquivoJava.getAbsolutePath()));
+//            System.out.println(new String(encoded, "UTF-8"));
+            
             if (Thread.currentThread().isInterrupted())
             {
                 return null;
             }
+            
+            
+            
             
             return compilarJava(nomeClasse, arquivoJava, DIRETORIO_COMPILACAO, resultadoAnalise, classPath, caminhoJavac);
         }

@@ -96,10 +96,10 @@ public class GeradorSwitchCase
             {
                 condicao.setTrechoCodigoFonte(noCaso.getExpressao().getTrechoCodigoFonte());
             }
-
+            
             NoSe se = new NoSe(condicao);
             se.setBlocosVerdadeiros(noCaso.getBlocos());
-
+            
             if (opcoes.gerandoCodigoParaPontosDeParada)
             {
                 Utils.geraParadaPassoAPasso(se, saida, nivelEscopo);
