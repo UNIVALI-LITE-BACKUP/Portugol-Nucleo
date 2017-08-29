@@ -7,9 +7,12 @@ import br.univali.portugol.nucleo.asa.NoCaso;
 import br.univali.portugol.nucleo.asa.NoEnquanto;
 import br.univali.portugol.nucleo.asa.NoEscolha;
 import br.univali.portugol.nucleo.asa.NoFacaEnquanto;
+import br.univali.portugol.nucleo.asa.NoInteiro;
 import br.univali.portugol.nucleo.asa.NoMenosUnario;
 import br.univali.portugol.nucleo.asa.NoNao;
 import br.univali.portugol.nucleo.asa.NoOperacaoAtribuicao;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseRightShift;
 import br.univali.portugol.nucleo.asa.NoOperacaoDivisao;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaDiferenca;
 import br.univali.portugol.nucleo.asa.NoOperacaoLogicaE;
@@ -178,6 +181,65 @@ public final class ErroTiposIncompativeis extends ErroSemantico
             setTrechoCodigoFonte(noOperacaoAtribuicao.getOperandoDireito().getTrechoCodigoFonte());
             return construtorString.toString();
         }
+
+        @Override
+        public Object visitar(NoOperacaoBitwiseLeftShift noOperacaoBitwiseLeftShift) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+            construtorString.append("Tipos incompatíveis! ");
+            if(tiposDado[0] != TipoDado.INTEIRO){
+                construtorString.append("Não é possível deslocar os bits de um valor não inteiro. ");
+                setLinha(noOperacaoBitwiseLeftShift.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+                setColuna(noOperacaoBitwiseLeftShift.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+                setTrechoCodigoFonte(noOperacaoBitwiseLeftShift.getOperandoEsquerdo().getTrechoCodigoFonte());
+            }
+            if(tiposDado[1] != TipoDado.INTEIRO){
+                construtorString.append("É necessário um valor inteiro de bits a ser deslocado.");
+                setLinha(noOperacaoBitwiseLeftShift.getOperandoDireito().getTrechoCodigoFonte().getLinha());
+                setColuna(noOperacaoBitwiseLeftShift.getOperandoDireito().getTrechoCodigoFonte().getColuna());
+                setTrechoCodigoFonte(noOperacaoBitwiseLeftShift.getOperandoDireito().getTrechoCodigoFonte());
+            }
+            codigo +="1";
+            if(tiposDado[0] == TipoDado.INTEIRO){
+                construtorString.append(" Exemplo: "+noOperacaoBitwiseLeftShift.getOperandoEsquerdo().toString()+" << 2");
+            }else{
+                construtorString.append(" Exemplo: variavel << 2");
+            }
+            return construtorString.toString();
+        }
+
+        @Override
+        public Object visitar(NoOperacaoBitwiseRightShift noOperacaoBitwiseRightShift) throws ExcecaoVisitaASA
+        {
+            StringBuilder construtorString = new StringBuilder();
+            construtorString.append("Tipos incompatíveis!");
+            if(tiposDado[0] != TipoDado.INTEIRO){
+                construtorString.append(" Não é possível deslocar os bits de um valor não inteiro.");
+                setLinha(noOperacaoBitwiseRightShift.getOperandoEsquerdo().getTrechoCodigoFonte().getLinha());
+                setColuna(noOperacaoBitwiseRightShift.getOperandoEsquerdo().getTrechoCodigoFonte().getColuna());
+                setTrechoCodigoFonte(noOperacaoBitwiseRightShift.getOperandoEsquerdo().getTrechoCodigoFonte());
+                
+            }
+            if(tiposDado[1] != TipoDado.INTEIRO){
+                construtorString.append(" É necessário um valor inteiro de bits a ser deslocado.");
+                setLinha(noOperacaoBitwiseRightShift.getOperandoDireito().getTrechoCodigoFonte().getLinha());
+                setColuna(noOperacaoBitwiseRightShift.getOperandoDireito().getTrechoCodigoFonte().getColuna());
+                setTrechoCodigoFonte(noOperacaoBitwiseRightShift.getOperandoDireito().getTrechoCodigoFonte());
+            }
+            if(tiposDado[0] == TipoDado.INTEIRO){
+                construtorString.append(" Exemplo: "+noOperacaoBitwiseRightShift.getOperandoEsquerdo().toString()+" >> 2");
+            }else{
+                construtorString.append(" Exemplo: variavel >> 2");
+            }
+            
+            codigo +="1";
+            
+            
+            return construtorString.toString();
+        }
+        
+        
+        
 
         @Override
         public Object visitar(NoMenosUnario noMenosUnario) throws ExcecaoVisitaASA

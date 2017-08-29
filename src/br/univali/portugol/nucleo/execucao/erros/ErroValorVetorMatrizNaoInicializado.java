@@ -2,6 +2,7 @@ package br.univali.portugol.nucleo.execucao.erros;
 
 import br.univali.portugol.nucleo.GeradorDeExemplosDeInicializacao;
 import br.univali.portugol.nucleo.asa.ExcecaoVisitaASA;
+import br.univali.portugol.nucleo.asa.NoOperacaoBitwiseLeftShift;
 import br.univali.portugol.nucleo.asa.NoReferencia;
 import br.univali.portugol.nucleo.asa.NoReferenciaMatriz;
 import br.univali.portugol.nucleo.asa.NoReferenciaVetor;
@@ -95,7 +96,7 @@ public final class ErroValorVetorMatrizNaoInicializado extends ErroExecucao
 
             return construtorTexto.toString();
         }
-
+        
         @Override
         public Object visitar(NoReferenciaMatriz noReferenciaMatriz) throws ExcecaoVisitaASA
         {
