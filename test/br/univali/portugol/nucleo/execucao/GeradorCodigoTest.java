@@ -39,6 +39,12 @@ public class GeradorCodigoTest
     }
     
     @Test
+    public void testSwitchAninhadoUsandoVariaveis() throws Exception
+    {
+        comparaCodigos();
+    }
+    
+    @Test
     public void testSwitchComCasoContrario() throws Exception
     {
         comparaCodigos(true, true, true);
