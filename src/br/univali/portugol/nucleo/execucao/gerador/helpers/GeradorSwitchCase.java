@@ -54,6 +54,11 @@ public class GeradorSwitchCase
 
     }
 
+    public static String geraNomeVariavelBreak(int nivelEscopo) 
+    {
+        return NOME_VARIAVEL_BREAK + nivelEscopo;
+    }
+    
     public void geraSeSenao(NoEscolha noEscolha, PrintWriter saida, VisitanteASA visitor, 
             int nivelEscopo, GeradorCodigoJava.Opcoes opcoes) throws ExcecaoVisitaASA
     {
@@ -68,7 +73,12 @@ public class GeradorSwitchCase
         String identacao = Utils.geraIdentacao(nivelEscopo);
 
         saida.append(identacao);
-        saida.append("boolean ").append(NOME_VARIAVEL_BREAK).append(" = false;");
+        
+        String nomeVariavelBreak = geraNomeVariavelBreak(nivelEscopo);
+        
+        saida.append("boolean ")
+                .append(nomeVariavelBreak)
+                .append(" = false;");
         
         saida.println();
 
@@ -76,7 +86,7 @@ public class GeradorSwitchCase
 
         for (NoCaso noCaso : casos)
         {
-            NoExpressao verificacaoBreak = new NoNao(new NoReferenciaVariavel(null, NOME_VARIAVEL_BREAK));
+            NoExpressao verificacaoBreak = new NoNao(new NoReferenciaVariavel(null, nomeVariavelBreak));
             NoExpressao comparacaoCaso;
 
             // case default: 

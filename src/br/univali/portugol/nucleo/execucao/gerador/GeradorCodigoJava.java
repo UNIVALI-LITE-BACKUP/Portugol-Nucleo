@@ -822,7 +822,7 @@ public class GeradorCodigoJava
         {
             if (simularBreakCaso)
             {
-                saida.append(GeradorSwitchCase.NOME_VARIAVEL_BREAK)
+                saida.append(GeradorSwitchCase.geraNomeVariavelBreak(nivelEscopo - 1))
                         .append(" = true");
             }
             else

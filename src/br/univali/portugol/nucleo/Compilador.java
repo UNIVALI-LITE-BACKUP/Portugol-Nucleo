@@ -10,6 +10,7 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoMatriz;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
+import br.univali.portugol.nucleo.execucao.erros.ErroCodigoNaoAlcancavel;
 import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.BufferedWriter;
@@ -250,6 +251,7 @@ final class Compilador
             DefaultExecutor executor = new DaemonExecutor();
 
             executor.setStreamHandler(new PumpStreamHandler(outStream, errStream));
+            executor.setStreamHandler(new PumpStreamHandler(outStream, errStream));
             executor.setExitValue(0);            
             
             int exitValue = executor.execute(linhaComando);
@@ -261,11 +263,16 @@ final class Compilador
             }
         }
         catch (ExecuteException ex)
-        {
+        {            
             resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao("Erro na compilação!"));            
-            
+             
             for (String mensagemErro : errStream.getLines())
             {
+                if (mensagemErro.contains("error: unreachable statement"))
+                {
+                    resultadoAnalise.adicionarErro(new ErroCodigoNaoAlcancavel());
+                    break;
+                }                
                 resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao(mensagemErro));
             }
             
