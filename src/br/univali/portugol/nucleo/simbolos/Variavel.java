@@ -14,8 +14,6 @@ import java.util.Objects;
  */
 public final class Variavel extends Simbolo
 {
-    private Object valor;
-
     /**
      * Aloca uma variável em memória sem definir seu valor.
      *
@@ -31,55 +29,4 @@ public final class Variavel extends Simbolo
     {
         super(nome, tipoDado, declaracaoOrigem);
     }
-
-    /**
-     * Obtém o valor armazenado nesta variável.
-     *
-     * @return o valor armazenado nesta variável.
-     *
-     * @since 1.0
-     */
-    public Object getValor()
-    {
-        setUtilizado(true);
-        return valor;
-    }
-
-    /**
-     * Armazena um valor nesta variável.
-     *
-     * @param valor o valor que será armazenado nesta variável
-     *
-     * @since 1.0
-     */
-    public void setValor(Object valor)
-    {
-        if ((valor instanceof Double) && (tipoDado == TipoDado.INTEIRO))
-        {
-            double val = (Double) valor;
-            valor = (int) val;
-        }
-
-        else if ((valor instanceof Integer) && (tipoDado == TipoDado.REAL))
-        {
-            valor = ((Integer) valor).doubleValue();
-        }
-
-        setInicializado(true);
-        this.valor = valor;
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public Variavel copiar(String novoNome)
-    {
-        Variavel variavel = new Variavel(novoNome, getTipoDado(), getOrigemDoSimbolo());
-        variavel.setInicializado(true);
-        variavel.valor = valor;
-
-        return variavel;
-    }
-    
 }

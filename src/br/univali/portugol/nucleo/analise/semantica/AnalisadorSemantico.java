@@ -58,6 +58,8 @@ public final class AnalisadorSemantico implements VisitanteASA
     private int totalVetoresDeclarados = 0;
     private int totalMatrizesDeclaradas = 0;
     
+    private int nivelEscopoAtual = 0;
+    
     public AnalisadorSemantico()
     {
         memoria = new Memoria();
@@ -669,7 +671,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                         try
                         {
                             Simbolo variavel = memoria.getSimbolo(nome);
-                            variavel.setInicializado(true);
+                            variavel.setInicializado(nivelEscopoAtual, true);
                         }
                         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
                         {
@@ -828,9 +830,8 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             String nome = declaracaoFuncao.getNome();
             TipoDado tipoDado = declaracaoFuncao.getTipoDado();
-            Quantificador quantificador = declaracaoFuncao.getQuantificador();
 
-            Funcao funcao = new Funcao(nome, tipoDado, quantificador, declaracaoFuncao.getParametros(), declaracaoFuncao);
+            Funcao funcao = new Funcao(nome, tipoDado, declaracaoFuncao.getParametros(), declaracaoFuncao);
             funcao.setTrechoCodigoFonteNome(declaracaoFuncao.getTrechoCodigoFonteNome());
             funcao.setTrechoCodigoFonteTipoDado(declaracaoFuncao.getTrechoCodigoFonteTipoDado());
             try
@@ -948,7 +949,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 if (FUNCOES_RESERVADAS.contains(nome))
                 {
                     matriz.setRedeclarado(true);
-                    Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, Quantificador.VETOR, null, null);
+                    Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, null, null);
                     notificarErroSemantico(new ErroSimboloRedeclarado(matriz, funcaoSistam));
                 }
                 else
@@ -1095,7 +1096,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 if (FUNCOES_RESERVADAS.contains(nome))
                 {
                     variavel.setRedeclarado(true);
-                    Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, Quantificador.VETOR, null, null);
+                    Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, null, null);
                     notificarErroSemantico(new ErroSimboloRedeclarado(variavel, funcaoSistam));
                 }
                 else
@@ -1222,7 +1223,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 if (FUNCOES_RESERVADAS.contains(nome))
                 {
                     vetor.setRedeclarado(true);
-                    Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, Quantificador.VETOR, null, null);
+                    Funcao funcaoSistam = new Funcao(nome, TipoDado.VAZIO, null, null);
                     notificarErroSemantico(new ErroSimboloRedeclarado(vetor, funcaoSistam));
                 }
                 else
@@ -1451,7 +1452,6 @@ public final class AnalisadorSemantico implements VisitanteASA
         TipoDado operandoDireito = null;
 
         Simbolo simbolo = null;
-        boolean inicializadoAnterior = false;
         if (!(noOperacao.getOperandoEsquerdo() instanceof NoReferencia))
         {
             notificarErroSemantico(new ErroAtribuirEmExpressao(noOperacao, noOperacao.getOperandoEsquerdo()));
@@ -1468,8 +1468,8 @@ public final class AnalisadorSemantico implements VisitanteASA
                     {
                         simbolo = memoria.getSimbolo(referencia.getNome());
 
-                        inicializadoAnterior = simbolo.inicializado();
-                        simbolo.setInicializado(true);
+                        simbolo.setInicializado(nivelEscopoAtual, true);
+                        
                         if (simbolo instanceof Variavel)
                         {
 
@@ -1497,7 +1497,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                         }
                         else if (simbolo instanceof Matriz)
                         {
-                            if (!simbolo.inicializado() && !(noOperacao.getOperandoDireito() instanceof NoMatriz))
+                            if (!simbolo.inicializado(nivelEscopoAtual) && !(noOperacao.getOperandoDireito() instanceof NoMatriz))
                             {
                                 notificarErroSemantico(new ErroAoInicializarMatriz((Matriz) simbolo, noOperacao.getOperandoDireito().getTrechoCodigoFonte(), ((Matriz) simbolo).getNumeroLinhas(), ((Matriz) simbolo).getNumeroColunas()));
                             }
@@ -1565,11 +1565,11 @@ public final class AnalisadorSemantico implements VisitanteASA
                 throw excecao;
             }
         }
-
-        if (simbolo != null)
-        {
-            simbolo.setInicializado(inicializadoAnterior);
-        }
+//
+//        if (simbolo != null)
+//        {
+//            simbolo.setInicializado(nivelEscopoAtual, true);
+//        }
 
         try
         {
@@ -1609,7 +1609,7 @@ public final class AnalisadorSemantico implements VisitanteASA
 
         if (simbolo != null)
         {
-            simbolo.setInicializado(true);
+            //simbolo.setInicializado(true);
         }
 
         return tipoDadoRetorno;
@@ -2037,7 +2037,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
         else if (quantificador == Quantificador.MATRIZ)
         {
-            simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro, 0, 0, new ArrayList<List<Object>>());
+            simbolo = new Matriz(nome, tipoDado, noDeclaracaoParametro, 0, 0);
         }
 
         try
@@ -2063,7 +2063,7 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 memoria.desempilharEscopo();
                 memoria.adicionarSimbolo(simbolo);
-                simbolo.setInicializado(true);
+                simbolo.setInicializado(nivelEscopoAtual, true);
 
                 Simbolo simboloGlobal = memoria.isGlobal(simboloExistente) ? simboloExistente : simbolo;
                 Simbolo simboloLocal = memoria.isGlobal(simboloExistente) ? simbolo : simboloExistente;
@@ -2073,7 +2073,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
-            simbolo.setInicializado(true);
+            //simbolo.setInicializado(true);
             memoria.adicionarSimbolo(simbolo);
         }
 
@@ -2156,6 +2156,8 @@ public final class AnalisadorSemantico implements VisitanteASA
 
         memoria.empilharEscopo();
 
+        nivelEscopoAtual++;
+        
         for (NoBloco noBloco : blocos)
         {
             try
@@ -2171,12 +2173,24 @@ public final class AnalisadorSemantico implements VisitanteASA
             {
                 if (!(excecao.getCause() instanceof ExcecaoImpossivelDeterminarTipoDado))
                 {
+                    limparInicializacaoSimbolos(nivelEscopoAtual);
+                    nivelEscopoAtual--;
                     throw excecao;
                 }
             }
         }
 
+        limparInicializacaoSimbolos(nivelEscopoAtual);
+        nivelEscopoAtual--;
         memoria.desempilharEscopo();
+    }
+    
+    private void limparInicializacaoSimbolos(int nivelEscopo)
+    {
+        for (Simbolo simbolo : memoria.getSimbolosDeclarados())
+        {
+            simbolo.setInicializado(nivelEscopo, false);
+        }
     }
 
     private boolean blocoValido(NoBloco bloco)
@@ -2262,7 +2276,18 @@ public final class AnalisadorSemantico implements VisitanteASA
         {
             Simbolo simbolo = memoria.getSimbolo(noReferenciaVariavel.getNome());
 
-            if (!simbolo.inicializado())
+            boolean inicializado = false;
+            
+            for (int i = 0; i <= nivelEscopoAtual; i++)
+            {
+                if (simbolo.inicializado(i))
+                {
+                    inicializado = true;
+                    break;
+                }
+            }
+            
+            if (!inicializado)
             {
                 notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel, simbolo));
             }

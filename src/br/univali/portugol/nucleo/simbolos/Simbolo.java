@@ -3,6 +3,8 @@ package br.univali.portugol.nucleo.simbolos;
 import br.univali.portugol.nucleo.asa.NoDeclaracao;
 import br.univali.portugol.nucleo.asa.TipoDado;
 import br.univali.portugol.nucleo.asa.TrechoCodigoFonte;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -20,7 +22,6 @@ import java.util.Objects;
  */
 public abstract class Simbolo
 {
-
     @Override
     public boolean equals(Object obj)
     {
@@ -45,9 +46,9 @@ public abstract class Simbolo
     private TrechoCodigoFonte trechoCodigoFonteTipoDado;
     private boolean constante = false;
     private boolean utilizado = false;
-    private boolean inicializado = false;
     private boolean redeclarado = false;
     private NoDeclaracao origemDoSimbolo = null;
+    private Map<Integer, Boolean> inicializacoes = new HashMap<>();
 
     /**
      *
@@ -101,9 +102,9 @@ public abstract class Simbolo
      * somente nas classes em que for necessário.
      */
     @Deprecated
-    public final boolean inicializado()
+    public final boolean inicializado(int nivelEscopo)
     {
-        return inicializado;
+        return inicializacoes.containsKey(nivelEscopo) && (inicializacoes.get(nivelEscopo) == true);
     }
 
     /**
@@ -224,9 +225,9 @@ public abstract class Simbolo
      * não.
      * @since 1.0
      */
-    public final void setInicializado(boolean inicializado)
+    public final void setInicializado(int nivelEscopo, boolean inicializado)
     {
-        this.inicializado = inicializado;
+        this.inicializacoes.put(nivelEscopo, inicializado);
     }
 
     /**
@@ -275,19 +276,6 @@ public abstract class Simbolo
     {
         this.origemDoSimbolo = origemDoSimbolo;
     }
-
-    /**
-     * Cria uma cópia deste símbolo em memória. Este método é utilizado durante
-     * a chamada de funções para passar o símbolo por valor. A cópia terá os
-     * mesmos valores e características do símbolo original, com exceção de
-     * nome.
-     *
-     * @param novoNome o nome atribuído a esta cópia do símbolo. Geralmente é o
-     * nome do parâmetro da função para o qual este símbolo está sendo passado.
-     * @return uma cópia deste símbolo.
-     * @since 1.0
-     */
-    public abstract Simbolo copiar(String novoNome);
     
     @Override
     public int hashCode()

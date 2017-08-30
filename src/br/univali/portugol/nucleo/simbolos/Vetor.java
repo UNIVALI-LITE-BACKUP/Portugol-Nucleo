@@ -15,13 +15,7 @@ import java.util.List;
 public final class Vetor extends Simbolo
 {
     private List<Object> valores;
-    private int ultimoIndiceModificado;
     public final static Integer TAMANHO_MAXIMO = 16777216;
-
-    public int getUltimoIndiceModificado()
-    {
-        return ultimoIndiceModificado;
-    }
 
     /**
      * Aloca um vetor em memória sem definir seu tamanho nem seus valores.
@@ -37,7 +31,6 @@ public final class Vetor extends Simbolo
     public Vetor(String nome, TipoDado tipoDado, NoDeclaracao declaracaoOrigem)
     {
         super(nome, tipoDado, declaracaoOrigem);
-        setInicializado(true);
     }
 
     /**
@@ -86,7 +79,6 @@ public final class Vetor extends Simbolo
         {
             this.valores.set(i, valores.get(i));
         }
-        setInicializado(true);
     }
 
     /**
@@ -108,7 +100,6 @@ public final class Vetor extends Simbolo
     {
         this(nome, tipoDado, declaracaoOrigem);
         this.valores = new ArrayList<>(valores);
-        setInicializado(true);
     }
 
     /**
@@ -121,66 +112,5 @@ public final class Vetor extends Simbolo
     public int getTamanho()
     {
         return valores.size();
-    }
-
-    /**
-     * Recupera um valor armazenado neste vetor no índice esecificado.
-     *
-     * @param indice o índice deste vetor no qual o valor se encontra.
-     *
-     * @return o valor armazenado neste vetor no índice especificado.
-     *
-     * @since 1.0
-     */
-    public Object getValor(int indice)
-    {
-        setUtilizado(true);
-        return valores.get(indice);
-    }
-
-    /**
-     * Armazena um valor neste vetor no índice esecificado.
-     *
-     * @param indice o índice deste vetor no qual o valor será armazenado.
-     *
-     * @param valor o valor que será armazenado neste vetor no índice
-     * especificado.
-     *
-     * @since 1.0
-     */
-    public void setValor(int indice, Object valor)
-    {
-        ultimoIndiceModificado = indice;
-        this.valores.set(indice, valor);
-    }
-
-    public void inicializarComValores(List<Object> valores)
-    {
-        this.valores = new ArrayList<>(valores);
-    }
-
-    /**
-     * {@inheritDoc }
-     *
-     * @return uma cópia deste vetor
-     */
-    @Override
-    public Vetor copiar(String novoNome)
-    {
-        Vetor vetor = new Vetor(novoNome, getTipoDado(), getOrigemDoSimbolo());
-        vetor.valores = new ArrayList<>(this.valores.size());
-        Collections.copy(vetor.valores, this.valores);
-
-        return vetor;
-    }
-
-    public List<Object> obterValores()
-    {
-        if (valores != null)
-        {
-            return new ArrayList<>(valores);
-        }
-
-        return new ArrayList<>();
     }
 }

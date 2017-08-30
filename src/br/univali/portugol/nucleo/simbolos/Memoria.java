@@ -15,7 +15,7 @@ public class Memoria
 {
     private TabelaSimbolos escopoGlobal;
     private Stack<TabelaSimbolos> escoposLocais;
-    private List<ObservadorMemoria> observadores;    
+    private List<ObservadorMemoria> observadores;
 
     public Memoria()
     {
@@ -55,6 +55,32 @@ public class Memoria
         }
         
         throw new ExcecaoSimboloNaoDeclarado(nome);
+    }
+    
+    public List<Simbolo> getSimbolosDeclarados()
+    {
+        List<Simbolo> simbolos = new ArrayList<>();
+        
+        for (TabelaSimbolos escoposLocal : escoposLocais)
+        {
+            for (Map<String, Simbolo> tabela : escoposLocal)
+            {
+                for (Simbolo simbolo : tabela.values())
+                {
+                    simbolos.add(simbolo);
+                }
+            }
+        }
+        
+        for (Map<String, Simbolo> tabela : escopoGlobal)
+        {
+            for (Simbolo simbolo : tabela.values())
+            {
+                simbolos.add(simbolo);
+            }
+        }
+        
+        return simbolos;
     }
     
     public void adicionarSimbolo(Simbolo simbolo)
