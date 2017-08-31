@@ -1467,8 +1467,14 @@ public final class AnalisadorSemantico implements VisitanteASA
                     if (referencia.getEscopo() == null)
                     {
                         simbolo = memoria.getSimbolo(referencia.getNome());
-
-                        simbolo.setInicializado(nivelEscopoAtual, true);
+                        if(memoria.isGlobal(simbolo) && !memoria.isLocal(simbolo))
+                        {
+                            simbolo.setInicializado(0, true);
+                        }
+                        else
+                        {
+                            simbolo.setInicializado(nivelEscopoAtual, true);
+                        }
                         
                         if (simbolo instanceof Variavel)
                         {
@@ -2073,7 +2079,7 @@ public final class AnalisadorSemantico implements VisitanteASA
         }
         catch (ExcecaoSimboloNaoDeclarado excecaoSimboloNaoDeclarado)
         {
-            //simbolo.setInicializado(true);
+            simbolo.setInicializado(nivelEscopoAtual, true);
             memoria.adicionarSimbolo(simbolo);
         }
 
@@ -2287,7 +2293,7 @@ public final class AnalisadorSemantico implements VisitanteASA
                 }
             }
             
-            if (!inicializado)
+            if (!inicializado && simbolo instanceof Variavel)
             {
                 notificarErroSemantico(new ErroSimboloNaoInicializado(noReferenciaVariavel, simbolo));
             }
