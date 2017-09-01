@@ -17,7 +17,7 @@ public class ErroCodigoNaoAlcancavel extends ErroAnalise
     @Override
     protected String construirMensagem()
     {
-        return "Existem códigos que não são alcançáveis. Verifique se existe algum código após um loop infinito ou um retorne";
+        return "Existem trechos de código que não são alcançáveis. Verifique se existe algum código após um laço de repetição infinito ou um retorne";
     }
     
 }

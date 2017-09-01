@@ -11,6 +11,7 @@ import br.univali.portugol.nucleo.asa.NoDeclaracaoVariavel;
 import br.univali.portugol.nucleo.asa.NoDeclaracaoVetor;
 import br.univali.portugol.nucleo.asa.VisitanteASABasico;
 import br.univali.portugol.nucleo.execucao.erros.ErroCodigoNaoAlcancavel;
+import br.univali.portugol.nucleo.execucao.erros.ErroVariavelPodeNaoTerSidoInicializada;
 import br.univali.portugol.nucleo.execucao.gerador.GeradorCodigoJava;
 import br.univali.portugol.nucleo.mensagens.ErroAnalise;
 import java.io.BufferedWriter;
@@ -25,8 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -272,7 +271,12 @@ final class Compilador
                 {
                     resultadoAnalise.adicionarErro(new ErroCodigoNaoAlcancavel());
                     break;
-                }                
+                }
+                else if (mensagemErro.contains("might not have been initialized"))
+                {
+                    resultadoAnalise.adicionarErro(new ErroVariavelPodeNaoTerSidoInicializada(mensagemErro));
+                    break;
+                }                 
                 resultadoAnalise.adicionarErro(new ErroAnaliseNaCompilacao(mensagemErro));
             }
             
