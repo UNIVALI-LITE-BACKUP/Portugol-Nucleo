@@ -1,3 +1,3 @@
-# Portugol-Nucleo
+# Descontinuado
 
-O Portugol Núcleo faz parte do Portugol Studio, para saber mais, [clique aqui](https://github.com/UNIVALI-LITE/Portugol-Studio)
+Este projeto não será mais atualizado, a nova versão pode ser encontrada em: https://github.com/UNIVALI-LITE/Portugol-Studio/
